@@ -1,0 +1,566 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Login {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <style>
+    
+        @media only screen and (max-width: 600px) {
+            #login-img {
+                display: none !important;
+            }
+        }
+
+    </style>
+
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>
+                                Partner Registration
+                            </span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="" autocomplete="off" id="register_form">
+
+                        {% csrf_token %}
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-phone"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.mobile_no }}
+                                                </div>
+                                                
+                                                {{ form.mobile_no.errors }}
+
+                                                <!-- {% if form.mobile_no.errors is not None %}
+                                                    <span class="text-danger">This mobile number is Already used, if you still want to use this number please select below check box.</span>
+                                                {% endif %} -->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-envelope"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.p_email }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.p_email.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-user"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_business_name }}
+                                                </div>
+                                                <!-- {% if form.mobile_no.errors is not None %}
+                                                    <span class="text-danger">This mobile number is Already used, if you still want to use this number please click on Save</button></span>
+                                                {% endif %} -->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-list"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_business_category }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form1.p_business_category.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-location-pin"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_city }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form1.p_city.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-location-pin"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_district }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form1.p_district.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-location-pin"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_state }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form1.p_state.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-location-pin"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form1.p_pin_code }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form1.p_pin_code.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-lock"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.password1 }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.password1.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-lock"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.password2 }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.password2.errors }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            &nbsp; &nbsp;
+                            <span>Already have an account?</span> <a href="{% url 'software partner login' %}" >Login</a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 3%;">
+                <img class="img-fluid" src="http://157.230.228.250/media/web-panel/merchant-registration-design-website.png" id="login-img">
+            </div>
+        </div>
+    </div>
+
+
+<!-- OTP Modal -->
+<div class="modal fade" id="myOtpModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <form method="POST" class="form" id="otp_validation" autocomplete="off">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Please check your registered Mobile Number</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="mobile_no" id="mobile_no" value="">
+                    <input type="hidden" name="p_email" id="p_email" value="">
+                    <div class="form-group">
+                        <label for="name">OTP <small style="color: red;"> *</small></label>
+                        <input type="text" name="otp" class="form-control" id="otp">
+                        <span class="text-danger" id="otp_error"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="otp_submit" type="submit" class="btn btn-primary" value="Validate">
+                    <button type="button" class="btn btn-dark" id="btn_resend">Resend</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- OTP Modal End -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    jQuery.validator.addMethod("uppercase_val", function(value, element){
+		if (/[A-Z]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 upper case letter."); 
+
+	jQuery.validator.addMethod("number_val", function(value, element){
+		if (/[0-9]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 number."); 
+
+	jQuery.validator.addMethod("specialchar_val", function(value, element){
+		if (/(?=.*[ -\/:-@\[-\`{-~]{1,})/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Password must contain at least 1 special character."); 
+    
+    jQuery.validator.addMethod("mobileno", function(value, element){
+		if (/^([0]|\+91)?[6789]\d{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Please enter valid mobile number.");
+
+    jQuery.validator.addMethod("lettersonly", function (value, element) {
+            return this.optional(element) || /^[a-z]+$/i.test(value);
+    }, "Only characters required"); 
+
+    $( "#register_form" ).validate({
+    rules: {
+        mobile_no: {
+            required: true,
+            mobileno: true
+        },
+        p_email: {
+            email: true,
+            required: true
+        },
+        p_business_name: {
+            required: true
+        },
+        p_business_category: {
+            required: true
+        },
+        p_city: {
+            required: true,
+            lettersonly: true
+        },
+        p_district: {
+            required: true,
+            lettersonly: true
+        },
+        p_state: {
+            required: true,
+            lettersonly: true
+        },
+        p_pin_code: {
+            required: true,
+            digits: true
+        },
+        password1: {
+            required: true,
+            // uppercase_val: true,
+            // number_val: true,
+            // specialchar_val: true,
+            minlength: 8,
+		},
+        password2: {
+            required: true,
+            equalTo : "#id_password1"
+        }
+    },
+    messages: {
+        mobile_no: { 
+            required: "Mobile Number field is required.",
+            mobileno: "Please enter valid mobile number."
+        },
+        p_email: {
+            required: "Email field is required.",
+            email: "Please enter valid email id"
+        },
+        p_business_name: "Business Name field is required.",
+        p_business_category: "Business Category field is required.",
+        p_gstin: "GSTIN field is required.",
+        p_district: "District field is required.",
+        p_city: "City field is required.",
+        p_state: "State field is required.",
+        p_pin_code: "Pin Code field is required.",
+        password1: {
+            required: "Password field is required.",
+            minlength: "This password is too short. It must contain at least {0} characters."
+        },
+        password2: {
+            required: "Confirm Password field is required",
+            equalTo: "Password and Confirm Password must be the same.",
+        }
+    },
+    submitHandler: function() {
+        $("#otp_validation")[0].reset();
+        $("#otp_error").empty();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'validate mobile no' %}",
+            data: $('#register_form').serialize() + "&validating_for=partner",
+            success: function(response) {
+                if(response.status == "success")
+                {
+                    $.ajax({
+                    type: "POST",
+                    url: "/generate-otp-partner/",
+                    data: $('#register_form').serialize(),
+                    beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+                    },
+                    success: function(response) {
+                        swal.close();
+                        if(response.status == "success")
+                        {
+                            $("#mobile_no").val(response.mobile_no);
+                            $("#p_email").val(response.p_email);
+                            $("#myOtpModal").modal("show"); 
+                        }
+                        else if (response.status == "error"){
+                            swal.fire({
+                                icon: "error",
+                                title: "Error!",
+                                text: response.msg,
+                                type: "error",
+                                confirmButtonClass: "btn-error/",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                location.reload();
+                            });
+                        }
+                    }
+                    });
+                }
+                else if(response.status == "fail")
+                {
+                    swal.fire({
+                        icon:"warning",
+                        title: "Warning!",
+                        text: response.msg,
+                        type: "Warning",
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                }
+            }        
+        });
+    }
+});
+
+
+$("#btn_resend").click(function(){
+        $.ajax({
+                type: "POST",
+                url: "/generate-otp-partner/",
+                data: $('#otp_validation').serialize(),
+                beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+                },
+                success: function (response) {
+                    if (response.status == "success") {
+                        swal.fire({
+                                icon: "success",
+                                title: "Success!",
+                                text: "Otp Sent Successfully !!!",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                $("#mobile_no").val(response.mobile_no);
+                                $("#p_email").val(response.p_email);
+                                $("#myOtpModal").modal("show");
+                            });
+                        
+                    } else if (response.status == "error"){
+                            swal.fire({
+                                icon: "error",
+                                title: "Error!",
+                                text: response.msg,
+                                type: "error",
+                                confirmButtonClass: "btn-error/",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                location.reload();
+                            });
+                    }
+                },
+                error: function () {
+
+                    swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                        .then(function () {
+                            location.reload();
+                        });
+                },
+                complete: function (data) {
+                    // Hide image container
+                    $("#loader").hide();
+                },
+            });
+    });
+
+
+
+$("#otp_validation").validate({
+rules: {
+    otp: {
+        required: true,
+    },
+},
+messages: {
+    otp: {
+        required: "OTP is required.",
+    },
+},
+submitHandler: function () {
+    $.ajax({
+    type: "POST",
+    url: "/validate-register-otp/",
+    data: $('#otp_validation').serialize(),
+    success: function (response) {
+        if(response.status == "success"){
+            $.ajax({
+                    type: "POST",
+                    url: "/partner-register/",
+                    data: $('#register_form').serialize(),
+                    success: function(response) 
+                    {
+                        if(response.status == "success")
+                        {
+                            swal.fire({
+                            icon:"success",
+                            title: "Success!",
+                            text: "User addded.",
+                            type: "success",
+                            confirmButtonClass: "btn-success",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                            })
+                            .then(function() {
+                                location.href="http://157.230.228.250/partner-login/";
+                            });
+                        }
+                        else if(response.status == "success")
+                        {
+                            swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                            .then(function () {
+                                location.reload();
+                            });
+                            }
+                    }
+            });
+        }
+        else if(response.status == "error"){
+            var errorDiv = '#' + 'otp' + '_error';
+            $(errorDiv).empty().append("Wrong Otp");
+        }  
+    },
+    error: function () {
+        $('#myModal').modal('hide');
+        swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            confirmButtonClass: "btn-success",
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        })
+            .then(function () {
+                location.reload();
+            });
+    },
+});
+}
+})
+
+</script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

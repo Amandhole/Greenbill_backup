@@ -1,0 +1,218 @@
+{% extends "layouts/base.html" %} {% block title %} Backup & Restore {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Backup & Restore</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/create-database-backup/">Backup & Restore</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <form class="form-control" action="/create-database-backup/" method="POST" id="br_form"
+                                name="br_form" autocomplete="off">
+                                {% csrf_token %}
+                                
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <!-- <span style="color:red;">
+                                        <p>
+                                            Note: Running 'Restore' will delete your current datatabase. Do not attempt to run this command if you are not sure that you already have a valid backup file.
+                                        </p>
+                                        </span> -->
+                                        <table class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr No.</th>
+                                                    <th>Database File</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                <tr>
+                                                    
+                                                    <td>1</td>
+                                                    <td>{{ database_file }}</td>
+                                                    <td><a href="/download-database-backup/" class="btn btn-sm btn-default" data-title="Download Database"><i class="fa fa-download"></i></a></td>
+                                                    <!-- <td>
+                                                        <div class="material-switch">
+                                                        {% csrf_token %}
+                                                            <input id="merchant{{ object.id }}" name="someSwitchOption001" type="checkbox" data-role="merchant" class="chk" data-rowid="{{ object.id }}" value="checked" {% if object.status == True %} checked="checked" {% endif %} />
+                                                            <label for="merchant{{ object.id }}" class="label-success"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deleteBtn" id="delete_btn" data-id='{{object.id}}' data-original-title="Delete Role">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </td> -->
+                                                </tr>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-action">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <center><button class="btn btn-primary" name="backup" value="backup">Backup</button></center>
+                                            <!-- <a href="/database-restore/" class="btn btn-danger float-right">Restore</a> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "Backup & Restore"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <form class="form-control" action="/create-database-backup/" method="POST" id="br_form"
+                                            name="br_form" autocomplete="off">
+                                            {% csrf_token %}
+                                            
+
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <!-- <span style="color:red;">
+                                                    <p>
+                                                        Note: Running 'Restore' will delete your current datatabase. Do not attempt to run this command if you are not sure that you already have a valid backup file.
+                                                    </p>
+                                                    </span> -->
+                                                    <table class="display table table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr No.</th>
+                                                                <th>Database File</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            <tr>
+                                                                
+                                                                <td>1</td>
+                                                                <td>{{ database_file }}</td>
+                                                                <td><a href="/download-database-backup/" class="btn btn-sm btn-default" data-title="Download Database"><i class="fa fa-download"></i></a></td>
+                                                                <!-- <td>
+                                                                    <div class="material-switch">
+                                                                    {% csrf_token %}
+                                                                        <input id="merchant{{ object.id }}" name="someSwitchOption001" type="checkbox" data-role="merchant" class="chk" data-rowid="{{ object.id }}" value="checked" {% if object.status == True %} checked="checked" {% endif %} />
+                                                                        <label for="merchant{{ object.id }}" class="label-success"></label>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deleteBtn" id="delete_btn" data-id='{{object.id}}' data-original-title="Delete Role">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </td> -->
+                                                            </tr>
+                                                           
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="card-action">
+                                                <div class="row">
+                                                    {% if actions.edit_permission == "1" %}
+                                                        <div class="col-md-12">
+                                                            <center><button class="btn btn-primary" name="backup" value="backup">Backup</button></center>
+                                                            <!-- <a href="/database-restore/" class="btn btn-danger float-right">Restore</a> -->
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                      <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                      </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    $("#sms_form").validate({
+        rules: {
+            username: {
+                required: true,
+            },
+            password: {
+                required: true,
+            },
+            sender_id: {
+                required: true,
+            },
+        },
+        messages: {
+            username: {
+                required: "Username field is required",
+            },
+            password: {
+                required: "Password field is required",
+            },
+            sender_id: {
+                required: "sender_id field is required",
+            }, 
+        },
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

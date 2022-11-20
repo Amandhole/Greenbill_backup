@@ -1,0 +1,420 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %}  DM Services{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<!-- Add role Modal -->
+
+<!-- Modal content-->
+<div class="modal fade" id="myEditModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Digital Marketing Services  </h2>
+            </div>
+
+            <div class="modal-body" id="paraclear">
+
+
+
+                <strong>Comments :</strong>
+                <p id="comments_msg" name="cust_name"> </p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add role Modal End -->
+
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Digital Marketing Services </h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/get-all-merchant-enquiry/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/get-all-merchant-enquiry/">Digital Marketing Services </a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Digital Marketing Services </h4>
+                            <div class="ml-auto">
+                                <!-- <a class="btn btn-primary btn-round" href="/merchant-role/assign/">
+                                    <i class="fas fa-trash"></i> Delate All
+                                  </a> -->
+                                  <button type="button" data-toggle="tooltip" 
+                                class=" btn btn-primary btn-round deleteallBtn"><i class="fas fa-trash"></i>&nbsp &nbsp Delete all
+                            </button>
+                            </div>
+
+                        </div>
+                        <!-- <div class="d-flex align-items-center">
+                            <button type="button" data-toggle="tooltip" title="Delete Enquiry"
+                                class=" btn btn-primary btn-lg deleteallBtn"
+                                data-original-title="Delete Enquiry">Delete all
+                            </button>
+                            
+                        </div> -->
+                    </div>
+
+                    {% if is_superuser == True %}
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                    		<th id="test_2" colspan="2"></th>
+                                            <th id="test_4" colspan="3"></th>
+
+                                    </tr>
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>Merchant Name</th>
+                                        <th>Merchant Category</th>
+                                        <th>Contact No.</th>
+                                        <!-- <th>Email</th> -->
+                                        <th width="200">Packages</th>
+                                        <th width="300">Comment</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for object in enquiry_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ object.customer_name }}</td>
+                                        <td>{{ object.bissiness_name }}</td>
+                                        <td>{{ object.contact_no }}</td>
+                                        <!-- <th>{{object.email_id}}</th> -->
+                                        <td>{{object.intrested_in}}</td>
+                                        <td>{{object.comments}}</td>
+                                        <th>
+                                            <button type="button" data-toggle="tooltip"
+                                                            title="Delete Enquiry"
+                                                            class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                            data-original-title="Delete Enquiry"
+                                                            data-url="{{object.id}}" data-id="{{object.id}}">
+                                                            <i class="fas fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                        </th>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<style>
+    .show-read-more .more-text {
+        display: none;
+    }
+</style>
+
+<script>
+
+
+    // $(document).ready(function () {
+    //     var maxLength = 50;
+    //     $(".show-read-more").each(function () {
+    //         var myStr = $(this).text();
+    //         if ($.trim(myStr).length > maxLength) {
+    //             var newStr = myStr.substring(0, maxLength);
+    //             var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+    //             $(this).empty().html(newStr);
+    //             $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+    //             $(this).append('<span class="more-text">' + removedStr + '</span>');
+    //         }
+    //     });
+    //     $(".read-more").click(function () {
+    //         $(this).siblings(".more-text").contents().unwrap();
+    //         $(this).remove();
+    //     });
+    // });
+
+
+    $(function () {
+            $('.deleteBtn').on('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var id = $(this).attr("data-id");
+                        $.ajax({
+                            type: "POST",
+                            url: "/owner-delete-dm-enquiry/" + id,
+                            data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                            success: function (response) {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'DM Enquiry has been deleted.',
+                                    'success',
+                                    {
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                    })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                        });
+                    }
+                })
+            });
+        });
+
+
+    $(function () {
+        $('.deleteallBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-multiple-enquiry/",
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+                                'Delete!',
+                                'DM Enquiry has been deleted.',
+                                'success',
+                                {
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel',  'print'
+            ],
+
+           initComplete: function () {
+            this.api().columns([2,4]).every(function () {
+                var column = this;
+                console.log(column[0][0])
+                console.log("#test_" + column[0][0])
+
+                var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                    // var id = "#test_" + column[0][0];
+
+                    .appendTo($("#test_" + column[0][0]).empty())
+                    // .appendTo( $(column.header()).empty() )
+                    .on('change', function () {
+
+                        // var val = $.fn.dataTable.util.escapeRegex(
+                        //     $(this).val()
+                        // );
+
+                        var val = $(':selected', select).map(function (index, element) {
+                            return $.fn.dataTable.util.escapeRegex($(this).val());
+                        }).toArray().join('|');
+
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+            });
+
+
+          }
+    });
+
+    $("#column_id_4").select2({
+        placeholder: " Select Packages",
+        closeOnSelect: true,
+        width: '100%',
+        // allowClear: true
+    })
+    $("#column_id_2").select2({
+        placeholder: " Select Category",
+        closeOnSelect: true,
+        width: '100%',
+        // allowClear: true
+    })
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,622 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Bill by Category {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .nav-pills.flex-column .nav-link.active {
+        color: white;
+        font-weight: bold;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Bill by Category</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/customer-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/bills-by-category/">Bill by Category</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Bill Categories</h4>
+                        </div>
+                    </div>
+                    <div class="card-body" style="max-height: 480px;
+                            overflow-y: scroll;">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            {% for bill in bills %}
+                                {% if forloop.counter == 1 %}
+                                    <a class="nav-link active" id="v-pills-{{forloop.counter}}-tab" data-toggle="pill" href="#v-pills-{{forloop.counter}}" role="tab" aria-controls="v-pills-{{forloop.counter}}" aria-selected="true">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="row" style="text-align: left; padding-left: 5%">
+                                                    <div class="col-md-12">
+                                                        {{ bill.business_name }}
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        {{ bill.bill_category_name}}
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        {{ bill.bill_date }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 text-center justify-content-center align-self-center" style="padding-right: 8%">
+                                                <span class="align-middle" style="font-size: 15px">₹ {{ bill.amount }}</span>
+                                            </div>
+                                        </div>   
+                                    </a>
+                                {% else %}
+                                    <a class="nav-link" id="v-pills-{{forloop.counter}}-tab" data-toggle="pill" href="#v-pills-{{forloop.counter}}" role="tab" aria-controls="v-pills-{{forloop.counter}}" aria-selected="true">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="row" style="text-align: left; padding-left: 5%">
+                                                    <div class="col-md-12">
+                                                        {{ bill.business_name }}
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        {{ bill.bill_category_name }}
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        {{ bill.bill_date }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 text-center justify-content-center align-self-center" style="padding-right: 8%">
+                                                <span class="align-middle" style="font-size: 15px">₹ {{ bill.amount }}</span>
+                                            </div>
+                                        </div> 
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Bills</h4>
+                        </div>
+                    </div>
+                    <div class="card-body" style="max-height: 480px;
+                            overflow-y: scroll;">
+                        <div class="tab-content" id="v-pills-tabContent">
+                            {% for bill in bills %}
+                                {% if forloop.counter == 1 %}
+                                    <div class="tab-pane fade show active" id="v-pills-{{forloop.counter}}" role="tabpanel" aria-labelledby="v-pills-{{forloop.counter}}-tab">
+                                        <div class="row">
+                                            <div class="col-md-2">
+
+                                            </div>
+                                            <div class="col-md-8">
+                                                <!-- {{bill.bill_url}} -->
+                                               <iframe src="http://157.230.228.250/petrol-pump-bill/{{bill.bill_url}}/"></iframe>
+                                            </div>
+                                            <div class="col-md-2">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="tab-pane fade" id="v-pills-{{forloop.counter}}" role="tabpanel" aria-labelledby="v-pills-{{forloop.counter}}-tab">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-12">
+                                               <!-- <iframe src="http://157.230.228.250/petrol-pump-bill/{{bill.bill_url}}/" height="480px" width="500px"></iframe> -->
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                {% endif %}   
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myEditModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+
+        <form class="form-control" action="/edit-bills-by-bill-category/" method="POST" id="addbilleditform" name="editform"
+            autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Bill</h2>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <div class="row"> 
+                                <input type="hidden" name="edit_db_table" id="edit_db_table" value="">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Bill Amount<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="number" class="form-control mobile" name="edit_amount"
+                                                id="edit_amount" placeholder="Bill Amount" value="" required min="1" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Select Category</label>
+                                        <div class="input-group mb-6">
+                                            <select name="edit_category" id="edit_category"
+                                                class="form-control mobile js-example-basic-single" style="width: 100%;">
+                                                <option value="">Select Category</option>
+                                                {% for object in bill_category %}
+                                                <option value="{{object.id}}">
+                                                    {{object.bill_category_name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Select Store</label>
+                                        <div class="input-group mb-6">
+                                            <select name="edit_business" id="edit_business"
+                                                class="form-control mobile js-example-basic-single" style="width: 100%;">
+                                                <option value="" id="edit_business">Select Store </option>
+                                                {% for object in business_name %}
+                                                <option value="{{object.id}}">
+                                                    {{object.m_business_name}}</option>
+                                                {% endfor %}
+                                            </select>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-10" style="margin-top: 5px; color: #63b90b"><span>If your store is not listed here, please select checkbox and add store name.</span>
+                                            </div>
+                                            <div class="col-md-2" style="margin-top: 10px"><input class="form-control" type="checkbox" name="edit_business_check" value="1" onchange="valueChanged1()" id="edit_business_check">
+                                            </div>
+                                            <div class="input-group mb-6">
+                                            <input type="text" name="edit_custom_business" id="edit_custom_business" class="form-control" placeholder="Add Business Name">
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Select Bill Tags</label>
+                                            <select class="js-example-basic-multiple" name="edit_bill_tags" id="edit_bill_tags" multiple="multiple" style="width: 300px;">
+                                                {% for bill_tag in bill_tags %}
+                                                    <option value="{{ bill_tag.id }}">{{ bill_tag.bill_tags_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="edit_bill_tags_value" id="edit_bill_tags_value" value="">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label> Bill Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control mobile" name="edit_date"
+                                                id="edit_date" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Notes/Remarks</label>
+                                            <input type="text" class="form-control" name="edit_remarks" id="edit_remarks">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Bill File<span style="color: red;">*</span></label>
+                                        <input type="hidden" name="bill_id" id="bill_id">
+                                        <input type="hidden" name="editfile_available" id="editfile_available" value="">
+                                        <div class="input-group mb-6">
+                                            <input type="file" class="form-control mobile" name="editfile" id="editfile"
+                                                placeholder="Bill File" value="" required accept="image/*,application/pdf"/>
+                                        </div>
+                                        <!-- <span style="color: red;"></span> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" class="btn btn-primary" value="Update" data-id="">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script type="text/javascript">
+
+    function valueChanged()
+    {
+
+        if($('#business_check').is(":checked")){
+            $("#business_name").val('').trigger('change')
+            $("#custom_business").show();
+            $("#business_name").prop('disabled', true); 
+        }
+        else{
+            $("#custom_business").hide();
+            $("#business_name").prop('disabled', false);
+        }
+    }
+
+    function valueChanged1()
+    {
+
+        if($('#edit_business_check').is(":checked")){
+            $("#edit_business_name").val('').trigger('change')
+            $("#edit_custom_business").show();
+            $("#edit_business_name").prop('disabled', true); 
+        }
+        else{
+            $("#edit_custom_business").hide();
+            $("#edit_business_name").prop('disabled', false);
+        }
+    }
+</script>
+<script>
+
+$(document).ready(function() {
+
+    $("#custom_business").hide();
+
+    $('.js-example-basic-single').select2();
+
+    $("#bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_bill_tags.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        // business_category = $("#business_category_id option:selected").val()
+        $("#edit_bill_tags_value").val(opts2)
+    })
+
+    $("#bill_tags").on('change', function()
+    {
+        var opts1 = [],opt1;
+        var len = bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt1 = bill_tags.options[i];
+            if (opt1.selected) {
+            opts1.push(opt1.value);
+            }
+        }
+        $("#bill_tags_value").val(opts1)
+    })
+
+}); 
+
+    
+
+    var editmodaldiv = $("#edit-modal-div");
+    $(".editBtn").on("click", function () {
+
+        var eid = $(this).data('id');
+        var business_name = $(this).data('busi_name');
+        var category = $(this).data('cust_category');
+        var bill_amount = $(this).data('amount');
+        var date = $(this).data('date_bill');
+        var bill_tags_list = JSON.parse("[" + $(this).data('bill_tags_list') + "]");
+        remarks = $(this).data('remarks');
+        edit_custom_business = $(this).data('edit_custom_business')
+        customer_added = $(this).data('customer_added');
+        db_table = $(this).data('db_table');
+
+        $('#bill_id').val(eid);
+
+        if($(this).data('bill') != ""){
+            $('#editfile_available').val(1);
+        }
+
+        if(business_name != ""){
+            $("#edit_business option[value="+business_name+"]").prop("selected",true).trigger("change")
+        }
+
+        if(category != ""){
+            $("#edit_category option[value="+category+"]").prop("selected",true).trigger("change")
+        }
+
+        $("#edit_bill_tags").val('').trigger('change')
+
+        if(bill_tags_list.length > 0){
+            for(i = 0; i < bill_tags_list.length; i++){
+                val = bill_tags_list[i]
+                console.log(bill_tags_list[i])
+                $("#edit_bill_tags option[value="+val+"]").prop("selected",true).trigger("change")
+            }
+        }
+
+        $('#edit_custom_business').val(edit_custom_business);
+        $('#edit_amount').val(bill_amount);
+        $('#edit_date').val(date);
+        $('#edit_remarks').val(remarks);
+        $('#edit_db_table').val(db_table);
+
+        if(customer_added == 'False'){
+            $("#edit_business").attr('disabled', true);
+            $("#edit_amount").attr('disabled', true);
+            $("#edit_date").attr('disabled', true);
+            $("#editfile").attr('disabled', true);
+            $("#edit_business_check").attr('disabled', true);
+        }
+        else{
+            $("#edit_business").attr('disabled', false);
+            $("#edit_amount").attr('disabled', false);
+            $("#edit_date").attr('disabled', false);
+            $("#editfile").attr('disabled', false);
+            $("#edit_business_check").attr('disabled', false);
+        }
+
+        if(business_name!=""){
+            $("#edit_custom_business").hide();
+            $("#edit_business_name").prop('disabled', false);
+        }
+        else{
+            $("#edit_business_check").attr('checked', true);
+            $("#edit_custom_business").show();
+            $("#edit_business_name").prop('disabled', true);
+        }
+
+        $("#myEditModal").modal();
+
+    });
+
+    $.validator.addMethod("validDate", function(value, element) {
+          var currDate = new Date();
+          return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+    $("#bill_form").validate({
+        rules: {
+            cust_bill: {
+                required: true,
+            },
+            bill_amount: {
+                required: true,
+            },
+            bill_date: {
+                required: true,
+                validDate: true
+            },
+        },
+        // highlight: function (element) {
+        //     $(element).addClass("c1");
+        // },
+        // unhighlight: function (element) {
+        //     $(element).removeClass("c1");
+        // },
+        messages: {
+            cust_bill: {
+                required: "Bill is Required",
+            },
+            bill_amount: {
+                required: "Bill Amount is Required",
+            },
+            bill_date: {
+                required: "Bill Date is Required",
+            },
+        }
+    });
+
+
+    $.validator.addMethod("validDate", function(value, element) {
+          var currDate = new Date();
+          return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+    $("#addbilleditform").validate({
+        rules: {
+            editfile:{
+                required: function(element){
+                    return $("#editfile_available").val() != 1;
+                }
+            },
+            edit_amount: {
+                required: true,
+            },
+            edit_date: {
+                required: true,
+                validDate: true
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass("c1");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("c1");
+        },
+        messages: {
+            editfile: {
+                required: "Bill is Required",
+            },
+            edit_amount: {
+                required: "Bill Amount is Required",
+            },
+            edit_date: {
+                required: "Bill Date is Required",
+            },
+        }
+    });
+
+     if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+    
+$(document).ready(function() {
+
+    {% for bill_categories in allocated_bill_categories %}
+        
+        $('#add-row-{{ forloop.counter }}').DataTable( {
+            dom: 'tBfrtip',
+            buttons: [    
+            ],
+        });
+
+    {% endfor %}
+});
+
+    $(function() {
+        $('.DeleteBillBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                var db_table = $(this).attr("data-db_table");
+                $.ajax({
+                  type: "POST",
+                  url: "/delete-bills-by-bill-category/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table : db_table},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                                title:'Deleted!',
+                        text:'Bill has been deleted',
+                        icon:'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                            })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Delete!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      confirmButtonClass: "btn-success",
+                      allowOutsideClick: false,
+                      allowEscapeKey: false
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %} --> --> -->

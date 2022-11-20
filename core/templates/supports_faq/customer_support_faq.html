@@ -1,0 +1,268 @@
+{% extends "layouts/customer-base.html" %} {% block title %} Support & FAQs {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .accordion .card .card-body{
+        padding: 15px;
+    }
+    .accordion.accordion-secondary .card .card-header{
+        color: #00569d;
+    }
+    .accordion .card {
+        border-radius:0px!important;
+        border:1px solid #d4d4d4;
+        background:#fff!important;
+        margin-bottom: 0px;
+    }
+    .accordion .card:first-of-type{
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .card-heading{
+        margin-bottom: 27px;
+        text-align: center;
+        font-weight: bolder;
+        margin-top: 30px;
+        
+    }
+    @media screen and (max-width: 769px) {
+        .video-width iframe{
+            width: 361px;
+        }
+    }
+    
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Supports & FAQs</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Customer Supports & FAQs</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Support & FAQ's</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer-supports-faqs/">Support & FAQ's</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">  
+                            <div class="col-md-12 form-control">
+                                <ul class="nav nav-pills mb-5" id="pills-tab"
+                                            role="tablist" style="display: flex;justify-content: center;">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pills-contact-tab" 
+                                            data-toggle="pill" href="#pills-contact"
+                                            role="tab" aria-controls="pills-contact"
+                                            aria-selected="true">FAQ's</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-profile-tab"
+                                            data-toggle="pill" href="#pills-profile"
+                                            role="tab" aria-controls="pills-profile"
+                                            aria-selected="false">Video </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " id="pills-home-tab"
+                                            data-toggle="pill" href="#pills-home"
+                                            role="tab" aria-controls="pills-home"
+                                            aria-selected="false">Blog</a>
+                                    </li> 
+                                </ul>
+                               
+                                
+                                     
+                                                                         
+                                        <div class="tab-content" id="pills-tabContent">
+                                       
+                                            <div class="tab-pane fade show active" id="pills-contact"
+                                                role="tabpanel"
+                                                aria-labelledby="pills-contact-tab">
+                                             {% for category in customer_module %}
+                                                <h3 class="card-heading">
+                                                {% if category.faq_details %}{{category.module_name}}{% endif %}</h3>
+                                                <div class="accordion accordion-secondary">
+                                                    {% for faq in category.faq_details %}
+                                                    <div class="card">
+                                                        <div class="card-header collapsed" id="heading"
+                                                            data-toggle="collapse" data-target="#{{ faq.id }}"
+                                                            aria-expanded="false" aria-controls="collapseone"
+                                                            role="button">
+                                                
+                                                            <div class="span-title" style="color: #00569d;font-weight: 900;">
+                                                                {{ faq.question }}
+                                                            </div>
+                                                            <div class="span-mode" style="color: #00569d"></div>
+                                                        </div>
+
+                                                        <div id="{{ faq.id }}" class="collapse"
+                                                            aria-labelledby="heading" data-parent="#accordion"
+                                                            role="button">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        Ans: {{ faq.answer }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            
+
+                                            
+                                            <div class="tab-pane fade" id="pills-profile"
+                                                role="tabpanel"
+                                                aria-labelledby="pills-profile-tab">
+                                                {% for category in customer_module %}
+                                                <h3 class="card-heading" style="text-align:center;">
+                                                {% if category.video_details %}{{category.module_name}}<hr>{% endif %}</h3>
+
+                                                {% for video in category.video_details %}
+                                                <center>
+                                                    <h3 class="card-heading">{{video.video_title}}</h3>
+                                                    <h4 class="video-width">{{video.video_url|safe}}</h4>
+                                                </center>
+                                               
+                                                {% endfor %}
+                                                 
+                                                {% endfor %}
+                                            </div>
+                                            
+
+                                            <div class="tab-pane fade" id="pills-home"
+                                                role="tabpanel" aria-labelledby="pills-home-tab">
+            
+                                                {% for blog in customer_blog %}
+                                                <h3 class="card-heading">{{blog.blog_title}}</h3>
+
+                                                <p class="show-read-more" data-comments="{{ blog.blog }}">
+                                                    {{blog.blog|safe}}</p><hr>
+                                                {% endfor %}
+                                            
+                                            </div>
+  
+                                        </div>
+                                        
+                                        
+                                        
+                                    </div>
+
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        var maxLength = 250;
+        $(".show-read-more").each(function () {
+            var myStr = $(this).text();
+            if ($.trim(myStr).length > maxLength) {
+                var newStr = myStr.substring(0, maxLength);
+                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                $(this).empty().html(newStr);
+                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                $(this).append('<span class="more-text">' + removedStr + '</span>');
+            }
+        });
+        $(".read-more").click(function () {
+            $(this).siblings(".more-text").contents().unwrap();
+            $(this).remove();
+        });
+    });
+
+</script>
+<style>
+    .show-read-more .more-text {
+        display: none;
+    }
+</style>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+
+
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+{% endblock javascripts %}

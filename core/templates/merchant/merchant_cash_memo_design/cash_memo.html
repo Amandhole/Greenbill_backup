@@ -1,0 +1,2882 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} My Cash Memo {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    #download{
+        margin-left: 33%;
+    }
+    @media only screen and (min-width: 600px){
+      .main{
+        margin: 0px auto;
+        width: 100%;
+        max-width: 100%;
+        background-color: rgb(255, 255, 255);
+        position: relative;
+      }
+    }
+    @media only screen and (min-width: 992px){
+      .main{
+        margin: 0px auto;
+        width: 100%;
+        max-width: 480px;
+        background-color: rgb(255, 255, 255);
+        position: relative;
+      }
+    }
+    .bottom-arrow:after {
+        content:'';
+        position: absolute;
+        left: -350px;
+        right: 0;
+        top: 25px;
+        margin: 0 auto;
+        width: 0;
+        height: 0;
+        border-top: 35px solid #00D100;
+        /*00D100*/
+        border-left: 35px solid transparent;
+        border-right: 35px solid transparent;
+    }
+
+    .cash_input{
+      margin-left: 18px;
+    }
+    .cheque_input{
+      margin-left: 20px;
+    }
+    .other_input{
+      margin-left: 65%;
+    }
+
+    @media only screen and (max-width: 600px){
+      .cash_input{
+        margin-left: 13px;
+      }
+      .cheque_input{
+        margin-left: 21px;
+      }
+      .other_input{
+        margin-left: 67%;
+      }
+      .bottom-arrow:after {
+        left: -250px;
+      }
+    }
+    .header{
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      box-shadow: rgb(102 102 102 / 20%) 0px 2px 10px 0px;
+      background: white;
+      margin-bottom: 5px;
+    }
+
+    .header-details{
+      width: 100%;
+      position: relative;
+      left: 0px;
+      transition: all 0.5s ease 0s;
+    }
+
+    .header-div{
+      /*min-height: 100px;*/
+      height: 100%;
+      /*display: flex;*/
+      -webkit-box-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      align-items: center;
+      padding: 12px 24px;
+    }
+
+    .header-logo{
+      margin-right: 32px;
+      width: auto;
+      height: auto;
+      max-width: 150px;
+      max-height: 80px;
+    }
+
+    .footer-logo{
+      width: auto;
+      height: auto;
+      max-width: 130px;
+      max-height: 60px;
+    }
+
+    .bill-footer{
+      z-index: 9999;
+      width: 100%;
+      /*height: 80px;*/
+      background: rgb(255, 255, 255);
+      align-items: center;
+      position: fixed;
+      bottom: 0px;
+      overflow: hidden;
+      box-shadow: rgb(77 77 77 / 20%) -1px -1px 5px 4px;
+      padding: 10px !important;
+    }
+
+    @media only screen and (min-width: 992px){
+      .bill-footer{
+        z-index: 9999;
+        width: 100%;
+        /*height: 80px;*/
+        max-width: 480px;
+        background: rgb(255, 255, 255);
+        align-items: center;
+        position: fixed;
+        bottom: 0px;
+        overflow: hidden;
+        box-shadow: rgb(77 77 77 / 20%) -1px -1px 5px 4px;
+        padding: 10px !important;
+      }
+    }
+    .bill-body{
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bill-image-border{
+      width: 94%;
+      margin: 0px 3%;
+      height: 150px;
+      background: linear-gradient(rgba(255, 255, 255, 0), rgb(255, 255, 255));
+      position: absolute;
+      bottom: 0px;
+    }
+
+    @media only screen and (min-width: 600px){
+      .title{
+        font-size: 2em !important;
+      }
+    }
+
+    @media only screen and (min-width: 992px){
+      .title{
+        font-size: 1em !important;
+      }
+    }
+
+    .bill-rating{
+      text-align: center;
+      padding: 20px 0px;
+      font-family: AvenirLTStd-Heavy, sans-serif;
+      background-color: rgb(242, 245, 248);
+    }
+
+    .show-more-btn{
+      border: none;
+      width: 94%;
+      margin: 0px 3%;
+      padding: 10px 0px;
+      font-size: 1em;
+      outline: none !important;
+      background: rgb(255, 255, 255);
+      border-radius: 0px;
+      color: #00569d;
+      /*color: rgb(0, 0, 0);*/
+    }
+
+    .show-less-btn{
+      border: none;
+      width: 94%;
+      margin: 0px 3%;
+      padding: 10px 0px;
+      font-size: 1em;
+      outline: none !important;
+      background: rgb(255, 255, 255);
+      border-radius: 0px;
+      /*color: rgb(0, 0, 0);*/
+      color: #00569d;
+    }
+
+    .reject-bill-btn{
+      border: none;
+      width: 94%;
+      margin: 0px 3%;
+      padding: 10px 0px;
+      font-size: 1em;
+      outline: none !important;
+      background: rgb(255, 255, 255);
+      border-radius: 0px;
+      color: #000000;
+    }
+
+    .powered-by{
+      text-align: center;
+      padding: 10px 0px;
+      background-color: rgb(242, 245, 248);
+      margin-bottom: 80px;
+    }
+
+    @media only screen and (min-width: 600px){
+      .powered-by{
+        text-align: center;
+        padding: 10px 0px;
+        background-color: rgb(242, 245, 248);
+        margin-bottom: 80px;
+      }
+    }
+
+    @media only screen and (min-width: 992px){
+      .powered-by{
+        text-align: center;
+        padding: 10px 0px;
+        background-color: rgb(242, 245, 248);
+        margin-bottom: 80px;
+      }
+    }
+   @media only screen and (max-width: 600px) {
+    .received-from{
+      width: 50%;
+    }
+  }
+    .download-btn{
+      color: rgb(255, 255, 255);
+      background: #63b90b;
+      font-family: Roboto, sans-serif;
+      font-weight: 400;
+      font-size: 1em;
+      border: 0px;
+      outline: none;
+      cursor: pointer;
+      padding: 5px 15px;
+      text-decoration: none;
+      border-radius: 4px;
+
+    }
+
+    .download-btn:hover, .download-btn:focus {
+      color: white !important;
+      text-decoration: none;
+    }
+
+    .fa {
+      padding: 10px;
+      font-size: 30px !important;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      text-decoration: none;
+      margin: 4px 4px;
+      border-radius: 50%;
+    }
+
+    .fa:hover {
+        opacity: 0.8;
+        color: white;
+        text-decoration-line: none;
+    }
+
+    .fa-facebook {
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-twitter {
+      background: #55ACEE;
+      color: white;
+    }
+
+    .fa-instagram {
+      background: #F77737;
+      color: white;
+    }
+
+    .fa-apple {
+      background: #D3D3D3;
+      color: white !important;
+    }
+
+    .fa-android {
+      background: #63b90b;
+      color: white !important;
+    }
+    .fa-snapchat-ghost {
+      background: #fffc00;
+      color: white !important;
+      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+    .fa-pinterest {
+      background: #cb2027;
+      color: white!important;
+    }
+    .fa-google {
+      background: #dd4b39;
+      color: white !important;
+    }
+    .fa-skype {
+      background: #00aff0;
+      color: white!important;
+    }
+    .fa-linkedin {
+      background: #007bb5;
+      color: white !important;
+    }
+
+    .fa-youtube {
+      background: #bb0000;
+      color: white;
+    }
+
+    .fa-phone{
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-globe{
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-map{
+      background: #3B5998;
+      color: white;
+    }
+
+</style>
+
+<style type="text/css">
+
+.visuhide {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.star__container:hover .star__item, .star__radio:checked ~ .star__item {
+  -webkit-filter: grayscale(0);
+          filter: grayscale(0);
+}
+
+.star__container:not(:hover) > .star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5) ~ .star__item, .star__item, .star__item:hover ~ .star__item {
+  -webkit-filter: grayscale(1);
+          filter: grayscale(1);
+}
+
+.star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__container {
+  display: flex;
+  margin: auto;
+  /* border-radius: .25em;
+  background-color: #c6f09b;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.25);
+  transition: box-shadow .3s ease; */
+}
+/* .star__container:focus-within {
+  box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.5);
+} */
+.star__item {
+  display: inline-flex;
+  width: 1.90em;
+  height: 1.5em;
+}
+.star__item::before {
+  content: "{{bill_design.rating_emoji}}";
+  display: inline-block;
+  margin: auto;
+  font-size: .75em;
+  vertical-align: top;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform-origin: 50% 33.3%;
+          transform-origin: 50% 33.3%;
+  transition: -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+}
+</style>
+<style>
+* {box-sizing: border-box}
+body {font-family: Verdana, sans-serif; margin:0}
+.mySlides {display: none}
+img {vertical-align: middle;}
+
+/* Slideshow container */
+.slideshow-container {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Caption text */
+.text {
+  color: #f2f2f2;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 2.5s;
+  animation-name: fade;
+  animation-duration: 2.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev, .next,.text {font-size: 11px}
+}
+.logo_img img{
+  margin-left: 10%;
+}
+</style>
+
+<style>
+    @charset "UTF-8";
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    .visuhide {
+        position: absolute !important;
+        overflow: hidden;
+        width: 1px;
+        height: 1px;
+        clip: rect(1px, 1px, 1px, 1px);
+    }
+
+    .star__container:hover .star__item,
+    .star__radio:checked~.star__item {
+        -webkit-filter: grayscale(0);
+        filter: grayscale(0);
+    }
+
+    .star__container:not(:hover)>.star__radio:nth-of-type(1):checked~.star__item:nth-of-type(1)~.star__item,
+    .star__container:not(:hover)>.star__radio:nth-of-type(2):checked~.star__item:nth-of-type(2)~.star__item,
+    .star__container:not(:hover)>.star__radio:nth-of-type(3):checked~.star__item:nth-of-type(3)~.star__item,
+    .star__container:not(:hover)>.star__radio:nth-of-type(4):checked~.star__item:nth-of-type(4)~.star__item,
+    .star__container:not(:hover)>.star__radio:nth-of-type(5):checked~.star__item:nth-of-type(5)~.star__item,
+    .star__item,
+    .star__item:hover~.star__item {
+        -webkit-filter: grayscale(1);
+        filter: grayscale(1);
+    }
+
+    .star__radio:nth-of-type(1):checked~.star__item:nth-of-type(1)::before {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+    }
+
+    .star__radio:nth-of-type(2):checked~.star__item:nth-of-type(2)::before {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+    }
+
+    .star__radio:nth-of-type(3):checked~.star__item:nth-of-type(3)::before {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+    }
+
+    .star__radio:nth-of-type(4):checked~.star__item:nth-of-type(4)::before {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+    }
+
+    .star__radio:nth-of-type(5):checked~.star__item:nth-of-type(5)::before {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+    }
+
+    .star__container {
+        display: flex;
+        margin: auto;
+        /* border-radius: .25em;
+  background-color: #c6f09b;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.25);
+  transition: box-shadow .3s ease; */
+    }
+
+    /* .star__container:focus-within {
+  box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.5);
+} */
+    .star__item {
+        display: inline-flex;
+        width: 1.90em;
+        height: 1.5em;
+    }
+
+    .star__item::before {
+        content: "{{bill_design.rating_emoji}}";
+        display: inline-block;
+        margin: auto;
+        font-size: .75em;
+        vertical-align: top;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transform-origin: 50% 33.3%;
+        transform-origin: 50% 33.3%;
+        transition: -webkit-transform .3s ease-out;
+        transition: transform .3s ease-out;
+        transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .fa {
+        padding: 10px;
+        font-size: 30px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        text-decoration: none;
+        margin: 4px 4px;
+        border-radius: 50%;
+    }
+
+    .fa:hover {
+        opacity: 0.8;
+        color: white;
+        text-decoration-line: none;
+    }
+
+    .fa-android {
+        background: #63b90b;
+        color: white !important;
+    }
+
+    .fa-snapchat-ghost {
+        background: #fffc00;
+        color: white !important;
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+
+    .fa-pinterest {
+        background: #cb2027;
+        color: white !important;
+    }
+
+    .fa-google {
+        background: #dd4b39;
+        color: white !important;
+    }
+
+    .fa-skype {
+        background: #00aff0;
+        color: white !important;
+    }
+
+    .fa-linkedin {
+        background: #007bb5;
+        color: white !important;
+    }
+
+    .fa-facebook {
+        background: #3B5998;
+        color: white;
+    }
+
+    .fa-twitter {
+        background: #55ACEE;
+        color: white;
+    }
+
+    .fa-instagram {
+        background: #F77737;
+        color: white;
+    }
+
+    .fa-youtube {
+        background: #bb0000;
+        color: white;
+    }
+
+    .fa-phone {
+        background: #3B5998;
+        color: white;
+    }
+
+    .fa-globe {
+        background: #3B5998;
+        color: white;
+    }
+
+    .fa-map {
+        background: #3B5998;
+        color: white;
+    }
+
+    .card-img-top {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        margin-left: -30px;
+        width: 60px !important;
+        height: 60px;
+        background-color: #D3D3D3;
+    }
+ 
+    .card {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+    #html-content-holder1{
+        margin-left: -45%;
+        background-color: white;
+    }
+    .firsttemp{
+            width: 28pc;
+    }
+    .cashmemo2{
+        width: 28pc;
+    }
+    .cashmemo2table{
+        width: 24pc; 
+    }
+    .cashmemo3table{
+        width: 25pc;
+    }
+    .cashmemo3tableTD{
+        width: 18pc;
+    }
+    .cashmemo3{
+        width: 28pc;
+    }
+    .merinfo{
+        width: 25pc;
+        padding-left: 12pc;
+    }
+    @media only screen and (max-width: 600px) {
+        #html-content-holder1{
+            margin-left: -30px;
+        }
+        .firsttemp{
+            width: 24pc;
+        }
+        #download{
+            margin-left: 27%;
+        }
+        .cashmemo2{
+            margin-left: 10px;
+            width: 23pc;
+            margin-right: -10px;
+        }
+        .cashmemo2table{
+            width: 21pc;
+        }
+        .heading{
+            font-size: 19px;
+        }
+        .heading2{
+            font-size: 19px;`
+        }
+        .mycashmemo2{
+            padding-left: -20px;
+            margin-left: 13px;
+        }
+        .content-holder2{
+           padding-left: -30px;
+           margin-left: -20px;
+        }
+        .cashmemo3table{
+            width: 22.5pc;
+        }
+        .cashmemo3tableTD{
+            width: 13pc;
+        }
+        .cashmemo3{
+            width: 24pc;
+            margin-left: 3px;
+        }
+        .merinfo{
+            width: 22pc;
+            padding-left: 5pc;
+        }
+        .mycashmemo2{
+            margin-left: -10px;
+            padding-left: -20px;
+        }
+    }
+</style>
+
+<div class="main">
+    <div class="header">
+        <block style="">
+          <div class="header-details">
+            <div class="header-div">
+              <div class="row text-center logo_img">
+                {% if bill_design.address == "below-address" %}
+                  <div class="col-md-12 d-flex align-items-center justify-content-center">
+                    {% if bill_design.logo == "circular" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 50%; width: 80px; height: 80px;">
+                    {% elif bill_design.logo == "square" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 5px; width: 80px; height: 80px;">
+                    {% else %}
+                      <img class="header-logo" src="{{business_logo.url}}">
+                    {% endif %} 
+                  </div>
+                  <div class="col-md-12 d-flex align-items-center justify-content-center">
+                    <!-- <h5><b>Green Bill</b></h5> -->
+                    <h5 style="text-transform: capitalize; margin-top: .5rem">{{business_address}}<h5>
+                  </div>
+                {% elif bill_design.address == "side-address" %}
+                  <div class="col-md-4 align-items-center justify-content-center" style="width: 30%">
+                    {% if bill_design.logo == "circular" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 50%; width: 80px; height: 80px;">
+                    {% elif bill_design.logo == "square" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 5px; width: 80px; height: 80px;">
+                    {% else %}
+                      <img class="header-logo" src="{{business_logo.url}}">
+                    {% endif %}   
+                  </div>
+                  <div class="col d-flex align-items-center justify-content-center">
+                    <!-- <h5><b>Green Bill</b></h5> -->
+                    <h5 style="text-transform: capitalize;">{{business_address}}<h5>
+                  </div>
+                {% else %}
+                  <div class="col-md-12 d-flex align-items-center justify-content-center">
+                    {% if bill_design.logo == "circular" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 50%; width: 80px; height: 80px;">
+                    {% elif bill_design.logo == "square" %}
+                      <img class="header-logo" src="{{business_logo.url}}" style="border-radius: 5px; width: 80px; height: 80px;">
+                    {% else %}
+                      <img class="header-logo" src="{{business_logo.url}}">
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </block>
+    </div>
+    <div class="bill-body">
+      <!-- {% if bill_design.rating == True %}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="bill-rating">
+              <div class="title title-fb">
+                {{bill_design.rating_text}}
+              </div>
+              <div class="col d-flex align-items-center justify-content-center">
+                <form method="POST" id="rating-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="url_slug" id="url_slug" value="{{url_slug}}">
+                  <span class="star__container">
+                      <input type="radio" name="rating" value="1" id="star-1" class="star__radio visuhide" >
+                      <input type="radio" name="rating" value="2" id="star-2" class="star__radio visuhide">
+                      <input type="radio" name="rating" value="3" id="star-3" class="star__radio visuhide">
+                      <input type="radio" name="rating" value="4" id="star-4" class="star__radio visuhide">
+                      <input type="radio" name="rating" value="5" id="star-5" class="star__radio visuhide">
+                  
+                      <label class="star__item" for="star-1" style="font-size: 25px !important;"><span class="visuhide">1 star</span></label>
+                      <label class="star__item" for="star-2" style="font-size: 25px !important;"><span class="visuhide">2 stars</span></label>
+                      <label class="star__item" for="star-3" style="font-size: 25px !important;"><span class="visuhide">3 stars</span></label>
+                      <label class="star__item" for="star-4" style="font-size: 25px !important;"><span class="visuhide">4 stars</span></label>
+                      <label class="star__item" for="star-5" style="font-size: 25px !important;"><span class="visuhide">5 stars</span></label>
+                  </span>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %} -->
+      <div class="bill-content">
+        <div class="row">
+          <div class="col-md-12" style="overflow:hidden;" id="bill-div">
+
+            <div class="bill_image" style="position: relative; top:0; left:0;">
+
+                <div style="
+                    margin-left: -35%;
+                " id="previewImage" class="mt-3"></div>
+{% for cash_memo in memo_record%}
+
+<div class="page-inner" style="padding-bottom: 0px;">
+    {% if template_selected == '1' %}
+    <div class="row" id="html-content-holder1">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-6" style=" border-top-right-radius: 50px; border-top-left-radius: 50px; ">
+            <div class="card-body firsttemp" style="padding: 0px ">
+                <div class="">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="firsttemp">
+
+                               <!--  <div id="container"
+                                    style="border-bottom: 20px solid green; padding:18px; border-top: 20px solid green; border-radius: 5px;"> -->
+                                <div class="container-fluid" style="margin-left: 0px;">
+                                    <div class="row">
+                                        <div class="col-2" style="background: skyblue; height: 20px;"></div>
+                                        <div class="col-4" style="background: cyan;"></div>
+                                        <div class="col" style="background: coral;"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="container" style="padding-left: 15px;">
+                                    
+                                <div style="text-align: center;  padding-top: 5px;">
+                                            <h1 style="color: tomato;"><b>Cash Memo</b></h1>
+                                </div>
+                                    <div style="text-align: left; padding-top: 12px;">
+                                            <h1 style="color: tomato; margin-bottom: -4px"><span><b>{{form.m_business_name}}</b></span></h1>
+                                            
+                                    </div>
+                                    <div style="display:flex; flex-direction: row; padding-top: 8px;">
+                                        
+                                        <!-- <div class="memo">
+                                            <h2><b>{{form.m_business_name}}</b></h2>
+                                        </div> -->
+                                            <div class="" style="font-size: 13px; width: 55%; padding: 0px;">
+                                                <div>
+                                                    {% if form.m_address %}
+                                                        {{form.m_address}}, 
+                                                    {% endif %} 
+                                                    {% if form.m_area %}
+                                                        {{form.m_area}}, 
+                                                    {% endif %}
+                                                    {% if form.m_city %}
+                                                        {{form.m_city}} 
+                                                    {% endif %}
+                                                </div>
+                    
+                                                <div>
+                                                    {{form.m_landline_number}}
+                                                </div>
+                    
+                                                <div>
+                                                    {{form.m_company_email}}
+                                                </div>
+                                            </div>
+                                            <div class="" style="padding-left: 30px;">
+                                                <span style="color: tomato;"><span><b>INVOICE</b></span></span><div>
+                                                    <span style="font-size: 11px;">Invoice No. &nbsp;&nbsp;: {{memo_details.memo_no}}</span><br>
+                                                    <span style="font-size: 11px;">Invoice Date. &nbsp;&nbsp;: {{memo_details.date|date:'d-m-Y'}}</span>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div style="padding-left: 15px; font-size: 13px;">
+                                        <div class="row" style="padding-top: 8px; width: 30pc; ">
+                                            <div style="display: flex; flex-direction: row;">
+                                                <div>
+                                                    Name:&nbsp;&nbsp;
+                                                </div>
+                                                <div style="/*width:auto; border-bottom: 1px dashed black;*/ ">
+                                                    {{memo_details.name}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row" style="padding-top: 10px;">
+                                            <div style="display: flex; flex-direction: row;">
+                                                <div>
+                                                    Address:&nbsp;&nbsp;
+                                                </div>
+                                                <div>
+                                                    {{memo_details.address}}
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                        <div class="row" style="padding-top: 10px;">
+                                            <div style="display: flex; flex-direction: row;">
+                                                <div>
+                                                    Phone Number:&nbsp;&nbsp;
+                                                </div>
+                                                <div>
+                                                    {{memo_details.mobile_number}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                     
+                                    <div class="" style="max-width: 30rem; padding-top: 12px; padding-left: 15px; box-shadow: none;">
+                                        <div class="row" style="column-gap: 0px;  ">
+                                            <div class="row" style="margin:0%; column-gap: 0px; padding-left: 0px;">
+                                                <table  style="border: 1px solid black; border-left: 0px solid; border-right: 0px solid; border-collapse: collapse;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th  style="border: 1px solid black; border-left: 0px solid; text-align: center;">Sr. No.</th>
+                                                            <th  style="border: 1px solid black; border-collapse: collapse; width: 160px; text-align: center;">Description of Item</th>
+                                                            <th style="border: 1px solid black; border-collapse: collapse; width: 80px; text-align: center;">Quantity</th>
+                                                            <th style="border: 1px solid black; border-collapse: collapse; width: 80px; text-align: center;">Rate</th>
+                                                            <th style="border: 1px solid black; border-right: 0px solid; border-collapse: collapse; width: 90px; text-align: center;">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr data-iterate="item">
+                                                           
+                                                            <td style="border: 1px solid black; border-left: 0px solid; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                              <p> {% for data in description %}
+                                                                  {% if description != '' %}
+                                                               {{forloop.counter}}<br>
+                                                               {% endif %}
+                                                               {% endfor %}</p>
+                                                            </td>
+                                                            <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                <p style="padding-top: 4px;">
+                                                                {% for data in description %}
+                                                                {{data}}<br>
+                                                                {% endfor %}</p>
+                                                            </td>
+                                                            <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                <p style="padding-top: 4px;">
+                                                                    {% for data in quantity %}
+                                                                    {{data}}<br>
+                                                                    {% endfor %}</p>
+                                                            </td>
+                                                            <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                <p style="padding-top: 4px;">
+                                                                    {% for data in rate %}
+                                                                    {{data}}<br>
+                                                                    {% endfor %}</p>
+                                                            </td>
+                                                            <td style="border: 1px solid black; border-collapse: collapse; border-right: 0px solid; width: auto !important; text-align: center; ">
+                                                                <p style="padding-top: 4px;">
+                                                                    {% for data in amount %}
+                                                                    {{data}}<br>
+                                                                    {% endfor %}</p>
+                                                            </td>
+                                                           
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td style="border-right: 1px solid black; border-left: 1px solid black; text-align: right;">Total: </td>
+                                                            <td style="text-align: center;"><i class="fas fa-rupee-sign"></i> {{memo_details.total|floatformat:2}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot style="border: 1px solid black; border-left: 0px solid; border-right: 0px solid; border-collapse: collapse;" >
+                                                            <th colspan="5"  style="text-align: left;border-right: 0px solid; border-left: 0px solid; border-bottom: black solid 1px;">Rupees in words: &#x20B9; {{memo_details.total_in_words}} &nbsp;&nbsp;</th>
+                                                           
+                                                    </tfoot>
+                                                </table>
+                                              
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                    
+                                    <div class="row" style="padding-left: 15px; margin-top: 20px; padding-right: 12px;"> Terms and Conditions:<br></div>
+
+                                    <ul style="margin-left: -25px;" style="font-size:12px;">
+                                        <li>{{cash_memo.term_and_condition1}}</li>
+                                        <li>{{cash_memo.term_and_condition2}}</li>
+                                        <li>{{cash_memo.term_and_condition3}}</li>
+                                    </ul>
+                      
+                                    <div>
+                                        <!-- <p style="float: left; padding-top: 45px;">
+                                            Customer Sign</p> -->
+                                        <div style="float: right; padding-top: 0px; margin-bottom: 10px;">
+                                            <img src="{{sign.url}}" height="100" width="100" alt="Logo"><br>
+                                            <span style="margin-top: -30px;">Authorized Sign</span>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-12">  
+
+                                        {% for status in latest_stamp_record %}
+                                            {% if status.selection_design == "oval" %}
+                                             {% if status.option_color == "Green" %}
+                                                <div class="col-md-4">
+                                                    <div class="stamp5">
+                                                        <div class=""  >
+                                                            <div class="row">
+                                                                <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                    <div class="container10" style="margin: 25px;
+                                                                          width: 100%;
+                                                                          height: 100%;">
+                                                                          <span class="oval-green" style="margin:auto;color: #0A9928;
+                                                                          border: 0.5rem double #0A9928;
+                                                                          border-radius: 50%;
+                                                                          font-size: 1.5rem;
+                                                                          padding: 20px;">{{status.stamp_content}}</span>
+                                                                    </div>
+                                                                      <input type="hidden" value="{{status.id}}" name="content" id="status_id"> 
+                                                                </div>
+                                                            </div>
+                                                              <!-- <input type="radio" name="chk"/> -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if status.selection_design == "oval" %}
+                                            {% if status.option_color == "Red" %}
+                                                <div class="col-md-4">
+                                                    <div class="stamp9">
+                                                        <div class="" >
+                                                            <div class="row">
+                                                                <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                    <div class="">
+                                                                        <div class="container11" style="margin: 25px;
+                                                                              width: 100%; 
+                                                                              height: 100%;">
+                                                                              <span class="oval-red" style="margin:auto;color: #D23;
+                                                                              border: 0.5rem double #D23;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;  
+                                                                              padding: 20px;">{{status.stamp_content}}</span>
+                                                                        </div>
+                                                                      <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                      
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %} 
+                                            {% endif %} 
+                                            {% if status.selection_design == "oval" %}
+                                            {% if status.option_color == "Blue" %}  
+                                                <div class="col-md-4">
+                                                    <div class="stamp6">
+                                                        <div class="" >
+                                                            <div class="row">
+                                                                <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                    <div class="">
+                                                                        <div class="container12" style="margin: 25px;
+                                                                              margin: 25px;
+                                                                              width: 100%;">
+                                                                              <span class="oval-blue" style="margin:auto; color: #0000FF;
+                                                                              border: 0.5rem double #0000FF;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;
+                                                                              padding: 20px;">{{status.stamp_content}}</span>  
+                                                                        </div>
+                                                                        <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                           {% endif %}
+                                           {% endif %}
+
+                                              {% if status.selection_design == "circle" %}
+                                                  {% if status.option_color == "Green" %}
+                                                  <div class="col-md-4">
+                                                      <div class="stamp5">
+                                                          <div class="">
+                                                              <div class="row">
+                                                                  <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                      <div class="container7" style="margin: 25px;
+                                                                      width: 100%;
+                                                                      height: 100%;">
+                                                                          <div class="circle-green" style=" color: #0A9928;
+                                                                          border: 0.5rem double #0A9928;
+                                                                          border-radius: 50%;
+                                                                          font-size: 1.2rem;
+                                                                          padding: 5px;  width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  {% endif %}
+
+                                                  {% if status.option_color == "Blue" %}
+                      
+                                                  <div class="col-md-4">
+                                                      <div class="stamp6">
+                                                          <div class="">
+                                                              <div class="row">
+                                                                  <div class="" style="margin:auto;  box-shadow: none; ">
+                                                                      <div class="">
+                                                                          <div class="container8" style="margin: 25px;
+                                                                          width: 100%;">
+                                                                              <div class="circle-blue" style=" color: #0000FF;
+                                                                              border: 0.5rem double #0000FF;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;
+                                                                              padding: 5px; width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  {% endif %}
+                                                  {% if status.option_color == "Red" %}
+                                                  <div class="col-md-4">
+                                                          <div class="stamp9">
+                                                                  <div class="" >
+                                                                      <div class="row">
+                                                                          <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                      <div class="">
+                                                                              <div class="container6" style="margin: 25px;
+                                                                              width: 100%; 
+                                                                                height: 100%;">
+                                                                              <div class="circle-red" style=" color: #D23;
+                                                                              border: 0.5rem double #D23;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;  
+                                                                              padding: 5px; width: 100px;height: 100px;font-size:1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                              </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  {% endif %}
+                                              {% endif %}
+                                      
+                                              {% if status.selection_design == "Rectangle" %}
+                                              {% if status.option_color == "Green" %}
+                                                  <div class="col-md-4">
+                                                      <div class="stamp10">
+                                                          <div class="" >
+                                                              <div class="row">
+                                                                  <div class="card-body-model " style="margin:auto; box-shadow: none;  ">
+                                                                      <div class="">
+                                                                          <div class="container3" style="margin: 25px;
+                                                                          width: 100%;">
+                                                                              <span class="rect-green" style="margin:auto; color: #0A9928;
+                                                                              border: 1rem double #0A9928;  
+                                                                              font-size: 1.2rem;
+                                                                              font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                              border-radius: 0;
+                                                                              padding: 0.5rem;">{{status.stamp_content}}</span>
+                                                                          </div>
+                                                                          
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              {% endif %}
+
+                                              {% if status.option_color == "Blue" %}
+                                                  <div class="col-md-4">
+                                                      <div class="stamp11">
+                                                          <div class="" >
+                                                              <div class="row">
+                                                                  <div class="card-body-model " style="margin:auto;  box-shadow: none; ">
+                                                                      <div class="">
+                                                                          <div class="container4" style="margin: 25px;
+                                                                          width: 100%;">
+                                                                              <span class="rect-blue" style="margin:auto; color: #0000FF;
+                                                                              border: 1rem double #0000FF;  
+                                                                              font-size: 1.2rem;
+                                                                              font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                              border-radius: 0;
+                                                                              padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                {% endif %}
+                                                {% if status.option_color == "Red" %}
+                                                
+                                                  <div class="col-md-4">
+                                                      <div class="stamp13">
+                                                          <div class="" >
+                                                              <div class="row">
+                                                                  <div class="card-body-model " style="margin:auto;  box-shadow: none;  ">
+                                                                      <div class="">
+                                                                          <div class="container2" style="margin: 25px;
+                                                                          width: 100%;">
+                                                                              <span class="rect-red" style="margin:auto;color: #D23;
+                                                                              border: 1rem double #D23;  
+                                                                              font-size: 1.2rem;
+                                                                              font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                              border-radius: 0;
+                                                                              padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>  
+                                                  {% endif %} 
+                                              {% endif %}
+                                          {% endfor %}
+
+                                          <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="card " style="margin:auto;  box-shadow: none;  ">
+                                            {% for img in stamp_uploaded_image %}
+                                            {% if img.m_business_stamp %}
+                                            <img src="{{img.m_business_stamp.url}}" style="width:100px; height: 100px;"><br>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>    
+                                </div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid" style="margin-left: 0px; margin-top: 30px; width:30pc;">
+                        <div class="row">
+                            <div class="col-1" style="background: skyblue; height: 20px;"></div>
+                            <div class="col-2" style="background: cyan;"></div>
+                            <div class="col-3" style="background: coral;"></div>
+                            <div class="col-1" style="background: skyblue; height: 20px;"></div>
+                            <div class="col-2" style="background: cyan;"></div>
+                            <div class="col-3" style="background: coral;"></div>
+                        </div>
+                    </div>                              
+                </div>
+                </div>                 </div>                   
+            </div>
+        {% endif %}
+          
+
+        <!-- 2nd template -->
+        {% if template_selected == '2' %}
+            <div class="row" id="html-content-holder1">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6" style=" border-top-right-radius: 50px; border-top-left-radius: 50px;">
+            <div class="card-body cashmemo2 mycashmemo2" style=" padding: 0px">
+                    <div class="" style="border: 1px solid darkcyan;">
+                      <img style="margin-bottom: -100px; float: right; margin-top: -1.5px;" src="{{cash_memo_head_url.img_url.url}}"> 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cashmemo2 content-holder2" >
+                                    <div id="container"
+                                        style=" padding:18px; border-radius: 5px;">
+                                        <div style="text-align: center; margin-right: 50px; padding-top: 5px;">
+                                            <h1 class="heading heading2" style="color: darkcyan;"><b>Cash Memo</b></h1>
+                                        </div>
+                                        <div  style="text-align: left; padding-right: 3px; padding-top: 2px;">
+                                            <h1 class="heading" style="color: darkcyan;"><span><b>{{form.m_business_name}}</b></span></h1>
+                                            <div style="border-bottom: 1px solid brown; margin-bottom: 3px; width: 250px;"></div>
+                                            <div style="border-bottom: 1px solid brown; width: 250px;"></div>
+                                        </div>
+                                        <div style="display:inline-block;  padding-top: 8px; text-align: left;">
+                                            <div class="row">
+                                                <div class="col" style="font-size:11px;">
+                                                    <div>
+                                                        {{form.m_landline_number}}
+                                                    </div>
+                                                    <div>
+                                                        {% if form.m_address %}
+                                                            {{form.m_address}}, 
+                                                        {% endif %} 
+                                                        {% if form.m_area %}
+                                                            {{form.m_area}}, 
+                                                        {% endif %}
+                                                        {% if form.m_city %}
+                                                            {{form.m_city}} 
+                                                        {% endif %}
+                                                    </div>
+                        
+                                                    <div>
+                                                        {{form.m_company_email}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="cashmemo2table" style=" border: 1px solid darkcyan; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-collapse: separate; margin-top: 10px; font-size: 11px;">
+                                            <tr>
+                                                <td colspan="2" style="border-right: 1px solid darkcyan; border-bottom: 1px solid darkcyan; padding-left: 8px;">Name : {{memo_details.name}}</td>
+                                                <td style="text-align: center; padding-left: 8px; border-bottom: 1px solid darkcyan;"><b>INVOICE</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="border-right: 1px solid darkcyan; border-bottom: 1px solid darkcyan; padding-left: 8px; border-bottom: 1px solid darkcyan;">Address : {{memo_details.address}}</td>
+                                                <td style="padding-left: 8px; border-bottom: 1px solid darkcyan;">Invoice No. &nbsp;&nbsp;&nbsp;: {{memo_details.memo_no}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="border-right: 1px solid darkcyan; padding-left: 8px;">Phone Number : {{memo_details.mobile_number}}</td>
+                                                <td style="padding-left: 8px;">Invoice Date : {{memo_details.date|date:'d-m-Y'}}</td>
+                                            </tr>
+                                        </table>
+
+                                        <table class="cashmemo2table" style="border: 1px solid darkcyan; border-top-left-radius: 10px; border-top-right-radius: 10px; border-collapse: separate; margin-top: 5px; font-size: 13px;">
+                                            <tr>
+                                                <th style="border-right: 1px solid darkcyan; border-bottom: 1px solid darkcyan; padding-left: 8px;">Sr.No.</th>
+                                                <th colspan="2"   style="border-right: 1px solid darkcyan; text-align: center; padding-left: 8px; border-bottom: 1px solid darkcyan;">Description</th>
+                                                <th style="border-right: 1px solid darkcyan; text-align: center; padding-left: 8px; border-bottom: 1px solid darkcyan;">Qty.</th>
+                                                <th style="border-right: 1px solid darkcyan; text-align: center; padding-left: 8px; border-bottom: 1px solid darkcyan;">Rate</th>
+                                                <th style="text-align: center; padding-left: 8px; border-bottom: 1px solid darkcyan;">Amount</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="border-right: 1px solid darkcyan; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                  <p> {% for data in description %}
+                                                        {% if description != '' %}
+                                                            {{forloop.counter}}<br>
+                                                        {% endif %}
+                                                   {% endfor %}</p>
+                                                </td>
+                                                <td colspan="2" style="border-right: 1px solid darkcyan; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                    {% for data in description %}
+                                                    {{data}}<br>
+                                                    {% endfor %}</p>
+                                                </td>
+                                                <td style="border-right: 1px solid darkcyan; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in quantity %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                                <td style="border-right: 1px solid darkcyan; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in rate %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                                <td style="border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in amount %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="border-right: 1px solid darkcyan; border-top: 1px solid darkcyan; padding-left: 8px;"></th>
+                                                <th colspan="2"   style="border-right: 1px solid darkcyan; text-align: center; padding-left: 8px; border-top: 1px solid darkcyan;"></th>
+                                                <th style="border-right: 1px solid darkcyan; text-align: center; padding-left: 8px; border-top: 1px solid darkcyan;"></th>
+                                                <th style="border-right: 1px solid darkcyan; text-align: right; padding-left: 8px; border-top: 1px solid darkcyan;">Total:</th>
+                                                <th style="text-align: center; padding-left: 8px; border-top: 1px solid darkcyan;"><i class="fas fa-rupee-sign"></i> {{memo_details.total|floatformat:2}}</th>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6" style="border-top: 1px solid darkcyan; padding-left: 8px;">Ruppess in words : &nbsp; {{memo_details.total_in_words}}</th>
+                                            </tr>
+                                        </table>
+
+                                        <div class="row" style="padding-left: 15px; margin-top: 20px; padding-right: 12px;"> Terms and Conditions:<br></div>
+
+                                        <ul style="margin-left: -25px;" style="font-size:12px;">
+                                            <li>{{cash_memo.term_and_condition1}}</li>
+                                            <li>{{cash_memo.term_and_condition2}}</li>
+                                            <li>{{cash_memo.term_and_condition3}}</li>
+                                        </ul>
+                          
+                                        <div>
+                                        <div>
+                                            <!-- <p style="float: left; padding-top: 45px;">
+                                                Customer Sign</p> -->
+                                            <div style="float: right; padding-top: 45px; margin-right: 25px; margin-bottom: 10px;">
+                                                <img src="{{sign.url}}" height="100" width="100" alt="Logo" ><br>
+                                                <span style="margin-top: -30px;">Authorized Sign</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12">   
+                                            {% for status in latest_stamp_record %}
+                                                {% if status.selection_design == "oval" %}
+                                                 {% if status.option_color == "Green" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp5">
+                                                            <div class=""  >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                  
+                                                                        <div class="container10" style="margin: 15px;
+                                                                              width: 100%;
+                                                                              height: 100%;">
+                                                                              <span class="oval-green" style="margin:auto;color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.5rem;
+                                                                              padding: 20px;">{{status.stamp_content}}</span>
+                                                                        </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id"> 
+                                                                          
+                                                                    </div>
+                                                                </div>
+                                                                  <!-- <input type="radio" name="chk"/> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Red" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp9">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="">
+                                                                            <div class="container11" style="margin: 15px;
+                                                                                  width: 100%; 
+                                                                                  height: 100%;">
+                                                                                  <span class="oval-red" style="margin:auto;color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>
+                                                                            </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                          
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %} 
+                                                {% endif %} 
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Blue" %}  
+                                                    <div class="col-md-4">
+                                                        <div class="stamp6">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="">
+                                                                            <div class="container12" style="margin: 15px;
+                                                                                  margin: 25px;
+                                                                                  width: 100%;">
+                                                                                  <span class="oval-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>  
+                                                                            </div>
+                                                                            <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                               {% endif %}
+                                               {% endif %}
+
+                                                  {% if status.selection_design == "circle" %}
+                                                      {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp5">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="container7" style="margin: 15px;
+                                                                          width: 100%;
+                                                                          height: 100%;">
+                                                                              <div class="circle-green" style=" color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;
+                                                                              padding: 5px;  width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+
+                                                      {% if status.option_color == "Blue" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp6">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="">
+                                                                              <div class="container8" style="margin: 15px;
+                                                                              width: 100%;">
+                                                                                  <div class="circle-blue" style=" color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                      {% if status.option_color == "Red" %}
+                                                      <div class="col-md-4">
+                                                              <div class="stamp9">
+                                                                      <div class="" >
+                                                                          <div class="row">
+                                                                              <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="">
+                                                                                  <div class="container6" style="margin: 15px;
+                                                                                  width: 100%; 
+                                                                                    height: 100%;">
+                                                                                  <div class="circle-red" style=" color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size:1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                                  </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                  {% endif %}
+                                          
+                                                  {% if status.selection_design == "Rectangle" %}
+                                                  {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp10">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="">
+                                                                              <div class="container3" style="margin: 15px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-green" style="margin:auto; color: #0A9928;
+                                                                                  border: 1rem double #0A9928;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem;">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                              
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  {% endif %}
+
+                                                  {% if status.option_color == "Blue" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp11">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="">
+                                                                              <div class="container4" style="margin: 15px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 1rem double #0000FF;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                    {% endif %}
+                                                    {% if status.option_color == "Red" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp13">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none;  ">
+                                                                          <div class="">
+                                                                              <div class="container2" style="margin: 15px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-red" style="margin:auto;color: #D23;
+                                                                                  border: 1rem double #D23;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>  
+                                                      {% endif %} 
+                                                  {% endif %}
+                                              {% endfor %}
+
+                                              <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="card " style="margin:auto;  box-shadow: none;  ">
+                                            {% for img in stamp_uploaded_image %}
+                                            {% if img.m_business_stamp %}
+                                            <img src="{{img.m_business_stamp.url}}" style="width:100px; height: 100px;"><br>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+        <!-- 3rd template -->
+        {% if template_selected == '3' %}
+        <div class="row" id="html-content-holder1">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-6" style=" border-top-right-radius: 50px; border-top-left-radius: 50px;">
+            <div class="card-body cashmemo3" style=" padding: 0px">
+                    <div class="" style="border: 1px solid darkcyan; border-bottom: 25px solid darkcyan;">
+                      <img style="margin-bottom: -100px; margin-left: -4px; margin-top: -4px;" src="{{cash_memo_head_url.img_url.url}}"> 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cashmemo3 mycashmemo2">
+                                    <div id="container"
+                                        style=" padding:18px; border-radius: 5px;">
+                                        <div style="text-align: center; padding-top: 5px;">
+                                            <h1 class="heading2" style="color: darkcyan;"><b>Cash Memo</b></h1>
+                                        </div>
+                                        <div class="merinfo" style="display:inline-block;  padding-top: 8px; text-align: right; ">
+                                            <div class="memo">
+                                                <h2 class="heading2" style="color: DarkCyan;"><b>{{form.m_business_name}}</b></h2>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col" style="font-size:11px;">
+                                                    <div>
+                                                        {% if form.m_address %}
+                                                            {{form.m_address}}, 
+                                                        {% endif %} 
+                                                        {% if form.m_area %}
+                                                            {{form.m_area}}, 
+                                                        {% endif %}
+                                                        {% if form.m_city %}
+                                                            {{form.m_city}}
+                                                        {% endif %}
+                                                    </div>
+                        
+                                                    <div>
+                                                        {{form.m_landline_number}}
+                                                    </div>
+                        
+                                                    <div>
+                                                        {{form.m_company_email}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="cashmemo3table" style=" border-collapse: separate; margin-top: 10px; font-size: 11px;">
+                                            <tr>
+                                                <td class="cashmemo3tableTD" colspan="1" style="border: 1px solid black; padding-left: 8px;">Name : {{memo_details.name}}</td>
+                                                <td style="text-align: center; padding-left: 8px; border-bottom: 1px solid black; border-bottom: 1px solid black;"><b></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="1" style="border-right: 1px solid black; border-left: 1px solid black; padding-left: 8px; border-bottom: 1px solid black;">Address : {{memo_details.address}}</td>
+                                                <td style="padding-left: 8px; border-bottom: 1px solid black; border-right: 1px solid black;">Invoice No. &nbsp;&nbsp;&nbsp;: {{memo_details.memo_no}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="1" style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black; padding-left: 8px; border-bottom-left-radius: 10px;">Phone Number : {{memo_details.mobile_number}}</td>
+                                                <td style="padding-left: 8px; border-bottom: 1px solid black; border-right: 1px solid black; border-bottom-right-radius: 10px;">Invoice Date : {{memo_details.date|date:'d-m-Y'}}</td>
+                                            </tr>
+                                        </table>
+                                        <table class="cashmemo3table" style=" border: 1px solid black; border-top-left-radius: 10px; border-top-right-radius: 10px; border-collapse: separate; margin-top: 5px; font-size: 13px;">
+                                            <tr>
+                                                <th style="border-right: 1px solid black; border-bottom: 1px solid black; padding-left: 8px;">Sr.No.</th>
+                                                <th colspan="2"   style="border-right: 1px solid black; text-align: center; padding-left: 8px; border-bottom: 1px solid black;">Description</th>
+                                                <th style="border-right: 1px solid black; text-align: center; padding-left: 8px; border-bottom: 1px solid black;">Qty.</th>
+                                                <th style="border-right: 1px solid black; text-align: center; padding-left: 8px; border-bottom: 1px solid black;">Rate</th>
+                                                <th style="text-align: center; padding-left: 8px; border-bottom: 1px solid black;">Amount</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="border-right: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                  <p> {% for data in description %}
+                                                        {% if description != '' %}
+                                                            {{forloop.counter}}<br>
+                                                        {% endif %}
+                                                   {% endfor %}</p>
+                                                </td>
+                                                <td colspan="2" style="border-right: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                    {% for data in description %}
+                                                    {{data}}<br>
+                                                    {% endfor %}</p>
+                                                </td>
+                                                <td style="border-right: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in quantity %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                                <td style="border-right: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in rate %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                                <td style="border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                    <p style="padding-top: 4px;">
+                                                        {% for data in amount %}
+                                                        {{data}}<br>
+                                                        {% endfor %}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="border-right: 1px solid black; border-top: 1px solid black; padding-left: 8px;"></th>
+                                                <th colspan="2"   style="border-right: 1px solid black; text-align: center; padding-left: 8px; border-top: 1px solid black;"></th>
+                                                <th style="border-right: 1px solid black; text-align: center; padding-left: 8px; border-top: 1px solid black;"></th>
+                                                <th style="border-right: 1px solid black; text-align: right; padding-left: 8px; border-top: 1px solid black;">Total:</th>
+                                                <th style="text-align: center; padding-left: 8px; border-top: 1px solid black;"><i class="fas fa-rupee-sign"></i> {{memo_details.total|floatformat:2}}</th>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6" style="border-top: 1px solid black; padding-left: 8px;">Ruppess in words : &nbsp; {{memo_details.total_in_words}}</th>
+                                            </tr>
+                                        </table>
+                        
+                                        <div class="row" style="padding-left: 15px; margin-top: 20px; padding-right: 12px;"> Terms and Conditions:<br></div>
+
+                                        <ul style="margin-left: -25px;" style="font-size:12px;">
+                                            <li>{{cash_memo.term_and_condition1}}</li>
+                                            <li>{{cash_memo.term_and_condition2}}</li>
+                                            <li>{{cash_memo.term_and_condition3}}</li>
+                                        </ul>
+                          
+                                        <div>
+                                        <div>
+                                            <!-- <p style="float: left; padding-top: 45px;">
+                                                Customer Sign</p> -->
+                                            <div style="float: right; padding-top: 45px; margin-bottom: 10px;">
+                                                <img src="{{sign.url}}" height="100" width="100" alt="Logo" ><br>
+                                                <span style="margin-top: -30px;">Authorized Sign</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12">   
+                                            {% for status in latest_stamp_record %}
+                                                {% if status.selection_design == "oval" %}
+                                                 {% if status.option_color == "Green" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp5">
+                                                            <div class=""  >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                  
+                                                                        <div class="container10" style="margin: 25px;
+                                                                              width: 100%;
+                                                                              height: 100%;">
+                                                                              <span class="oval-green" style="margin:auto;color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.5rem;
+                                                                              padding: 20px;">{{status.stamp_content}}</span>
+                                                                        </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id"> 
+                                                                          
+                                                                    </div>
+                                                                </div>
+                                                                  <!-- <input type="radio" name="chk"/> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Red" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp9">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="">
+                                                                            <div class="container11" style="margin: 25px;
+                                                                                  width: 100%; 
+                                                                                  height: 100%;">
+                                                                                  <span class="oval-red" style="margin:auto;color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>
+                                                                            </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                          
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %} 
+                                                {% endif %} 
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Blue" %}  
+                                                    <div class="col-md-4">
+                                                        <div class="stamp6">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="">
+                                                                            <div class="container12" style="margin: 25px;
+                                                                                  margin: 25px;
+                                                                                  width: 100%;">
+                                                                                  <span class="oval-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>  
+                                                                            </div>
+                                                                            <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                               {% endif %}
+                                               {% endif %}
+
+                                                  {% if status.selection_design == "circle" %}
+                                                      {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp5">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="container7" style="margin: 25px;
+                                                                          width: 100%;
+                                                                          height: 100%;">
+                                                                              <div class="circle-green" style=" color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;
+                                                                              padding: 5px;  width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+
+                                                      {% if status.option_color == "Blue" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp6">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="">
+                                                                              <div class="container8" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <div class="circle-blue" style=" color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                      {% if status.option_color == "Red" %}
+                                                      <div class="col-md-4">
+                                                              <div class="stamp9">
+                                                                      <div class="" >
+                                                                          <div class="row">
+                                                                              <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="">
+                                                                                  <div class="container6" style="margin: 25px;
+                                                                                  width: 100%; 
+                                                                                    height: 100%;">
+                                                                                  <div class="circle-red" style=" color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size:1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                                  </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                  {% endif %}
+                                          
+                                                  {% if status.selection_design == "Rectangle" %}
+                                                  {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp10">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="">
+                                                                              <div class="container3" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-green" style="margin:auto; color: #0A9928;
+                                                                                  border: 1rem double #0A9928;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem;">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                              
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  {% endif %}
+
+                                                  {% if status.option_color == "Blue" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp11">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="">
+                                                                              <div class="container4" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 1rem double #0000FF;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                    {% endif %}
+                                                    {% if status.option_color == "Red" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp13">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none;  ">
+                                                                          <div class="">
+                                                                              <div class="container2" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-red" style="margin:auto;color: #D23;
+                                                                                  border: 1rem double #D23;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>  
+                                                      {% endif %} 
+                                                  {% endif %}
+                                              {% endfor %}
+
+                                              <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="card " style="margin:auto;  box-shadow: none;  ">
+                                            {% for img in stamp_uploaded_image %}
+                                            {% if img.m_business_stamp %}
+                                            <img src="{{img.m_business_stamp.url}}" style="width:100px; height: 100px;"><br>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                       <!-- <div class="container-fluid" style="margin-left: 0px; margin-top: 25px; width:25pc;">
+                        <div class="row">
+                            <div class="col-12" style="background: darkcyan; height: 20px;"></div>
+                        </div>
+                    </div>     -->
+                    </div>
+                </div>
+            </div>
+    <!-- <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-6" style=" border-top-right-radius: 50px; border-top-left-radius: 50px;">
+            <div class="card-body" style="width: 22pc; padding: 0px">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card mb-3" style="width: 22pc;">
+                                    <div id="container"
+                                        style="border-bottom: 20px solid DarkCyan; padding:18px; border-top: 20px solid DarkCyan; 
+                                        border-left: 20px solid DarkCyan; border-right: 20px solid DarkCyan; border-radius: 5px;">
+                                        <div style="text-align: center; padding-right: 3px; padding-top: 2px;">
+                                            <h1 style="color: DarkCyan; text-align: right; "><span><b>Cash Memo</b></span></h1>
+                                        </div>
+                                        <div style="display:inline-block;padding-top: 8px; text-align: left;">
+                                            <div class="memo">
+                                                <h2 style="color: DarkCyan; "><b>{{form.m_business_name}}</b></h2>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col" style="font-size:11px;">
+                                                    <div>
+                                                        {% if form.m_address %}
+                                                            {{form.m_address}}, 
+                                                        {% endif %} 
+                                                        {% if form.m_area %}
+                                                            {{form.m_area}}, 
+                                                        {% endif %}
+                                                        {% if form.m_city %}
+                                                            {{form.m_city}} 
+                                                        {% endif %}
+                                                    </div>
+                        
+                                                    <div>
+                                                        {{form.m_landline_number}}
+                                                    </div>
+                        
+                                                    <div>
+                                                        {{form.m_company_email}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="text-align: right; font-size:11px; padding-left: 160px;">
+                                            <div class="col-md-8 "></div>
+                                            <div class="col-md-4 col-4" style="padding: 0px">
+                                                Date:&nbsp;
+                                            </div>
+                                            <div id="date1"  style="margin-left: 0px; text-align: left; padding: 0px">
+                                                {{memo_details.date|date:'d-m-Y'}}</div>
+                        
+                                        </div>
+                                        <div>
+                                            <div class="row" style="padding-top: 10px;">
+                                                <div class="col-md-3 col-3" style="text-align: left; padding-top: 12px; padding-left: 20px;">
+                                                    Name: &nbsp;&nbsp; </div>
+                        
+                                                <div class="col-md-8 col-8" id="name1" name="name"
+                                                    style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                                                    &nbsp;&nbsp; {{memo_details.name}} </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3 col-4" style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                                                    Add's: &nbsp;&nbsp; </div>
+                        
+                                                <div id="address1" name="address" class="col-md-8 col-8"
+                                                    style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                                                    &nbsp;&nbsp; {{memo_details.address}} </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3 col-4" style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                                                    Mob.  &nbsp;&nbsp; </div>
+                        
+                                                <div id="mobile_number1" name="mobile_number" class="col-md-8 col-8"
+                                                    style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                                                    &nbsp;&nbsp; {{memo_details.mobile_number}} </div>
+                                            </div>
+                                        </div>
+                        
+                                        <div class="card  " style="max-width: 30rem; padding-top: 12px; box-shadow: none;">
+                                            <div class="row" style="column-gap: 0px;  ">
+                        
+                        
+                        
+                                                <div class="row" style="margin:0%; column-gap: 0px; padding-left: 0px;">
+                                                    <table  style="border: 1px solid black; border-collapse: collapse;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th  style="border: 1px solid black; border-collapse: collapse; width: 50px; text-align: center;">Sr. No.</th>
+                                                                <th  style="border: 1px solid black; border-collapse: collapse; width: 160px; text-align: center;">Description of Item</th>
+                                                                <th style="border: 1px solid black; border-collapse: collapse; width: 80px; text-align: center;">Quantity</th>
+                                                                <th style="border: 1px solid black; border-collapse: collapse; width: 80px; text-align: center;">Rate</th>
+                                                                <th style="border: 1px solid black; border-collapse: collapse; width: 90px; text-align: center;">Amount</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr data-iterate="item">
+                                                               
+                                                                <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                  <p> {% for data in description %}
+                                                                      {% if description != '' %}
+                                                                   {{forloop.counter}}<br>
+                                                                   {% endif %}
+                                                                   {% endfor %}</p>
+                                                                </td>
+                                                                <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                    <p style="padding-top: 4px;">
+                                                                    {% for data in description %}
+                                                                    {{data}}<br>
+                                                                    {% endfor %}</p>
+                                                                </td>
+                                                                <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                    <p style="padding-top: 4px;">
+                                                                        {% for data in quantity %}
+                                                                        {{data}}<br>
+                                                                        {% endfor %}</p>
+                                                                </td>
+                                                                <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                    <p style="padding-top: 4px;">
+                                                                        {% for data in rate %}
+                                                                        {{data}}<br>
+                                                                        {% endfor %}</p>
+                                                                </td>
+                                                                <td style="border: 1px solid black; border-collapse: collapse; width: auto !important; text-align: center; ">
+                                                                    <p style="padding-top: 4px;">
+                                                                        {% for data in amount %}
+                                                                        {{data}}<br>
+                                                                        {% endfor %}</p>
+                                                                </td>
+                                                               
+                                                            </tr>
+                                                        </tbody>
+                                                        <tfoot style="border: 1px solid black; border-collapse: collapse;" >
+                                                                <th colspan="5"  style="text-align: right; border-bottom: black solid 1px;">Total: &#x20B9; {{memo_details.total}} &nbsp;&nbsp;</th>
+                                                               
+                                                        </tfoot>
+                                                    </table>
+                                                  
+                                                </div>
+                                               
+                                            </div>
+                                        </div>
+                        
+                                        <div class="row" style="padding-top: 10px;">
+                                            <div class="col-md-3 col-4" style="text-align: left; padding-top: 12px; padding-left: 20px;">
+                                                Total<br>(in words): &nbsp;&nbsp; </div>
+                                            <div class="col-md-8 col-8" id="total_in_words1"
+                                                style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                                                &nbsp;&nbsp;&#x20B9; {{memo_details.total_in_words}} </div>
+                                        </div>
+                                        <div class="row" style="padding-left: 20px; padding-top: 20px; padding-right: 12px;"> Terms and Conditions:<br>
+                         
+                                            <div class="col-md-12" id="term_and_condition11" style="font-size:11px; border-bottom: 0px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 0px;" >{{cash_memo.term_and_condition1}}</div>   
+                                        
+                                            <div class="col-md-12" id="term_and_condition21" style="font-size:11px; border-bottom: 0px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 0px;">{{cash_memo.term_and_condition2}}</div> 
+                                        
+                                            <div class="col-md-12" id="term_and_condition31" style="font-size:11px; border-bottom: 0px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 0px;">{{cash_memo.term_and_condition3}}</div>
+                          
+                                       </div>
+                                        <div>
+                                           
+                                            <div style="float: right; padding-top: 45px;">
+                                                Authorized Sign<br>
+                                                <img src="{{sign.url}}" height="35" width="100" alt="Logo" style="">
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12">   
+                                            {% for status in latest_stamp_record %}
+                                                {% if status.selection_design == "oval" %}
+                                                 {% if status.option_color == "Green" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp5">
+                                                            <div class=""  >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                  
+                                                                        <div class="container10" style="margin: 25px;
+                                                                              width: 100%;
+                                                                              height: 100%;">
+                                                                              <span class="oval-green" style="margin:auto;color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.5rem;
+                                                                              padding: 20px;">{{status.stamp_content}}</span>
+                                                                        </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id"> 
+                                                                          
+                                                                    </div>
+                                                                </div>
+                                                                  r
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Red" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp9">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="modal-content">
+                                                                            <div class="container11" style="margin: 25px;
+                                                                                  width: 100%; 
+                                                                                  height: 100%;">
+                                                                                  <span class="oval-red" style="margin:auto;color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>
+                                                                            </div>
+                                                                          <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                          
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %} 
+                                                {% endif %} 
+                                                {% if status.selection_design == "oval" %}
+                                                {% if status.option_color == "Blue" %}  
+                                                    <div class="col-md-4">
+                                                        <div class="stamp6">
+                                                            <div class="" >
+                                                                <div class="row">
+                                                                    <div class="card-body " style="margin:auto; box-shadow: none;">
+                                                                        <div class="modal-content">
+                                                                            <div class="container12" style="margin: 25px;
+                                                                                  margin: 25px;
+                                                                                  width: 100%;">
+                                                                                  <span class="oval-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 20px;">{{status.stamp_content}}</span>  
+                                                                            </div>
+                                                                            <input type="hidden" value="{{status.id}}" name="content" id="status_id">
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                               {% endif %}
+                                               {% endif %}
+
+                                                  {% if status.selection_design == "circle" %}
+                                                      {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp5">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="container7" style="margin: 25px;
+                                                                          width: 100%;
+                                                                          height: 100%;">
+                                                                              <div class="circle-green" style=" color: #0A9928;
+                                                                              border: 0.5rem double #0A9928;
+                                                                              border-radius: 50%;
+                                                                              font-size: 1.2rem;
+                                                                              padding: 5px;  width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+
+                                                      {% if status.option_color == "Blue" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp6">
+                                                              <div class="">
+                                                                  <div class="row">
+                                                                      <div class="" style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="modal-content">
+                                                                              <div class="container8" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <div class="circle-blue" style=" color: #0000FF;
+                                                                                  border: 0.5rem double #0000FF;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size: 1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                      {% if status.option_color == "Red" %}
+                                                      <div class="col-md-4">
+                                                              <div class="stamp9">
+                                                                      <div class="" >
+                                                                          <div class="row">
+                                                                              <div class="" style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="modal-content">
+                                                                                  <div class="container6" style="margin: 25px;
+                                                                                  width: 100%; 
+                                                                                    height: 100%;">
+                                                                                  <div class="circle-red" style=" color: #D23;
+                                                                                  border: 0.5rem double #D23;
+                                                                                  border-radius: 50%;
+                                                                                  font-size: 1.2rem;  
+                                                                                  padding: 5px; width: 100px;height: 100px;font-size:1.1rem;padding-top: 30px;text-align: center;">{{status.stamp_content}}</div>
+                                                                                  </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                      {% endif %}
+                                                  {% endif %}
+                                          
+                                                  {% if status.selection_design == "Rectangle" %}
+                                                  {% if status.option_color == "Green" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp10">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto; box-shadow: none;  ">
+                                                                          <div class="modal-content">
+                                                                              <div class="container3" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-green" style="margin:auto; color: #0A9928;
+                                                                                  border: 1rem double #0A9928;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem;">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                              
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  {% endif %}
+
+                                                  {% if status.option_color == "Blue" %}
+                                                      <div class="col-md-4">
+                                                          <div class="stamp11">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none; ">
+                                                                          <div class="modal-content">
+                                                                              <div class="container4" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-blue" style="margin:auto; color: #0000FF;
+                                                                                  border: 1rem double #0000FF;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                    {% endif %}
+                                                    {% if status.option_color == "Red" %}
+                          
+                                                      <div class="col-md-4">
+                                                          <div class="stamp13">
+                                                              <div class="" >
+                                                                  <div class="row">
+                                                                      <div class="card-body-model " style="margin:auto;  box-shadow: none;  ">
+                                                                          <div class="modal-content">
+                                                                              <div class="container2" style="margin: 25px;
+                                                                              width: 100%;">
+                                                                                  <span class="rect-red" style="margin:auto;color: #D23;
+                                                                                  border: 1rem double #D23;  
+                                                                                  font-size: 1.2rem;
+                                                                                  font-family: Open sans, Helvetica, Arial, sans-serif;
+                                                                                  border-radius: 0;
+                                                                                  padding: 0.5rem; ">{{status.stamp_content}}</span>
+                                                                              </div>
+                                                                          </div>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>  
+                                                      {% endif %} 
+                                                  {% endif %}
+                                              {% endfor %}
+                                              <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="card " style="margin:auto;  box-shadow: none;  ">
+                                            {% for img in stamp_uploaded_image %}
+                                            {% if img.m_business_stamp %}
+                                            <img src="{{img.m_business_stamp.url}}" style="width:100px; height: 100px;"><br>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+                </div>
+            </div> -->
+            {% endif %}
+</div>
+        <div class="col-md-3">
+        </div>
+        
+
+    </div>
+</div>
+ <!-- <input id="btn-Preview-Image" type="button" value="Preview"/> -->
+
+
+{% endfor %}
+
+<div class="row">
+        <div class="col-md-12">
+          <img src="http://157.230.228.250/media/bill-border.png" width="100%">
+        </div>
+      </div>
+      
+       
+      <div class="card-body" style="background-color:white;">
+        <div class="col-md-12 d-flex align-items-center justify-content-center">
+       <div class="row">
+          <div class="col">
+           {% if bill_design.pay_link == True and MERCHANT_KEY %}
+          <div class="col-md-4 d-flex align-items-center justify-content-center ">
+            {% if bill_details.payment_done == False %}
+              <form method="POST" action="{{ action }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                  <input type="hidden" name="hash_string" value="{{ hash_string }}" />
+                  <input type="hidden" name="hash" value="{{ hashh }}"/>
+                  <input type="hidden" name="posted" value="{{ posted }}"/>
+                  <input type="hidden" name="txnid" value="{{ txnid }}" />
+                  <input type="hidden" name="amount" value="{{ amount }}" />
+                  <input type="hidden" name="firstname" id="firstname" value="{{ firstname }}" />
+                  <input type="hidden" name="productinfo" value="{{ productinfo }}">
+                  <input type="hidden" name="email" value="{{email}}">
+                  <input type="hidden" name="phone" value="{{phone}}">
+                  <input type="hidden" name="surl" value="{{surl}}">
+                  <input type="hidden" name="furl" value="{{furl}}">
+                  <input type="hidden" name="udf1" value="{{ udf1 }}">
+                  <input type="hidden" name="udf2" value="{{ udf2 }}">
+                  <input type="hidden" name="udf3" value="{{ udf3 }}">
+                  <input type="hidden" name="udf4" value="{{ udf4 }}">
+                  <!-- <div class=" align-items-center justify-content-center">
+                      <button class="btn btn-primary  w-70 fw-bold mb-3">Pay Now </button>
+                  </div> -->
+              </form>
+            {% else %}
+              <div class="row align-items-center justify-content-center">
+                  <h3 style="color: #00569d;">Thank you for your payment!</h3>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+          </div>
+          <input type="hidden" value="{{memo_record.id}}" id="receipt_id" name="receipt_id">
+          <div style="display: inline-flex;">
+          <div class="row align-items-center justify-content-center"  style=" margin-left: 15px">
+           {% if memo_details.rejected_cash_memo == True %}
+              <span><span style="color: red; margin-left: -30px;">Already Rejected</span></span>
+          {% else %}
+            <div class="col d-flex align-items-center justify-content-center" style="float: left;">
+            <button class="btn btn-danger" id="submit_rejected_bill" type="button" style="margin-left: -25px;" class="reject-bill-btn title" data-toggle="modal" data-target="#RejectBillModal">Reject Cash Memo</button>
+            </div>
+          {% endif %}
+          </div>
+           <div id="download" class="col d-flex align-items-center justify-content-center" style="margin-left: 10px"><a href="#" onClick="downloadCashMemo()" class=" btn btn-primary" style="color: white;">Download</a></div> 
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 0px; background-color: white">
+        {% if bill_design.facebook == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.facebook_url}}" class="fa fa-facebook"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.twitter == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.twitter_url}}" class="fa fa-twitter"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.instagram == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.instagram_url}}" class="fa fa-instagram"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.youtube == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.youtube_url}}" class="fa fa-youtube"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.linkedin == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.linkedin_url}}" class="fa fa-fa fa-linkedin"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.skype == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.skype_url}}" class="fa fa-skype"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.google == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.google_url}}" class="fa fa-google"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.pinterest == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.pinterest_url}}" class="fa fa-pinterest"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.snapchat == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.snapchat_url}}" class="fa fa-snapchat-ghost"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.android == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.android_url}}" class="fa fa-android"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.apple == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.apple_url}}" class="fa fa fa-apple"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.zomato == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.zomato_url}}"><img src="http://157.230.228.250/media/bill_design/zomato_logo.png" style="width:50px;"></a>
+          </div>
+        {% endif %}
+        {% if bill_design.swiggy == True %}
+          <div class="col d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.swiggy_url}}"><img src="http://157.230.228.250/media/bill_design/swiggy_logo.png" style="width:50px;"></a>
+          </div>
+        {% endif %}
+      </div>
+      
+       <br>
+      {% if ads_image_details %}
+      {% if ads_image_details.merchant_business_id %}
+      <input type="hidden" name="merchant_ads_id" id="merchant_ads_id" value="{{ads_image_details.id}}">
+      <input type="hidden" name="greenbill_ads_id" id="greenbill_ads_id" value="">
+      {% else %}
+      <input type="hidden" name="greenbill_ads_id" id="greenbill_ads_id" value="{{ads_image_details.id}}">
+      <input type="hidden" name="merchant_ads_id" id="merchant_ads_id" value="">
+      {% endif %}
+      {% if ads_image_details.ads_image != '' and ads_image_details.ads_image_two == '' and ads_image_details.ads_image_three == '' and ads_image_details.ads_image_four == '' %}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card advertisement">
+              <div class="card-body" style="padding: 0rem;">
+                
+                
+
+                {% if ads_image_details.redirect_url %}
+                  <a href="{{ads_image_details.redirect_url}}" onClick = "getclickedStatus();">
+                {% endif %}
+
+                <img src="{{ads_image_details.ads_image.url}}"  style="width:100%;height:17rem;">
+
+                {% if ads_image_details.redirect_url %}
+                </a>
+           
+                {% endif %}
+              
+              </div>
+            </div>
+        {% else %}
+            <div class="slideshow-container">
+
+              {% if ads_image_details.ads_image %}
+                {% if ads_image_details.redirect_url %}
+                <a href="{{ads_image_details.redirect_url}}" onClick = "getclickedStatus();">
+                {% endif %}
+                  <div class="mySlides fade">
+                    <img src="{{ads_image_details.ads_image.url}}"  style="width:100%;height:17rem;">
+                  </div>
+                  {% endif %}
+                  {% if ads_image_details.ads_image_two %}
+                  <div class="mySlides fade">
+                    <img src="{{ads_image_details.ads_image_two.url}}" style="width:100%">
+                  </div>
+                  {% endif %}
+                  {% if ads_image_details.ads_image_three %}
+                  <div class="mySlides fade">
+                    <img src="{{ads_image_details.ads_image_three.url}}" style="width:100%">
+                  </div>
+                  {% endif %}
+                  {% if ads_image_details.ads_image_four %}
+                  <div class="mySlides fade">
+                    <img src="{{ads_image_details.ads_image_four.url}}" style="width:100%">
+                  </div>
+                {% if ads_image_details.redirect_url %}
+                </a>
+                {% endif %}
+              {% endif %}
+        {% endif %}
+
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      <br>
+      <div class="row">
+        <div class="col-md-12 d-flex align-items-center justify-content-center">
+            {% if bill_design.phone == True %}
+              <div class="col d-flex align-items-center justify-content-center">
+                <a href="tel:{{bill_design.phone_number}}" class="fa fa-phone"></a>
+              </div>
+            {% endif %}
+            {% if bill_design.website == True %}
+              <div class="col d-flex align-items-center justify-content-center">
+                <a href="{{bill_design.website_url}}" class="fa fa-globe"></a>
+              </div>
+            {% endif %}
+            {% if bill_design.map == True %}
+              <div class="col d-flex align-items-center justify-content-center">
+                <a href="{{bill_design.map_link}}" class="fa fa-map"></a>
+              </div>
+            {% endif %}
+        </div>
+      </div></td></tr></table></div></div>
+    <div class="row" style="padding: 0px;">
+      {% if bill_design.terms_conditions == True %}
+        <div class="col-md-12 d-flex align-items-center justify-content-center">
+            <a href="{{bill_design.terms_url}}">Terms & Conditions</a>
+        </div>
+      {% endif %}
+    </div>
+      <div class="row" style="height: 10px; width: 100%;"></div>
+      <div class="powered-by">
+        <p class="title">Digital bill powered by</p>
+        <a target="_blank" href="https://www.greenbill.in/">
+          <img src="http://157.230.228.250/static/assets/img/dashboard-logo.png" width="80px" alt="greenbill">
+        </a>
+      </div>
+      <div class="bill-footer">
+        <div class="col-md-12 d-flex align-items-center justify-content-center">
+       <div class="row">
+          <div class="col">
+            <a class="" href="https://apps.apple.com/in/app/green-bill-hind-software/id1592444682" style="color: silver;"><img width="40px" height="50px" src="http://157.230.228.250/media/Apple.png"></a>
+            <!-- <img class="fa fa-apple" src="https://logodix.com/logo/2155058.jpg" style="margin-left: 10px"> -->
+            <!-- {% if bill_design.logo == "circular" %}
+              <img class="footer-logo" src="{{business_logo}}" style="border-radius: 50%; width: 60px; height: 60px; margin-left: 10px">
+            {% elif bill_design.logo == "square" %} -->
+           <!--    <img class="footer-logo" src="{{business_logo}}" style="border-radius: 5px; width: 60px; height: 60px; margin-left: 10px">
+            {% else %}
+              <img class="footer-logo" src="{{business_logo}}">
+            {% endif %}  -->
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+            <!-- <a href="{{bill_details.bill.url}}" class="download-btn" download="">
+                Download Bill
+            </a> -->
+            <a href="https://play.google.com/store/apps/details?id=com.greenBill.green_bill" ><img src="http://157.230.228.250/media/playstore.png" width="32px" height="35px"></a>
+          </div>
+        </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="RejectBillModal" role="dialog">
+  <div class="modal-dialog modal-md">
+    <form method="POST" class="form" id="rejectBillForm" action="/reject-cash-memo-bill/">
+      {% csrf_token %}
+      <input type="hidden" name="bill_id" value="{{memo_details.id}}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Select Reason</h2>
+        </div>
+        <div class="modal-body">
+          <div class="form-check form-check-inline" style="padding: 0px">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="customRadio1" name="rejectbillRadio" class="custom-control-input" value="This is not my bill">
+                  <label class="custom-control-label" for="customRadio1">This is not my Cash Memo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="border-top: 1px dashed #63b90b">
+          <div class="form-check form-check-inline" style="padding: 0px">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="customRadio2" name="rejectbillRadio" class="custom-control-input" value="There are mistakes in the bill">
+                  <label class="custom-control-label" for="customRadio2">There are mistakes in the Cash Memo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="rejectbillRadio_error"></div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary" value="Reject">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+  
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+
+// window.addEventListener("load", afterLoaded,false);
+
+_html2canvas.Util.isTransparent = function(backgroundColor) {
+  return (backgroundColor === "transparent" || backgroundColor === "rgba(0, 0, 0, 0)" || backgroundColor === undefined);
+};
+
+function downloadCashMemo()
+{
+    // alert("after load")
+    var element = $("#html-content-holder1"); // global variable
+    var getCanvas; // global variable
+
+     html2canvas(element, 
+     {  
+        background :'#FFFFFF',
+        onrendered: function (canvas) 
+        {
+            // $("#previewImage").append(canvas);
+            getCanvas = canvas;
+            canvas.toBlob(function(blob) {
+                    saveAs(blob, "cashmemo.png"); 
+                });
+            // document.getElementById('html-content-holder1').style.display = "None";
+         }
+     });
+
+
+        // var imgageData = getCanvas.toDataURL("image/png");
+        // // Now browser starts downloading it instead of just showing it
+        // var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+        // $("#btn-Convert-Html2Image").attr("download", "cash_memo.png").attr("href", newData);
+}
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}
+
+
+<!-- cash_receipt_images -->

@@ -1,0 +1,315 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Login {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Register</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="#">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Authentication</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Register</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+
+                            {% if msg %}
+                                <span class="text-danger">{{ msg | safe }}</span>
+                            {% else %}
+                            <span>
+                                Registration
+                            </span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    <form method="post" action="" autocomplete="off" id="register_form">
+
+                        {% csrf_token %}
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-5">
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-user"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.mobile_no }}
+                                        </div>
+                                        <!-- {% if form.mobile_no.errors is not None %}
+                                            <span class="text-danger">This mobile number is Already used, if you still want to use this number please select below check box.</span>
+                                        {% endif %} -->
+                                    </div>
+                                    <!-- <span class="text-danger">{{ form.mobile_no.errors }}</span> -->
+
+                                   
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-envelope"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.email }}
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{ form.email.errors }}</span>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-calendar"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.c_dob }}
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{ form.c_dob.errors }}</span>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-list"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.c_state }}
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{ form.c_state.errors }}</span>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-location-pin"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.c_area }}
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{ form.c_area.errors }}</span>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-list"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.c_pin_code }}
+                                        </div>
+                                    </div>
+                                    <span class="text-danger">{{ form.c_pin_code.errors }}</span>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-lock"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.password1 }}
+                                        </div>
+                                    </div>
+                                   
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-lock"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.password2 }}
+                                        </div>
+                                    </div>
+                                   
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            &nbsp; &nbsp;
+                            <span>Already have and account?</span> <a href="{% url 'login' %}" >Login</a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    jQuery.validator.addMethod("uppercase_val", function(value, element){
+		if (/[A-Z]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 upper case letter."); 
+
+	jQuery.validator.addMethod("number_val", function(value, element){
+		if (/[0-9]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 number."); 
+
+	jQuery.validator.addMethod("specialchar_val", function(value, element){
+		if (/(?=.*[ -\/:-@\[-\`{-~]{1,})/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 special character."); 
+
+    $( "#register_form" ).validate({
+    rules: {
+        mobile_no: {
+            required: true
+        },
+        email: {
+            email: true,
+            required: true
+        },
+        c_dob: {
+            required: true
+        },
+        c_state: {
+            required: true
+        },
+        c_area: {
+            required: true
+        },
+        c_pin_code: {
+            required: true
+        },
+        password1: {
+            required: true,
+            uppercase_val: true,
+            number_val: true,
+            specialchar_val: true,
+            minlength: 8,
+		},
+        password2: {
+            required: true,
+            equalTo : "#id_password1"
+        }
+    },
+    messages: {
+        mobile_no: "Mobile Number field is required.",
+        email: "Email field is required.",
+        c_dob: "DOB field is required.",
+        c_state: "State field is required.",
+        c_area: "Area field is required.",
+        c_pin_code: "Pin Code field is required.",
+        password1: {
+            required: "Password field is required.",
+            minlength: "This password is too short. It must contain at least {0} characters."
+        },
+        password2: {
+            required: "Confirm Password field is required",
+            equalTo: "Password and Confirm Password must be the same.",
+        }
+    },
+    submitHandler: function() {
+        $.ajax({
+            type: "POST",
+            url: "/generate-otp/",
+            data: $('form').serialize(),
+            success: function(response) {
+                alert(1);
+                if(response.status == "success")
+                {
+                    swal.fire({
+                        title: "Please Enter OTP",
+                        html: '<input id="swal-otp1" placeholder ="OTP" class="form-control">',
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: "Validate",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                    .then(function(isConfirm) {
+                        if(isConfirm){
+                            otp = document.getElementById('swal-otp1').value;
+                            $.ajax({
+                            type: "POST",
+                            url: "/customer-register/",
+                            data: $('form').serialize() + "&otp=" + otp,
+                            success: function(response) {
+                                if(response.status == "success")
+                                {
+                                    swal.fire({
+                                    icon:"success",
+                                    title: "Success!",
+                                    text: "User addded.",
+                                    type: "success",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                    })
+                                    .then(function() {
+                                        location.href="http://157.230.228.250/login/";
+                                    });
+                                }
+                            }
+                            });
+                        }
+                        else{
+                            Swal.showValidationMessage(
+                               `Request failed: Reason is required`
+                           );
+                        }
+                    });
+                }
+            
+            }
+        });
+    }        
+    });
+
+</script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

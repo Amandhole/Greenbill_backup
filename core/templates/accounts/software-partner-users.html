@@ -1,0 +1,657 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Software Partner {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+</style>
+
+<!-- Create Software Partner Modal -->
+<div class="modal fade" id="create-software-partner-modal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="create_software_partner_form">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title w-100 text-center">Create Software Partner</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <input type="text" name="mobile_no" class="form-control" id="mobile_no" placeholder="Mobile Number">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Email">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+<!-- Create Software Partner Modal End -->
+
+<!-- Edit Software Partner Modal -->
+<div class="modal fade" id="edit-software-partner-modal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" name="edit_software_partner_form" id="edit_software_partner_form">
+        {% csrf_token %}
+        <input type="hidden" name="user_id" id="user_id" value="">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Edit Software Partner</h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                    <input type="text" name="edit_mobile_no" class="form-control" id="edit_mobile_no" placeholder="Mobile Number">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="email" name="edit_email" class="form-control" id="edit_email" placeholder="Email">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="edit_first_name" class="form-control" id="edit_first_name" placeholder="First Name">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" name="edit_last_name" class="form-control" id="edit_last_name" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input id="edit_software_partner_form_submit_btn" type="submit" class="btn btn-primary" value="Save" data-id="">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Edit User Modal End-->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Software Partner</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/create-software-partner/"> Software Partner</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Software Partner List</h4>
+                            <div class="ml-auto">
+                            {% if is_superuser == True %}
+                              <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-software-partner-modal">
+                                <i class="fa fa-plus"></i>
+                                Create Software Partner
+                              </button>
+                            {% else %}
+                              {% for actions in action_permissions_list %}
+                                {% if actions.module_id|lower == "Role Permission"|lower and actions.feature_id|lower == "Role"|lower %}
+                                  {% if actions.add_permission == "1" %}
+                                  <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-software-partner-modal">
+                                      <i class="fa fa-plus"></i>
+                                      Create Software Partner
+                                  </button>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            {% endif %}
+    
+                          </div>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                      <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+                        <!-- Modal -->
+                        <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header no-bd">
+                                        <h5 class="modal-title">
+                                            <span class="fw-mediumbold">
+                                            Create Software Partner</span> 
+                                            <!-- <span class="fw-light">
+                                                Row
+                                            </span> -->
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>   
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-striped table-hover" >
+                                <thead>
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>Name</th>
+                                        <th>Mobile Number</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for object in software_partner_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ object.first_name }} {{ object.last_name }}</td>
+                                        <td>{{ object.mobile_no }}</td>
+                                        <td>{{ object.email }}</td>
+                                        <td>
+                                            <div class="form-button-action">
+                                            
+                                            {% if object.is_superuser != 1 %}
+
+                                              <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg EditSoftwarePartnerBtn" data-original-title="Edit User" 
+                                              data-url="{{object.id}}" data-mobile_no="{{ object.mobile_no }}" data-first_name="{{ object.first_name }}" data-last_name="{{ object.last_name }}"
+                                              data-email = "{{ object.email }}" data-user_id = "{{ object.id }}">
+                                                <i class="fa fa-edit"></i>
+                                              </button>
+
+                                              <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger SoftwarePartnerDeleteBtn" id="delete_software_partner_btn" data-id='{{object.id}}' data-original-title="Delete Software Partner">
+                                                <i class="fa fa-times"></i>
+                                              </button>
+
+                                            {% endif %}
+                                                   
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% else %}
+                      {% for actions in action_permissions_list %}
+                      {% if actions.module_id|lower == "Role Permission"|lower and actions.feature_id|lower == "Role"|lower %}
+                        {% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+                            <input type="hidden" value="1" name="access_permission" id="access_permission">
+                            <div class="card-body">
+                              <div class="table-responsive">
+                                  <table id="add-row" class="display table table-striped table-hover" >
+                                      <thead>
+                                          <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Name</th>
+                                            <th>Mobile Number</th>
+                                            <th>Email</th>
+                                            <th>Action</th>
+                                          </tr>
+                                      </thead>
+                                      <tfoot>
+                                      </tfoot>
+                                      <tbody>
+                                          {% for object in user_list %}
+                                          <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ object.first_name }} {{ object.last_name }}</td>
+                                            <td>{{ object.mobile_no }}</td>
+                                            <td>{{ object.email }}</td>
+                                              <td>
+                                                  <div class="form-button-action">
+                                                    {% if object.is_superuser != 1 %}
+                                                      {% for actions in action_permissions_list %}
+                                                        {% if actions.module_id|lower == "Role Permission"|lower and actions.feature_id|lower == "Role"|lower %}
+                                                          {% if actions.edit_permission == "1" %}
+                                                            <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg EditSoftwarePartnerBtn" data-original-title="Edit Role"
+                                                            data-url="{{object.id}}" data-mobile_no="{{ object.mobile_no }}" data-first_name="{{ object.first_name }}" data-last_name="{{ object.last_name }}"
+                                                            data-email = "{{ object.email }}" data-user_id = "{{ object.id }}">
+                                                              <i class="fa fa-edit"></i>
+                                                            </button>
+                                                          {% endif %}
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                      
+                                                      {% for actions in action_permissions_list %}
+                                                        {% if actions.module_id|lower == "Role Permission"|lower and actions.feature_id|lower == "Role"|lower %}
+                                                          {% if actions.delete_permission == "1" %}
+                                                            <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger SoftwarePartnerDeleteBtn" id="delete_role_btn" data-id='{{object.id}}' data-original-title="Delete Role">
+                                                              <i class="fa fa-times"></i>
+                                                            </button>
+                                                          {% endif %}
+                                                        {% endif %}
+                                                      {% endfor %}
+                                                      
+                                                    {% endif %}  
+                                                  </div>
+                                              </td>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                            
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+ 
+                    
+                    
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div>
+                  
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+<script>
+jQuery.validator.addMethod("mobile_number", function(value, element){
+		if (/^[6-9][0-9]{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Please enter valid Mobile Number");
+    
+$( "#create_software_partner_form" ).validate({
+  rules: {
+    mobile_no: {
+      required: true,
+      mobile_number: true,
+      maxlength: 10,
+      minlength: 10
+    },
+    email:{
+        required: true,
+        email: true
+    },
+    first_name: {
+        required: true
+    },
+    last_name: {
+        required: true
+    },
+  },
+  messages: {
+    mobile_no: {
+        required: "Mobile Number field is required.",
+        maxlength: "Mobile Number must contain 10 digits.",
+        minlength: "Mobile Number must contain 10 digits.",
+    },
+    email: "Email filed is required.",
+    first_name: "First Name field is required.",
+    last_name: "Last Name field is required."
+  },
+  submitHandler: function() {
+    $.ajax({
+              type: "POST",
+              url: "{% url 'create-software-partner' %}",
+              data: $('form').serialize(),
+              beforeSend: function () {
+                    swal.fire({
+                        imageUrl: '../../../media/loading.gif',
+                        showConfirmButton: false,
+                        confirmButtonClass: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    });
+                    $(".swal2-modal").css('background-color', 'transparent');
+              },
+              success: function(response) {
+                if(response.status == "success")
+                {
+                    $('#create-software-partner-modal').modal('hide');
+                    swal.fire({
+                    icon:"success",
+                    title: "Success!",
+                    text: "User Created.",
+                    type: "success",
+                    confirmButtonClass: "btn-success",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                    })
+                    .then(function() {
+                    location.reload();
+                    });
+                }
+                else if(response.status == "invalid")
+                {
+                    swal.fire({ 
+                        icon:"warning",
+                        title: "Oops...", 
+                        text: "Mobile Number Already Used.", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })  
+                }  
+                else if(response.status == "error")
+                {
+                    $('#create-software-partner-modal').modal('hide');
+                        swal.fire({ 
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                    .then(function() {
+                        location.reload();
+                    });    
+                }             
+              },
+              error: function() {
+                $('#create-software-partner-modal').modal('hide');
+                swal.fire({ 
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  confirmButtonClass: "btn-success",
+                  allowOutsideClick: false,
+                  allowEscapeKey: false
+              })
+              .then(function() {
+                location.reload();
+              });    
+            }
+    });
+  }
+});
+
+  $( "form[name='edit_software_partner_form']" ).validate({
+    rules: {
+        edit_mobile_no: {
+        required: true,
+        mobile_number: true,
+        maxlength: 10,
+        minlength: 10
+        },
+        edit_email:{
+            required: true,
+            email: true
+        },
+        edit_first_name: {
+            required: true
+        },
+        edit_last_name: {
+            required: true
+        }
+    },
+    messages: {
+        edit_mobile_no: {
+            required: "Mobile Number field is required.",
+            maxlength: "Mobile Number must contain 10 digits.",
+            minlength: "Mobile Number must contain 10 digits.",
+        },
+        edit_email: "Email filed is required.",
+        edit_first_name: "First Name field is required.",
+        edit_last_name: "Last Name field is required.",
+    },
+      submitHandler: function() {
+        var id = $("#edit_software_partner_form_submit_btn").attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "{% url 'update-software-partner' %}",
+            data: $('form').serialize(),
+            success: function(response) {
+              $('#edit-software-partner-modal').modal('hide');
+              swal.fire({
+                icon:"success",
+                title: "Success!",
+                text: "User Updated.",
+                type: "success",
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              })
+              .then(function() {
+                location.reload();
+              });
+            },
+            error: function() {
+              $('#edit-software-partner-modal').modal('hide');
+              swal.fire({ 
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+            .then(function() {
+              location.reload();
+            });       
+            }
+        });
+      }
+    });
+      $(function() {
+        $('.SoftwarePartnerDeleteBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                $.ajax({
+                  type: "POST",
+                  url: "/delete-software-partner/"+id,
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Software Partner has been deleted.',
+                        'success',
+                        {
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                      })
+                    .then(function() {
+                      location.reload();
+                    });
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      confirmButtonClass: "btn-success",
+                      allowOutsideClick: false,
+                      allowEscapeKey: false
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+
+    $(".EditSoftwarePartnerBtn").on("click", function() {
+        $("#edit_mobile_no").val($(this).attr("data-mobile_no"));
+        $('#edit_email').val($(this).attr("data-email"));
+        $('#edit_first_name').val($(this).attr("data-first_name"));
+        $('#edit_last_name').val($(this).attr("data-last_name"));
+        $('#user_id').val($(this).attr("data-user_id"));
+        $("#edit-software-partner-modal").modal();
+    });
+
+      </script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+			$('#basic-datatables').DataTable({
+			});
+
+			$('#multi-filter-select').DataTable( {
+				"pageLength": 5,
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select class="form-control"><option value=""></option></select>')
+						.appendTo( $(column.footer()).empty() )
+						.on( 'change', function () {
+							var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val()
+								);
+
+							column
+							.search( val ? '^'+val+'$' : '', true, false )
+							.draw();
+						} );
+
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
+			});
+
+			// Add Row
+			// $('#add-row').DataTable({
+            //     "pageLength": 5,
+            // });
+            
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+            // buttons: [
+            //         'copy', 'csv', 'excel', 'pdf', 'print'
+            //     ]
+
+			var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+			$('#addRowButton').click(function() {
+				$('#add-row').dataTable().fnAddData([
+					$("#addName").val(),
+					$("#addPosition").val(),
+					$("#addOffice").val(),
+					action
+					]);
+				$('#addRowModal').modal('hide');
+
+			});
+		});
+	</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,267 @@
+
+<!-- <div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Suggest a Parking</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/suggest-parking/">Suggest a Parking</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                        
+                   <div class="card-body permission-denied" style="display:none">
+                      <div class="permission-denied" style="padding: 5%; color: #63b90b !important">Module will be Live Shortly. Will keep you posted.</div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+{% extends "layouts/merchant-base.html" %} {% block title %} Suggest a Parking {% endblock %}
+
+{% load custom_tags %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    
+  
+</style>
+
+<!-- Suggest Petrol Pump Modal -->
+<div class="modal fade" id="SuggestBusinessModal" role="dialog" >
+    <div class="modal-dialog">
+      <form method="POST" class="form" id="suggest_business_form">
+        {% csrf_token %}
+        <input type="hidden" name="m_business_id" value="{{m_business_id}}">
+        <input type="hidden" name="user_id" value="{{user_id}}">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Suggest a Parking</h2>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="name">Business Name<small style="color: red;"> *</small></label>
+              <input type="text" name="suggested_business_name" maxlength="20" class="form-control" id="suggested_business_name" required="">
+            </div>
+            <div class="form-group">
+              <label for="name">Contact Number<small style="color: red;"> *</small></label>
+              <input type="text" minlength="10" maxlength="10" name="contact_no" class="form-control" id="contact_no" required="">
+            </div>
+            <div class="form-group">
+              <label for="description">Address<small style="color: red;"> *</small></label>
+              <input type="text" class="form-control" maxlength="30" name="address" id="address" required="">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input id="suggest_business_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Suggest a Parking</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/suggest-parking/">Suggest a Parking</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                              <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#SuggestBusinessModal">
+                                <i class="fa fa-plus"></i>
+                                Suggest Parking
+                              </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                          <table id="add-row" class="display table table-hover">
+                              <thead>
+                                  <tr>
+                                      <th>Sr. No.</th>
+                                      <th>Suggested Business Name</th>
+                                      <th>Contact Number</th>
+                                      <th>Address</th>
+                                      <!-- <th>Suggested By</th> -->
+                                      <th>Suggested Date</th>
+                                  </tr>
+                              </thead>
+                              <tfoot>
+                              </tfoot>
+                              <tbody>
+                                  {% for business in business_list %}
+                                  <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ business.suggested_business_name }}</td>
+                                    <td>{{ business.contact_no }}</td>
+                                    <td>{{ business.address }}</td>
+                                    <!-- <td>{{ business.suggested_by }}</td> -->
+                                    <td>{{ business.created_at|date:'d-m-Y' }}</td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+
+  jQuery.validator.addMethod("mobile_number", function(value, element){
+    if (/^[6-9][0-9]{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+    }, "Please enter valid Contact Number");
+
+$( "#suggest_business_form" ).validate({
+  rules: {
+    contact_no: {
+      required: true,
+      mobile_number: true,
+      maxlength: 10,
+      minlength: 10,
+      digits: true
+    },
+  },
+  submitHandler: function() {
+    $.ajax({
+              type: "POST",
+              url: "/suggest-new-business/",
+              data: $('#suggest_business_form').serialize(),
+              success: function(response) {
+                if(response.status == "success"){
+                  $('#SuggestBusinessModal').modal('hide');
+                  swal.fire({
+                    icon:"success",
+                    title: "Success!",
+                    text: "Business Suggested Successfully.",
+                    type: "success",
+                    timer:1500,
+                    showConfirmButton:false,
+                  })
+                  .then(function() {
+                    location.reload();
+                  });
+                }
+                else if(response.status == "error"){
+                  swal.fire({
+                    icon:"error",
+                    title: "Oops...",
+                    text: "Failed to Suggest !!!",
+                    timer:1500,
+                    showConfirmButton:false,
+                  })
+                  $('#SuggestBusinessModal').modal('show');
+                }
+              },
+              error: function() {
+                $('#SuggestBusinessModal').modal('hide');
+                swal.fire({ 
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  timer:1500,
+                  showConfirmButton:false,
+              })
+              .then(function() {
+                location.reload();
+              });    
+            }
+    });
+  }
+});
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="/static/assets/js/setting-demo2.js"></script>
+    <script>
+        $(document).ready(function() {
+      $('#add-row').DataTable( {
+          dom: 'lBfrtip',
+          "ordering": false,
+          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          buttons: [
+             'excel', 'pdf', 'print'
+          ]
+      });
+        });
+    </script>
+
+{% endblock javascripts %}

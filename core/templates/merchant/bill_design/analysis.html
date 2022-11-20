@@ -1,0 +1,682 @@
+{% extends "layouts/merchant-base.html" %}
+{% load custom_tags %}
+{% block title %} Card Analysis {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+
+    .checked {
+        color: orange;
+    }
+
+    /* Three column layout */
+    .side {
+        float: left;
+        width: 15%;
+        margin-top: 10px;
+    }
+
+    .middle {
+        float: left;
+        width: 70%;
+        margin-top: 10px;
+    }
+
+    /* Place text to the right */
+    .right {
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* The bar container */
+    .bar-container {
+        width: 100%;
+        background-color: #f1f1f1;
+        text-align: center;
+        color: white;
+    }
+
+    /* Individual bars */
+    .bar-5 {
+        width: {
+                {
+                star5percentage
+            }
+        }
+
+        %;
+        height: 18px;
+        background-color: red;
+    }
+
+    .bar-4 {
+        width: {
+                {
+                star4percentage
+            }
+        }
+
+        %;
+        height: 18px;
+        background-color: red;
+    }
+
+    .bar-3 {
+        width: {
+                {
+                star3percentage
+            }
+        }
+
+        %;
+        height: 18px;
+        background-color: red;
+    }
+
+    .bar-2 {
+        width: {
+                {
+                star2percentage
+            }
+        }
+
+        %;
+        height: 18px;
+        background-color: red;
+    }
+
+    .bar-1 {
+        width: {
+                {
+                star1percentage
+            }
+        }
+
+        %;
+        height: 18px;
+        background-color: red;
+    }
+
+    /* Responsive layout - make the columns stack on top of each other instead of next to each other */
+    @media (max-width: 400px) {
+
+        .side,
+        .middle {
+            width: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        /* Hide the right column on small screens */
+        .right {
+            display: none;
+        }
+    }
+
+</style>
+<style type="text/css">
+    .stars-container {
+        position: relative;
+        display: inline-block;
+        color: transparent;
+    }
+
+    .stars-container:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '★★★★★';
+        color: lightgray;
+    }
+
+    .stars-container:after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: '★★★★★';
+        color: gold;
+        overflow: hidden;
+    }
+
+    .stars-0:after {
+        width: {
+                {
+                rating_in_percentage
+            }
+        }
+    }
+
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Design</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Contact Card</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/feedback_reply/">Card Analysis</a>
+                                </li>
+                            </ul>
+                            <!-- <button class="btn btn-primary btn-round ml-auto" data-toggle="modal"
+                                data-target="#Viewratinganalysis">
+                                <i class="fa fa-plus"></i>Analysis
+                            </button> -->
+
+                
+                        
+
+                    <div class=" col-md-4">
+                        <div class="row">
+                            <div class="card card-stats card-round" style="margin-left: 80px;">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                <i class="fas fa fas fa-user"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ml-3 ml-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">Share Count</p>
+                                                {% for i in var %}
+                                                <h4 class="card-title">{{ i.share }}</h4>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                          
+        
+
+                    <div class=" col-md-4">
+                        <div class="row">
+                            <div class="card card-stats card-round" style="margin-left: 80px;">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-icon">
+                                            <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                 <i class="fas fa fas fa-user"></i> 
+                                            </div>
+                                        </div>
+                                        <div class="col col-stats ml-3 ml-sm-0">
+                                            <div class="numbers">
+                                                <p class="card-category">View Count</p>
+                                                {% for i in var%}
+                                                 <h4 class="card-title">{{i.view}}</h4>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    </div>
+
+                </div>
+                
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    
+                                </div>
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <!-- <th>Sr. No.</th> -->
+                                        <th>Sr No</th>
+                                        <th>Date</th>
+                                        <th>Feedback</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for var in data %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ var.created_at }}</td>
+                                            <td>{{ var.comment }}</td>
+                                        
+ 
+            
+                                            <!-- <td style="text-align: center;width: 20%;">
+                                                {% if var.rating == "1" %}
+                                                {{rating}}
+                                                {% endif %}
+                                                {% if var.rating == "2" %}
+                                                {{rating}}{{rating}}
+                                                {% endif %}
+                                                {% if reply.rating == "3" %}
+                                                {{rating}}{{rating}}{{rating}}
+                                                {% endif %}
+                                                {% if var.rating == "4" %}
+                                                {{rating}}{{rating}}{{rating}}{{rating}}
+                                                {% endif %}
+                                                {% if var.rating == "5" %}
+                                                {{rating}}{{rating}}{{rating}}{{rating}}{{rating}}
+                                                {% endif %}
+                                            </td> -->
+                                            </tr>
+                                            {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                       
+                                    
+                                            </div>
+
+                                        </form>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+
+
+        <div class="modal fade" id="Viewratinganalysis" role="dialog">
+            <div class="modal-dialog modal-md">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title w-100 text-center"><b>Rating Analysis</b></h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <div>User Rating &nbsp;&nbsp;<span class="stars-container stars-0">★★★★★</span>
+                                    </div>
+                                    <p>{{average_rating|floatformat:2}} average based on {{feedback_count}} reviews.</p>
+                                    <hr style="border:3px solid #f1f1f1">
+
+                                    <div class="row">
+                                        <div class="side">
+                                            <div>5 Star</div>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="bar-container">
+                                                <div class="bar-5"></div>
+                                            </div>
+                                        </div>
+                                        <div class="side right">
+                                            <div>{{rating5}}</div>
+                                        </div>
+                                        <div class="side">
+                                            <div>4 Star</div>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="bar-container">
+                                                <div class="bar-4"></div>
+                                            </div>
+                                        </div>
+                                        <div class="side right">
+                                            <div>{{rating4}}</div>
+                                        </div>
+                                        <div class="side">
+                                            <div>3 Star</div>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="bar-container">
+                                                <div class="bar-3"></div>
+                                            </div>
+                                        </div>
+                                        <div class="side right">
+                                            <div>{{rating3}}</div>
+                                        </div>
+                                        <div class="side">
+                                            <div>2 Star</div>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="bar-container">
+                                                <div class="bar-2"></div>
+                                            </div>
+                                        </div>
+                                        <div class="side right">
+                                            <div>{{rating2}}</div>
+                                        </div>
+                                        <div class="side">
+                                            <div>1 Star</div>
+                                        </div>
+                                        <div class="middle">
+                                            <div class="bar-container">
+                                                <div class="bar-1"></div>
+                                            </div>
+                                        </div>
+                                        <div class="side right">
+                                            <div>{{rating1}}</div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="chart-container">
+                                <div class="chartjs-size-monitor">
+                                    
+                                    <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                            <div style="position:absolute;width:200%;height:200%;left:0; top:0">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <canvas id="chartContainerMerchant" width="100" height="100" class="chartjs-render-monitor" ></canvas>
+                                </div>
+                            </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="ReplyModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <form method="POST" class="form" id="feedback_reply_form" autocomplete="off">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title w-100 text-center">Add Reply</h2>
+                        </div>
+                        <div class="modal-body">
+                            <span id="feedback_selected_option_view"></span><br><br>
+                            <input type="hidden" id="bill_id" name="bill_id" value="" />
+                            <input type="text" class="form-control" id="feedback_reply" name="feedback_reply"
+                                placeholder="Reply *" required="" />
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-primary" value="Save">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+        <script>
+
+        </script>
+
+        <script type="text/javascript">
+            window.onload = function () {
+
+                var ctx5 = document.getElementById('chartContainerMerchant').getContext('2d');
+                window.myChart = new Chart(ctx5, config5);
+
+            };
+
+            var config5 = {
+                type: 'bar',
+
+                data: {
+                    labels: ['1 Star', '2 Star', '3 Star', '4 Star', '5 Star'],
+                    datasets: [{
+                        label: 'Ratings',
+                        data: {{ data1| safe }
+            },
+                backgroundColor: [
+                    '#FFA07A', '#6c757d', '#8B0000', '#A9A9A9', '#0000FF', '#00FFFF', '#006400', '#00008B', '#9932CC', '#17a2b8', '#00FF00', '#808000', '#FFBF00', '#9FE2BF', '#DE3163', '#DFFF00', '#40E0D0', '#87c440', '#CD5C5C', '#40ae49', '#FFE800', '#006eb6', '#07bbc1', '#f68e1f', '#e21836', '#00adef'
+                ],
+                borderColor: [
+                    '#17a2b8', '#dc3545', '#fd7e14', '#17a2b8', '#6f42c1', '#ffc107', '#28a745', '#dc3545', '#28a745', '#17a2b8', '#00FF00', '#808000', '#FFBF00', '#9FE2BF', '#DE3163', '#DFFF00', '#40E0D0', '#87c440', '#CD5C5C', '#40ae49', '#FFE800', '#006eb6', '#07bbc1', '#f68e1f', '#e21836', '#00adef'
+                ],
+                borderWidth: 1,
+        }]
+    },
+            options: {
+                responsive: true,
+                    maintainAspectRatio: false,
+                        scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                scaleShowValues: true,
+                    scales: {
+                    xAxes: [{
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
+                }
+            }
+}
+        </script>
+        <script>
+            var viewmodaldiv = $("#view-modal-div");
+            $(".viewBtn").on("click", function () {
+                var feedback_reply = $(this).data("feedback_reply");
+
+                $('#view_feedback_reply').empty().append(feedback_reply);
+                $("#exampleModal").modal();
+            });
+        </script>
+        <script>
+            $('.RatingReply').on('click', function (e) {
+                var id = $(this).attr("data-id");
+                var feedback_selected_option = $(this).data("feedback_selected_option");
+                $('#feedback_selected_option_view').empty().append(feedback_selected_option);
+                $('#bill_id').val(id);
+            });
+            $('#feedback_reply_form').validate({
+                rules: {
+                    reason: {
+                        required: true
+                    }
+                },
+                submitHandler: function () {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You really want to Add Reply!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Reply it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/reply-by-id/",
+                                data: $('#feedback_reply_form').serialize(),
+                                success: function (response) {
+                                    Swal.fire(
+                                        {
+                                            title: 'Added!',
+                                            text: 'Reply Added Successfully !!!',
+                                            icon: 'success',
+                                            timer: 1500,
+                                            showConfirmButton: false,
+                                        })
+                                        .then(function () {
+                                            location.reload();
+                                        });
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Something went wrong!",
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false
+                                    })
+                                        .then(function () {
+                                            location.reload();
+                                        });
+                                }
+                            });
+                        }
+                    });
+                }
+            });  
+        </script>
+
+
+    {% endblock %}
+
+        {% block javascripts %}
+
+        <script src="/static/assets/js/setting-demo2.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#add-row').DataTable({
+                    dom: 'lBfrtip',
+                    "ordering": false,
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    buttons: [
+                        'excel', 'pdf', 'print'
+                    ],
+                    initComplete: function () {
+                        this.api().columns([4]).every(function () {
+
+
+                            var column = this;
+                            var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+
+                                .appendTo($("#type_filter_" + column[0][0]).empty())
+
+                                .on('change', function () {
+                                    if ($("#column_id_4 :selected").length > 1) {
+                                        $('#column_id_4').select2('disable');
+
+                                    }
+
+
+                                    var val = $(':selected', select).map(function (index, element) {
+                                        return $.fn.dataTable.util.escapeRegex($(this).val());
+                                    }).toArray().join('|');
+                                    column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                                });
+
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>')
+                            });
+
+                        });
+                    }
+                });
+
+
+
+                $("#column_id_4").select2({
+                    placeholder: " Select Rating",
+                    closeOnSelect: true,
+                    width: '80%',
+                })
+
+            });
+        </script>
+
+        <style>
+            /*.error {
+            color: red;
+        }*/
+
+            /*.c1 {
+            border: 2px red ridge;
+        }*/
+
+            /* Datatable => to float button right  */
+            div.dt-buttons {
+                position: relative;
+                float: right;
+                border-radius: 20px;
+            }
+
+            /* Datatable => rounded corner button  */
+            button.dt-button {
+                border-radius: 20px;
+            }
+
+            .permission-denied {
+                color: red;
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                font-weight: 500;
+            }
+
+        </style>
+
+        {% endblock javascripts %}

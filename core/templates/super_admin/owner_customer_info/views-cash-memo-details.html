@@ -1,0 +1,546 @@
+{% extends "layouts/base.html" %} {% block title %} Cash Memo {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+
+{{title}}
+<style>
+
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .radio_set{
+        margin-left: 7px;
+    }
+    #null_customer_data
+    {
+        display: none;
+    }
+    .add-row{
+        color: #666;
+    background: #f8f8f8;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+     padding: 8px 26px 8px 10px;
+        background-position: calc(100% - 8px) 9px;
+    }
+    
+
+
+</style>
+
+
+<style type="text/css">
+    #size {
+        width: 200px;
+        height: 30px;
+
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+
+ <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+.align{
+    width: 100px;
+}
+.width_set{
+    width: 430px;
+    height: 506px;
+
+    
+}
+.body1{
+    background: url('http://143.198.117.39/media/offers/imgbackg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 506px;
+}
+.content_name{
+    font-size: 15px;
+}
+.closebtn{
+    position: absolute;
+    left: 406px;
+    opacity: 0.3;
+}
+.decoration{
+    text-decoration: none;
+    color: rgb(105,105,105);
+}
+.overflow_scroll{
+    overflow: scroll;
+    height: 150px;
+    width: 170px;
+
+}
+
+</style>
+<style>
+
+#hide_cust_state{
+    display: none;
+}
+#hide_cust_city{
+    display: none;
+}
+#hide_cust_area{
+    display: none;
+}
+#select_data{
+    width: 350%;
+}
+#m_select{
+    width: 100%;
+}
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Customer Info</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Cash Memo</a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                   
+    <div class="content">
+              
+                            
+                            <div class="table-responsive">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                        <h4><b>Mobile Number: {{mobile_number}}<br>
+                                            Name: {{name}}</b>
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <table id="add-row" class="display table table-hover" align="center">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>Sr. No</th>
+                                            <th>Date</th>
+                                            <th>Memo No</th>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for object in cash_memo %}
+                                                <tr align="center">
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>
+                                                        {{object.date|date:'d-m-Y'}}
+                                                    </td>
+                                                    <td>{{ object.memo_no }}</td>
+                                                    <td>₹ {{object.total|floatformat:2}}</td>
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                            <a href="/cash-memo/{{object.memo_url}}/" class="{% if object.rejected_cash_memo == True %} ml-5 {% endif %} btn btn-link btn-primary btn-lg" style="padding-right:0px;">
+                                                            <button type="button" class="btn btn-link" data-toggle="tooltip" title="View Cash Memo" 
+                                                            style="padding-right: 4px;"><i class="fa fa-eye" ></i></button></a>
+
+                                                            <button type="button" data-toggle="tooltip" data-target="" title="Send Cash Memo"
+                                                                class="btn btn-link btn-primary btn-lg sendBtn1" id="send-modal-div"
+                                                                data-original-title="Send Cash Memo" data-url="{{object.id}}"
+                                                                data-id="{{object.id}}"
+                                                                data-original-title="Send SMS" 
+                                                                data-url="{{object.id}}" 
+                                                                data-id="{{object.id}}"
+                                                                data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                                            </button>
+                                                            {% if object.rejected_cash_memo == True %}
+                                                                <button type="button" data-toggle="tooltip" data-target="" 
+                                                                title="Rejected"
+                                                                class="btn btn-link btn-danger" id="deactivate-modal-div"
+                                                                data-original-title="Status" data-url="{{object.id}}"
+                                                                data-id="{{object.id}}"><i class="fas fa-thumbs-down"></i>
+                                                                </button>
+                                                              {% endif %}
+                                                            
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        {% endfor %}
+                                    </tbody>    
+                                </table>
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+<script>
+
+    $(function() {
+    $('.sendBtn1').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        $.ajax({
+            type: "POST",
+            url: "/cash-memo-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Not enough balance to send. Please recharge now. !!!.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                console.log('success tag')
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });  
+                console.log('error tag')     
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+    
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+
+    function alphaOnly(event) {
+        var key = event.keyCode;
+        return ((key >= 65 && key <= 90) || key == 8);
+    };
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+        
+
+</script>
+
+<style>
+    
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<!-- <script type="text/javascript">
+    document.getElementById("offer_viewBtn").addEventListener("click", function(event){
+      event.preventDefault()
+    });
+</script> -->
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

@@ -1,0 +1,408 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} My Bill {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+
+@charset "UTF-8";
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.visuhide {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.star__container:hover .star__item, .star__radio:checked ~ .star__item {
+  -webkit-filter: grayscale(0);
+          filter: grayscale(0);
+}
+
+.star__container:not(:hover) > .star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5) ~ .star__item, .star__item, .star__item:hover ~ .star__item {
+  -webkit-filter: grayscale(1);
+          filter: grayscale(1);
+}
+
+.star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__container {
+  display: flex;
+  margin: auto;
+  /* border-radius: .25em;
+  background-color: #c6f09b;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.25);
+  transition: box-shadow .3s ease; */
+}
+/* .star__container:focus-within {
+  box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.5);
+} */
+.star__item {
+  display: inline-flex;
+  width: 1.90em;
+  height: 1.5em;
+}
+.star__item::before {
+  content: "{{bill_design.rating_emoji}}";
+  display: inline-block;
+  margin: auto;
+  font-size: .75em;
+  vertical-align: top;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform-origin: 50% 33.3%;
+          transform-origin: 50% 33.3%;
+  transition: -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+}
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.fa {
+  padding: 10px;
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  text-decoration: none;
+  margin: 4px 4px;
+  border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.8;
+    color: white;
+    text-decoration-line: none;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+
+.fa-instagram {
+  background: #F77737;
+  color: white;
+}
+
+.fa-youtube {
+  background: #bb0000;
+  color: white;
+}
+
+.fa-phone{
+  background: #3B5998;
+  color: white;
+}
+
+.fa-globe{
+  background: #3B5998;
+  color: white;
+}
+
+.fa-map{
+  background: #3B5998;
+  color: white;
+}
+
+.card-img-top {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  margin-left: -30px;
+  width: 60px !important;
+  height: 60px;
+  background-color: #D3D3D3;
+}
+
+.card {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+</style>
+
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-4">    
+            </div>
+            <div class="col-md-4" style="background-image: url('/media/bill_background.png'); padding-top: 90px; border-radius: 50px;">
+
+                <div class="card" style="border-radius: 20px" >
+                  <!-- <div style="background-image: url('/media/bill_background.png'); padding-top: 90px;">
+                   </div> -->
+                    <img class="card-img-top" src="http://157.230.228.250/media/merchant_business_logo/Google_Lens_-_new_logo.png" alt="Card image cap" style="border-radius: 50%; height: 60px; width: 50px;">
+
+
+                    <div class="card-header" >
+                        <div class="card-title">
+                            {% if bill_design.address == "below-address" %}
+                                <div class="row">
+                                    <!-- {% if bill_design.logo == "circular" %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="border-radius: 50%; width: 50px; height: 50px;" >
+                                        </div>
+                                    {% elif bill_design.logo == "square" %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" alt="navbar brand" class="navbar-brand" style="border-radius: 5px; height: 50px; width: 50px;">
+                                        </div>
+                                    {% else %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="width: 100px; height: 30px;">
+                                        </div>
+                                    {% endif %} -->
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                        <h6 style="margin-top: 10px;">{{business_address}}</h6>
+                                    </div>
+                                </div>
+                            {% elif bill_design.address == "side-address" %}
+                                <div class="row">
+                                    {% if bill_design.logo == "circular" %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="border-radius: 50%; width: 50px; height: 50px;" >
+                                        </div>
+                                    {% elif bill_design.logo == "square" %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" alt="navbar brand" class="navbar-brand" style="border-radius: 5px; height: 50px; width: 50px;">
+                                        </div>
+                                    {% else %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="width: 100px; height: 40px;">
+                                        </div>
+                                    {% endif %}
+                                    <div class="col d-flex align-items-center justify-content-center">
+                                        <h6>{{business_address}}</h6>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row">
+                                    {% if bill_design.logo == "circular" %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="border-radius: 50%; width: 50px; height: 50px;" >
+                                        </div>
+                                    {% elif bill_design.logo == "square" %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" alt="navbar brand" class="navbar-brand" style="border-radius: 5px; height: 50px; width: 50px;">
+                                        </div>
+                                    {% else %}
+                                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="width: 100px; height: 40px;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body" >
+
+                        {% if bill_design.rating == True %}
+                            <div class="row" style="margin-bottom: 5%;">
+                                <div class="col-md-12"><p style="text-align: center;"><b>{{bill_design.rating_text}}</b></p></div>
+                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                    <form method="POST" id="rating-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="url_slug" id="url_slug" value="{{url_slug}}">
+                                        <span class="star__container">
+                                            <input type="radio" name="rating" value="1" id="star-1" class="star__radio visuhide" >
+                                            <input type="radio" name="rating" value="2" id="star-2" class="star__radio visuhide">
+                                            <input type="radio" name="rating" value="3" id="star-3" class="star__radio visuhide">
+                                            <input type="radio" name="rating" value="4" id="star-4" class="star__radio visuhide">
+                                            <input type="radio" name="rating" value="5" id="star-5" class="star__radio visuhide">
+                                        
+                                            <label class="star__item" for="star-1" style="font-size: 25px !important;"><span class="visuhide">1 star</span></label>
+                                            <label class="star__item" for="star-2" style="font-size: 25px !important;"><span class="visuhide">2 stars</span></label>
+                                            <label class="star__item" for="star-3" style="font-size: 25px !important;"><span class="visuhide">3 stars</span></label>
+                                            <label class="star__item" for="star-4" style="font-size: 25px !important;"><span class="visuhide">4 stars</span></label>
+                                            <label class="star__item" for="star-5" style="font-size: 25px !important;"><span class="visuhide">5 stars</span></label>
+                                        </span>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- <div class="row" style="margin-bottom: 5%;">
+                            <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                <span><a style="color: #63b90b;" href="">Click here to fill out the survey</a></span>
+                            </div>
+                        </div> -->
+                       
+                    <!-- <img src="{{bill_details.bill_file.url}}" width="100%" height="400px"> -->
+
+                    <!-- <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill_details.bill.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe> -->
+                    <div style="max-height:200px;
+                    overflow:hidden;" id="image-div"><img src="http://157.230.228.250/media/customer_bill/2021-03-04T172626.430379.png" width="100%" height="400px" >
+                    </div>
+                    <div class="row" style="padding: 10px;">
+                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                            <button style="background:none; border:none; margin:0; padding:0; cursor: pointer; color: blue;" id="show-more-btn">Show More</button>
+                        </div>
+                        <div class="col-md-12 d-flex align-items-center justify-content-center">
+                            <button style="background:none; border:none; margin:0; padding:0; cursor: pointer; color: blue;" id="show-less-btn">Show Less</button>
+                        </div>
+                    </div>
+                        <div class="row" style="padding: 10px;">
+                            <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                {% if bill_design.facebook == True %}
+                                    <a href="{{bill_design.facebook_url}}" class="fa fa-facebook"></a>
+                                {% endif %}
+                                {% if bill_design.twitter == True %}
+                                    <a href="{{bill_design.twitter_url}}" class="fa fa-twitter"></a>
+                                {% endif %}
+                                {% if bill_design.instagram == True %}
+                                    <a href="{{bill_design.instagram_url}}" class="fa fa-instagram"></a>
+                                {% endif %}
+                                {% if bill_design.youtube == True %}
+                                    <a href="{{bill_design.youtube_url}}" class="fa fa-youtube"></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if ads_image %}
+                            <div class="row d-flex align-items-center justify-content-center">
+                                <a href="{{ads_redirect_url}}"><img src="{{ads_image.url}}" width="300" height="300" style="margin-bottom: 10px"></a>
+                            </div>
+                        {% endif %}
+                        <div class="row" style="padding: 10px;">
+                            <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                {% if bill_design.phone == True %}
+                                    <a href="tel:{{bill_design.phone_number}}" class="fa fa-phone"></a>
+                                {% endif %}
+                                {% if bill_design.website == True %}
+                                    <a href="{{bill_design.website_url}}" class="fa fa-globe"></a>
+                                {% endif %}
+                                {% if bill_design.map == True %}
+                                    <a href="{{bill_design.map_link}}" class="fa fa-map"></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row" style="padding: 10px;">
+                            {% if bill_design.terms_conditions == True %}
+                                <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                    <a href="{{bill_design.terms_url}}">Terms & Conditions</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-action" style="position: -webkit-sticky;
+                    position: sticky; bottom: 0px; background-color:white; padding: 10px">
+                        <div class="row">
+                            {% if bill_design.footer_logo == True %}
+                                <div class="col d-flex align-items-center justify-content-center">
+                                    {% if bill_design.logo == "circular" %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="border-radius: 50%; width: 50px; height: 50px;" >
+                                        </div>
+                                    {% elif bill_design.logo == "square" %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" alt="navbar brand" class="navbar-brand" style="border-radius: 5px; height: 50px; width: 50px;">
+                                        </div>
+                                    {% else %}
+                                        <div class="col d-flex align-items-center justify-content-center">
+                                            <img src="{{business_logo}}" style="width: 100px; height: 50px;">
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+                                <a href="{{bill_details.bill.url}}" download="">
+                                    <button type="submit" class="btn btn-success">Download Bill</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        
+
+        $(document).ready(function () {
+            
+            var prev_rating = {{bill_details.rating}}
+            var rating_id = "#star-" + prev_rating;
+            $(rating_id).prop("checked", true);
+            if(prev_rating != ""){}
+        });
+
+        $('input:radio[name="rating"]').change(
+            function(){
+                var rating = $("input[name='rating']:checked").val();
+                var id = $("#url_slug").val();
+                
+                $.ajax({
+                type: "POST",
+                url: "/update-rating/"+ id + '/',
+                data: $('#rating-form').serialize(),
+                    success: function(response) {
+                        
+                    }
+                })
+        });
+
+        $("#show-less-btn").hide();
+
+        $("#show-more-btn").click(function(){
+            $('#image-div').css({"max-height":"none", "overflow":"hidden"});
+            $("#show-less-btn").show();
+            $("#show-more-btn").hide();
+        });
+
+        $("#show-less-btn").click(function(){
+            $('#image-div').css({"max-height":"200px", "overflow":"hidden"});
+            $("#show-less-btn").hide();
+            $("#show-more-btn").show();
+        });
+
+
+        // 
+        
+    </script>
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}

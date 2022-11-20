@@ -1,0 +1,246 @@
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2">
+			<div class="sidebar-wrapper scrollbar scrollbar-inner" id="sidebar-scrollbar-id">
+				<div class="sidebar-content">
+					{% if request.user.is_authenticated %}
+						
+						<ul class="nav nav-primary">
+							<li class="nav-item {{DashboardNavclass}}" >
+								<a href="/partner-index/">
+									<i class="fas fa-home"></i>
+									<p>Dashboard</p>
+								</a>
+							</li>
+							{% if partnercategory == 'Marketing Partner' %}
+							<li class="nav-item {{ ComissionNavclass }}">
+								<a href="/partner-comision/">
+									<!-- <i class="fa fa-money"></i> -->
+									<i class="fas fa-money-check"></i>
+									<p>Commission</p>
+								</a>
+							</li>
+							{% else %}
+							<li class="nav-item {{ ComissionNavclass }}">
+								<a href="/partner-comision/">
+									<!-- <i class="fa fa-money"></i> -->
+									<i class="fas fa-money-check"></i>
+									<p>Spending</p>
+								</a>
+							</li>
+							{% endif %}
+							
+
+							<li class="nav-item {{ PaymentsNavclass }}">
+								<a data-toggle="collapse" href="#payments">
+									<i class="fa fa-rupee-sign"></i>
+									<p>Payments</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+									<ul class="nav nav-collapse">
+										<li class="{{PaymentHistoryNavClass}}">
+											<a href="/partner-payment-history/">
+												<span class="sub-item">Payment History</span>
+											</a>
+										</li>
+										<li class="{{ReceivedPaymentsNavClass}}">
+											<a href="/partner-received-payments/">
+												<span class="sub-item">Received Payments</span>
+											</a>
+										</li>
+										<!-- <li class="{{PaymentLinkNavClass}}">
+											<a href="/partner-get-payment-link/">
+												<span class="sub-item">Payment Link</span>
+											</a>
+										</li> -->
+									</ul>
+								</div>
+							</li>
+							<!-- <li class="nav-item {{ partnerMerchantInfoNavclass }}">
+								<a data-toggle="collapse" href="#offers">
+									<i class="fas fa-user"></i>
+									<p>Merchants Info</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ partnerMerchantInfoNavclass }}" id="offers">
+									<ul class="nav nav-collapse">
+										<li class="{{partnerMerchantInfoNavclass}}">
+											<a href="/partner-business/">
+												<span class="sub-item">Merchant List</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> -->
+							
+							<!-- <li class="nav-item {{ CustomerInfoNavClass }}">
+								<a data-toggle="collapse" href="#offers">
+									<i class="fas fa-user"></i>
+									<p>Customer Info</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ CustomerCollapseshow }}" id="offers">
+									<ul class="nav nav-collapse">
+										<li class="{{CustomerListNavClass}}">
+											<a href="/partner-merchant-info/">
+												<span class="sub-item">Customer List</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> -->
+							<!-- <li class="nav-item {{ CustomerInfoNavClass }}">
+								<a href="/partner-merchant-info/" >
+									<i class="fas fa-user"></i>
+									<p>Customer Info</p>
+								</a>
+							</li> -->	
+							
+							<li class="nav-item {{ partnerMerchantNavclass }}">
+								<a data-toggle="collapse" href="#merchant_info">
+									<i class="fas fa-user"></i>
+									<p>Merchants Info</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ partnerMerchantInfoNavcollclass }}" id="merchant_info">
+									<ul class="nav nav-collapse">
+										<li class="{{partnerMerchantInfoNavclass}}">
+											<a href="/partner-merchant-info/">
+												<span class="sub-item">Merchant List</span>
+
+											</a>
+										</li>
+
+
+									</ul>
+								</div>
+							</li>
+							
+
+							<!-- <li class="nav-item {{ PromotionsNavclass }}">
+										<a data-toggle="collapse" href="#promotions">
+											<i class="fas fa-images"></i>
+											<p>Promotions</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ ShowPromotionsNavclass }}" id="promotions">
+											<ul class="nav nav-collapse">
+												<li class="{{BulkSMSNavclass}}">
+													<a href="/bulk-sms-partner/">
+														<span class="sub-item">Bulk SMS</span>
+													</a>
+												</li>
+
+												<li class="{{BulkEmailNavclass}}">
+													<a href="/bulk-mail-partner/">
+														<span class="sub-item">Bulk Email</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+							</li> -->
+							<li class="nav-item {{ OffersNavclass }}">
+								<a href="/partner-offer/">
+									<i class="fas fa-shopping-bag"></i>
+									<p>Offers</p>
+								</a>
+							</li>	
+
+							
+							
+
+							<!-- {% if partnercategory == 'Marketing Partner' %}
+							<li class="nav-item {{ PartnerSubscriptionNavclass }}">
+								<a data-toggle="collapse" href="#subscription">
+									<i class="fa fa-tasks"></i>
+									<p>Subscription Plans</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ SubscriptionCollapseShow }}" id="subscription">
+									<ul class="nav  -->
+										<!-- nav-collapse"> -->
+
+										<!-- <li class="{{ SimpleSubscriptionNavclass }}">
+											<a href="/all-merchant-subscription-plans/">
+												<span class="sub-item">Green Bill Subscription Plan</span>
+											</a>
+										</li> -->
+
+										<!-- <li class="{{ TransactionalSubscriptionNavclass }}">
+											<a href="/all-merchant-transactional-subscription-plan/">
+												<span class="sub-item">Transactional SMS Subscription Plan</span>
+											</a>
+										</li>
+										<li class="{{ PromotionalSubscriptionNavclass }}">
+											<a href="/all-merchant-promotional-subscription-plan/">
+												<span class="sub-item">Promotional SMS Subscription Plan</span>
+											</a>
+										</li> -->
+										<!-- <li class="{{ AddOnNavclass }}">
+											<a href="/all-merchant-add-on-plan/">
+												<span class="sub-item">Add On's Plan</span>
+											</a>
+										</li> -->
+<!-- 
+									</ul>
+								</div>
+							</li>
+							{% endif %} -->
+
+
+
+
+
+							{% if request.user.is_partner == True %}
+								<li class="nav-item {{SettingNavclass}}">
+									<a data-toggle="collapse" href="#submenu">
+										<i class="icon-settings"></i>
+										<p>Settings</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ settingsCollapseShow }}" id="submenu">
+										<ul class="nav nav-collapse">
+											<li class=" {{ GeneralSettingsNavclass }}">
+												<a href="/partner-general-setting/">
+													<span class="sub-item">Business Settings</span>
+												</a>
+											</li>
+											<!-- <li class=" {{ PartnerSmsSettingsNavclass }}">
+												<a href="/partner-sms-setting/">
+													<span class="sub-item">SMS Settings</span>
+												</a>
+											</li> -->
+											<!-- <li class="{{ paymentSettingActiveClass }}">
+												<a href="/partner-payment-settings/">
+													<span class="sub-item">Payment Settings</span>
+												</a>
+											</li> -->
+											<!-- <li class="{{ MySubscriptionNavclass }}">
+												<a href="/partner-my-subscription/">
+													<span class="sub-item">My Subscriptions</span>
+												</a>
+											</li> -->
+										</ul>
+									</div>
+								</li>
+							{% endif %}	
+
+							<li class="nav-item {{ merchantSupportFAQNavclass }}">
+								<a href="/partner-supports-faqs/">
+									<i class="far fa-question-circle"></i>
+									<p>Support & FAQ's</p>
+								</a>
+							</li>	
+							
+							<li class="nav-item {{ SystemUpdateNavclass }}">
+								<a href="/partner-system-updates/">
+									<i class="flaticon-alarm-1"></i>
+									<p>System Updates</p>
+								</a>
+							</li>					
+					{% endif %}	
+				</div>
+			</div>
+		</div>
+        <!-- End Sidebar -->
+        

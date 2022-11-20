@@ -1,0 +1,275 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Recharge {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+
+                        <a style="font-size: 20px;"><b>Recharge</b></a>
+                        <ul class="breadcrumbs">
+                            <li class="nav-home">
+                                <a href="/merchant-index/">
+                                    <i class="flaticon-home"></i>
+                                </a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a>My Subscriptions</a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/recharge/">Recharge</a>
+                            </li>
+                        </ul>
+
+                        <!-- <ul class="nav nav-pills nav-secondary justify-content-center" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Subscription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Addons</a>
+                            </li>
+                        </ul> -->
+                    </div>
+                
+                    <div class="container">
+                        <br>
+                         {% for object in subscriptions_list %}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <section style="padding-left: 15px;">
+                                        <span><b>Subscription Name</b></span>
+                                        <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                    </section>
+                                </div>
+                                <div class="col-sm-1">
+                                    <section>
+                                        <span><b>Validity</b></span>
+                                        <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.valid_for_month }} Month</b></h1>
+                                    </section>
+                                </div>
+                                <div class="col-sm-2">
+                                    <section>
+                                        <span><b>Amount</b></span>
+                                        <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.subscription_plan_cost}}</b></h1>
+                                    </section>
+                                </div>
+                                <div class="col-sm-2">
+                                    <section><span><b><i class="icon-speech align-items-center justify-content-center"></i> Bill Cost</b></span>
+                                        <h1 style="font-size: 14px;color:#00569d">
+                                            <b>
+                                                <li>Bill {{ object.per_bill_cost }} P/bill</li>
+                                                <li>Receipt {{ object.per_receipt_cost }} P/receipt</li>
+                                                <li>Memo {{ object.per_cash_memo_cost }} P/memo</li>
+                                            </b>
+                                        </h1>
+                                    </section>
+                                </div>
+                                <div class="col-sm-2">
+                                    <section><span><b><i class="icon-screen-smartphone align-items-center justify-content-center"></i>Digital Bill Cost</b></span>
+                                        <h1 style="font-size: 14px;color:#00569d">
+                                            <b>
+                                                <li>Bill {{ object.per_digital_bill_cost }} P/bill</li>
+                                                <li>Receipt {{ object.per_digital_receipt_cost }} P/receipt</li>
+                                                <li>Memo {{ object.per_digital_cash_memo_cost }} P/memo</li>
+                                            </b>
+                                        </h1>
+                                    </section>
+                                </div>
+                                <div class="col-sm-3">
+                                    <br>
+                                    <form method="POST" action="{{ action }}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                                        <input type="hidden" name="hash_string" value="{{ object.hash_string }}" />
+                                        <input type="hidden" name="hash" value="{{ object.hashh }}"/>
+                                        <input type="hidden" name="posted" value="{{ object.posted }}"/>
+                                        <input type="hidden" name="txnid" value="{{ object.txnid }}" />
+                                        <input type="hidden" name="amount" value="{{ object.amount }}" />
+                                        <input type="hidden" name="firstname" id="firstname" value="{{ firstname }}" />
+                                        <input type="hidden" name="productinfo" value="{{ object.productinfo }}">
+                                        <input type="hidden" name="email" value="{{email}}">
+                                        <input type="hidden" name="phone" value="{{phone}}">
+                                        <input type="hidden" name="surl" value="{{surl}}">
+                                        <input type="hidden" name="furl" value="{{furl}}">
+                                        <input type="hidden" name="udf1" value="{{ object.udf1 }}">
+                                        <input type="hidden" name="udf2" value="{{ object.udf2 }}">
+                                        <input type="hidden" name="udf3" value="{{ object.udf3 }}">
+                                        <input type="hidden" name="udf4" value="{{ object.udf4 }}">
+                                        <input type="hidden" name="udf5" value="{{ object.udf5 }}">
+                                        <input type="hidden" name="udf6" value="{{ object.udf6 }}">
+                                        <input type="hidden" name="subscription_id" value="{{ object.id }}">
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#Mymodal_{{forloop.counter}}" style="padding: .65rem 0.4rem;">
+                                            View Details
+                                        </button>
+                                        <button type="submit" class="btn btn-sm" style="background-color: #06529e; color:white">Buy</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="modal fade" id="Mymodal_{{forloop.counter}}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                ×
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <section
+                                                style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                <p style="text-align:center;"> <br>
+                                                    <span
+                                                        style="color:white;text-align:center;font-size:50px;"><b>
+                                                            ₹ {{object.min_recharge}}</b></span>
+                                                    <br><span style="color: white;"><b>Plan For - 1 Year</b></span>
+                                                </p><br>
+
+                                            </section>
+                                            <hr>
+                                            <p
+                                                style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                Subscription Name
+                                                <span
+                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                    Per Bill Cost
+                                                </span>
+                                                <br>
+                                                <b>{{ object.subscription_name }}</b>
+
+                                                <span
+                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                    <b> ₹ {{ object.per_bill_cost }} P/bill</b>
+                                                </span>
+                                            </p>
+
+                                            {% if object.type == "parking_petrol_subscription_plan" or object.customized_plan == True %}
+                                                <p
+                                                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                    Per Digital Bill
+                                                    <span
+                                                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                        Total Amount
+                                                    </span>
+                                                    <br>
+                                                    <b>{{ object.digital_bill }} P/bill</b>
+
+                                                    <span
+                                                        style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                        <b>₹ {{object.min_recharge}}</b></span>
+                                                </p>
+                                            {% else %}
+                                                <p
+                                                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                    Per Digital Bill
+                                                    <span
+                                                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                        Per Receipts Bill Cost
+                                                    </span>
+                                                    <br>
+                                                    <b>{{ object.digital_bill }} P/bill</b>
+
+                                                    <span
+                                                        style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                        <b>₹ {{object.sms_cashmemo_cost}}</b></span>
+                                                </p>
+                                                <p
+                                                    style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                    Per Receipts Digital Bill Cost
+                                                    <span
+                                                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                        Total Amount
+                                                    </span>
+                                                    <br>
+                                                    <b> ₹ {{object.digital_cashmemo_cost}}</b>
+                                                    <span
+                                                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                        <b> ₹ {{object.min_recharge}}</b></span>
+                                                </p>
+                                                <!-- <p align="center" style="color: red">(Software maintainance cost: {{object.software_maintainance}})</p> -->
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!-- <button type="button" class="btn"
+                                                style="background-color: #06529e; color:white">
+                                                Buy
+                                            </button> -->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+        {% endblock content %}
+
+
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="popover"]').popover();
+            });
+
+
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        </script>
+
+
+        {% block javascripts %}
+
+        {% endblock javascripts %}

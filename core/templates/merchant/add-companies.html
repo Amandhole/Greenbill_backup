@@ -1,0 +1,455 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Manage Company {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<!-- <style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #1572e8;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #1572e8;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  </style> -->
+  <style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+</style>
+<div class="content">
+  <div class="page-inner">
+    <!-- <div class="page-header">
+      <h4 class="page-title">Vehicle Type</h4>
+      <ul class="breadcrumbs">
+        <li class="nav-home">
+          <a href="/merchant-index/">
+            <i class="flaticon-home"></i>
+          </a>
+        </li>
+        <li class="separator">
+            <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+            <a>Parking Lot</a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a href="/add-vehicle-type/">Vehicle Type</a>
+        </li>
+        </li>
+      </ul>
+    </div> -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+              <h4 class="card-title">Manage Companies</h4>
+              <ul class="breadcrumbs">
+                  <li class="nav-home">
+                    <a href="/merchant-index/">
+                      <i class="flaticon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                      <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                      <a>Parking Passes</a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/manage-companies/">Manage Companies</a>
+                  </li>
+                  </li>
+              </ul>
+             
+              {% if is_merchant == True %}
+                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addCompanyModal">
+                  <i class="fa fa-plus"></i> Add Company</button>
+              {% else %}
+                {% for actions in merchnat_action_permissions_list %}
+                  {% if actions.module_id|lower == "Parking Passes"|lower and actions.feature_id|lower == "Manage Companies"|lower %}
+                    {% if actions.add_permission == "1" %}
+                      <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addCompanyModal">
+                      <i class="fa fa-plus"></i> Add Company</button>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+          {% if is_merchant == True %}
+            <div class="card-body">
+              <div class="table-responsive">
+                <table id="add-row" class="display table table-hover">
+                  <thead>
+                    <tr>
+                      <th style="width: 5%">Sr. No.</th>
+                      <th style="width: 10%">Company</th>
+                      <th style="width: 5%">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for data in companies_list %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ data.company_name }}</td>
+                      <td>
+                        <div class="form-button-action">
+                          
+                          <button type="submit" class="btn btn-link btn-danger companyDeleteBtn" data-original-title="Delete" data-id="{{ data.id }}" data-toggle="tooltip"><i class="fa fa-trash" ></i></button>
+                         
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% else %}
+          {% for actions in merchnat_action_permissions_list %}
+              {% if actions.module_id|lower == "Parking Passes"|lower and actions.feature_id|lower == "Manage Companies"|lower %}
+                {% if actions.view_permission == "1" %}
+                  <input type="hidden" value="1" name="access_permission" id="access_permission">
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table id="add-row" class="display table table-hover">
+                        <thead>
+                          <tr>
+                            <th style="width: 5%">Sr. No.</th>
+                            <th style="width: 10%">Company</th>
+                            <th style="width: 5%">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for data in companies_list %}
+                          <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ data.company_name }}</td>
+                            <td>
+                              <div class="form-button-action">
+                                {% if actions.delete_permission == "1" %}
+                                  <button type="submit" class="btn btn-link btn-danger companyDeleteBtn" data-original-title="Delete" data-id="{{ data.id }}" data-toggle="tooltip"><i class="fa fa-trash" ></i></button>
+                                {% endif %}
+                              </div>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <div class="card-body permission-denied" style="display:none">
+              <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+            </div>
+          {% endif %}
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Parking Lot Space Modal -->
+<div class="modal fade" id="addCompanyModal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <!-- Modal content-->
+    <form method="POST" class="form" id="add_company_form" autocomplete="on">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Add Company</h2>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="m_business_id" id="m_business_id"  value="{{ merchant_general_setting_id }}" />
+            <div class="form-group">
+              <div class="input-group mb-2">
+                <label>Company</label>
+                <input type="text" name="company_name" id="company_name" maxlength="20" class="form-control">
+              </div>
+              <span class="text-danger" id="id_company_name_error"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <input id="submitBtn" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Add Parking Lot Space Modal End -->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+<script>
+    $(function() {
+          $('.companyDeleteBtn').on('click', function(e) {
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  var id = $(this).attr("data-id");
+                  $.ajax({
+                    type: "POST",
+                    url: "/delete-pass-company/"+id,
+                    data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                    success: function(response) {
+                      $('#addCompanyModal').modal('hide');
+                      Swal.fire({
+                        title:'Deleted!',
+                        text:'Company Deleted Successfully !!!',
+                        icon:'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                      })
+                      .then(function() {
+                        location.reload();
+                      });
+                    },
+                    error: function() {
+                      Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                      })
+                        .then(function() {
+                          //location.reload();
+                        });       
+                    }
+                });
+                }
+              })
+          });
+        });
+  </script>
+  
+<script>
+
+  $("#add_company_form").validate({
+    rules: {
+      company_name: {
+        required: true,
+      },
+    },
+    submitHandler: function () {
+      $.ajax({
+        type: "POST",
+        url: "/manage-companies/",
+        data: $('#add_company_form').serialize(),
+        success: function (response) {
+          if(response.status == "success"){
+            swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: response.msg,
+              type: "success",
+              timer:1500,
+              showConfirmButton:false,
+            })
+            .then(function () {
+              location.reload();
+            });
+          }
+          else{
+              swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: response.msg,
+              timer:1500,
+              showConfirmButton:false,
+            }).then(function () {
+                //   $('#addParkingSpaceModal').modal('show');
+                location.reload();
+            });
+            
+          }
+        },
+        error: function () {
+          $('#addCompanyModal').modal('hide');
+          swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            timer:1500,
+            showConfirmButton:false,
+          })
+            .then(function () {
+              location.reload();
+            });
+        }
+      });
+    }
+  });
+
+</script>
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#add-row').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ]
+    });
+  });
+</script>
+
+{% endblock javascripts %}

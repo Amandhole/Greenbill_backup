@@ -1,0 +1,1507 @@
+{% extends "layouts/base.html" %} {% block title %} Business Settings {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'assets/css/cropper.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/cropper.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+<style>
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #is_payu_available {
+    display: none;
+  }
+</style>
+<div class="content">
+  <div class="page-inner">
+    <!-- <div class="page-header">
+      <h4 class="page-title">Business Settings</h4>
+      <ul class="breadcrumbs">
+        <li class="nav-home">
+          <a href="/partner-index/">
+            <i class="flaticon-home"></i>
+          </a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a>Settings</a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a href="/partner-general-setting/">Business Settings</a>
+        </li>
+      </ul>
+    </div> -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+              <h4 class="card-title">Business Settings</h4>
+              <ul class="breadcrumbs">
+                  <li class="nav-home">
+                    <a href="/partner-index/">
+                      <i class="flaticon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a>Settings</a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/partner-general-setting/">Business Settings</a>
+                  </li>
+              </ul>
+            </div>
+            </div>
+          <div class="card-body">
+            <form class="form-control" action="" method="POST" id="partner_form" name="PartnerSettingform"
+              autocomplete="off" enctype="multipart/form-data">
+              {% csrf_token %}
+              <input type="hidden" name="partner_setting_id" id="partner_setting_id" value="{{ partner_general_setting.id }}">
+                <div class="card">
+                  <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                  <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Billing Details</b></h4>
+                </div>
+                <div class="card-body" style="padding-bottom: 0px;">
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Company Name <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" id="p_business_name_for_billing" name="p_business_name_for_billing"
+                          value="{{ partner_general_setting.p_business_name_for_billing }}" placeholder="Company Name" maxlength="100" 
+                          style="padding:3px; border: none;" required/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">GSTIN </div>
+                      <div class="col-md-9 input-group ">
+                        <input type="tel" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" class="form-control" maxlength="15" name="gstin" id="gstin" placeholder="GSTIN"
+                          value="{{ partner_general_setting.p_gstin  }}" 
+                          maxlength="15" style="padding:3px; border: none;" />
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">CIN</div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" pattern="[a-zA-Z0-9]+" class="form-control" maxlength="21" name="cin" id="cin" placeholder="CIN"
+                          value="{{ partner_general_setting.m_cin }}" 
+                          maxlength="21" style="padding:3px; border: none;" />
+                      </div>
+                    </div>
+                  </div> -->
+                      
+                  <!-- <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">TIN/VAT Number</div>
+                      <div class="col-md-9 input-group ">
+                        <input type="tel" pattern="[a-zA-Z0-9]+"  maxlength="11" class="form-control" name="tin_vat_number" id="tin_vat_number"
+                          placeholder="TIN/VAT Number" value="{{merchant_general_setting.m_vat_tin_number}}"
+                          style="padding:3px; border: none;" maxlength="11" />
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Phone Number <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text"  pattern="^[0-9]{10}" class="form-control" name="p_billing_phone"
+                          id="p_billing_phone" placeholder="Mobile Number"
+                          value="{{ partner_general_setting.p_billing_phone }}" maxlength="10" 
+                          style="padding:3px; border: none;" required/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Address <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" name="p_billing_address" id="p_billing_address" placeholder="Billing Address"
+                        value="{{ partner_general_setting.p_billing_address }}" style="padding:3px; border: none;" required="" maxlength="100" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Email<!--  <span style="color: red;">*</span> --></div>
+                      <div class="col-md-3 input-group ">
+                        <input type="email" class="form-control" name="p_billing_email" maxlength="300" id="p_billing_email" placeholder="Email"
+                        value="{{ partner_general_setting.p_billing_email }}"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                        style="padding:3px; border: none;"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3" >Company PAN Number<span style="color: red;">*</span> </div>
+                        <div class="col-md-9 input-group ">
+                            <input type="text" pattern= "[A-Z]{5}[0-9]{4}[A-Z]{1}" class="form-control" id="pan_number" name="pan_number" class="pan validatePanNumber" 
+                              value="{{ partner_general_setting.p_pan_number }}" placeholder="PAN Number"
+                              style="padding:3px; border: none;" maxlength="10" />
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                    <h4 class="card-title" style="padding-left: 10px; color: white;" ><b>Business Basic Details</b></h4>
+                  </div>
+                  <div class="card-body" style="padding-bottom: 0px; " >
+                    <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 233, 233);">
+                      <div class="col-md-3">Business Name <span style="color: red;">*</span> {% if partner.status == '1' %}&nbsp;&nbsp;<i class="fa fa-check-circle" style="font-size:16px;color:#00569D"></i>
+                          {% endif %}</div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text"  class="form-control mobile" name="business_name" id="business_name"
+                          placeholder="Company Name" value="{{ partner_general_setting.p_business_name }}" maxlength="50" 
+                          style="padding:3px; border: none;"
+                          required />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                    <div class="col-md-3">Mobile Number <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" name="business_number" id="business_number" placeholder="Mobile Number" rows="1"
+                        style="padding:3px; border: none;" value="{{ partner_general_setting.p_user }}"maxlength="10" readonly="" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                      <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 230, 230);">
+                        <div class="col-md-3">Business Category<span style="color: red;"> *</span></div>
+                        <div class="col-md-9 input-group ">
+                          <select class="form-control" name="partner_business_category" id="partner_business_category"
+                          style="margin-right: 50%; padding:3px; border: none;"
+                            required>
+                            <option value="">Select Business Category</option>
+                            {% for business_category in partner_business_category|dictsort:"business_category_name.lower" %}
+                            <option value="{{ business_category.id }}" 
+                            {% if business_category.id == partner_general_setting.p_business_category_id %} 
+                            selected 
+                            {% endif %}>{{ business_category.business_category_name }}</option>
+                            {% endfor %}
+                          </select>
+
+                        <!--  <input type="text" class="form-control" name="merchant_business_category_test" id="merchant_business_category" placeholder="Business Category" rows="1"
+                         style="padding:3px; border: none;" value="{{ partner_general_setting.p_business_category }}"maxlength="10" disabled>
+
+                         <input type="hidden" name="partner_business_category" value="{{ partner_general_setting.p_business_category_id }}">
+ -->
+                         </div>
+                       </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                        <div class="col-md-3">Business Email <span style="color: red;">*</span></div>
+                        <div class="col-md-9 input-group ">
+                          <input type="email" class="form-control" id="company_email" name="company_email"
+                          value="{{ partner_general_setting.p_company_email }}" maxlength="25" placeholder="Company Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                            style="padding:3px; border: none;" required/>
+                        </div>
+                      </div>
+                      </div>
+                      <!-- <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                        <div class="col-md-3">Company Contact Number <span style="color: red"> *</span></div>
+                        <div class="col-md-9 input-group ">
+                          <input type="tel" class="form-control" name="landline_number " id="landline_number"
+                            placeholder=" Mobile Number" value="{{ partner_general_setting.p_landline_number }}"maxlength="10" 
+                            style="padding:3px; border: none;"/>
+                        </div>
+                      </div>
+                      </div> -->
+                      <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                        <div class="col-md-3">Alternate Mobile Number </div>
+                        <div class="col-md-9 input-group ">
+                          <input type="tel" pattern="[0-9]+" class="form-control" name="alternate_mobile_number"
+                            id="alternate_mobile_number" placeholder="Alternate Mobile Number"
+                            value="{{ partner_general_setting.p_alternate_mobile_number }}" maxlength="10" 
+                            style="padding:3px; border: none;"/>
+                        </div>
+                      </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                        <div class="col-md-3">Website Url</div>
+                        <div class="col-md-9 input-group ">
+                          <input type="tel" class="form-control" name="p_website_url"
+                            id="p_website_url" placeholder="Website Url"
+                            value="{{ partner_general_setting.p_website_url }}" maxlength="50" 
+                            style="padding:3px; border: none;"/>
+                        </div>
+                      </div>
+                      </div> 
+                      <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Alternate Email</div>
+                            <div class="col-md-9 input-group ">
+                              <input type="email" class="form-control" id="alternate_email" name="alternate_email"
+                                value="{{ partner_general_setting.p_alternate_email }}" placeholder="Alternate Email" 
+                                style="padding:3px; border: none;" maxlength="25" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Address <span style="color: red;">*</span></div>
+                          <div class="col-md-9 input-group ">
+                            <input class="form-control" name="address" id="address"
+                              placeholder="Address"
+                              style="padding:3px; border: none; " value="{{ partner_general_setting.p_address }}" maxlength="30"/>
+                          </div>
+                        </div>
+                        </div>
+                        
+                          <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">State <span style="color: red;">*</span></div>
+                          <div class="col-md-9 input-group ">
+                            <select name="state" class="form-control" id="state"
+                        style="margin-right: 50%; padding:3px; border: none;"
+                          required>
+                          <option disabled selected value>Select State </option>
+                          {% for object in States %}
+                          <option value="{{ object.state }}" 
+                          {% if object.state == partner_general_setting.p_state %} 
+                          selected 
+                          {% endif %}>{{ object.state }}</option>
+                          {% endfor %}
+                        </select>
+                          </div>
+                          </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="row" style="border-bottom: 0.5px solid rgb(235, 230, 230);">
+                              <div class="col-md-3">City<span style="color: red;"> *</span></div>
+                              <div class="col-md-9 input-group ">
+                                <select name="city" class="form-control" id="city"
+                                style="margin-right: 50%; padding:3px; border: none;"
+                                  required aria-required="true">
+                                  <option disabled selected value>Select City</option>
+                                  <option value="{{ partner_general_setting.p_city }}" 
+                                  selected>{{ partner_general_setting.p_city }}</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">District <span style="color: red;">*</span></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[a-zA-Z]+" class="form-control" name="district" id="district" placeholder="District"
+                              value="{{ partner_general_setting.p_district }}"
+                              style="padding:3px; border: none;" maxlength="25" />
+                          </div>
+                        </div>
+                        </div>
+                        
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                            <div class="col-md-3">Area <span style="color: red;">*</span></div>
+                            <div class="col-md-9 input-group ">
+                            <!-- <input type="text" class="form-control" name="area" id="area" placeholder="Area"
+                              value="{{ partner_general_setting.m_area }}" required /> -->
+                              <input class="form-control"  name="area" id="area" placeholder="Area" rows="1"
+                              style="padding:3px; border: none; " value="{{ partner_general_setting.p_area }}" maxlength="30" />
+                              <!-- pattern="[a-zA-Z]+" -->
+                            </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                            <div class="col-md-3">Pin  Code <span style="color: red;">*</span></div>
+                            <div class="col-md-9 input-group ">
+                              <input type="tel" pattern="^[0-9]*\d{6}$" class="form-control" name="pin_code" id="pin_code" placeholder="Pin Code"
+                                value="{{ partner_general_setting.p_pin_code }}" maxlength="6"
+                                style="padding:3px; border: none;" />
+                            </div>
+                          </div>
+                          </div>
+                        
+                        
+                      </div>
+                      <!-- <div class="form-group">
+                        <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Website Url</div>
+                            <div class="col-md-9 input-group ">
+                              <input type="email" class="form-control" id="p_website_url" name="p_website_url"
+                                value="{{ partner_general_setting.p_website_url }}" placeholder="Website Url" 
+                                style="padding:3px; border: none;" maxlength="50"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div> -->
+                </div>
+                <div class="card">
+                <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                  <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Owner Details (Contact Person)</b></h4>
+                </div>
+                <div class="card-body" style="padding-bottom: 0px;">
+                  <!-- <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                    <div class="col-md-3">Mobile Number <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" name="business_number" id="business_number" placeholder="Mobile Number" rows="1"
+                        style="padding:3px; border: none;" value="{{ merchant_general_setting.m_user }}"maxlength="10" readonly="" />
+                      </div>
+                    </div>
+                  </div> -->
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                    <div class="col-md-3">First Name <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" rows="1"
+                        style="padding:3px; border: none;" value="{{ partner_objects_id.first_name }}"maxlength="30" required="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                    <div class="col-md-3">Last Name <span style="color: red;">*</span></div>
+                      <div class="col-md-9 input-group ">
+                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" rows="1"
+                        style="padding:3px; border: none;" value="{{ partner_objects_id.last_name }}"maxlength="30" required="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Aadhaar Number</div>
+                      <div class="col-md-9 input-group ">
+                        <input type="tel" pattern="^[0-9]*\d{12}$" maxlength="12" class="form-control" maxlength="12"  name="aadhaar_number" id="aadhaar_number" placeholder="Aadhaar Number"
+                          value="{{ partner_general_setting.p_aadhaar_number }}" 
+                          style="padding:3px; border: none;"/>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+              
+                <!-- <div class="card">
+                  <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                    <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Address</b></h4>
+                  </div>
+                  </div> -->
+                    
+                    
+                  <div class="card">
+                    <!-- <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                      <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Additional Details</b></h4>
+                    </div> -->
+                   <!--  <div class="card-body" style="padding-bottom: 0px; ">
+                     
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3" >Company PAN Number<span style="color: red;"> *</span></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="^[a-zA-Z0-9]*$" class="form-control" id="pan_number" name="pan_number" class="pan validatePanNumber" 
+                              value="{{ partner_general_setting.p_pan_number }}" placeholder="PAN Number"
+                              style="padding:3px; border: none;" maxlength="10" />
+
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3" >Aadhaar Number</div>
+                          <div class="col-md-9 input-group ">
+                            <input type="tel" pattern="^[0-9]*\d{12}$" class="form-control" id="aadhaar_number" name="aadhaar_number"
+                              value="{{ partner_general_setting.p_aadhaar_number }}" maxlength="12" placeholder="Aadhaar Number" 
+                              style="padding:3px; border: none;"  />
+                          </div>
+                        </div>
+                        </div> -->
+                        <!-- <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">GSTIN</div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[A-Z0-9]+" class="form-control" name="gstin" id="gstin" placeholder="GSTIN" 
+                              value="{{ partner_general_setting.p_gstin }}" maxlength="15" 
+                              style="padding:3px; border: none;"/>
+                          </div>
+                        </div>
+                        </div> -->
+                        <!-- <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">CIN</div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[A-Z0-9]+" class="form-control" name="cin" id="cin" placeholder="CIN"
+                              value="{{ partner_general_setting.p_cin }}" maxlength="21" 
+                              style="padding:3px; border: none;"/>
+                          </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">TIN/VAT Number</div>
+                          <div class="col-md-9 input-group ">
+                            <input type="tel"  maxlength="11" class="form-control" name="tin_vat_number" id="tin_vat_number"
+                              placeholder="TIN/VAT Number" value="{{partner_general_setting.p_vat_tin_number}}" 
+                              style="padding:3px; border: none;" maxlength="11"/>
+                          </div>
+                        </div>
+                        </div>
+        
+                    </div>
+                  </div> -->
+
+
+                  <div class="card">
+                    <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                      <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Bank Details</b></h4>
+                    </div>
+                    <div class="card-body" style="padding-bottom: 0px; ">
+                     
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Bank Account Number<!--  <span style="color: red;">*</span> --></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="tel" pattern="[0-9]+" class="form-control" name="bank_account_number" id="bank_account_number"
+                              placeholder="Bank Account Number"
+                              value="{{ partner_general_setting.p_bank_account_number }}" 
+                              style="padding:3px; border: none;" />
+                          </div>
+                          </div>
+                        </div>
+                     
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Bank IFSC code<!--  <span style="color: red;">*</span> --></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[A-Z0-9]+" class="form-control" name="bank_IFSC_code" id="bank_IFSC_code"
+                              placeholder="Bank IFSC code" value="{{ partner_general_setting.p_bank_IFSC_code }}"
+                              style="padding:3px; border: none;"/>
+                          </div>
+                          </div>
+                        </div>
+                     
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Bank Name<!--  <span style="color: red;">*</span> --></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[A-Z0-9\s]+" class="form-control" name="bank_name" id="bank_name"
+                              placeholder="Bank Name" value="{{ partner_general_setting.p_bank_name }}" maxlength="25" 
+                              style="padding:3px; border: none;"/>
+                          </div>
+                        </div>
+                        </div>
+                      
+                        <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Bank Branch<!--  <span style="color: red;">*</span> --></div>
+                          <div class="col-md-9 input-group ">
+                            <input type="text" pattern="[a-zA-Z\s]+" class="form-control" name="bank_branch" id="bank_branch"
+                              placeholder="Bank Branch" value="{{ partner_general_setting.p_bank_branch }}" maxlength="18" 
+                              style="padding:3px; border: none;"/>
+                          </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Name of Legal Entity on Bank Account<!-- <span style="color: red;">*</span> --></div>
+                      <div class="col-md-9 input-group ">
+                         <input type="text" class="form-control" name="p_bank_account_entity" id="p_bank_account_entity"
+                         placeholder="Name of Legal Entity on Bank Account" value="{{ partner_general_setting.p_bank_account_entity }}" maxlength="50" 
+                         style="padding:3px; border: none;"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Address of Legal Entity on Bank Account<!-- <span style="color: red;">*</span> --></div>
+                      <div class="col-md-9 input-group ">
+                         <input type="text" class="form-control" name="p_adress_account_entity" id="p_adress_account_entity"
+                         placeholder="Address of Legal Entity on Bank Account" value="{{ partner_general_setting.p_adress_account_entity }}" maxlength="50" 
+                         style="padding:3px; border: none;"/>
+                      </div>
+                    </div>
+                  </div>
+                    
+                  </div>
+                </div> 
+                   
+                  
+                <div class="card">
+                  <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                    <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Business Documents</b></h4>
+                  </div>
+                  <div class="form-group">
+                   <div class="row">
+                    <div class="col-md-3">
+                    <input type="checkbox" name="is_available" id="is_available"> <label>Required Payment Integration</label>
+                  </div>
+                   </div>
+                  </div>
+                  <div class="card-body" style="padding-bottom: 0px; ">
+                    <div class="form-group">
+                      <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Cancelled Cheque</div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="cancelled_cheque_certificate" id="cancelled_cheque_certificate"
+                          placeholder="cancelled_cheque Certificate" value="{{ partner_general_setting.p_cancelled_cheque_certificate }}" style="padding:3px; border: none;"/>
+                        <input type="hidden" name="cancel_bank_cheque_photo" id="cancel_bank_cheque_photo" value="{{ partner_general_setting.p_cancelled_cheque_certificate }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_cancelled_cheque_certificate %}
+                          <img src="{{ partner_general_setting.p_cancelled_cheque_certificate.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                        {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_cancelled_cheque_certificate %}
+                          <a href="{% if partner_general_setting.p_cancelled_cheque_certificate %}{{ partner_general_setting.p_cancelled_cheque_certificate.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>
+                          {% endif %}
+                      </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">GSTIN Certificate</div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="GSTIN_certificate" id="GSTIN_certificate"
+                          placeholder="GSTIN" value="{{ partner_general_setting.p_GSTIN_certificate }}" style="padding:3px; border: none;"/>
+                        <input type="hidden" name="gstin_certificate_file" id="gstin_certificate_file" value="{{ partner_general_setting.p_GSTIN_certificate }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_GSTIN_certificate %}
+                          <img src="{{ partner_general_setting.p_GSTIN_certificate.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                        {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_GSTIN_certificate %}
+                          <a href="{% if partner_general_setting.p_GSTIN_certificate %}{{ partner_general_setting.p_GSTIN_certificate.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>
+                          {% endif %}
+                      </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">CIN Certificate</div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="CIN_certificate" id="CIN_certificate"
+                          placeholder="CIN Certificate" value="{{ partner_general_setting.p_CIN_certificate }}" style="padding:3px; border: none;"/>
+                        <input type="hidden" name="cin_certificate_file" id="cin_certificate_file" value="{{ partner_general_setting.p_CIN_certificate }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_CIN_certificate %}
+                          <img src="{{ partner_general_setting.p_CIN_certificate.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                        {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_CIN_certificate %}
+                          <a href="{% if partner_general_setting.p_CIN_certificate %}{{ partner_general_setting.p_CIN_certificate.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>
+                          {% endif %}
+                      </div>
+                    </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Udyog Aadhaar Certificate</div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="udyog_adhar_certificate" id="udyog adhar_certificate"
+                          placeholder="udyog adhar Certificate" value="{{ partner_general_setting.p_udyog_adhar_certificate }}" style="padding:3px; border: none;"/>
+                        <input type="hidden" name="udyog_adhar_certificate_file" id="udyog_adhar_certificate_file" value="{{ partner_general_setting.p_udyog_adhar_certificate }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_udyog_adhar_certificate %}
+                          <img src="{{ partner_general_setting.p_udyog_adhar_certificate.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                        {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_udyog_adhar_certificate %}
+                          <a href="{% if partner_general_setting.p_udyog_adhar_certificate %}{{ partner_general_setting.p_udyog_adhar_certificate.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>
+                          {% endif %}
+                      </div>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                          <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                          <div class="col-md-3">Address Proof</div>
+                          <div class="col-md-3 input-group ">
+                            <input type="file" class="form-control" name="address_proof" id="address_proof"
+                              placeholder="Address Proof" value="{{ partner_general_setting.address_proof }}"  style="padding:3px; border: none;"/>
+                            <input type="hidden" name="address_proof_file" id="address_proof_file" value="{{ partner_general_setting.address_proof }}">
+                          </div>
+                          <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.address_proof %}
+                          <img src="{{ partner_general_setting.address_proof.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                        {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.address_proof %}
+                          <a href="{% if partner_general_setting.address_proof %}{{ partner_general_setting.address_proof.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>
+                          {% endif %}
+                      </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Attested copy of Pan Card of Legal Entity </div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="p_pan_legal_entity" id="p_pan_legal_entity"
+                            placeholder="Address Proof" value="{{ partner_general_setting.p_pan_legal_entity }}"  style="padding:3px; border: none;" />
+                          <input type="hidden" name="p_pan_legal_entity_file" id="p_pan_legal_entity_file" value="{{ partner_general_setting.p_pan_legal_entity }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_pan_legal_entity %}
+                          <img src="{{ partner_general_setting.p_pan_legal_entity.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                          {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_pan_legal_entity %}
+                          <a href="{% if partner_general_setting.p_pan_legal_entity %}{{ partner_general_setting.p_pan_legal_entity.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                        <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Signature proof of Authorized Signatory </div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="p_signature_proof" id="p_signature_proof"
+                            placeholder="Address Proof" value="{{ partner_general_setting.p_signature_proof }}"  style="padding:3px; border: none;" />
+                          <input type="hidden" name="p_signature_proof_file" id="p_signature_proof_file" value="{{ partner_general_setting.p_signature_proof }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_signature_proof %}
+                          <img src="{{ partner_general_setting.p_signature_proof.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                          {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_signature_proof %}
+                          <a href="{% if partner_general_setting.p_signature_proof %}{{ partner_general_setting.p_signature_proof.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">Company Registration Certificate </div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="p_company_registration_certificate" id="p_company_registration_certificate"
+                            placeholder="Address Proof" value="{{ partner_general_setting.p_company_registration_certificate }}"  style="padding:3px; border: none;" />
+                          <input type="hidden" name="p_company_registration_certificate_file" id="p_company_registration_certificate_file" value="{{ partner_general_setting.p_company_registration_certificate }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_company_registration_certificate %}
+                          <img src="{{ partner_general_setting.p_company_registration_certificate.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                          {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_company_registration_certificate %}
+                          <a href="{% if partner_general_setting.p_company_registration_certificate %}{{ partner_general_setting.p_company_registration_certificate.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group" id="is_payu_available">
+                    <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);">
+                      <div class="col-md-3">PayU Schedule Upload <!-- <span style="color: red;">*</span> --></div>
+                      <div class="col-md-3 input-group ">
+                        <input type="file" class="form-control" name="p_payu_schedule_upload" id="p_payu_schedule_upload"
+                            placeholder="PayU Schedule Upload " value="{{ partner_general_setting.p_payu_schedule_upload }}"  style="padding:3px; border: none;" required="" />
+                          <input type="hidden" name="p_payu_schedule_upload_file" id="p_payu_schedule_upload_file" value="{{ partner_general_setting.p_payu_schedule_upload }}">
+                      </div>
+                      <div class="col-md-3" style="padding-bottom:10px;">
+                        {% if partner_general_setting.p_payu_schedule_upload %}
+                          <img src="{{ partner_general_setting.p_payu_schedule_upload.url }}"  class='img-upload-preview img-circle center' style="width:100px;height: 80px;" />
+                          {% else %} <p style="text-align:center;">No File</p> {% endif %}
+                      </div>
+                      <div class="col-md-3" style="margin-top: 22px;">
+                        {% if partner_general_setting.p_payu_schedule_upload %}
+                          <a href="{% if partner_general_setting.p_payu_schedule_upload %}{{ partner_general_setting.p_payu_schedule_upload.url }}{% endif %}" download style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 500;font-family: Lato,sans-serif;"> Download File</span></i></a>{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  
+          </div>
+          <div class="text-center mt-3 mb-3">
+            <button type="submit"  id="save" class="btn btn-primary">Update</button>
+          </div>
+          <div class="card">
+                    <div class="card-header" style="background-color: #00569d; border-radius: 18px;  border-bottom: 0.5px solid rgb(168, 166, 166); padding: 5px;">
+                      <h4 class="card-title" style="padding-left: 10px; color: white;"><b>Uploads</b></h4>
+                    </div>
+                    <div class="card-body" style="padding-bottom: 0px; ">
+                      <div class="row" style="border-bottom: 0.5px solid rgb(235, 234, 234);"> 
+                    
+                 
+                <div class="col-md-4">
+                  
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="text-center" style="display: block;">Business Logo</label>
+                      <div class="input-file input-file-image">
+                        {% if partner_general_setting.p_business_logo %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="{{ partner_general_setting.p_business_logo.url }}" alt="preview" />
+                        {% else %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="/static/assets/img/Business-logo.png" alt="preview" />
+                        {% endif %}
+
+                        <input type="file" class="form-control form-control-file center" id="uploadImg2"
+                          name="business_logo" accept="image/*" value="">
+
+                        {% if partner_general_setting.p_business_logo %}
+                          <div class="row">
+                          <div class="col-md-6">
+                            <label  class="uploadlogo center btn btn-primary btn-round btn-sm text-center" data-id="{{ partner_general_setting.id }}">
+                              <i class="fa fa-file-image" style="color: white;"></i><span style="color: white;">&nbsp Select</span></label>
+                          </div>
+                          <div class="col-md-6">
+                            <a href="{% url 'partner-business-logo-remove' %}">
+                              <label class="center btn btn-primary btn-round btn-sm text-center">
+                                <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                              </label>
+                            </a>
+                          </div>
+                        </div>
+                        {% else %}
+
+                          <label class="uploadlogo center btn btn-primary btn-round btn-md text-center" data-id="{{ partner_general_setting.id }}" style=" display:inherit; margin-left: auto;
+                                          margin-right: auto; ">
+                            <i class="fa fa-file-image"></i> Select Business Logo</label>
+
+                        {% endif %}
+                         <p class="text-center center" style="color: #63b90b;"><b>Logo should be less than 500 KB</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="text-center" style="display: block;">Business Stamp</label>
+                      <div class="input-file input-file-image">
+                        {% if partner_general_setting.p_business_stamp %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="{{ partner_general_setting.p_business_stamp.url }}" alt="preview" />
+                        {% else %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="/static/assets/img/Business-stamp.png" alt="preview" />
+                        {% endif %}
+
+                        <input type="file" class="form-control form-control-file center" id="uploadImg3"
+                          name="business_stamp" accept="image/*" value="">
+
+                        {% if partner_general_setting.p_business_stamp %}
+                          <div class="row">
+                          <div class="col-md-6">
+                            <label class="uploadstamp center btn btn-primary btn-round btn-sm text-center" data-id="{{ partner_general_setting.id }}" >
+                              <i class="fa fa-file-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                          </div>
+                          <div class="col-md-6">
+                            <a href="{% url 'partner-business-stamp-remove' %}">
+                              <label class="center btn btn-primary btn-round btn-sm text-center">
+                                <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                              </label>
+                            </a>
+                          </div>
+                        </div>
+                        {% else %}
+                          <label class="uploadstamp center btn btn-primary btn-round btn-md text-center" data-id="{{ partner_general_setting.id }}"  style=" display:inherit; margin-left: auto;
+                                          margin-right: auto; ">
+                            <i class="fa fa-file-image"></i> Select Business Stamp</label>
+                        {% endif %}
+                         <p class="text-center center" style="color: #63b90b;"><b>Stamp should be less than 500 KB</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="text-center" style="display: block;">Digital Signature</label>
+                      <div class="input-file input-file-image">
+                        {% if partner_general_setting.p_digital_signature %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="{{ partner_general_setting.p_digital_signature.url }}" alt="preview" />
+                        {% else %}
+                        <img class="img-upload-preview img-circle center" width="100" height="100"
+                          src="/static/assets/img/Digital-Signature.png" alt="preview" />
+                        {% endif %}
+
+                        <input type="file" class="form-control form-control-file center" id="uploadImg4"
+                          name="digital_signature" accept="image/*" value="">
+
+                        {% if partner_general_setting.p_digital_signature %}
+                          <div class="row">
+                          <div class="col-md-6">
+                            <label class="uploadsignature center btn btn-primary btn-round btn-sm text-center" data-id="{{ partner_general_setting.id }}" >
+                              <i class="fa fa-file-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                          </div>
+                          <div class="col-md-6">
+                            <a href="{% url 'partner-digital-signature-remove' %}">
+                              <label class="center btn btn-primary btn-round btn-sm text-center">
+                                <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                              </label>
+                            </a>
+                          </div>
+                        </div>
+                        {% else %}
+                          <label class="uploadsignature center btn btn-primary btn-round btn-md text-center" data-id="{{ partner_general_setting.id }}"  style=" display:inherit; margin-left: auto;
+                                          margin-right: auto; ">
+                            <i class="fa fa-file-image"></i> Select Digital Signature</label>
+                        {% endif %}
+                         <p class="text-center center" style="color: #63b90b;"><b>Signature should be less than 500 KB</b></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+        </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if msg %}
+  {% if msg == 'success' %}
+    <script type="text/javascript">
+      // Swal.fire("Success", "Information updated successfully !!!", "success", "3000");
+      swal({
+         title: "Success!!!",
+         text: "Information update successfully.",
+         type: "success",
+         timer: 2000,
+         });
+    </script>
+  {% elif msg == 'error' %}
+    <script type="text/javascript">
+      // Swal.fire("Oops", "Something went wrong !!!", "error");
+      swal({
+         title: "Oops!!!",
+         text: "Something went wrong.",
+         type: "error",
+         timer: 2000,
+         });
+    </script>
+  {% endif %}  
+{% endif %}
+
+<!-- SCRIPTS -->
+<!-- Cropping signature modal -->
+<div class="container" id="crop-avatar">
+
+  <div class="modal fade" id="avatar-modal" aria-hidden="false" aria-labelledby="avatar-modal-label" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="avatar-form" action="/partner-cropped-signature-upload/" enctype="multipart/form-data"
+          method="post">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload text-center">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="partnersignaturefile" id="" class="avatar-input">
+                <input type="hidden" name="partner_setting_signature_modal_id" id="partner_setting_signature_modal_id"
+                  value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+</div>
+
+<!-- end signature modal -->
+
+
+
+
+<!-- Cropping Stamp modal -->
+<div class="container" id="crop-avatar-stamp">
+
+  <div class="modal fade" id="avatar-stamp-modal" aria-hidden="false" aria-labelledby="avatar-modal-label"
+    role="dialog">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <form class="avatar-form" action="/partner-cropped-stamp-upload/" enctype="multipart/form-data" method="post"
+          id="avatar-form-stamp-id">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload" id="avatar-upload-stamp-id">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="partnerstampfile" id="stamp-id" class="avatar-input">
+                <input type="hidden" name="partner_setting_stamp_modal_id" id="partner_setting_stamp_modal_id" value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper" id="avatar-wrapper-stamp-id"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" aria-label="Loading" role="img1" tabindex="-1" id="loading-stamp-id"></div>
+</div>
+
+<!-- end stamp modal -->
+
+
+
+<!-- Cropping logo modal -->
+<div class="container" id="crop-avatar-logo">
+
+  <div class="modal fade" id="avatar-logo-modal" aria-hidden="false" aria-labelledby="avatar-modal-label" role="dialog">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <form class="avatar-form" action="/partner-cropped-logo-upload/" enctype="multipart/form-data" method="post"
+          id="avatar-form-stamp-id">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload" id="avatar-upload-stamp-id">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="partnerlogofile" id="stamp-id" class="avatar-input">
+                <input type="hidden" name="partner_setting_logo_modal_id" id="partner_setting_logo_modal_id" value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper" id="avatar-wrapper-stamp-id"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" aria-label="Loading" role="img1" tabindex="-1" id="loading-stamp-id"></div>
+</div>
+
+<!-- end stamp modal -->
+
+<!-- SCRIPTS -->
+
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/cropper.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+        $("#state").on('change', function()
+        {
+
+            var state = $("#state").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/get-user-city-by-state/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'state': state
+                },
+                success: function(result){
+                    $("#city").empty();
+                    var empty = ""
+                    $('#city').append("<option value='" + empty + "' disabled selected value>" + "Select City *" + "</option>");
+                    $.each(result.data, function (key, value) {
+                        $('#city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+</script>
+<script type="text/javascript">
+  
+   $('#is_available').click(function() {
+    if($(this).is(':checked'))
+        
+      document.getElementById("is_payu_available").style.display = 'block';
+    else
+        document.getElementById("is_payu_available").style.display = 'none';
+});
+</script>
+<script type="text/javascript">
+  $.validator.addMethod('dimention', function(value, element, param) {
+    if(element.files.length == 0){
+        return true; 
+    }
+    var width = $(element).data('imageWidth');
+    var height = $(element).data('imageHeight');
+    if(width == param[0] && height == param[1]){
+        return true;
+    }else{
+        return false;
+    }
+},'Image must be 1080 x 1080 pixels dimension');
+
+  $.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+  $('#address_proof').change(function() {
+    $('#address_proof').removeData('imageWidth');
+    $('#address_proof').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#address_proof').data('imageWidth', width);
+        $('#address_proof').data('imageHeight', height);
+    }
+});
+
+  $.validator.addMethod("alpha", function(value, element) {
+    return this.optional(element) || value == value.match(/^[a-zA-Z]+$/);
+});
+
+//   $.validator.addMethod("lettersonly", function(value, element) 
+//     {
+//     return this.optional(element) || /^[a-z ]+$/i.test(value);
+//     }, "Letters and spaces only please");
+
+//   jQuery.validator.addMethod("pan_val", function(value, element){
+// if (/[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) {
+// return true;   // PASS validation when REGEX matches
+// } else {
+//     return false;  // FAIL validation
+// };
+
+// }, "Please enter valid PAN number.");
+
+
+  //   $.validator.addMethod("indian_gstin", function (value, element) {
+  //   if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(value) || this.optional(element)) {
+  //     return true;   // PASS validation when REGEX matches
+  //   } else {
+  //     return false;  // FAIL validation
+  //   };
+  // }, "Please enter valid GSTIN number.");
+
+    $.validator.addMethod("indian_cins", function (value, element) {
+    if (/^([L|U]{1})([0-9]{5})([A-Za-z]{2})([0-9]{4})([A-Za-z]{3})([0-9]{6})$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid CIN number.");
+
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+            if (/^[6-9][0-9]{9}$/.test(value)) {
+                return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid Mobile Number");
+
+
+      $.validator.addMethod("bank_ifsc", function (value, element) {
+    if (/^[A-Z]{4}0[A-Z0-9]{6}$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid IFSC Code.");
+
+  $.validator.addMethod("UrlVal", function (value, element) {
+
+            var Inicio_URL = ['http://www', 'https://www', 'www', 'ftp://www'];
+            var Fim_URL = ['com', 'net', 'org', 'pt', 'eu','co'];
+
+            var Url_Inserido = value.toLowerCase().split(".");
+
+            if (Inicio_URL.includes(Url_Inserido[0])) {
+
+                if (Fim_URL.includes(Url_Inserido[(Url_Inserido.length - 1)])) {
+                    return true;
+                } else
+                    return false;
+
+            } else
+                return false;
+
+        
+        })
+
+  $("#partner_form").validate({
+    rules: {
+      // p_website_url: {
+      //   UrlVal: true,
+      // },
+      business_name: {
+        required: true,
+        lettersonly: false,
+        maxlength: 50,
+      },
+      company_email: {
+        required: true,
+        email: true,
+        maxlength: 40,
+      },
+      p_billing_email:{
+        required:false,
+        email:true,
+        maxlength:40,
+      },  
+
+      alternate_mobile_number: {        
+        number: true,
+        minlength: 10,
+        maxlength: 10,
+
+      },
+      alternate_email: {
+        email: true,
+        maxlength: 50,
+      },
+      city: {
+        maxlength: 40,
+      },
+      area: {
+        maxlength: 50,
+      },
+      district: {
+        lettersonly: true,
+        maxlength: 40,
+      },
+      pin_code: {        
+        number: true,
+        minlength: 6,
+        maxlength: 6,
+      },
+      pan_number: {
+        required:true,
+      },
+      aadhaar_number: {
+        number: true,
+        minlength: 12,
+        maxlength: 20,
+      },
+      // gstin: {
+      //   indian_gstin: true,
+      // },
+      cin: {
+        indian_cins: true,
+      },
+      bank_account_number: {
+        maxlength: 30,
+      },
+      bank_IFSC_code: {
+        bank_ifsc: true,
+      },
+      address_proof: {
+        filesize: 500000,
+        dimention:[1080,1080]
+      },
+      cancelled_cheque_certificate: {
+        filesize: 500000,
+        dimention:[1080,1080]
+      },
+      udyog_adhar_certificate: {
+        filesize: 500000,
+        dimention:[1080,1080]
+      },
+      CIN_certificate: {
+        filesize: 500000,
+        dimention:[1080,1080]
+      },
+      GSTIN_certificate: {
+        filesize: 500000,
+        dimention:[1080,1080]
+      },
+      address:{
+        required: true
+      },
+      area:{
+        required: true
+      },
+      pin_code:{
+        required: true
+      }
+    },
+    messages: {
+      alternate_mobile_number: {
+        minlength: "please enter proper mobile number",
+        maxlength: "please enter proper mobile number",
+      },
+      aadhaar_number: {
+        minlength: "please enter proper aadhaar number",
+      },
+      bank_account_number: {
+        maxlength: "Please enter proper bank account",
+      },
+      // p_website_url: {
+      //   UrlVal: "Please enter valid website url."
+      // }
+    },
+    
+  });
+
+  $('#GSTIN_certificate').change(function() {
+    $('#GSTIN_certificate').removeData('imageWidth');
+    $('#GSTIN_certificate').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#GSTIN_certificate').data('imageWidth', width);
+        $('#GSTIN_certificate').data('imageHeight', height);
+    }
+});
+
+
+  $('#CIN_certificate').change(function() {
+    $('#CIN_certificate').removeData('imageWidth');
+    $('#CIN_certificate').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#CIN_certificate').data('imageWidth', width);
+        $('#CIN_certificate').data('imageHeight', height);
+    }
+});
+  $('#udyog_adhar_certificate').change(function() {
+    $('#udyog_adhar_certificate').removeData('imageWidth');
+    $('#udyog_adhar_certificate').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#udyog_adhar_certificate').data('imageWidth', width);
+        $('#udyog_adhar_certificate').data('imageHeight', height);
+    }
+});
+$('#cancelled_cheque_certificate').change(function() {
+    $('#cancelled_cheque_certificate').removeData('imageWidth');
+    $('#cancelled_cheque_certificate').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#cancelled_cheque_certificate').data('imageWidth', width);
+        $('#cancelled_cheque_certificate').data('imageHeight', height);
+    }
+});
+</script>
+
+<script type="text/javascript">
+  $(".uploadsignature").on("click", function () {
+    var partner_set_signature_id = $(this).data('id');
+
+
+    $('#partner_setting_signature_modal_id').val(partner_set_signature_id);
+    $("#avatar-modal").modal();
+
+  });
+
+
+
+  $(".uploadstamp").on("click", function () {
+    var partner_set_stamp_id = $(this).data('id');
+
+
+    $('#partner_setting_stamp_modal_id').val(partner_set_stamp_id);
+    $("#avatar-stamp-modal").modal();
+
+  });
+
+  $(".uploadlogo").on("click", function () {
+
+
+    var partner_set_logo_id = $(this).data('id');
+
+
+    $('#partner_setting_logo_modal_id').val(partner_set_logo_id);
+    $("#avatar-logo-modal").modal();
+
+  });
+</script>
+
+ 
+
+
+<script>
+  
+$(".uploadsignature").on("click", function () {
+    var partner_set_signature_id = $(this).data('id');
+
+
+    $('#partner_setting_signature_modal_id').val(partner_set_signature_id);
+    $("#avatar-modal").modal();
+
+  });
+
+
+
+  $(".uploadstamp").on("click", function () {
+    var partner_set_stamp_id = $(this).data('id');
+
+
+    $('#partner_setting_stamp_modal_id').val(partner_set_stamp_id);
+    $("#avatar-stamp-modal").modal();
+
+  });
+
+  $(".uploadlogo").on("click", function () {
+
+
+    var partner_set_logo_id = $(this).data('id');
+
+
+    $('#partner_setting_logo_modal_id').val(partner_set_logo_id);
+    $("#avatar-logo-modal").modal();
+
+  });
+
+
+
+
+  // $(document).ready(function () {
+  //   $("#pin_code").keyup(function () {
+  //     var pincode = $('#pin_code').val();
+  //     if (pincode.length == 6) {
+  //       $.ajax({
+  //         url: "https://api.postalpincode.in/pincode/" + pincode,
+  //         cache: false,
+  //         dataType: "json",
+  //         type: "GET",
+  //         success: function (data) {
+  //           state = data['0']['PostOffice'][0]['State']
+  //           city = data['0']['PostOffice'][0]['Region']
+  //           district = data['0']['PostOffice'][0]['District']
+  //           $('#state').val(state)
+  //           $('#city').val(city)
+  //           $('#district').val(district)
+  //         }
+  //       })
+  //     }
+  //     else {
+  //       $('#state').val("")
+  //       $('#city').val("")
+  //       $('#district').val("")
+  //     }
+  //   })
+  // })
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

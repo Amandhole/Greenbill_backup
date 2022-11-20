@@ -1,0 +1,2471 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+ 
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+	.card-primary {
+    	background: #ffffff !important;
+	}
+	.card-primary .card-category {
+		color: #000000 !important;
+	}
+	.card-primary .icon-big>i{
+		color: #000000 !important;
+	}
+	.card-primary .card-title {
+		color: #000000 !important;
+	}
+</style>
+			
+	<div class="content">
+		<div class="panel-header bg-primary-gradient">
+			<div class="page-inner py-5">
+				<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+					<div>
+						<h2 class="text-white pb-2 fw-bold">Merchant Dashboard</h2>
+					</div>
+					<div class="ml-md-auto py-2 py-md-0">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page-inner mt--5">
+			{% if is_merchant == True %}
+				<div class="row">
+					{% if merchant_business_category_id == 12 %}
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-rupee-sign" style="color: #00569D !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Payment</h4>
+												<p class="card-category" style="color: #00569D !important">Cash - {{total_collection|floatformat:2}}</p>
+												<p class="card-category" style="color: #00569D !important">Online - </p>
+												<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-list-ol" style="color: #ff8c00 !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Bill</h4>
+												<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">Total - {{total_bills}}</a></p>
+												<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/parking-flag-bills/" style="color: #ff8c00 !important">Flagged - {{total_flagged}}</a></p>
+												<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% elif merchant_business_category_id == 11 %}
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-wallet" style="color: #00569D !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Payment</h4>
+												<p class="card-category" style="color: #00569D !important">Cash - {{total_collection|floatformat:2}}</p>
+												<p class="card-category" style="color: #00569D !important">Online - </p>
+												<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-list-ol" style="color: #ff8c00 !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Bill</h4>
+												<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">Total - {{total_bills}}</a></p>
+												<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/petrol-pump-flag-bills/" style="color: #ff8c00 !important">Flagged - {{total_flagged}}</a></p>
+												<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+					
+
+					{% if merchant_business_category_id == 12 %}
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-car" style="color: #63b90b !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Space Available</h4>
+												{% for space in space_data|slice:":3" %}
+													<p class="card-category" style="color: #63b90b !important">{{space.vehicle_type}} - {{space.available_parking_space}}/{{space.space}}</p>
+													{% if forloop.last and forloop.counter == 2 %}
+														<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-check-double" style="color: #ff0000 !important" ></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Not Exited</h4>
+												{% for space in space_data|slice:":3" %}
+													<p class="card-category" style="color: #ff0000 !important">{{space.vehicle_type}} - {{space.space_used}}</p>
+												{% if forloop.last and forloop.counter == 2 %}
+														<p class="card-category" style="color: #ff0000 !important">&nbsp;</p>
+													{% endif %}	
+												{% endfor %}
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% elif merchant_business_category_id == 11 %}
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-gas-pump" style="color: #63b90b !important"></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Sales</h4>
+												{% for product in products1|slice:":3" %}
+													<p class="card-category" style="color: #63b90b !important">{{product.product_name}} - {{product.total_amount_colleted|floatformat:2}}</p>
+													{% if forloop.last and forloop.counter == 2 %}
+														<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="card card-stats card-primary card-round">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-3">
+											<div class="icon-big text-center">
+												<i class="fas fa-rupee-sign" style="color: #ff0000 !important" ></i>
+											</div>
+										</div>
+										<div class="col-9 col-stats">
+											<div class="numbers">
+												<h4 class="card-title" style="font-size: 14px;">Today's Rate</h4>
+												{% for product in products|slice:":3" %}
+													<p class="card-category" style="color: #ff0000 !important">{{product.product_name}} - {{product.product_cost|floatformat:2}}/L</p>
+													{% if forloop.last and forloop.counter == 2 %}
+														<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				</div>
+
+
+				{% if merchant_business_category_id == 12 %}
+
+					<div class="col-sm-12 col-md-12">
+						<div class="card card-stats card-primary card-round">
+							<div class="card-body">
+
+								<form class="form-control" action="/merchant-index/" method="POST" id="vehical_type_wise_collection" name="vehical_type_wise_collection" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+									<!-- <input type="hidden" name="promotion_id" value="coupon"> -->
+                                    <div class="row">
+                                    	<div class="col-md-1"></div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                <!-- <div class="input-group mb-4"> -->
+                                                    <input type="date" class="form-control" name="vehical_from_date"
+                                                        id="vehical_from_date" required max="{% now 'Y-m-d' %}" value="{{from_date}}"/>
+													<small id="from_date_error"></small>
+                                                <!-- </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                <!-- <div class="input-group mb-4"> -->
+                                                    <input type="date" class="form-control" name="vehical_to_date"
+                                                        id="vehical_to_date" required max="{% now 'Y-m-d' %}" value="{{to_date}}"/>
+													<small id="to_date_error"></small>
+                                                <!-- </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" style="padding-top: 3%">
+                                            <div class="form-group">
+                                                <!-- <button type="submit" name="submit" value="vehical_type_wise_collection_btn" class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button> -->
+												<button class="btn btn-icon btn-link btn-primary btn-xs" name="submit" value="vehical_type_wise_collection_btn"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+								    </form>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Vehicle Type Wise Collection</div>
+									</div>
+								</div>
+								<div class="card-body">
+								    <!-- <form class="form-control" action="/merchant-index/" method="POST" id="vehical_type_wise_collection" name="vehical_type_wise_collection" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+									
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                
+                                                    <input type="date" class="form-control" name="vehical_from_date"
+                                                        id="vehical_from_date" required max="{% now 'Y-m-d' %}" value="{{from_date}}"/>
+													<small id="from_date_error"></small>
+                                               
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                
+                                                    <input type="date" class="form-control" name="vehical_to_date"
+                                                        id="vehical_to_date" required max="{% now 'Y-m-d' %}" value="{{to_date}}"/>
+													<small id="to_date_error"></small>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 6%">
+                                            <div class="form-group">
+                                                
+												<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="vehical_type_wise_collection_btn"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+								    </form> -->
+									<div class="chart-container">
+										<canvas id="productwiseCollectionchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Vehicle Type Wise Bills</div>
+									</div>
+								</div>
+								<div class="card-body">
+								    <!-- <form class="form-control" action="/merchant-index/" method="POST" id="vehical_type_wise_bill" name="vehical_type_wise_bill" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="vehical_start_date"
+                                                        id="vehical_start_date" required max="{% now 'Y-m-d' %}" value="{{start_date}}"/>
+													<small id="vehical_start_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="vehical_end_date"
+                                                        id="vehical_end_date" required max="{% now 'Y-m-d' %}" value="{{end_date}}"/>
+													<small id="end_date_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 6%">
+                                            <div class="form-group">                                            
+                                            	<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="vehical_type_wise_bill_btn"><span class="fas fa-search"></span></button>
+                                       		</div>
+                                        </div>
+                                    </div>
+								    </form> -->
+									<div class="chart-container">
+										<canvas id="productWiseBillsdoughnutChart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% elif merchant_business_category_id == 11 %}
+					<div class="row">
+						<div class="col-sm-12 col-md-12">
+							<div class="card">
+								<form class="form-control" action="/merchant-index/" method="POST" id="product_sales_form" name="product_sales_form" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+                                    <div class="row">
+                                    	<div class="col-md-1"></div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="product_start_date"
+                                                        id="product_start_date" required value="{{current_from_date}}" max="{% now 'Y-m-d' %}"/>
+													<small id="product_start_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="product_end_date"
+                                                        id="product_end_date" required value="{{current_to_date1}}" max="{% now 'Y-m-d' %}"/>
+													<small id="end_date_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" style="padding-top: 3%">
+                                            <div class="form-group">
+                                                <!-- <button type="submit" name="submit" value="product_sales_form_btn" class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button> -->
+												<button class="btn btn-icon btn-link btn-primary btn-xs" name="submit" value="product_sales_form_btn"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+									</form>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Add On's Sales</div>
+									</div>
+								</div>
+								<div class="card-body">
+								    <!-- <form class="form-control" action="/merchant-index/" method="POST" id="add_ons_sales" name="add_ons_sales" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="sales_start_date"
+                                                        id="sales_start_date" required max="{% now 'Y-m-d' %}" value="{{start_date}}"/>
+													<small id="sales_start_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="sales_end_date"
+                                                        id="sales_end_date" required max="{% now 'Y-m-d' %}" value="{{end_date}}"/>
+													<small id="end_date_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 6%">
+                                            <div class="form-group">
+                                                
+												<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="add_ons_sales_btn"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+									</form> -->
+									<div class="chart-container">
+										<canvas id="addonsSalesdoughnutchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Product Sales</div>
+									</div>
+								</div>
+								<div class="card-body">
+								    <!-- <form class="form-control" action="/merchant-index/" method="POST" id="product_sales_form" name="product_sales_form" autocomplete="off" style="border:0px;">
+								    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="product_start_date"
+                                                        id="product_start_date" required value="{{start_date}}" max="{% now 'Y-m-d' %}"/>
+													<small id="product_start_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                    <input type="date" class="form-control" name="product_end_date"
+                                                        id="product_end_date" required value="{{end_date}}" max="{% now 'Y-m-d' %}"/>
+													<small id="end_date_error"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 6%">
+                                            <div class="form-group">
+                                                
+												<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="product_sales_form_btn"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+									</form> -->
+									<div class="chart-container">
+										<canvas id="productSaledoughnutChart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				<div class="row">
+					<div class="col-md-12">
+						{% if merchant_business_category_id == 11 %}
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+											<div class="card-title">User's Analysis</div>
+											<div class="card-tools">
+												<form action="/merchant-index/" method="POST" id="user_collection_filter_form">
+													{% csrf_token %}
+													<div class="row">
+														<div class="col-md-3">
+															<label>Users</label>
+															<select class="form-control" name="user" id="user_id">
+																<option value="">Select</option>
+																{% for user in merchant_users %}
+																	{% if user.user_id.id == custom_user %}  
+			                                                            <option value="{{user.user_id.id}}" selected="">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+			                                                        {% else %}
+																		<option value="{{user.user_id.id}}">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+														<div class="col-md-4">
+															<label>From Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="from_date" value="{{from_date}}" id="from_date" max="{% now 'Y-m-d' %}">
+														</div>
+														<div class="col-md-4">
+															<label>To Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="to_date" value="{{to_date}}" id="to_date" max="{% now 'Y-m-d' %}">
+														</div>
+														
+														<div class="col-md-1" style="margin-top: 4%; padding-left: 0px;">
+															<button class="btn btn-icon btn-link btn-primary btn-xs" name="submit" value="user_collection_petrol_pump"><span class="fas fa-search"></span></button>
+														</div>
+														<div class="col-md-12 text-center" id="UserCollectionFilterError" style="font-size: 20px"></div>
+													</div>
+
+												</form>
+											</div>
+									</div>
+								</div>
+
+								<div class="card-body">
+									<div class="chart-container" style="min-height: 200px">
+										<div class="table-responsive">
+											<table class="display table table-hover">
+												<thead>
+	                                                <tr align="center">
+														<th>Name</th>
+														<th>Total Bills</th>
+														<th>Total Collection</th>
+														<th>Total Flagged</th>
+														<th>Login</th>
+														<th>Logout</th>
+														<!-- <th>Total Hours</th> -->
+													</tr>
+												</thead>
+												<tbody>
+													{% for user in merchant_user_details %}
+														<tr>
+															<td>{{user.name}}</td>
+															<td>{{user.total_bills}}</td>
+															<td>{{user.total_collection|floatformat:2}}</td>
+															<td>
+																{% if user.total_flagged %}
+																	{{user.total_flagged}}
+																{% else %}
+																	0
+																{% endif %}
+															</td>
+															<td width="20%">
+																{% if user.login_at %}
+																	{{user.login_at|date:'d-m-Y'}}
+																	<br>
+																	{{user.login_at|date:'H:i'}}
+																{% endif %}
+															</td>
+															<td width="20%">
+																{% if user.logout_at %}
+																	{{user.logout_at|date:'d-m-Y'}}
+																	<br>
+																	{{user.logout_at|date:'H:i'}}
+																{% endif %}																
+															</td>
+															<!-- <td>{{user.total_hours}}</td> -->
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% elif merchant_business_category_id == 12 %}
+							<div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+											<div class="card-title">User's Analysis</div>
+											<div class="card-tools">
+												<form action="/merchant-index/" method="POST" id="user_collection_filter_form">
+													{% csrf_token %}
+													<div class="row">
+														<div class="col-md-3">
+															<label>Users</label>
+															<select class="form-control" name="user" id="user_id">
+																<option value="">Select</option>
+																{% for user in merchant_users %}
+																	{% if user.user_id.id == custom_user %}  
+			                                                            <option value="{{user.user_id.id}}" selected="">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+			                                                        {% else %}
+																		<option value="{{user.user_id.id}}">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+														<div class="col-md-4">
+															<label>From Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="from_date" value="{{from_date}}" id="from_date" max="{% now 'Y-m-d' %}">
+														</div>
+														<div class="col-md-4">
+															<label>To Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="to_date" value="{{to_date}}" id="to_date" max="{% now 'Y-m-d' %}">
+														</div>
+														
+														<div class="col-md-1" style="margin-top: 4%; padding-left: 0px;">
+															<button class="btn btn-icon btn-link btn-primary btn-xs" name="submit" value="user_collection_btn"><span class="fas fa-search"></span></button>
+														</div>
+														<div class="col-md-12 text-center" id="UserCollectionFilterError" style="font-size: 20px"></div>
+													</div>
+
+												</form>
+											</div>
+									</div>
+								</div>
+
+								<div class="card-body">
+									<div class="chart-container" style="min-height: 200px">
+										<div class="table-responsive">
+											<table class="display table table-hover">
+												<thead>
+	                                                <tr align="center">
+														<th>Name</th>
+														<th>Total Bills</th>
+														<th>Total Bill Collection</th>
+														<th>Total Flagged</th>
+														<th>Total Pass</th>
+														<th>Total Pass Collection</th>
+														<th>Total Collection</th>
+														<th>Login</th>
+														<th>Logout</th>
+														<!-- <th>Total Hours</th> -->
+													</tr>
+												</thead>
+												<tbody>
+													{% for user in merchant_user_details %}
+														<tr>
+															<td width="15%">{{user.name}}</td>
+															<td>{{user.total_bills}}</td>
+															<td>{{user.total_collection_bill|floatformat:2}}</td>
+															<td>
+																{% if user.total_flagged %}
+																	{{user.total_flagged}}
+																{% else %}
+																	0
+																{% endif %}
+															</td>
+															<td>
+																{{user.total_pass}}
+															</td>
+															<td>
+																{{user.total_pass_colletion|floatformat:2}}
+															</td>
+															<td>{{user.total_collection}}</td>
+															<td width="15%">
+																{% if user.login_at %}
+																	{{user.login_at|date:'d-m-Y'}}
+																	<br>
+																	{{user.login_at|date:'H:i'}}
+																{% endif %}
+															</td>
+															<td width="15%">
+																{% if user.logout_at %}
+																	{{user.logout_at|date:'d-m-Y'}}
+																	<br>
+																	{{user.logout_at|date:'H:i'}}
+																{% endif %}																
+															</td>
+															<!-- <td>{{user.total_hours}}</td> -->
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+				{% if merchant_business_category_id == 12 %}
+					<div class="row">
+						<div class="col-md-12"><div class="card">
+																<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Bills Collection of Session 
+										{% if search_from_year and search_to_year %}
+										{{search_from_year}}-{{search_to_year}}
+										{% else %}
+										{{current_year}}-{{next_year}}
+										{% endif %}</div>
+										<div class="card-tools">
+											<form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+												{% csrf_token %}
+												<div class="row">
+													<div class="col-md-9">
+														<label>Years <span style="color: red;">*</span></label>
+															<select class="form-control" name="years" id="" required="">
+																<option value="">Select</option>
+
+																				{% for year1,year2 in yearslist %}
+																				{% if year1 == years_value %} 
+						                                                        <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+																				{% else %}
+																				<option value="{{year1}}">{{year1}} - {{year2}}</option>
+																				{% endif %}
+																				{% endfor %}
+																			</select>
+													</div>
+													
+													<div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 12px;">
+														<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_btn"><span class="fas fa-search" ></span></button>
+													</div>
+													<div class="col-md-12 text-center" id="BillsCollectionFilterError" style="font-size: 20px"></div>
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container" style="min-height: 300px">
+										<canvas id="vehiclestatusChart"></canvas>
+									</div>
+									<div id="vehiclestatusChartLegend"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% elif merchant_business_category_id == 11 %}
+					<div class="row">
+						<div class="col-md-12"><div class="card">
+								<div class="card-header">
+									<div class="card-head-row">
+										<div class="card-title">Bills Collection of Session {% if search_from_year and search_to_year %}
+										{{search_from_year}}-{{search_to_year}}
+										{% else %}
+										{{current_year}}-{{next_year}}
+										{% endif %}</div>
+										<div class="card-tools">
+											<form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+												{% csrf_token %}
+												<div class="row">
+													<div class="col-md-9">
+														<label>Years <span style="color: red;">*</span></label>
+															<select class="form-control" name="years" id="" required="">
+																<option value="">Select</option>
+
+																				{% for year1,year2 in yearslist %}
+																				{% if year1 == years_value %} 
+						                                                        <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+																				{% else %}
+																				<option value="{{year1}}">{{year1}} - {{year2}}</option>
+																				{% endif %}
+																				{% endfor %}
+																			</select>
+													</div>
+													
+													<div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 16px;">
+														<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_petrol_pump"><span class="fas fa-search" ></span></button>
+													</div>
+													<div class="col-md-12 text-center" id="BillsCollectionPetrolPumpFilterError" style="font-size: 20px"></div>
+												</div>
+
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container" style="min-height: 300px">
+										<canvas id="productsalesChart"></canvas>
+									</div>
+									<div id="myLegendContainer"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+			{% else %}
+                {% for actions in merchnat_action_permissions_list %}
+                    {% if actions.module_id|lower == "Dashboard"|lower and actions.feature_id|lower == "Dashboard"|lower %}
+                        {% if actions.view_permission == "1" %}
+                        	<input type="hidden" value="1" name="access_permission" id="access_permission">
+                        		<div class="row">
+									{% if merchant_business_category_id == 12 %}
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-rupee-sign" style="color: #00569D !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Payment</h4>
+																<p class="card-category" style="color: #00569D !important">Cash - {{total_collection|floatformat:2}}</p>
+																<p class="card-category" style="color: #00569D !important">Online - </p>
+																<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-list-ol" style="color: #ff8c00 !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Bill</h4>
+																<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">Total - {{total_bills}}</a></p>
+																<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/parking-flag-bills/" style="color: #ff8c00 !important">Flagged - {{total_flagged}}</a></p>
+																<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									{% elif merchant_business_category_id == 11 %}
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-wallet" style="color: #00569D !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Payment</h4>
+																<p class="card-category" style="color: #00569D !important">Cash - {{total_collection|floatformat:2}}</p>
+																<p class="card-category" style="color: #00569D !important">Online - </p>
+																<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-list-ol" style="color: #ff8c00 !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Bill</h4>
+																<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">Total - {{total_bills}}</a></p>
+																<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/petrol-pump-flag-bills/" style="color: #ff8c00 !important">Flagged - {{total_flagged}}</a></p>
+																<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+
+									{% if merchant_business_category_id == 12 %}
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-car" style="color: #63b90b !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Space Available</h4>
+																{% for space in space_data|slice:":3" %}
+																	<p class="card-category" style="color: #63b90b !important">{{space.vehicle_type}} - {{space.available_parking_space}}/{{space.space}}</p>
+																	{% if forloop.last and forloop.counter == 2 %}
+																		<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+																	{% endif %}
+																{% endfor %}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-check-double" style="color: #ff0000 !important" ></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Not Exited</h4>
+																{% for space in space_data|slice:":3" %}
+																	<p class="card-category" style="color: #ff0000 !important">{{space.vehicle_type}} - {{space.space_used}}</p>
+																{% if forloop.last and forloop.counter == 2 %}
+																		<p class="card-category" style="color: #ff0000 !important">&nbsp;</p>
+																	{% endif %}	
+																{% endfor %}
+																
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									{% elif merchant_business_category_id == 11 %}
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-gas-pump" style="color: #63b90b !important"></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Sales</h4>
+																{% for product in products|slice:":3" %}
+																	<p class="card-category" style="color: #63b90b !important">{{product.product_name}} - {{product.total_amount_colleted|floatformat:2}}</p>
+																	{% if forloop.last and forloop.counter == 2 %}
+																		<p class="card-category" style="color: #63b90b !important">&nbsp;</p>
+																	{% endif %}
+																{% endfor %}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-3">
+											<div class="card card-stats card-primary card-round">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-3">
+															<div class="icon-big text-center">
+																<i class="fas fa-rupee-sign" style="color: #ff0000 !important" ></i>
+															</div>
+														</div>
+														<div class="col-9 col-stats">
+															<div class="numbers">
+																<h4 class="card-title">Today's Rate</h4>
+																{% for product in products|slice:":3" %}
+																	<p class="card-category" style="color: #ff0000 !important">{{product.product_name}} - {{product.product_cost}}/L</p>
+																	{% if forloop.last and forloop.counter == 2 %}
+																		<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+																	{% endif %}
+																{% endfor %}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								</div>
+								{% if merchant_business_category_id == 12 %}
+									<div class="row">
+										<div class="col-sm-6 col-md-6">
+											<div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Product Wise Collection</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container">
+														<canvas id="productwiseCollectionchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-6">
+											<div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Product Wise Bills</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container">
+														<canvas id="productWiseBillsdoughnutChart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% elif merchant_business_category_id == 11 %}
+									<div class="row">
+										<div class="col-sm-6 col-md-6">
+											<div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Add On's Sales</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container">
+														<canvas id="addonsSalesdoughnutchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6 col-md-6">
+											<div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Product Sales</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container">
+														<canvas id="productSaledoughnutChart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endif %}
+								<div class="row">
+									<div class="col-md-12">
+										{% if merchant_business_category_id == 11 or merchant_business_category_id == 12 %}
+											<div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+															<div class="card-title">User's Analysis</div>
+															<div class="card-tools">
+																<form action="/merchant-index/" method="POST" id="user_collection_filter_form">
+																	{% csrf_token %}
+																	<div class="row">
+																		<div class="col-md-3">
+																			<label>Users</label>
+																			<select class="form-control" name="user" id="user_id">
+																				<option value="">Select</option>
+																				{% for user in merchant_users %}
+																					{% if user.user_id.id == custom_user %}  
+							                                                            <option value="{{user.user_id.id}}" selected="">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+							                                                        {% else %}
+																						<option value="{{user.user_id.id}}">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+																					{% endif %}
+																				{% endfor %}
+																			</select>
+																		</div>
+																		<div class="col-md-4">
+																			<label>From Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="from_date" value="{{from_date}}" id="from_date" max="{% now 'Y-m-d' %}">
+																		</div>
+																		<div class="col-md-4">
+																			<label>To Date <span style="color: red;"> *</span></label><input type="date" class="form-control" name="to_date" value="{{to_date}}" id="to_date" max="{% now 'Y-m-d' %}">
+																		</div>
+																		
+																		<div class="col-md-1" style="margin-top: 4%; padding-left: 0px;">
+																			<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fas fa-search"></span></button>
+																		</div>
+																		<div class="col-md-12 text-center" id="UserCollectionFilterError" style="font-size: 20px"></div>
+																	</div>
+
+																</form>
+															</div>
+													</div>
+												</div>
+
+												<div class="card-body">
+													<div class="chart-container" style="min-height: 200px">
+														<div class="table-responsive">
+															<table class="display table table-hover">
+																<thead>
+					                                                <tr align="center">
+																		<th>Name</th>
+																		<th>Total Bills</th>
+																		<th>Total Collection</th>
+																		<th>Total Flagged</th>
+																		<th>Login</th>
+																		<th>Logout</th>
+																		<!-- <th>Total Hours</th> -->
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for user in merchant_user_details %}
+																		<tr>
+																			<td>{{user.name}}</td>
+																			<td>{{user.total_bills}}</td>
+																			<td>{{user.total_collection|floatformat:2}}</td>
+																			<td>
+																				{% if user.total_flagged %}
+																					{{user.total_flagged}}
+																				{% else %}
+																					0
+																				{% endif %}
+																			</td>
+																			<td width="20%">
+																				{% if user.login_at %}
+																					{{user.login_at|date:'d-m-Y'}}
+																					<br>
+																					{{user.login_at|date:'H:i'}}
+																				{% endif %}
+																			</td>
+																			<td width="20%">
+																				{% if user.logout_at %}
+																					{{user.logout_at|date:'d-m-Y'}}
+																					<br>
+																					{{user.logout_at|date:'H:i'}}
+																				{% endif %}																
+																			</td>
+																			<!-- <td>{{user.total_hours}}</td> -->
+																		</tr>
+																	{% endfor %}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
+									</div>
+								</div>
+								{% if merchant_business_category_id == 12 %}
+									<div class="row">
+										<div class="col-md-12"><div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Bills Collection of Session {% if search_from_year and search_to_year %}
+														{{search_from_year}}-{{search_to_year}}
+														{% else %}
+														{{current_year}}-{{next_year}}
+														{% endif %}</div>
+														<div class="card-tools">
+															<form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+																{% csrf_token %}
+																<div class="row">
+																	<div class="col-md-9">
+																		<label>Years <span style="color: red;">*</span></label>
+																			<select class="form-control" name="years" id="" required="">
+																				<option value="">Select</option>
+
+																				{% for year1,year2 in yearslist %}
+																				{% if year1 == years_value %} 
+						                                                        <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+																				{% else %}
+																				<option value="{{year1}}">{{year1}} - {{year2}}</option>
+																				{% endif %}
+																				{% endfor %}
+																			</select>
+																	</div>
+																	
+																	<div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 12px;">
+																		<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_btn"><span class="fas fa-search" ></span></button>
+																	</div>
+																	<div class="col-md-12 text-center" id="BillsCollectionFilterError" style="font-size: 20px"></div>
+																</div>
+
+															</form>
+														</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container" style="min-height: 300px">
+														<canvas id="vehiclestatusChart"></canvas>
+													</div>
+													<div id="vehiclestatusChartLegend"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% elif merchant_business_category_id == 11 %}
+									<div class="row">
+										<div class="col-md-12"><div class="card">
+												<div class="card-header">
+													<div class="card-head-row">
+														<div class="card-title">Bills Collection of Session {% if search_from_year and search_to_year %}
+														{{search_from_year}}-{{search_to_year}}
+														{% else %}
+														{{current_year}}-{{next_year}}
+														{% endif %}
+														</div>
+														<div class="card-tools">
+															<form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+																{% csrf_token %}
+																<div class="row">
+																	<div class="col-md-9">
+																		<label>Years <span style="color: red;">*</span></label>
+																			<select class="form-control" name="years" id="" required="">
+																				<option value="">Select</option>
+
+																				{% for year1,year2 in yearslist %}
+																				{% if year1 == years_value %} 
+						                                                        <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+																				{% else %}
+																				<option value="{{year1}}">{{year1}} - {{year2}}</option>
+																				{% endif %}
+																				{% endfor %}
+																			</select>
+																	</div>
+																	
+																	<div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 16px;">
+																		<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_petrol_pump"><span class="fas fa-search" ></span></button>
+																	</div>
+																	<div class="col-md-12 text-center" id="BillsCollectionPetrolPumpFilterError" style="font-size: 20px"></div>
+																</div>
+years_next = []
+															</form>
+														</div>
+													</div>
+												</div>
+												<div class="card-body">
+													<div class="chart-container" style="min-height: 300px">
+														<canvas id="productsalesChart"></canvas>
+													</div>
+													<div id="myLegendContainer"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- <div class="card-body permission-denied" style="display:none">
+                <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+            </div> -->
+				
+			<!-- 
+			{% if merchant_business_category_id == 11 %}
+				<div class="row">
+					{% for product in products %}
+						{% if forloop.counter|divisibleby:2 %}
+							<div class="col-sm-6 col-md-3">
+								<div class="card card-stats card-primary card-round">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-3">
+												<div class="icon-big text-center">
+													<i class="fas fa-rupee-sign"></i>
+												</div>
+											</div>
+											<div class="col-9 col-stats">
+												<div class="numbers">
+													<p class="card-category">Today's {{product.product_name}} Cost</p>
+													<h4 class="card-title">{{product.product_cost}}/L</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% else %}
+							<div class="col-sm-6 col-md-3">
+								<div class="card card-stats card-success card-round">
+									<div class="card-body ">
+										<div class="row">
+											<div class="col-3">
+												<div class="icon-big text-center">
+													<i class="fas fa-rupee-sign"></i>
+												</div>
+											</div>
+											<div class="col-9 col-stats">
+												<div class="numbers">
+													<p class="card-category">Today's {{product.product_name}} Cost</p>
+													<h4 class="card-title">{{product.product_cost}}/L</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>
+			{% endif %}
+			<div class="row mt--2">
+				<div class="col-md-4">
+					<div class="row">
+						{% if merchant_business_category_id == 11 or merchant_business_category_id == 12 %}
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Today's Collection</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-12 d-flex flex-column justify-content-around">
+												<div>
+													<h4 class="fw-bold text-uppercase text-success op-8">Total Bills: {{total_bills}}</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="card-body card-primary" style="padding: 0px; border-bottom-right-radius: 5px !important; border-bottom-left-radius: 5px  !important">
+										<div><canvas id="dailybillsChart"></canvas></div>
+									</div>
+									<div class="separator-dashed"></div>
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-12 d-flex flex-column justify-content-around">
+												<div>
+													<h4 class="fw-bold text-uppercase text-danger op-8">Total Collection: ₹ {{total_collection|floatformat:2}}</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="card-body card-primary" style="padding: 0px; border-bottom-right-radius: 5px !important; border-bottom-left-radius: 5px  !important">
+										<div><canvas id="dailyTotalCollectionChart"></canvas></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Total Payments</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="row py-3">
+											<div class="col-md-12 d-flex flex-column justify-content-around">
+												<div>
+													<h4 class="fw-bold text-uppercase text-success op-8">₹ {{total_collection|floatformat:2}}</h4>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+						{% if merchant_business_category_id == 12 %}
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Vehicle Exit Status</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="display table table-hover">
+												<thead>
+	                                                <tr align="center">
+														<th>Vehicle Type</th>
+														<th>Count</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for space in space_data %}
+														<tr>
+															<td>{{space.vehicle_type}}</td>
+															<td>{{space.vehicle_exit_count}}</td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% elif merchant_business_category_id == 11 %}
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Add Ons Sales</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="display table table-hover">
+												<thead>
+	                                                <tr align="center">
+														<th>Name</th>
+														<th>Item Sold</th>
+														<th>Amount Collected</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for product in addon_products %}
+														<tr>
+															<td>{{product.product_name}}</td>
+															<td>{{product.total_sold}}</td>
+															<td>{{product.amount_collected|floatformat:2}}</td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="row">
+						<div class="col-md-12">
+							{% if merchant_business_category_id == 11 %}
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-head-row">
+												<div class="card-title">Product Sales</div>
+											</div>
+										</div>
+										<div class="card-body">
+											<div class="chart-container" style="min-height: 300px">
+												<canvas id="productsalesChart"></canvas>
+											</div>
+											<div id="myChartLegend"></div>
+											<div class="chart-container" style="min-height: 200px">
+												<div class="table-responsive">
+													<table class="display table table-hover">
+														<thead>
+		                                                    <tr align="center">
+																<th>Name</th>
+																<th>Litre Sold</th>
+																<th>Amount Collected</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for product in products %}
+																<tr>
+																	<td>{{product.product_name}}</td>
+																	<td>{{product.total_liter_sold|floatformat:2}}</td>
+																	<td>{{product.total_amount_colleted|floatformat:2}}</td>
+																</tr>
+															{% endfor %}
+														</tbody>
+													</table>
+												</div>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+								{% elif merchant_business_category_id == 12 %}
+									<div class="col-md-12">
+										<div class="card">
+											<div class="card-header">
+												<div class="card-head-row">
+													<div class="card-title">Vehicle Status</div>
+												</div>
+											</div>
+											<div class="card-body">
+												<div id="vehiclestatusChartLegend"></div>
+												<div class="chart-container" style="min-height: 200px">
+													<div class="table-responsive">
+														<table class="display table table-hover">
+															<thead>
+			                                                    <tr align="center">
+																	<th>Vehicle Type</th>
+																	<th>Count</th>
+																	<th>Bills Made</th>
+																	<th>Exit Status</th>
+																</tr>
+															</thead>
+															<tbody>
+																{% for space in space_data %}
+																	<tr>
+																		<td>{{space.vehicle_type}}</td>
+																		<td>{{space.vehicle_parked_count}}</td>
+																		<td>{{space.total_bills_made|floatformat:2}}</td>
+																		<td>{{space.vehicle_exit_count}}</td>
+																	</tr>
+																{% endfor %}
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endif %}
+						{% if merchant_business_category_id == 12 %}
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Space Status</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="chart-container" style="min-height: 200px">
+											<div class="table-responsive">
+												<table class="display table table-hover">
+													<thead>
+	                                                    <tr align="center">
+															<th>Vehicle Type</th>
+															<th>Available Space</th>
+															<th>Vacant</th>
+															<th>Used</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for space in space_data %}
+															<tr>
+																<td>{{space.vehicle_type}}</td>
+																<td>{{space.space}}</td>
+																<td>{{space.available_parking_space}}</td>
+																<td>{{space.space_used}}</td>
+															</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% elif merchant_business_category_id == 11 %}
+							 <div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-head-row">
+											<div class="card-title">Product Sales</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="chart-container" style="min-height: 200px">
+											<div class="table-responsive">
+												<table class="display table table-hover">
+													<thead>
+	                                                    <tr align="center">
+															<th>Name</th>
+															<th>Litre Sold</th>
+															<th>Amount Collected</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for product in products %}
+															<tr>
+																<td>{{product.product_name}}</td>
+																<td>{{product.total_liter_sold|floatformat:2}}</td>
+																<td>{{product.total_amount_colleted|floatformat:2}}</td>
+															</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="chart-container" style="min-height: 375px">
+											<canvas id="productsalesChart"></canvas>
+										</div>
+										<div id="myChartLegend"></div>
+									</div>
+								</div>
+							</div> 
+						{% endif %}
+					</div>
+				</div>
+			</div> 
+		</div> -->
+	</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=vehical_end_date]').change(function() {
+	  //         var to_date = $('#vehical_end_date').val();
+	  //         document.getElementById('vehical_start_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=vehical_start_date]').change(function() {
+	  //   var from_date = $('#vehical_start_date').val();
+	  //     document.getElementById('vehical_end_date').setAttribute("min", from_date);
+	  // })
+	});
+
+	$.validator.addMethod("validDate", function(value, element) {
+    var currDate = new Date();
+    return Date.parse(currDate) >= Date.parse(value) ||value == "";
+	}, "Please enter valid Date");
+
+
+	jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+	  return this.optional(element) || new Date(value) >= new Date($(params).val());
+	},'Must be greater than from date.');
+
+	$("#vehical_type_wise_bill").validate({
+        rules: {
+            vehical_start_date: {
+                required: true,
+                validDate: true
+            },
+            vehical_end_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#vehical_start_date"
+            },           
+            
+        },
+
+        messages: {
+            vehical_start_date: {
+                required: "From Date is Required",
+            },
+            vehical_end_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=vehical_to_date]').change(function() {
+	  //         var to_date = $('#vehical_to_date').val();
+	  //         document.getElementById('vehical_from_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=vehical_from_date]').change(function() {
+	  //   var from_date = $('#vehical_from_date').val();
+	  //     document.getElementById('vehical_to_date').setAttribute("min", from_date);
+	  // })
+	});
+	$("#vehical_type_wise_collection").validate({
+        rules: {
+            vehical_from_date: {
+                required: true,
+                validDate:true
+            },
+            vehical_to_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#vehical_from_date"
+            },           
+            
+        },
+
+        messages: {
+            vehical_from_date: {
+                required: "From Date is Required",
+            },
+            vehical_to_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=sales_end_date]').change(function() {
+	  //         var to_date = $('#sales_end_date').val();
+	  //         document.getElementById('sales_start_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=sales_start_date]').change(function() {
+	  //   var from_date = $('#sales_start_date').val();
+	  //     document.getElementById('sales_end_date').setAttribute("min", from_date);
+	  // })
+	});
+	$("#add_ons_sales").validate({
+        rules: {
+            sales_start_date: {
+                required: true,
+                validDate: true
+            },
+            sales_end_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#vehical_from_date"
+            },           
+            
+        },
+
+        messages: {
+            sales_start_date: {
+                required: "From Date is Required",
+            },
+            sales_end_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=product_end_date]').change(function() {
+	  //         var to_date = $('#product_end_date').val();
+	  //         document.getElementById('product_start_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=product_start_date]').change(function() {
+	  //   var from_date = $('#product_start_date').val();
+	  //     document.getElementById('product_end_date').setAttribute("min", from_date);
+	  // })
+	});
+	$("#product_sales_form").validate({
+        rules: {
+            product_start_date: {
+                required: true,
+                validDate: true
+            },
+            product_end_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#product_start_date"
+            },           
+            
+        },
+
+        messages: {
+            product_start_date: {
+                required: "From Date is Required",
+            },
+            product_end_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+</script>
+
+<script>
+	if (window.history.replaceState) {
+	    window.history.replaceState(null, null, window.location.href);
+	}
+
+	$.validator.addMethod("validDate", function(value, element) {
+    var currDate = new Date();
+    return Date.parse(currDate) >= Date.parse(value) ||value == "";
+	}, "Please enter valid Date");
+
+
+	jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+	  return this.optional(element) || new Date(value) >= new Date($(params).val());
+	},'Must be greater than from date.');
+
+	$("#received_payments_filter_form").validate({
+	    rules: {
+	        from_date: {
+	            required: true,
+	            validDate: true
+	        },
+	        to_date: {
+	            required: true,
+	            validDate: true,
+	            greaterStart: "#from_date"
+	        },
+	    },
+	    messages: {
+	        from_date: {
+	            required: "From Date is Required",
+	        },
+	        to_date: {
+	            required: "To Date is Required",
+	        },
+	    }
+	});
+
+	$( "#user_collection_filter_form").validate({
+	  rules: {
+	    // user: {
+	    //   required: function (element) {
+	    //       return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+	    //     }
+	    // },
+	    // from_date: {
+	    //     required: function (element) {
+	    //       return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+	    //     }
+	    // },
+	    // to_date: {
+	    //     required: function (element) {
+	    //       return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+	    //     }
+	    // },
+	  },
+	  messages: {
+	    user: "Please Select at least one filter.",
+	    from_date: "Please Select at least one filter.",
+	    to_date: "Please Select at least one filter.",
+	  },
+	  errorPlacement: function (error, element) {
+	        if (element.attr("name") == "user")
+	            $("#UserCollectionFilterError").html(error);
+	        if (element.attr("name") == "from_date")
+	            $("#UserCollectionFilterError").html(error);
+	        if (element.attr("name") == "to_date")
+	            $("#UserCollectionFilterError").html(error);      
+	    }
+	})
+
+
+
+// $( "#bills_collection_filter_form").validate({
+// 	  rules: {
+// 	    from_date1: {
+// 	        required: function (element) {
+// 	          return $("#from_date1").val() == "" && $("#to_date1").val() == "";
+// 	        }
+// 	    },
+// 	    to_date1: {
+// 	        required: function (element) {
+// 	          return $("#from_date1").val() == "" && $("#to_date1").val() == "";
+// 	        }
+// 	    },
+// 	  },
+// 	  messages: {
+// 	    from_date1: "From Date is Required.",
+// 	    to_date1: "To Date is Required.",
+// 	  },
+// 	  errorPlacement: function (error, element) {
+// 	        if (element.attr("name") == "from_date1")
+// 	            $("#BillsCollectionFilterError").html(error);
+// 	        if (element.attr("name") == "to_date1")
+// 	            $("#BillsCollectionFilterError").html(error);      
+// 	    }
+// 	})
+
+
+
+
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+    $("#bills_collection_filter_form").validate({
+        rules: {
+            from_date1: {
+                required: true,
+                validDate: true
+            },
+            to_date1: {
+                required: true,
+                validDate: true
+            },
+        },
+        messages: {
+            from_date1: {
+                required: "From Date is Required",
+            },
+            to_date1: {
+                required: "To Date is Required",
+            },
+        }
+    });
+</script>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script src="/static/assets/js/setting-demo.js"></script>
+<script src="/static/assets/js/demo.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var access_permission = $('#access_permission').val();
+        if(access_permission == 1)
+        {
+        $(".permission-denied").hide();
+        }
+        else
+        {
+        $(".permission-denied").show();
+        }
+
+		
+
+     //    $('input[name=to_date]').change(function() {
+     //    	var to_date = $('#to_date').val();
+	    //     document.getElementById('from_date').setAttribute("max", to_date);
+	    // })
+
+	    // $('input[name=from_date]').change(function() {
+	    // 	var from_date = $('#from_date').val();
+	    //     document.getElementById('to_date').setAttribute("min", from_date);
+	    // })
+
+	    // $('input[name=to_date1]').change(function() {
+     //    	var to_date1 = $('#to_date1').val();
+	    //     document.getElementById('from_date1').setAttribute("max", to_date1);
+	    // })
+
+	    // $('input[name=from_date1]').change(function() {
+	    // 	var from_date1 = $('#from_date1').val();
+	    //     document.getElementById('to_date1').setAttribute("min", from_date1);
+	    // })
+
+    });
+</script>
+
+<script type="text/javascript">
+
+	// var dailybillsChart = document.getElementById('dailybillsChart').getContext('2d');
+
+	// var mydailybillsChart = new Chart(dailybillsChart, {
+	// 	type: 'line',
+	// 	data: {
+	// 		labels:["12 a.m - 4 a.m",
+	// 		"4 a.m - 8 a.m",
+	// 		"8 a.m - 12 a.m",
+	// 		"12 a.m - 4 p.m",
+	// 		"4 p.m - 8 p.m",
+	// 		"8 p.m - 12 p.m",
+	// 		],
+	// 		datasets:[ {
+	// 			label: "Total Bills", fill: !0, backgroundColor: "rgba(255,255,255,0.2)", borderColor: "#31ce36", borderCapStyle: "butt", borderDash: [], borderDashOffset: 0, pointBorderColor: "#fff", pointBackgroundColor: "#fff", pointBorderWidth: 1, pointHoverRadius: 5, pointHoverBackgroundColor: "#fff", pointHoverBorderColor: "#fff", pointHoverBorderWidth: 1, pointRadius: 1, pointHitRadius: 5, data: [{{dailybillsChart_list|safe}}]
+	// 		},
+	// 		]
+	// 	},
+	// 	options : {
+	// 		maintainAspectRatio:!1, legend: {
+	// 			display: !1
+	// 		}
+	// 		, animation: {
+	// 			easing: "easeInOutBack"
+	// 		}
+	// 		, scales: {
+	// 			yAxes:[ {
+	// 				display:!1, ticks: {
+	// 					fontColor: "rgba(0,0,0,0.5)", fontStyle: "bold", beginAtZero: !0, maxTicksLimit: 10, padding: 0
+	// 				}
+	// 				, gridLines: {
+	// 					drawTicks: !1, display: !1
+	// 				}
+	// 			}
+	// 			], xAxes:[ {
+	// 				display:!1, gridLines: {
+	// 					zeroLineColor: "transparent"
+	// 				}
+	// 				, ticks: {
+	// 					padding: -20, fontColor: "rgba(255,255,255,0.2)", fontStyle: "bold"
+	// 				}
+	// 			}
+	// 			]
+	// 		}
+	// 	}
+	// });
+
+	// var dailyTotalCollectionChart = document.getElementById('dailyTotalCollectionChart').getContext('2d');
+
+	// var mydailybillsChart = new Chart(dailyTotalCollectionChart, {
+	// 	type: 'line',
+	// 	data: {
+	// 		labels:["12 a.m - 4 a.m",
+	// 		"4 a.m - 8 a.m",
+	// 		"8 a.m - 12 a.m",
+	// 		"12 a.m - 4 p.m",
+	// 		"4 p.m - 8 p.m",
+	// 		"8 p.m - 12 p.m",
+	// 		],
+	// 		datasets:[ {
+	// 			label: "Total Collection", fill: !0, backgroundColor: "rgba(255,255,255,0.2)", borderColor: "#f25961", borderCapStyle: "butt", borderDash: [], borderDashOffset: 0, pointBorderColor: "#fff", pointBackgroundColor: "#fff", pointBorderWidth: 1, pointHoverRadius: 5, pointHoverBackgroundColor: "#fff", pointHoverBorderColor: "#fff", pointHoverBorderWidth: 1, pointRadius: 1, pointHitRadius: 5, data: [{{dailyTotalCollectionChart_list|safe}}]
+	// 		},
+	// 		]
+	// 	},
+	// 	options : {
+	// 		maintainAspectRatio:!1, legend: {
+	// 			display: !1
+	// 		}
+	// 		, animation: {
+	// 			easing: "easeInOutBack"
+	// 		}
+	// 		, scales: {
+	// 			yAxes:[ {
+	// 				display:!1, ticks: {
+	// 					fontColor: "rgba(0,0,0,0.5)", fontStyle: "bold", beginAtZero: !0, maxTicksLimit: 10, padding: 0
+	// 				}
+	// 				, gridLines: {
+	// 					drawTicks: !1, display: !1
+	// 				}
+	// 			}
+	// 			], xAxes:[ {
+	// 				display:!1, gridLines: {
+	// 					zeroLineColor: "transparent"
+	// 				}
+	// 				, ticks: {
+	// 					padding: -20, fontColor: "rgba(255,255,255,0.2)", fontStyle: "bold"
+	// 				}
+	// 			}
+	// 			]
+	// 		}
+	// 	}
+	// });
+
+	{% if merchant_business_category_id == 11 %}
+		var ctx = document.getElementById('productsalesChart').getContext('2d');
+
+		var productsalesChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","Jan", "Feb", "Mar",],
+				datasets: [{
+					// label: 'My First Dataset',
+				    data: {{ productsalesChart_list1|safe }},
+				    fill: false,
+				    borderColor: 'rgb(75, 192, 192)',
+				    tension: 0.1
+				
+				}] 
+
+				// {% for productsales in productsalesChart_list %}
+				// 	{% if forloop.counter == 1 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#f3545d',
+				// 			pointBackgroundColor: 'rgba(243, 84, 93, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(243, 84, 93, 0.4)',
+				// 			legendColor: '#f3545d',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 2 %}
+				// 		{	
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#31ce36',
+				// 			pointBackgroundColor: 'rgba(49, 206, 75, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(49, 206, 75, 0.4)',
+				// 			legendColor: '#31ce36',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 3 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#177dff',
+				// 			pointBackgroundColor: 'rgba(23, 125, 255, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(23, 125, 255, 0.4)',
+				// 			legendColor: '#177dff',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 4 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#fdaf4b',
+				// 			pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(253, 175, 75, 0.4)',
+				// 			legendColor: '#fdaf4b',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 5 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#00ffff',
+				// 			pointBackgroundColor: 'rgb(0,255,255,0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgb(0,255,255,0.4)',
+				// 			legendColor: '#00ffff',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 6 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#778899',
+				// 			pointBackgroundColor: 'rgba(119,136,153, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(119,136,153, 0.4)',
+				// 			legendColor: '#778899',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 7 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#afeeee',
+				// 			pointBackgroundColor: 'rgba(175,238,238, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(175,238,238, 0.4)',
+				// 			legendColor: '#afeeee',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 8 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#ff6e4a',
+				// 			pointBackgroundColor: 'rgba(255,110,74, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(255,110,74, 0.4)',
+				// 			legendColor: '#ff6e4a',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% elif forloop.counter == 9 %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#ffd700',
+				// 			pointBackgroundColor: 'rgba(255,215,0, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(255,215,0, 0.4)',
+				// 			legendColor: '#ffd700',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% else %}
+				// 		{
+				// 			label: "{{productsales.product_name}}",
+				// 			borderColor: '#f5deb3',
+				// 			pointBackgroundColor: 'rgba(245,222,179, 0.6)',
+				// 			pointRadius: 0,
+				// 			backgroundColor: 'rgba(245,222,179, 0.4)',
+				// 			legendColor: '#f5deb3',
+				// 			fill: false,
+				// 			borderWidth: 2,
+				// 			data: [{{productsales.productsalesChart_list}}]
+				// 		},
+				// 	{% endif %}
+				// {% endfor %}
+					// }, {
+					// 	label: "New Visitors",
+					// 	borderColor: '#fdaf4b',
+					// 	pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
+					// 	pointRadius: 0,
+					// 	backgroundColor: 'rgba(253, 175, 75, 0.4)',
+					// 	legendColor: '#fdaf4b',
+					// 	fill: true,
+					// 	borderWidth: 2,
+					// 	data: [256, 230, 245, 287, 240, 250, 230, 295, 331, 431, 456, 521]
+					// }, {
+					// 	label: "Active Users",
+					// 	borderColor: '#177dff',
+					// 	pointBackgroundColor: 'rgba(23, 125, 255, 0.6)',
+					// 	pointRadius: 0,
+					// 	backgroundColor: 'rgba(23, 125, 255, 0.4)',
+					// 	legendColor: '#177dff',
+					// 	fill: true,
+					// 	borderWidth: 2,
+					// 	data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 900]
+					// }
+				// ]
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					display: false
+				},
+				tooltips: {
+					bodySpacing: 4,
+					mode:"nearest",
+					intersect: 0,
+					position:"nearest",
+					xPadding:10,
+					yPadding:10,
+					caretPadding:10
+				},
+				layout:{
+					padding:{left:5,right:5,top:15,bottom:15}
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							fontStyle: "500",
+							beginAtZero: false,
+							maxTicksLimit: 5,
+							padding: 10
+						},
+						gridLines: {
+							drawTicks: false,
+							display: false
+						}
+					}],
+					xAxes: [{
+						gridLines: {
+							zeroLineColor: "transparent"
+						},
+						ticks: {
+							padding: 10,
+							fontStyle: "500"
+						}
+					}]
+				}, 
+				legendCallback: function(chart) { 
+					var text = []; 
+					text.push('<ul class="' + chart.id + '-legend html-legend">'); 
+					for (var i = 0; i < chart.data.datasets.length; i++) { 
+						text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>'); 
+						if (chart.data.datasets[i].label) { 
+							text.push(chart.data.datasets[i].label); 
+						} 
+						text.push('</li>'); 
+					} 
+					text.push('</ul>'); 
+					return text.join(''); 
+				}  
+			}
+		});
+
+		var myLegendContainer = document.getElementById("myLegendContainer");
+
+		// generate HTML legend
+		myLegendContainer.innerHTML = productsalesChart.generateLegend();
+
+		// bind onClick event to all LI-tags of the legend
+		var legendItems = myLegendContainer.getElementsByTagName('li');
+		for (var i = 0; i < legendItems.length; i += 1) {
+			legendItems[i].addEventListener("click", legendClickCallback, false);
+		}
+
+	{% elif merchant_business_category_id == 12 %}
+
+		var ctx = document.getElementById('vehiclestatusChart').getContext('2d');
+
+		var vehiclestatusChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [ "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","Jan", "Feb", "Mar",],
+				datasets: [{
+					// label: 'My First Dataset',
+				    data: {{ vehiclestatusChart_list1|safe }},
+				    fill: false,
+				    borderColor: 'rgb(75, 192, 192)',
+				    tension: 0.1
+				
+				}]
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					display: false
+				},
+				tooltips: {
+					bodySpacing: 4,
+					mode:"nearest",
+					intersect: 0,
+					position:"nearest",
+					xPadding:10,
+					yPadding:10,
+					caretPadding:10
+				},
+				layout:{
+					padding:{left:5,right:5,top:15,bottom:15}
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							fontStyle: "500",
+							beginAtZero: false,
+							maxTicksLimit: 5,
+							padding: 10
+						},
+						gridLines: {
+							drawTicks: false,
+							display: false
+						}
+					}],
+					xAxes: [{
+						gridLines: {
+							zeroLineColor: "transparent"
+						},
+						ticks: {
+							padding: 10,
+							fontStyle: "500"
+						}
+					}]
+				}, 
+				legendCallback: function(chart) { 
+					var text = []; 
+					text.push('<ul class="' + chart.id + '-legend html-legend">'); 
+					for (var i = 0; i < chart.data.datasets.length; i++) { 
+						text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>'); 
+						if (chart.data.datasets[i].label) { 
+							text.push(chart.data.datasets[i].label); 
+						} 
+						text.push('</li>'); 
+					} 
+					text.push('</ul>'); 
+					return text.join(''); 
+				}  
+			}
+		});
+
+		var vehiclestatusLegendContainer = document.getElementById("vehiclestatusChartLegend");
+
+		// generate HTML legend
+		vehiclestatusLegendContainer.innerHTML = vehiclestatusChart.generateLegend();
+
+		// bind onClick event to all LI-tags of the legend
+		var legendItems = vehiclestatusLegendContainer.getElementsByTagName('li');
+		for (var i = 0; i < legendItems.length; i += 1) {
+			legendItems[i].addEventListener("click", legendClickCallback, false);
+		}
+	{% endif %}
+
+
+	{% if merchant_business_category_id == 12 %}
+
+		var productwiseCollectionchart = document.getElementById('productwiseCollectionchart').getContext('2d');
+
+		var myDoughnutChart = new Chart(productwiseCollectionchart, {
+				type: 'doughnut',
+				data: {
+					datasets: [{
+						data: [{{productwiseCollectionchart_data|safe}}],
+						backgroundColor: [
+						// '#00569d', '#63b90b','#f3545d','#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'
+						'#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF','#16F529','#F6358A','#FFD700','#966F33',
+						]
+					}],
+
+					labels: [{{productwiseCollectionchart_labels|safe}}]
+				},
+				options: {
+					responsive: true, 
+					maintainAspectRatio: false,
+					legend : {
+						position: 'bottom'
+					},
+					layout: {
+						padding: {
+							left: 20,
+							right: 20,
+							top: 20,
+							bottom: 20
+						}
+					},
+					rotation: -Math.PI,
+					cutoutPercentage: 70,
+					circumference: Math.PI,
+				}
+			});
+
+		var productWiseBillsdoughnutChart = document.getElementById('productWiseBillsdoughnutChart').getContext('2d');
+
+		var myDoughnutChart = new Chart(productWiseBillsdoughnutChart, {
+				type: 'doughnut',
+				data: {
+					datasets: [{
+						data: [{{productWiseBillsdoughnutChart_data|safe}}],
+						backgroundColor: ['#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF','#16F529','#F6358A','#FFD700','#966F33',]
+					}],
+
+					labels: [{{productWiseBillsdoughnutChart_labels|safe}}]
+				},
+				options: {
+					responsive: true, 
+					maintainAspectRatio: false,
+					legend : {
+						position: 'bottom'
+					},
+					layout: {
+						padding: {
+							left: 20,
+							right: 20,
+							top: 20,
+							bottom: 20
+						}
+					},
+					rotation: -Math.PI,
+					cutoutPercentage: 70,
+					circumference: Math.PI,
+				}
+			});
+
+	{% elif merchant_business_category_id == 11 %}
+		var addonsSalesdoughnutchart = document.getElementById('addonsSalesdoughnutchart').getContext('2d');
+
+		var myDoughnutChart = new Chart(addonsSalesdoughnutchart, {
+				type: 'doughnut',
+				data: {
+					datasets: [{
+						data: [{{addonsSalesdoughnutchart_data|safe}}],
+						backgroundColor: ['#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF','#16F529','#F6358A','#FFD700','#966F33',]
+					}],
+
+					labels: [{{addonsSalesdoughnutchart_labels|safe}}]
+				},
+				options: {
+					responsive: true, 
+					maintainAspectRatio: false,
+					legend : {
+						position: 'bottom'
+					},
+					layout: {
+						padding: {
+							left: 20,
+							right: 20,
+							top: 20,
+							bottom: 20
+						}
+					},
+					rotation: -Math.PI,
+					cutoutPercentage: 70,
+					circumference: Math.PI,
+				}
+			});
+
+		var productSaledoughnutChart = document.getElementById('productSaledoughnutChart').getContext('2d');
+
+		var myDoughnutChart = new Chart(productSaledoughnutChart, {
+				type: 'doughnut',
+				data: {
+					datasets: [{
+						data: [{{productSaledoughnutChart_data|safe}}],
+						backgroundColor: ['#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF','#16F529','#F6358A','#FFD700','#966F33',]
+					}],
+
+					labels: [{{productSaledoughnutChart_labels|safe}}]
+				},
+				options: {
+					responsive: true, 
+					maintainAspectRatio: false,
+					legend : {
+						position: 'bottom'
+					},
+					// pieceLabel: {
+					// 	fontColor: '#fff',
+					//     render: function (args) {
+					//       return '₹' + args.value;
+					//     },
+					//     arc: true
+					// },
+					layout: {
+						padding: {
+							left: 20,
+							right: 20,
+							top: 20,
+							bottom: 20
+						}
+					},
+					rotation: -Math.PI,
+					cutoutPercentage: 70,
+					circumference: Math.PI,
+				}
+			});
+	{% endif %}
+
+
+
+
+
+
+</script>
+
+{% endblock javascripts %}

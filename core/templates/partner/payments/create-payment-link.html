@@ -1,0 +1,393 @@
+{% extends "layouts/partner-base.html" %}
+{% load custom_tags %}
+{% block title %} Create Payment Link {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+</style>
+
+<!-- Create Link Modal -->
+
+{% if payment_settings %}
+    <div class="modal fade" id="create-link-modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form method="POST" class="form" id="create_payment_link" action="/partner-get-payment-link/">
+                {% csrf_token %}
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Create Payment Link</h3>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Mobile Number<small style="color: red;"> *</small></label>
+                                <input type="text" name="mobile_no" maxlength="10" class="form-control" id="mobile_no" placeholder="Mobile Number">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Name<small style="color: red;"> *</small></label>
+                                <input type="text" name="name" maxlength="30" class="form-control" id="name" placeholder="Name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Email<small style="color: red;"> *</small></label>
+                                <input type="email" name="email" maxlength="50" class="form-control" id="email" placeholder="Email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Amount<small style="color: red;"> *</small></label>
+                                <input type="number" name="amount" class="form-control" id="amount" placeholder="Amount" maxlength="5">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Description<small style="color: red;"> *</small></label>
+                                <input type="text" name="description" maxlength="100" class="form-control" id="description" placeholder="Description">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="form-check-label" style="display:none !important;">
+                                        <input type="checkbox" name="send_sms" placeholder="Send SMS" class="form-check-input" id="send_sms" checked>
+                                            <span class="form-check-sign"></span>Send SMS
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Create and Send">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="modal fade" id="create-link-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center" style="color: red">Error</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="modal-title w-100 text-center" style="color: red">To create a Payment link. Payment setting must be done, to change the payment setting please <a href="/partner-payment-settings/" style="color: #00569d">click here</a> or go to Settings => Payment Setting from the sidebar.</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Create Link Modal End -->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Payment Link</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Payments</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-get-payment-link/">Payment Link</a>
+                                </li>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                                
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-link-modal">
+                                    <i class="fa fa-plus"></i>
+                                    &nbsp;Create Payment Link
+                                </button>
+                          </div>
+                        </div>
+                    </div>
+
+                    
+                      <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-hover" >
+                                <thead>
+                                    <tr>
+                                        <!-- <th>Sr. No.</th> -->
+                                        <th>Mobile Number</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Amount</th>
+                                        <th>Description</th>
+                                        <th>Created Date</th>
+                                        <!-- <th>Payment Date</th> -->
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for link in payment_link_list %}
+                                    <tr>
+                                        <!-- <td>{{ forloop.counter }}</td> -->
+                                        <td>{{ link.mobile_no }}</td>
+                                        <td>{{ link.name }}</td>
+                                        <td style="word-break: break-all">{{ link.email }}</td>
+                                        <td>₹{{ link.amount|floatformat:2 }}</td>
+                                        <td>{{ link.description }}</td>
+                                        <td>{{ link.created_at|date:'d-m-Y' }}</td>
+                                       <!--  <td>{{ link.payment_date|date:'d-m-Y'}}</td> -->
+                                        <td>
+                                            <div class="form-button-action">
+
+                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Send Link">
+                                                    <a href="/partner-send-payment-link/{{ link.id }}/"><i class="fas fa-paper-plane"> </i></a>
+                                                </button>
+                                                
+                                                {% if link.payment_done == False %}
+                                                  <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deletePaymentLinkBtn" id="delete_role_btn" data-id='{{link.id}}' data-original-title="Delete Link">
+                                                      <i class="fa fa-trash"></i>
+                                                  </button>
+                                                {% endif %}
+                                                  
+                                            </div>
+                              
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+
+                    <!-- <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+<script>
+jQuery.validator.addMethod("mobile_number", function(value, element){
+		if (/^[6-9][0-9]{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Please enter valid Mobile Number");
+
+jQuery.validator.addMethod("lettersonly", function(value, element) 
+{
+return this.optional(element) || /^[a-z ]+$/i.test(value);
+}, "Letters and spaces only please");
+    
+$( "#create_payment_link" ).validate({
+  rules: {
+    mobile_no: {
+      required: true,
+      mobile_number: true,
+      maxlength: 10,
+      minlength: 10,
+      digits: true
+    },
+    email:{
+        required: true,
+        email: true,
+    },
+    name: {
+        required: true,
+        minlength:3,
+        lettersonly: true,
+    },
+    amount: {
+        required: true,
+        min:1
+    },
+    description: {
+        required: true
+    }
+  },
+  messages: {
+    mobile_no: {
+        required: "Mobile Number field is required.",
+        maxlength: "Mobile Number must contain 10 digits.",
+        minlength: "Mobile Number must contain 10 digits.",
+        digits: "Only digits are acceptable."
+    },
+    name: {
+        required: "Name field is required.",
+    },
+    email: "Email field is required.",
+    description: "Description field is required."
+  },
+});
+
+  
+$(function() {
+    $('.deletePaymentLinkBtn').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            $.ajax({
+                type: "POST",
+                url: "/partner-delete-payment-link/"+id+"/",
+                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                success: function(response) {
+
+                    if(response['success'] == true){
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Payment Link deleted Successfully',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                    else{
+                        Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Fail to delete Link.", 
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                
+                },
+                error: function() {
+                    Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                    .then(function() {
+                    location.reload();
+                    });       
+                }
+            });
+            }
+        })
+    });
+});
+
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "ordering": false,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+		});
+	</script>
+
+{% endblock javascripts %}

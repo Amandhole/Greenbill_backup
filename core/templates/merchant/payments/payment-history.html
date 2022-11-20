@@ -1,0 +1,542 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Payment History {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .table th, .table td{
+        padding: 5px !important;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                         <div class="d-flex align-items-center">
+                            <h4 class="card-title">Payment History</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Payments</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant-payment-history/">Payment History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% if is_merchant == True %}
+                        <div class="card-body">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <form method="POST" action="/merchant-payment-history/" id="signup" name="form1">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>From Date <span style="color: red;"> *</span></label>
+                                                <input name="from_date" id="from_date" type="date" class="form-control" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                                                <span style="color: red;" id="from_date_msg"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>To Date <span style="color: red;"> *</span></label>
+                                                <input name="to_date" id="to_date" type="date" class="form-control new_to_date" value="{{to_date}}" >
+                                                <span style="color: red;" id="to_date_msg"></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-2" style="padding-top: 2.7%;">
+                                            <div class="form-group">
+                                                <!-- <button type="submit" class="btn btn-primary">Search</button> -->
+                                                 <button  type="submit" id="submit" class="btn btn-primary" value="merchants_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                                        </div>
+                                    </div>
+                                </form>
+                                <script>
+                                        document.getElementById("from_date").onchange = function () {
+                                        var input = document.getElementById("to_date");
+                                        input.setAttribute("min", this.value);
+                                      }
+                                </script>
+
+                                <script type="text/javascript">
+
+                                  $.validator.addMethod("validDate", function(value, element) {
+                                        var currDate = new Date();
+                                        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+                                    }, "Please enter valid Date");
+
+
+                                  jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+                                      return this.optional(element) || new Date(value) >= new Date($(params).val());
+                                  },'Must be greater than from date.');
+
+                                  $("#signup").validate({
+                                      rules: {
+                                          from_date: {
+                                              required: true,
+                                              validDate: true
+                                          },
+                                          to_date: {
+                                              required: true,
+                                              validDate: true,
+                                              greaterStart: "#from_date"
+                                          },
+                                      },
+                                      messages: {
+                                          from_date: {
+                                              required: "From Date is Required",
+                                          },
+                                          to_date: {
+                                              required: "To Date is Required",
+                                          },
+                                      }
+                                    });
+
+
+                                   // function validationfunc(){
+                                   //    var from_date = document.getElementById('from_date').value;
+                                   //    var to_date = document.getElementById('to_date').value;
+                                   //    var from_date_msg = document.getElementById('from_date_msg');
+                                   //    var to_date_msg = document.getElementById('to_date_msg');
+                                   //    from_date_msg.innerHTML = '';
+                                   //      to_date_msg.innerHTML = '';
+
+
+                                   //    if (from_date == "" && to_date == "")
+                                   //    {
+                                   //      from_date_msg.innerHTML = 'This field is required';
+                                   //      to_date_msg.innerHTML = 'This field is required';
+
+                                   //      to_date_msg.style.color = "red";
+
+                                   //      from_date_msg.style.color = 'red';
+                                   //    }
+                                   //    else if (from_date == "")
+                                   //    {
+                                   //      from_date_msg.innerHTML = 'This field is required';
+                                   //      from_date_msg.style.color = 'red';
+                                   //    }
+                                   //    else if (to_date == "")
+                                   //    {
+                                   //      to_date_msg.innerHTML = 'This field is required';
+                                   //      to_date_msg.style.color = 'red';
+                                   //    }
+                                   //    else
+                                   //    {
+
+                                   //      // $(document).ready(function(){
+                                   //      //   $("#submitBtn").click(function(){
+                                   //      //     $("#signup").submit();
+                                   //      //   });
+                                   //      // });
+                                   //    }
+
+                                   // }
+                                </script>
+
+                              </div> 
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <div class="row align-items-center justify-content-center">
+                                          <div class="col-sm-6 col-md-4">
+                                            <div class="card card-stats card-round">
+                                              <div class="card-body ">
+                                                <div class="row align-items-center">
+                                                  <div class="col-icon">
+                                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                      <i class="fas fa-rupee-sign"></i>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col col-stats ml-3 ml-sm-0">
+                                                    <div class="numbers">
+                                                      <p class="card-category">Total Amount Spent</p>
+                                                      <h4 class="card-title">{{total_amount_spent|floatformat:2}}</h4>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-6 col-md-4">
+                                            <div class="card card-stats card-round">
+                                              <div class="card-body">
+                                                <div class="row align-items-center">
+                                                  <div class="col-icon">
+                                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                                      <i class="fas fa-list-ol"></i>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col col-stats ml-3 ml-sm-0">
+                                                    <div class="numbers">
+                                                      <p class="card-category">Total Transaction Count</p>
+                                                      <h4 class="card-title">{{total_transaction_count}}</h4>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    <div class="table-responsive">
+                                        <table id="my-payment-history" class="display table table-hover" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Business</th>
+                                                    <th>Description</th>
+                                                    <th>Transaction Id</th>
+                                                    <th>Mode</th>
+                                                    <th>Purchase Date</th>
+                                                    
+                                                    <th>Amount</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for payment in payment_history %}
+                                                    <tr>
+                                                        
+                                                        <td>
+                                                            {{ forloop.counter }}
+                                                        </td>
+                                                        <td>
+                                                          {{ payment.pay_business_name }}
+                                                        </td>
+                                                        <td>
+                                                            {{ payment.subscription_name }}
+                                                        </td>
+                                                        <td>
+                                                            
+                                                            {% if payment.bank_transaction_id %}
+                                                                {{ payment.bank_transaction_id }}
+                                                            {% elif payment.transaction_id %}
+                                                                {{ payment.transaction_id }}
+                                                            {% else %}
+                                                              ---
+                                                            {% endif %}
+                                                        </td>
+                                                        
+                                                        <td>
+                                                            {% if payment.mode  %}
+                                                            {% if payment.mode == 'cash' %}
+                                                            Cash
+                                                            {% endif %}
+                                                            {% if payment.mode == 'Cash' %}
+                                                            Cash
+                                                            {% endif %}
+                                                             <br>
+                                                             {% if payment.mode == 'Bank' %}
+                                                             {% endif %}
+                                                             {% if payment.mode == 'Cheque' %}
+                                                             Cheque No. :{{ payment.cheque_no }} 
+                                                             {% endif %}
+                                                            {% else %}
+                                                            {% if payment.transaction_id %}
+                                                            PayU
+                                                            {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {{ payment.purchase_date|date:'d-m-Y' }}
+                                                        </td>
+                                                        <td>
+                                                         ₹  {{ payment.cost|floatformat:2 }}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>                   
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {% for actions in merchant_action_permissions_list %}
+                        {% if actions.module_id|lower == "Payments"|lower and actions.feature_id|lower == "Payment History"|lower %}
+                            {% if actions.view_permission == "1" %}
+                                <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                <div class="card-body">
+                                    <div class="row">
+                                     <div class="col-md-12">
+                                       <form method="POST" action="/merchant-payment-history/" class="payments_history_filter_form">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                         <div class="col-md-2">
+                                         </div>
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>From Date <span style="color: red;">*</span></label>
+                                                <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>To Date <span style="color: red;">*</span></label>
+                                                <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}" max="{% now 'Y-m-d' %}">
+                                            </div>
+                                         </div>
+                                         <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                                         </div>
+                                         <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <button type="submit" class="btn btn-primary">Search</button>
+                                            </div>
+                                         </div>
+                                        </div>
+                                       </form>
+                                     </div> 
+                                        <div class="col-md-12">
+                                            <div class="card-body">
+                                                <div class="row align-items-center justify-content-center">
+                                                  <div class="col-sm-6 col-md-4">
+                                                    <div class="card card-stats card-round">
+                                                      <div class="card-body ">
+                                                        <div class="row align-items-center">
+                                                          <div class="col-icon">
+                                                            <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                              <i class="fas fa-rupee-sign"></i>
+                                                            </div>
+                                                          </div>
+                                                          <div class="col col-stats ml-3 ml-sm-0">
+                                                            <div class="numbers">
+                                                              <p class="card-category">Total Amount Spent</p>
+                                                              <h4 class="card-title">{{total_amount_spent}}</h4>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-sm-6 col-md-4">
+                                                    <div class="card card-stats card-round">
+                                                      <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                          <div class="col-icon">
+                                                            <div class="icon-big text-center icon-success bubble-shadow-small">
+                                                              <i class="fas fa-list-ol"></i>
+                                                            </div>
+                                                          </div>
+                                                          <div class="col col-stats ml-3 ml-sm-0">
+                                                            <div class="numbers">
+                                                              <p class="card-category">Total Transaction Count</p>
+                                                              <h4 class="card-title">{{total_transaction_count}}</h4>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            <div class="table-responsive">
+                                                <table id="my-payment-history" class="display table table-hover" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Business</th>
+                                                    <th>Description</th>
+                                                    <th>Transaction Id</th>
+                                                    <th>Mode</th>
+                                                    <th>Purchase Date</th>
+                                                    
+                                                    <th>Amount</th>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for payment in payment_history %}
+                                                    <tr>
+                                                        
+                                                        <td>
+                                                            {{ forloop.counter }}
+                                                        </td>
+                                                        <td>
+                                                          {{ payment.pay_business_name }}
+                                                        </td>
+                                                        <td>
+                                                            {{ payment.subscription_name }}
+                                                        </td>
+                                                        <center><td>
+                                                            
+                                                            {% if payment.bank_transaction_id %}
+                                                                {{ payment.bank_transaction_id }}
+                                                            {% elif payment.transaction_id %}
+                                                                {{ payment.transaction_id }}
+                                                            {% else %}
+                                                              ---
+                                                            {% endif %}
+                                                        </td></center>
+                                                        
+                                                        <td>
+                                                            {% if payment.mode  %}
+                                                              {% if payment.mode == 'cash' %}
+                                                                Cash
+                                                              {% endif %}
+                                                              {% if payment.mode == 'Cash' %}
+                                                                Cash
+                                                              {% endif %}
+                                                             <br>
+                                                              {% if payment.mode == 'Bank' %}
+                                                              {% endif %}
+                                                              {% if payment.mode == 'Cheque' %}
+                                                                Cheque No. :{{ payment.cheque_no }} 
+                                                              {% endif %}
+                                                            {% else %}
+                                                              {% if payment.transaction_id %}
+                                                                PayU
+                                                              {% endif %}
+                                                              ---
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {{ payment.purchase_date|date:'d-m-Y' }}
+                                                        </td>
+                                                        <td>
+                                                         ₹  {{ payment.cost|floatformat:2 }}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                            </div>
+                                        </div>                   
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div>
+                {% endif %}     
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+$().ready(function() {
+  $.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+    return this.optional(element) || new Date(value) >= new Date($(params).val());
+},'Must be greater than from date.');
+
+$("#form1").validate
+({
+    rules: 
+    {
+        from_date: 
+        {
+            required: true,
+            validDate: true
+        },
+        to_date: 
+        {
+            required: true,
+            validDate: true,
+            greaterStart: "#from_date"
+        },
+    },
+    messages: 
+    {
+        from_date: 
+        {
+            required: "From Date is Required",
+        },
+        to_date: 
+        {
+            required: "To Date is Required",
+        },
+    }
+  });
+});
+
+if (window.history.replaceState) {
+  window.history.replaceState(null, null, window.location.href);
+}
+</script>
+<script>
+    $(document).ready(function() {
+        $('#my-payment-history').DataTable( {
+            dom: 'lBfrtip',
+            buttons: [
+               'excel', 'pdf', 'print'
+            ],
+            "ordering": false
+        } );
+    });
+</script>
+
+{% endblock javascripts %}

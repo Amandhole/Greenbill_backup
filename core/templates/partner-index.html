@@ -1,0 +1,969 @@
+{% extends "layouts/partner-base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+ 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<head>
+    <style type="text/css">
+        .card-title{
+            font-size: 20px;
+        }
+        .card-category{
+            font-size: 14px;
+        }
+    
+    </style>
+</head>
+{% endblock stylesheets %}
+
+{% block content %}
+            
+    <div class="content">
+        <div class="panel-header bg-primary-gradient">
+            <div class="page-inner py-5">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h2 class="text-white pb-2 fw-bold">Partner Dashboard</h2>
+                        
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-inner mt--5">
+            
+            <div class="row mt--2" style="margin-left: 15px;margin-right: 15px;">
+                <div class="col-sm-6 col-md-4">
+                    <div class="card card-stats card card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color: #00569D !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b>Total Merchants</b></h4>
+                                        <p style="color:#06529e;padding-left:8px;font-size:20px;">{{total_merchant}}</p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="card card-stats card card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color: #ff8c00 !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b>Active Merchants</b></h4>
+                                        <p style="color:#ff973a;padding-left:10px;font-size:20px;">{{partnerListcount}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="card card-stats card card-round" style="height: 112px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color: #63b90b !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b> New Registrations</b></h4>
+                                        <p style="color:#61b810;padding-left:10px;font-size:20px;">{{merchatListCount}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form class="form-control" action=" " method="POST" id="partner-form"
+                            name="merchants-form" autocomplete="off" style="border:0px;">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>From Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control" name="from_date1"
+                                                id="from_date1" required value="{{from_date1}}" max="{% now 'Y-m-d' %}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>To Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control" name="to_date1"
+                                                id="to_date1" required value="{{to_date1}}" max="{% now 'Y-m-d' %}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="padding-top: 3%">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary" name="submit" value="merchants_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {% if partner_object_id.p_category == 'Software Partner' %}       
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex justify-content-center">
+                            <div class="card-head-row">
+                                <h3 style="padding-left: 10px; color:#5c5757"><b> Merchant Digital Bills Analysis</b></h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                <div class="chart-container">
+                                    <canvas id="totalmerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Total Digital Bills via SMS sent in a day </b></canvas> 
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if partner_object_id.p_category == 'Marketing Partner' %}
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex justify-content-center">
+                            <div class="card-head-row">
+                                <h3 style="padding-left: 10px; color:#5c5757"><b> Merchant Digital Bills Analysis</b></h3>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="totalmerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Total Digital Bills via SMS sent in a day </b></canvas> 
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="activemerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Total digital Bills sent in a day </b></canvas>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% endif %}       
+            <div class="row">
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="card">
+                                                <div class="card-header align-items-center d-flex justify-content-center">
+                                                    <div class="card-head-row">
+                                                        <div class="card-title">Merchants By States</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="chart-container">
+                                                        <canvas id="productwiseCollectionchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="card">
+                                                <div class="card-header align-items-center d-flex justify-content-center">
+                                                    <div class="card-head-row">
+                                                        <div class="card-title">Merchants By Cities</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="chart-container">
+                                                        <canvas id="productWiseBillsdoughnutChart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header align-items-center d-flex justify-content-center">
+                                <div class="card-head-row">
+                                    <div class="card-title">Category Wise Merchants</div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="categorywisemerchantchart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% if partner_object_id.p_category == 'Marketing Partner' %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex justify-content-center">
+                            <div class="card-head-row">
+                                <div class="card-title">Promotions</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="CouponsChart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Coupon </b></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <canvas id="OffersChart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Offer </b></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex justify-content-center">
+                            <div class="card-head-row">
+                                <div class="card-title">Merchants Subscription Plan Details</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart-container">
+                                        <canvas id="subscriptiondata" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space"><b>Plan </b></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
+
+    </div>
+        
+</div>
+
+
+
+<!-- Specific Page JS goes HERE  -->
+
+    <!-- Atlantis DEMO methods, don't include it in your project! -->
+    <script src="/static/assets/js/setting-demo.js"></script>
+    <script src="/static/assets/js/demo.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script type="text/javascript">
+    var productwiseCollectionchart = document.getElementById('productwiseCollectionchart').getContext('2d');
+
+        var myDoughnutChart = new Chart(productwiseCollectionchart, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [{{city_data1|safe}}],
+                        backgroundColor: ['#00569d', '#63b90b','#f3545d','#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36']
+                    }],
+
+                    labels: [{{city_labels|safe}}]
+                },
+                options: {
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    legend : {
+                        position: 'bottom'
+                    },
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20,
+                            top: 20,
+                            bottom: 20
+                        }
+                    },
+                    rotation: -Math.PI,
+                    cutoutPercentage: 70,
+                    circumference: Math.PI,
+                }
+            });
+
+        var productWiseBillsdoughnutChart = document.getElementById('productWiseBillsdoughnutChart').getContext('2d');
+
+        var myDoughnutChart = new Chart(productWiseBillsdoughnutChart, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [{{state_data1|safe}}],
+                        backgroundColor: ['#00569d', '#63b90b','#f3545d','#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36']
+                    }],
+
+                    labels: [{{state_labels|safe}}]
+                },
+                options: {
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    legend : {
+                        position: 'bottom'
+                    },
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20,
+                            top: 20,
+                            bottom: 20
+                        }
+                    },
+                    rotation: -Math.PI,
+                    cutoutPercentage: 70,
+                    circumference: Math.PI,
+                }
+            });
+
+
+        var categorywisemerchantchart = document.getElementById('categorywisemerchantchart').getContext('2d');
+
+        var myDoughnutChart = new Chart(categorywisemerchantchart, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [{{merchants_list_by_category|safe}}],
+                        backgroundColor: ['#17a2b8','#dc3545','#fd7e14', '#17a2b8','#6f42c1','#ffc107','#28a745','#dc3545','#28a745','#17a2b8','#FFFF00','#dc3545', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef']
+                    }],
+
+                    labels: [{{category_name_list|safe}}]
+                },
+                options: {
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    legend : {
+                        position: 'bottom'
+                    },
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20,
+                            top: 20,
+                            bottom: 20
+                        }
+                    },
+                    rotation: -Math.PI,
+                    cutoutPercentage: 70,
+                    circumference: Math.PI,
+                }
+            });
+</script>
+    <!-- <script>
+        
+        var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+        var mytotalIncomeChart = new Chart(totalIncomeChart, {
+            type: 'bar',
+            data: {
+                labels: {{state_labels|safe}},
+                datasets : [{
+                    label: "Merchants",
+                    backgroundColor: '#ff9e27',
+                    borderColor: 'rgb(23, 125, 255)',
+                    data: {{state_data1|safe}},
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false,
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            display: false //this will remove only the label
+                        },
+                        gridLines : {
+                            drawBorder: false,
+                            display : false
+                        }
+                    }],
+                    xAxes : [ {
+                        gridLines : {
+                            drawBorder: false,
+                            display : false
+                        }
+                    }]
+                },
+            }
+        });
+
+        $('#lineChart').sparkline([105,103,123,100,95,105,115],
+        {
+            type: 'line',
+            height: '70',
+            width: '100%',
+            lineWidth: '2',
+            lineColor: '#ffa534',
+            fillColor: 'rgba(255, 165, 52, .14)'
+        });
+</script>
+
+<script>
+        
+    var totalIncomeChartcommi = document.getElementById('totalIncomeChartcommi').getContext('2d');
+
+    var mytotalIncomeChartcommi = new Chart(totalIncomeChartcommi, {
+        type: 'bar',
+        data: {
+            labels: {{city_labels|safe}},
+            datasets : [{
+                label: "Merchants",
+                backgroundColor: '#2740ff',
+                borderColor: 'rgb(23, 125, 255)',
+                data: {{city_data1|safe}},
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }],
+                xAxes : [ {
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }]
+            },
+        }
+    });
+
+    $('#lineChart').sparkline([105,103,123,100,95,105,115],
+    {
+        type: 'line',
+        height: '70',
+        width: '100%',
+        lineWidth: '2',
+        lineColor: '#3452ff',
+        fillColor: 'rgba(255, 165, 52, .14)'
+    });
+</script>
+<script>
+        
+    var totalIncomeChartcommi = document.getElementById('totalIncomeChartcommi').getContext('2d');
+
+    var mytotalIncomeChartcommi = new Chart(totalIncomeChartcommi, {
+        type: 'bar',
+        data: {
+            labels: {{city_labels|safe}},
+            datasets : [{
+                label: "Merchants",
+                backgroundColor: '#2740ff',
+                borderColor: 'rgb(23, 125, 255)',
+                data: {{city_data1|safe}},
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }],
+                xAxes : [ {
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }]
+            },
+        }
+    });
+
+    $('#lineChart').sparkline([105,103,123,100,95,105,115],
+    {
+        type: 'line',
+        height: '70',
+        width: '100%',
+        lineWidth: '2',
+        lineColor: '#3452ff',
+        fillColor: 'rgba(255, 165, 52, .14)'
+    });
+
+
+
+</script> -->
+<script type="text/javascript">
+    {% comment %} window.onload = function() {
+
+
+
+}; {% endcomment %}
+
+{% if data %}
+var config1 = {
+    type: 'bar',
+    data: {
+        labels: {{ category_name_list|safe }},
+        datasets: [{
+            label: '',
+            // label: 'Total Bill Amount is: Rs. {{category_total_amount_sum|floatformat:2}}',
+            data: {{ merchants_list_by_category|safe }},
+            backgroundColor: [
+                '#17a2b8','#dc3545','#fd7e14', '#17a2b8','#6f42c1','#ffc107','#28a745','#dc3545','#28a745','#17a2b8','#FFFF00','#dc3545', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+            ],
+            borderColor: [
+                '#17a2b8','#dc3545','#fd7e14', '#17a2b8','#6f42c1','#ffc107','#28a745','#dc3545','#28a745','#17a2b8','#FFFF00','#dc3545', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+        scaleShowValues: true,
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: false
+              }
+            }]
+        }
+    }
+}
+
+{% endif %}
+    var merchantsbycategories = document.getElementById('merchantsbycategories').getContext('2d');
+
+    var mymerchantsbycategories = new Chart(merchantsbycategories, {
+        type: 'bar',
+        data: {
+            labels: {{category_name_list|safe}},
+            datasets : [{
+                label: "Merchants",
+                backgroundColor: [
+                      '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+                  ],
+                borderColor: 'rgb(23, 125, 255)',
+                data: {{merchants_list_by_category|safe}},
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }],
+                xAxes : [ {
+                    gridLines : {
+                        drawBorder: false,
+                        display : false
+                    }
+                }]
+            },
+        }
+    });
+
+    $('#lineChart').sparkline([105,103,123,100,95,105,115],
+    {
+        type: 'line',
+        height: '70',
+        width: '100%',
+        lineWidth: '2',
+        lineColor: '#3452ff',
+        fillColor: 'rgba(255, 165, 52, .14)'
+    });
+</script>
+<script type="text/javascript">
+
+ var config = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Total Merchants',
+          data: {{merchant_digital_bills_data}},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+          ],
+        }],
+        labels: ['SMS','Notification']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Total Digital Bills',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+var config1 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Total SMS Sent',
+          data: {{merchant_sms_data}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Transactional','Promotional']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Total SMS Sent',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+var config2 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Coupon',
+          data: {{coupons_data}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Active','Expired']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Coupon',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+var config3 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Offer',
+          data: {{offer_data}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Active','Expired','Not Approved']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Offer',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+var config4 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'plan',
+          data: {{merchant_plan_data}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Green Bill Plan','Transactional Plan','Promotional Plan']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Plan',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+
+    window.onload = function() {
+      var ctx = document.getElementById('totalmerchantchart').getContext('2d');
+      window.myChart = new Chart(ctx, config);
+      {% if partner_object_id.p_category == 'Marketing Partner' %}
+      var ctx1 = document.getElementById('activemerchantchart').getContext('2d');
+      window.myPie = new Chart(ctx1, config1);
+
+
+      var ctx2 = document.getElementById('CouponsChart').getContext('2d');
+        window.myPie = new Chart(ctx2, config2);
+
+        var ctx3 = document.getElementById('OffersChart').getContext('2d');
+        window.myPie = new Chart(ctx3, config3);
+
+        var ctx4 = document.getElementById('subscriptiondata').getContext('2d');
+        window.myPie = new Chart(ctx4, config4);
+        {% endif %}
+
+    };
+
+
+
+
+
+
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+    $("#partner-form").validate({
+        rules: {
+            from_date1: {
+                required: true,
+                validDate: true
+            },
+            to_date1: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date1"
+            },
+        },
+        messages: {
+            from_date1: {
+                required: "From Date is Required",
+            },
+            to_date1: {
+                required: "To Date is Required",
+            },
+        }
+    });
+    
+    </script>
+    
+
+
+{% endblock content %}
+{% block javascripts %}
+{% endblock javascripts %}

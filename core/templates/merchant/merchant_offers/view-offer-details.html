@@ -1,0 +1,680 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Offers {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+
+{{title}}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .radio_set{
+        margin-left: 7px;
+    }
+    #null_customer_data
+    {
+        display: none;
+    }
+    .add-row{
+        color: #666;
+    background: #f8f8f8;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+     padding: 8px 26px 8px 10px;
+        background-position: calc(100% - 8px) 9px;
+    }
+    
+
+
+</style>
+
+
+<style type="text/css">
+    #size {
+        width: 200px;
+        height: 30px;
+
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+
+ <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+.align{
+    width: 100px;
+}
+
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant-view-offer/">Offers</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>        
+                        <div class="card-body">  
+                            <div class="row">                 
+                            {% for view_offer in view_offer %}
+                            <div class="col-sm-4"> 
+                            </div>
+                            <div class="col-sm-4">           
+                                <div class="" style="height: auto; width:auto;">
+                                    <div class="card-content">
+                                         <img class="card-img-top" src="{{view_offer.offer_image.url}}" width="auto" height="300px"> 
+                                    </div>
+                                </div>  <br><br><br>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">    
+                                                {% if view_offer.offer_logo == '' %}
+                                                {% if view_offer.offer_panel == "merchant" %}
+                                                <span style="text-align: left; color: black; font-size: 17px;">    
+                                                    {{view_offer.merchant_business_name}}
+                                                </span>
+                                                {% endif %}
+                                                {% if view_offer.offer_panel == "owner" %}
+                                                <span style="text-align:  left; color: black; font-size: 17px;">    
+                                                    {{view_offer.o_business_name}}
+                                                </span>
+                                                {% endif %}
+                                                {% endif %}
+                                                
+                                                {% if view_offer.offer_logo %}
+                                                    <img src="{{view_offer.offer_logo.url}}" height="25" style="border-radius: 50%;" width="25" alt="Logo">
+                                                {% endif %}
+                                                {% if view_offer.offer_logo %}
+                                                {% if view_offer.offer_panel == "merchant" %}
+                                                <span style="text-align:  left; padding-left: 6px; color: black; font-size: 17px;">    
+                                                    {{view_offer.merchant_business_name}}
+                                                </span>
+                                                {% endif %}
+                                                {% if view_offer.offer_panel == "owner" %}
+                                                <span style="text-align:  left; padding-left: 6px; color: black; font-size: 17px;">    
+                                                    {{view_offer.o_business_name}}
+                                                </span>
+                                                {% endif %}
+                                                {% endif %}
+                                        
+                                                <div style="margin-top: 10px;">
+                                                    <h4 style="text-align: left; color: black; font-size: 15px;">      
+                                                        <b>{{view_offer.offer_name}}</b> on
+                                                    </h4>
+                                                    <h4 style="text-align: left; font-size: 15px; color: black;">
+                                                        <b>{{view_offer.offer_caption}}</b>
+                                                    </h4>
+                                                    <h4 style="text-align: left;  font-size: 15px; color: black;">
+                                                        Expires On:
+                                                        <span style="text-align: left;  padding-left: 6px; font-size: 15px; color: grey;">  
+                                                            {{view_offer.valid_through|date:'d-m-Y'}}
+                                                        </span>
+                                                    </h4>
+                                                </div>    
+                                            </div>  
+                                        </div>
+                                    </div>
+                                </div>                 
+                            </div>
+                            {% endfor %}
+                            </div> 
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+
+
+<script type="text/javascript">
+
+    function text(x){
+        if(x==0)
+        {
+
+        document.getElementById("null_merchant_data").style.display = "block";
+        document.getElementById("null_customer_data").style.display = "none";
+    }
+        else {
+            document.getElementById("null_customer_data").style.display = "block";
+            document.getElementById("null_merchant_data").style.display = "none";
+        }
+        return;
+    }
+</script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(function () {
+        $('.select-mode').click(function () {
+            if ($(this).val() == 'percentage') {
+
+                $('.percentage').prop({ readonly: false, });
+                $('.value').prop({ readonly: true });
+            }
+            else if ($(this).val() == 'fix') {
+
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: false });
+            }
+            else if ($(this).val() == '') {
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: true });
+            }
+        });
+    });
+
+    $(document).ready(function(){
+  
+    $('.percentage').prop({ readonly: true, });
+    $('.value').prop({ readonly: true });
+    
+});
+
+    $(function () {
+        $('.display').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+                $('#percentage_id').hide()
+                $('#value_id').hide()
+                $('#hide_percent').hide()
+                $('#hide_val').hide()
+                $('#coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#coupon_caption_id').hide()
+                $('#percentage_id').show()
+                $('#value_id').show()
+                $('#hide_percent').show()
+                $('#hide_val').show()
+            }
+        });
+    });
+
+    $(function () {
+        $('.editdisplay').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+
+                $('#edit_percentage_id').hide()
+                $('#edit_value_id').hide()
+                $('#edit_hide_percent').hide()
+                $('#edit_hide_val').hide()
+                $('#edit_coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#edit_coupon_caption_id').hide()
+                $('#edit_percentage_id').show()
+                $('#edit_value_id').show()
+                $('#edit_hide_percent').show()
+                $('#edit_hide_val').show()
+            }
+        });
+    });
+
+
+
+
+
+    //for view model 
+   var editmodaldiv = $("#edit-modal-div");
+    $(".editBtn").on("click", function () {
+        var id_num = $(this).data('id')
+        var offer_name = $(this).data('offer_name');
+        var offer_caption = $(this).data('offer_caption');
+        var valid_from = $(this).data('valid_from')
+        var valid_through = $(this).data('valid_through')
+        var offer_image = $(this).data('offer_image')
+
+        $("#edit_module_id").val(id_num)
+        $('#edit_offer_name').val(offer_name)
+        $('#edit_offer_caption').val(offer_caption)
+        $('#edit_valid_from').val(valid_from)
+        $('#edit_valid_through').val(valid_through)
+        $('#edit_offer_image').val(offer_image)
+
+        $("#myEditModal").modal();
+
+
+    });
+
+
+  $(".viewAdsBtn").on("click", function () {
+    var offer_image = $(this).data("offer_image");
+    var offer_name = $(this).data('offer_name');
+
+    $('#view_offer_name').empty().append(offer_name);
+
+    $('#view_ads_img').attr('src', offer_image);
+
+    $("#DisplayAdsModal").modal();
+});
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-offer/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Offer has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: true,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                    text: 'Offer has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+
+    function alphaOnly(event) {
+        var key = event.keyCode;
+        return ((key >= 65 && key <= 90) || key == 8);
+    };
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+        $.validator.addMethod("validDate", function (value, element) {
+        var currDate = new Date();
+        var dd = currDate.getDate();
+        var mm = currDate.getMonth()+1; 
+        var yyyy = currDate.getFullYear();
+        
+        var todayDate = yyyy+'-'+dd+'-'+mm;
+
+        
+        return Date.parse(todayDate) < Date.parse(value) || value == "";
+    }, "Please enter valid Date");
+
+
+    function ValidateEndDate() {
+       var startDate = document.getElementById("valid_from").value;
+       var endDate = document.getElementById("valid_through").value;
+       if (startDate != '' && endDate !='') {
+           if (Date.parse(startDate) > Date.parse(endDate)) {
+               // $("txttodate").val('');
+               Swal.fire({
+                
+                text: "Valid from date should not be greater than vali to date!",
+                icon: 'warning',
+                showCancelButton: false,
+                timer:2000,
+                
+            })
+           }
+       }
+       return false;
+   }
+        
+    $("#form").validate({
+        rules: {
+            offer_name: {
+                required: true,
+            },
+            valid_from: {
+                required: true,
+            },
+            valid_through: {
+                required: true,
+            },
+            offfer_caption: {
+                required: true
+            },
+            offer_image: {
+                required: true
+            },
+            
+        },
+
+        messages: {
+            offer_name: {
+                required: "Offer Name is Required",
+            },
+            valid_from: {
+                required: "From Date is Required",
+            },
+            valid_through: {
+                required: "To Date is Required",
+            },
+            offer_caption: {
+                required: "Offer Caption is Required",
+            },
+            offer_image: {
+                required: "Offer Image is Required",
+            },
+            
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "valid_from")
+                $("#valid_from_error").html(error);
+            if (element.attr("name") == "offer_name")
+                $("#offer_name_error").html(error);
+            if (element.attr("name") == "offer_caption")
+                $("#offer_caption_error").html(error);
+            if (element.attr("name") == "valid_through")
+                $("#valid_through_error").html(error);
+            if (element.attr("name") == "offer_image")
+                $("#offer_image_error").html(error);
+        }
+
+    });
+
+
+
+</script>
+<style>
+    
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<script type="text/javascript">
+    document.getElementById("Coupan_viewBtn").addEventListener("click", function(event){
+      event.preventDefault()
+    });
+</script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

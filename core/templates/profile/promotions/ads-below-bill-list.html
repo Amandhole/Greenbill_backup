@@ -1,0 +1,646 @@
+{% extends "layouts/base.html" %} {% block title %} Merchant Ads Below Bill {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} 
+
+{% block content %}
+
+  <style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+</style>
+<div class="content">
+  <div class="page-inner">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+              <h4 class="card-title">Merchant Ads Below Bill</h4>
+              <ul class="breadcrumbs">
+                  <li class="nav-home">
+                    <a href="/">
+                      <i class="flaticon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a>Promotions</a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/get-all-ads-below-bill/">Merchant Ads Below Bill</a>
+                  </li>
+                  </li>
+                </ul>
+                <!-- <div class="float-right">
+                <h6 class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Total Count &nbsp;{{all_ads_count}}</h6>
+              </div>
+              <div class="float-right">
+                <h6 class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Waiting For Approval &nbsp;{{waiting_count}}</h6>
+              </div>
+              <div class="float-right">
+                <h6 class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Approved &nbsp;{{approved_count}}</h6>
+              </div> -->
+            </div>
+          </div>
+          <div class="content">
+        <div class="page-inner">
+              <div class="row ">
+                    <div class=" col-md-4">
+                        <div class="row">
+                         <div class="card card-stats card-round" style="margin-left: 80px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Total Count</p>
+                                    <h4 class="card-title">{{all_ads_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div> 
+                 <div class=" col-md-4">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 40px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fa fa-spinner"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Waiting For Approval</p>
+                                    <h4 class="card-title">{{waiting_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class=" col-md-4">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa-thumbs-up"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Approved</p>
+                                    <h4 class="card-title">{{approved_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+        
+       
+                  
+
+          {% if is_superuser == True %}
+            <div class="card-body">
+              <!-- Modal -->
+              <div class="table-responsive">
+                <!-- <div>
+                    <span class="card-title">&nbsp;&nbsp;Total Count &nbsp;{{all_ads_count}}</span>
+                  
+                    <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Waiting For Approval &nbsp;{{waiting_count}}</span>
+                  
+                    <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Approved &nbsp;{{approved_count}}</span>
+                </div><br> -->
+                <table id="add-row" class="display table table-hover">
+                  <thead>
+                    <tr style="text-align: center;">
+                      <!-- <th>Sr. No.</th> -->
+                    <th>Merchant Name</th>
+                    <th>Merchant Business</th>
+                    <th>Ads Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                    <th>Ads Status</th>
+                    <th style="width: 10%">Action</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                  </tfoot>
+                  <tbody>
+                    {% for data in all_ads %}
+                  {% if data.ads_type == "self" %}
+                  <tr style="text-align: center;">
+                    <!-- <td>{{ forloop.counter }}</td> -->
+                    <td>{{ data.merchant.first_name }} {{ data.merchant.last_name}}</td>
+                    <td>
+                      {% if data.default_ads == True %}
+                        All Business
+                      {% else %} 
+                        {{ data.business_name }}
+                      {% endif %}
+                    </td>
+                    <td>{{ data.ads_name }}</td>
+                    <td style="width:12%;">{{ data.start_date }}</td>
+                    <td style="width:12%;">{{ data.end_date }}</td>
+                    <td style="width:12%;">{{ data.created_date|date:'d-m-Y' }}</td>
+                    <td>
+                        {% if data.status == "0" %}
+                            Waiting For Approval
+                        {% elif data.status == "1" %}
+                            Approved
+                        {% elif data.status == "2" %}
+                            <button type="button" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.disapproved_reason }}">
+                                Disapproved
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data.expire_status == True %}
+                        
+                        Active
+
+                        {% else %}
+                        Expired
+                        {% endif %}
+                    </td>
+                    <td>
+                      <div class="form-button-action">
+
+                        {% if data.ads_type != "green_bill" %}
+                            <button type="button" data-toggle="tooltip"
+                                title="" class="btn btn-link btn-primary btn-lg viewAdsBtn" id="view-modal-div" data-original-title="View Ads" data-id="{{object.id}}" data-ads_img="{{data.ads_image.url}}" data-ads_name="{{ data.ads_name }}" data-ads_redirect_url="{{ data.redirect_url }}">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        {% endif %}
+
+                        {% if data.status != "1" and data.status != "2" %}
+                          <button type="submit" class="btn btn-link btn-primary AdsApproveBtn" data-id="{{data.id}}" data-original-title="Approve" data-toggle="tooltip"><i class="fa fa-thumbs-up"></i></button>
+                        {% endif %}
+
+                        <!-- <button type="submit" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="tooltip" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button> -->
+                        {% if data.status != "1" and data.status != "2" %}
+                          <span data-original-title="Disapprove" data-toggle="tooltip">
+                              <button type="button" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="modal" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button>
+                          </span>
+                        {% endif %}
+                        
+                      </div>
+                    </td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% else %}
+            {% for actions in action_permissions_list %}
+                {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "Merchant Ads Below Bill"|lower %}
+                    {% if actions.view_permission == "1" %}
+                      <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+                        <!-- Modal -->
+                        <div class="table-responsive">
+                          <div>
+                              <span class="card-title">&nbsp;&nbsp;Total Count &nbsp;{{all_ads_count}}</span>
+                            
+                              <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Waiting For Approval &nbsp;{{waiting_count}}</span>
+                            
+                              <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Approved &nbsp;{{approved_count}}</span>
+                          </div><br>
+                          <table id="add-row" class="display table table-hover">
+                            <thead>
+                              <tr style="text-align: center;">
+                                <th>Sr. No.</th>
+                                <th>Merchant Name</th>
+                                <th>Merchant Business</th>
+                                <th>Ads Name</th>
+                                <th>Ads For</th>
+                                <th>Created Date</th>
+                                <th>Status</th>
+                                <th>Ads Status</th>
+                                <th style="width: 10%">Action</th>
+                              </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                            <tbody>
+                              {% for data in all_ads %}
+                  {% if data.ads_type != "green_bill" %}
+                  <tr style="text-align: center;">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.merchant_business_name }}
+                    <td>
+                      {% if data.default_ads == True %}
+                        All Business
+                      {% else %} 
+                        {{ data.business_name }}
+                      {% endif %}
+                    </td>
+                    <td>{{ data.ads_name }}</td>
+                    <td>
+                        {% if data.ads_type == "self" %}
+                            Self
+                        {% elif data.ads_type == "third_party" %}
+                            {{data.ads_for}}
+                        {% elif data.ads_type == "green_bill" %}
+                            Green Bill
+                        {% endif %}
+                    </td>
+                    <td>{{ data.created_date|date:'d-m-Y' }}</td>
+                    <td>
+                        {% if data.status == "0" %}
+                            Waiting For Approval
+                        {% elif data.status == "1" %}
+                            Approved
+                        {% elif data.status == "2" %}
+                            <button type="button" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.disapproved_reason }}">
+                                Disapproved
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data.expire_status == True %}
+                        
+                        Active
+
+                        {% else %}
+                        Expired
+                        {% endif %}
+                    </td>
+                    <td>
+                      <div class="form-button-action">
+
+                        {% if data.ads_type != "green_bill" %}
+                            <button type="button" data-toggle="tooltip"
+                                title="" class="btn btn-link btn-primary btn-lg viewAdsBtn" id="view-modal-div" data-original-title="View Ads" data-id="{{object.id}}" data-ads_img="{{data.ads_image.url}}" data-ads_name="{{ data.ads_name }}" data-ads_redirect_url="{{ data.redirect_url }}">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        {% endif %}
+
+                        {% if data.status != "1" and data.status != "2" %}
+                          <button type="submit" class="btn btn-link btn-primary AdsApproveBtn" data-id="{{data.id}}" data-original-title="Approve" data-toggle="tooltip"><i class="fa fa-thumbs-up"></i></button>
+                        {% endif %}
+
+                        <!-- <button type="submit" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="tooltip" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button> -->
+                        {% if data.status != "1" and data.status != "2" %}
+                          <span data-original-title="Disapprove" data-toggle="tooltip">
+                              <button type="button" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="modal" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button>
+                          </span>
+                        {% endif %}
+                        
+                      </div>
+                    </td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+              {% endfor %}
+              <div class="card-body permission-denied" style="display:none">
+                  <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="reasonModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_reason_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Add Reason</h2>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="disapprove_ads_id" name="disapprove_ads_id" value="" />
+            <input type="text" class="form-control" id="reason" name="reason" placeholder="Reason *"/>
+          </div>
+          <div class="modal-footer">
+            <input id="add_reason_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<!-- View Ads Modal Start -->
+<div class="modal fade" id="DisplayAdsModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="view_ads_name"></h2>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img width="300" height="300" src="" id="view_ads_img">
+                <br></br>
+                <p id="view_redirect_url"></p>
+             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- View Ads Modal End -->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+
+$(".viewAdsBtn").on("click", function () {
+    var ads_img = $(this).data("ads_img");
+    var ads_name = $(this).data('ads_name');
+    var redirect_url = $(this).data('ads_redirect_url');
+
+    $('#view_ads_name').empty().append(ads_name);
+
+    $('#view_ads_img').attr('src', ads_img);
+
+    $('#view_redirect_url').empty().append("Redirect URL: <a href='" + redirect_url + "' target='_blank'>" +  redirect_url + "</a>");
+
+    $("#DisplayAdsModal").modal();
+});
+
+$('.AdsDisapproveBtn').on('click', function(e) {
+    var id = $(this).attr("data-id");
+    $('#disapprove_ads_id').val(id);
+});
+
+$('.AdsApproveBtn').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Approve it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/approve-ads-by-id/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Approved!',
+                    text:'Ads Approved Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+
+$('#add_reason_form').validate({
+    rules:{
+      reason:{
+        required: true
+      }
+    },
+    submitHandler: function () {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You really want to Disapprove this Ads!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Disapprove it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            type: "POST",
+            url: "/disapprove-ads-by-id/",
+            data: $('#add_reason_form').serialize(),
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Disapproved!',
+                    text:'Ads Disapproved Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+      }
+    });
+    }
+  });
+</script>
+
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    $('#add-row').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ]
+    });
+
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+  });
+
+  if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
+  }
+</script>
+
+{% endblock javascripts %}

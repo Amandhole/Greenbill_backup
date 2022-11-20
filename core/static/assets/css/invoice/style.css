@@ -1,0 +1,94 @@
+.body-main {
+     background: #ffffff;
+     border-bottom: 35px solid #065c99;
+     border-top: 35px solid #065c99;
+     margin-top: 30px;
+     margin-bottom: 30px;
+     padding: 15px 15px;
+     position: relative;
+     box-shadow: 0 1px 21px #808080;
+     font-size: 15px;
+     border-radius:25px 130px !important;
+     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+     border-right: 3px solid #065c99;
+     border-left: 3px solid #065c99;
+     
+ }
+
+ @media only screen and (max-width: 1280) {
+  .body-main {
+    margin-right: 50px !important;
+  }
+}
+
+
+ @media screen and (min-width:1024px)
+ {
+    .col-md-12
+    {
+        width: 100% !important;
+    }
+
+ }
+
+ .main thead {
+     background: #1E1F23;
+     color: #fff
+ }
+
+ .img {
+     height: 120px
+ }
+
+ h1 {
+     text-align: center
+ }
+ .imgformat img
+ {
+  height: 50px;
+  width: 160px;
+  margin-top: 30px;
+  
+ }
+ .table
+ {
+   border: 1px solid black;
+   font-weight: bold;
+   
+ }
+ tbody
+ {
+  font-size:15;
+ }
+ .table-heading
+ {
+  font-size:18;
+ }
+ .body-span{
+      font-weight: bold;
+      font-size: 25px; 
+      font-family: Times,serif;
+   }
+   .body-row{
+      border-bottom: 3px solid black;
+   }
+   .body-div2{
+      line-height: 0.9;
+   }
+   .body-h4{
+    font-family: Futara;
+   }
+   .body-h5{
+    font-family: Times New Roman;
+   }
+   .body-content{
+    background-color: #e6e4e1;
+    padding: 10px; 
+    border: 1px solid #666562;
+   }
+   .body-td{
+    font-weight: normal;
+   }
+   .body-new-td{
+    font-weight:bold;
+   }

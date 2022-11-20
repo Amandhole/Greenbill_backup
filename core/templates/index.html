@@ -1,0 +1,1052 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+ 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<head>
+    <style type="text/css">
+        .card-title{
+            font-size: 20px;
+        }
+        .card-category{
+            font-size: 14px;
+        }
+        .right-space{
+            width: 463px; 
+        }
+
+        @media screen and (max-width: 769px) {
+            .right-space{
+                width: 379px;
+                }
+        }
+    
+    </style>
+</head>
+{% endblock stylesheets %}
+
+{% block content %}
+            
+    <div class="content">
+        <div class="panel-header bg-primary-gradient">
+            <div class="page-inner py-5">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h2 class="text-white pb-2 fw-bold">Owner Dashboard</h2>
+                        <!-- <h5 class="text-white op-7 mb-2">Welcome to Owner Dashboard</h5> -->
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+                        <!-- <a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+                        <a href="#" class="btn btn-secondary btn-round">Add Customer</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-inner mt--5">
+            <div class="row mt--2">
+                <div class="col-md-12">
+                    <div class="card full-height">
+                        <div class="card-body">
+                            <div class="card-title">Total Users</div>
+                            <!-- <div class="card-category">Daily information about statistics in system</div> -->
+                            <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-1"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Merchants</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-2"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Customers</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-3"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Partners</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form class="form-control" action=" " method="POST" id="merchants-form"
+                            name="merchants-form" autocomplete="off" style="border:0px;">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>From Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control" name="from_date1"
+                                                id="from_date1" required value="{{from_date1}}" max="{% now 'Y-m-d' %}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>To Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control" name="to_date1"
+                                                id="to_date1" required value="{{to_date1}}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="padding-top: 3%">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary" name="submit" value="merchants_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                    <div class="col">
+                            <div class="card">
+                                <div class="card-header align-items-center d-flex justify-content-center">
+                                    <div class="card-head-row">
+                                        <div class="card-title">Merchants</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- <div class="row">
+                                        <div class="col-md-12">
+                                            <form class="form-control" action=" " method="POST" id="merchants-form"
+                                                name="merchants-form" autocomplete="off" style="border:0px;">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>From Date<span style="color: red;"> *</span></label>
+                                                            <div class="input-group mb-6">
+                                                                <input type="date" class="form-control" name="from_date1"
+                                                                    id="from_date1" required value="{{from_date1}}" max="{% now 'Y-m-d' %}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>To Date<span style="color: red;"> *</span></label>
+                                                            <div class="input-group mb-6">
+                                                                <input type="date" class="form-control" name="to_date1"
+                                                                    id="to_date1" required value="{{to_date1}}" max="{% now 'Y-m-d' %}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2" style="padding-top: 3%">
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary" name="submit" value="merchants_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div> -->
+                                        
+                                    <!-- </div> -->
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                        <div class="chart-container">
+                                            <canvas id="totalmerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space">Total Merchants</canvas> 
+                                        </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="chart-container">
+                                                <canvas id="activemerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space">Active Merchants</canvas>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="chart-container">
+                                                <canvas id="inactivemerchantchart" style="height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor right-space">In-Active Merchants</canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+            </div>
+
+
+            <div class="row" style="margin-left: 15px;margin-right: 15px;">
+                    <div class="col">
+                            <div class="card">
+                                <div class="card-header align-items-center d-flex justify-content-center">
+                                    <div class="card-head-row">
+                                        <div class="card-title">Customer Category Performance</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- <div class="row">
+                                        <div class="col-md-12">
+                                            <form class="form-control" action="" method="POST" id="customer-category-form"
+                                                name="customer-category-form" autocomplete="off" style="border:0px;">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>From Date<span style="color: red;"> *</span></label>
+                                                            <div class="input-group mb-6">
+                                                                <input type="date" class="form-control" name="from_date2"
+                                                                    id="from_date2" required value="{{from_date2}}" max="{% now 'Y-m-d' %}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label>To Date<span style="color: red;"> *</span></label>
+                                                            <div class="input-group mb-6">
+                                                                <input type="date" class="form-control" name="to_date2"
+                                                                    id="to_date2" required value="{{to_date2}}" max="{% now 'Y-m-d' %}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2" style="padding-top: 3%">
+                                                        <div class="form-group">
+                                                            <button type="submit" class="btn btn-primary" name="submit" value="customer_category_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                    </div> -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="pie-chart" style="width: 463px; height: 300px; display: block;" width="250" height="200" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="chartContainer" width="463" height=" 300" class="chartjs-render-monitor" style="display: block; width: 200px; height: 200px;"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row" style="margin-left: 15px;margin-right: 15px;">
+                    <div class="col">
+                            <div class="card">
+                                <div class="card-header align-items-center d-flex justify-content-center">
+                                    <div class="card-head-row">
+                                        <div class="card-title">Subscription Plan Usage</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="col-md-12 align-items-center d-flex justify-content-center">
+                                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" style="">By Merchant</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">By Partner</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="tab-content" id="pills-tabContent" >
+                                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="card-body">
+                                                            <div class="chart-container">
+                                                                <canvas id="merchanttotaldigitalbillchart" style="width: 463px; height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor">Digital Bills</canvas> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="card-body">
+                                                            <div class="chart-container">
+                                                                <canvas id="merchantdigitalbillsmschart" style="width: 463px; height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor">SMS</canvas>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card-body">
+                                                            <div class="chart-container">
+                                                            <canvas id="partnerdigitalbillsmschart" style="width: 463px; height: 320px; display: block;" width="463" height="300" class="chartjs-render-monitor">SMS</canvas>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            
+                        
+            <div class="row mt--2" style="margin-left: 15px;margin-right: 15px;">
+                <div class="col-md-12">
+                    <div class="card full-height">
+                        <div class="card-body">
+                            <div class="card-title">New Registrations</div>
+        
+                            <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-11"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Merchants</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-12"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Customers</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-13"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Partners</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-14"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Parking Merchants</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-15"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Petrol Pump Merchants</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="row mt--2" style="margin-left: 15px;margin-right: 15px;">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title">Payments</div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card card-stats card card-round" style="height: 133px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="icon-big text-center">
+                                                        <i class="fas fa-rupee-sign" style="color: #00569D !important;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 col-stats">
+                                                    <div class="numbers">
+                                                        <h4 class="card-title" style="font-size: 17px;">Subscription Plans</h4>
+                                                        <p class="card-category" style="color: #00569D !important"> Greenbill - ₹{{total_greebill_subscription|floatformat:2}}</p>
+                                                        <p class="card-category" style="color: #00569D !important"> Ad ons - ₹{{total_adon_subscription|floatformat:2}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card card-stats card card-round" style="height: 133px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="icon-big text-center">
+                                                        <i class="fas fa-images" style="color: #ff8c00 !important;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 col-stats">
+                                                    <div class="numbers">
+                                                        <h4 class="card-title" style="font-size: 17px;">Ads Below Bill</h4>
+                                                        <p class="card-category" style="color: #ff8c00 !important">Merchant - ₹{{green_bill_total_amount}}</p>
+                                                       <p class="card-category" style="color: #ff8c00 !important">Third party - ₹{{third_party_total_amount}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card card-stats card card-round" style="height: 133px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="icon-big text-center">
+                                                        <i class="fas fa-shopping-bag" style="color: #63b90b !important;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 col-stats">
+                                                    <div class="numbers">
+                                                        <h4 class="card-title" style="font-size: 17px;">Others</h4>
+                                                        <p class="card-category" style="color: #63b90b !important"> Offers - ₹{{total_offer_amount}}</p>
+                                                        <p class="card-category" style="color: #63b90b !important"> Coupons - ₹{{total_coupon_amount}}</p>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card card-stats card card-round" style="height: 133px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="icon-big text-center">
+                                                        <i class="fas fa-mobile-alt" style="color: #ff0000 !important;"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 col-stats">
+                                                    <div class="numbers">
+                                                        <h4 class="card-title" style="font-size: 17px;">SMS Plans</h4>
+                                                        <p class="card-category" style="color: #ff0000 !important"> Transactional - ₹{{total_transactional_subscription|floatformat:2}}</p>
+                                                        <p class="card-category" style="color: #ff0000 !important"> Promotional - ₹{{total_promotional_subscription|floatformat:2}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+                </div>  
+        </div>
+    </div>
+
+
+
+<!-- Specific Page JS goes HERE  -->
+
+    <!-- Atlantis DEMO methods, don't include it in your project! -->
+    <script>
+        document.getElementById("from_date1").onchange = function () {
+        var input = document.getElementById("to_date1");
+        input.setAttribute("min", this.value);
+    }
+    </script>
+    <script src="/static/assets/js/setting-demo.js"></script>
+    <script src="/static/assets/js/demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+   
+<script type="text/javascript">
+
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+    return this.optional(element) || new Date(value) >= new Date($(params).val());
+},'Must be greater than from date.');
+
+$("#merchants-form").validate({
+        rules: {
+            from_date1: {
+                required: true,
+                validDate: true
+            },
+            to_date1: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date1"
+            },
+        },
+        messages: {
+            from_date1: {
+                required: "From Date is Required",
+            },
+            to_date1: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+    $("#customer-category-form").validate({
+        rules: {
+            from_date2: {
+                required: true,
+                validDate: true
+            },
+            to_date2: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date2"
+            },
+        },
+        messages: {
+            from_date2: {
+                required: "From Date is Required",
+            },
+            to_date2: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+
+ var config = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Total Merchants',
+          data:   {{ total_merchants|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+          ],
+        }],
+        labels: ['Parking','Petrol Pump','Other Business']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Total Merchants',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+var config1 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Active Merchants',
+          data: {{active_merchants|safe}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Parking','Petrol Pump','Other Business']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Active Merchants',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+var config10 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'In-Active Merchants',
+          data: {{inactive_merchants|safe}},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Parking','Petrol Pump','Other Business']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'In-Active Merchants',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+var config5 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'Digital Bills',
+          data: {{ merchant_digital_bills_data|safe }},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+          ],
+        }],
+        labels: ['SMS','Notification']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'Digital Bills',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+
+var config6 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'SMS',
+          data: {{ merchant_sms_data|safe }},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Transactional','Promotional']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'SMS',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+var config8 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          label: 'SMS',
+          data: {{ partner_sms_data|safe }},
+        //   {{ data1|safe }},
+        //   backgroundColor: ['#00569d', '#63b90b', '#f3545d', '#fdaf4b','#1d7af3', '#ff0000', '#177dff', '#31ce36'],
+          backgroundColor: [
+              '#FA8072','#C0C0C0','#800000', '#808080','#0000FF','#00FFFF','#008000','#000080','#800080','#008080','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+          ],
+        }],
+        labels: ['Transactional','Promotional']
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            // position: "bottom",
+            text: 'SMS',
+            fontSize: 20,
+        },
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+    
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+};
+
+
+ var config2 = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Total Bill Category',
+          data: {{category_count|safe}},
+          backgroundColor: [
+              '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+          ],
+        }],
+        labels: {{labels|safe}}
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        pieceLabel: {
+            render: function (args) {
+            return args.value;
+            },
+            fontColor: 'black',
+            fontSize: 14,
+            position: 'outside',
+        },
+        // tooltips: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+    }
+};
+
+
+var config3 = {
+    type: 'bar',
+    data: {
+        labels: {{labels|safe}},
+        datasets: [{
+            label: 'Total Bill Category',
+            data: {{category_count|safe}},
+            backgroundColor: [
+                '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+            ],
+            borderColor: [
+                '#00adef', '#e21836', '#f68e1f', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+        scaleShowValues: true,
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: false
+              }
+            }]
+        }
+    }
+}
+
+
+
+window.onload = function() {
+      var ctx = document.getElementById('totalmerchantchart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+
+      var ctx1 = document.getElementById('activemerchantchart').getContext('2d');
+      window.myPie = new Chart(ctx1, config1);
+
+      var ctx2 = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx2, config2);
+
+      var ctx3 = document.getElementById('chartContainer').getContext('2d');
+      window.myChart = new Chart(ctx3, config3);
+
+
+      var ctx5 = document.getElementById('merchanttotaldigitalbillchart').getContext('2d');
+      window.myPie = new Chart(ctx5, config5);
+
+      var ctx6 = document.getElementById('merchantdigitalbillsmschart').getContext('2d');
+      window.myChart = new Chart(ctx6, config6);
+
+      // var ctx7 = document.getElementById('partnertotaldigitalbillchart').getContext('2d');
+      // window.myPie = new Chart(ctx7, config7);
+
+      var ctx8 = document.getElementById('partnerdigitalbillsmschart').getContext('2d');
+      window.myChart = new Chart(ctx8, config8);
+
+      var ctx10 = document.getElementById('inactivemerchantchart').getContext('2d');
+      window.myChart = new Chart(ctx10, config10);
+
+    };
+    
+    </script>
+{% endblock content %}
+{% block javascripts %}
+ <script>
+    {% for users in total_users %}
+        {% if forloop.counter == 1 %}
+        Circles.create({
+            id:'circles-2',
+            radius:45,
+            value:{{users}},
+            maxValue:100,
+            width:7,
+            text: {{users}},
+            colors:['#f1f1f1', '#FF9E27'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 2 %}
+        Circles.create({
+            id:'circles-1',
+            radius:45,
+            value:{{users}},
+            maxValue:100,
+            width:7,
+            text: {{users}},
+            colors:['#f1f1f1', '#2BB930'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 3 %}
+        Circles.create({
+            id:'circles-3',
+            radius:45,
+            value:{{users}},
+            maxValue:100,
+            width:7,
+            text: {{users}},
+            colors:['#f1f1f1', '#F25961'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% endif %}
+        {% endfor %}
+
+
+
+{% for reg in new_registrations %}
+        {% if forloop.counter == 1 %}
+        Circles.create({
+            id:'circles-11',
+            radius:45,
+            value:{{reg}},
+            maxValue:100,
+            width:7,
+            text: {% if reg %}{{reg}}{% else %}'0'{% endif %},
+            colors:['#f1f1f1', '#FF9E27'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 2 %}
+        Circles.create({
+            id:'circles-12',
+            radius:45,
+            value:{{reg}},
+            maxValue:100,
+            width:7,
+            text: {% if reg %}{{reg}}{% else %}'0'{% endif %},
+            colors:['#f1f1f1', '#2BB930'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 3 %}
+        Circles.create({
+            id:'circles-13',
+            radius:45,
+            value:{{reg}},
+            maxValue:100,
+            width:7,
+            text: {% if reg %}{{reg}}{% else %}'0'{% endif %},
+            colors:['#f1f1f1', '#F25961'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 4 %}
+        Circles.create({
+            id:'circles-14',
+            radius:45,
+            value:{{reg}},
+            maxValue:100,
+            width:7,
+            text: {% if reg %}{{reg}}{% else %}'0'{% endif %},
+            colors:['#f1f1f1', '#006eb6'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% elif forloop.counter == 5 %}
+        Circles.create({
+            id:'circles-15',
+            radius:45,
+            value:{{reg}},
+            maxValue:100,
+            width:7,
+            text: {% if reg %}{{reg}}{% else %}'0'{% endif %},
+            colors:['#f1f1f1', '#800000'],
+            duration:400,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+        {% endif %}
+        {% endfor %}
+
+
+</script>
+{% endblock javascripts %}

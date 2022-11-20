@@ -1,0 +1,220 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Parking Pass {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Passes</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/customer-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Parking Lot</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/customer-bill/">Passes</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card">
+                       <div class="card-header">
+                        <div class="d-flex align-items-center">
+                          <h4 class="card-title">Parking Pass</h4>
+                          <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer-passes/">Parking Pass</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- <div class="card-header">
+                        <div class="row">
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="tab" href="#profile" role="tab"
+                                        aria-selected="false">Customer Bill</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+
+
+                                <div class="row">
+
+                                    {% for object in parking_lot_pass %}
+
+                                    <div class="col-md-4" style="margin-top: 20px;; margin-bottom: 30px;">
+                                        <form class="form-control" action="//" method="POST" id="bill_form"
+                                            name="bill_form" autocomplete="off" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="coupon">
+                                                <div class="container" style="padding-bottom: 10px;">
+                                                    {% if object.bussiness_logo %}
+                                                    <img src="{{object.bussiness_logo.url}}" alt="Avatar"
+                                                        style="width:70%;" width="100" height="100">
+                                                    {% else %}
+                                                    <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                                        style="width:70%;">
+                                                    {% endif %}
+                                                    <div class="container" style="padding-bottom: 0px;">
+                                                    </div>
+
+                                                    <h2><b>{{object.business_name}}</b></h2>
+
+                                                </div>
+                                                <div class="container" style="padding-bottom: 20px;">
+                                                    <p>Vehicle No.: <span class="promo">{{object.vehical_no}}</span>
+                                                    </p>
+
+                                                    <p class="expire">Expires:
+                                                        {{object.valid_to}}</p>
+                                                    <h2><b>Amount {{object.amount}}</b></h2>
+
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

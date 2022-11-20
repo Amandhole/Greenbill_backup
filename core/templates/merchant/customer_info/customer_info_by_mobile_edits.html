@@ -1,0 +1,252 @@
+<!--
+{% extends "layouts/merchant-base.html" %}
+{% block title %} Customer Info {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+   
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+   
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+    text-align: left !important;
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+       
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"> 
+                        <div class="page-header">
+                            <h4 class="page-title">Customer Information</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/customer-info/">Customer Information</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body center">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <h3 class="text">&nbsp;&nbsp;&nbsp;&nbsp;Mobile Number: {{personal_details.mobile_no}}</h3>
+                                </div>
+                                <div class="row"> 
+                                    <h3>&nbsp;&nbsp;&nbsp;&nbsp;Name: {{personal_details.first_name}} {{personal_details.last_name}}</h3>
+                                </div>
+                                <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>    
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table  table-hover">
+                                                <thead>
+                                                    <tr align="center">
+                                                        <th>Sr. No.</th>
+                                                        <th>Date</th>
+                                                        <th>Amount</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    {% for bill in bills %}
+                                                    <tr align="center">
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{ bill.bill_date }}</td>
+                                                        <td>{{ bill.amount }}</td>
+                                                        <td>
+                                                            <div class="form-button-action">
+                                                                {% if bill.bill_file %}
+                                                                    <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                        <a href="{{bill.bill_file}}" download>
+                                                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </button>
+                                                                {% endif %}
+
+                                                                {% if bill.customer_added == False and bill.bill_file %}
+                                                                    <button type="button" data-toggle="tooltip" data-target="" title="" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send SMS" data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}" data-mobile_no="{{personal_details.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                                {% endif %}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    
+<div class="modal fade" id="myDisplayModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Customer Information </h2>
+            </div>
+            <div class="modal-body" id="paraclear">
+                <p id="c_fname" name="c_fname"></p>
+                <p id="c_lname" name="c_lname"></p>
+                <p id="c_email" name="c_email"> </p>
+                <p id="c_mobile" name="c_mobile"></p>
+                <p id="c_area" name="c_area"></p>
+                <p id="c_pin_code" name="c_pin_code"> </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+$(function() {
+    $('.SendBillBtn').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_no = $(this).attr("data-mobile_no");
+        $.ajax({
+            type: "POST",
+            url: "/customer-info-send-bill-sms-web/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_no},
+            beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: response["message"], 
+                timer:2000,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:2000,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+    
+$(document).ready(function () {
+        $('#add-row').DataTable( {
+            dom: 'tBfrtip',
+            "ordering": false,
+            buttons: [    
+            ],
+        });
+});
+
+</script>
+<style>
+
+      
+
+        .permission-denied {
+            color: red;
+            display: flex;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: 500;
+        }
+    </style>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}   -->

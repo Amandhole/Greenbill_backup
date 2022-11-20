@@ -1,0 +1,1408 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+ 
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+	.card-primary {
+    	background: #ffffff !important;
+	}
+	.card-primary .card-category {
+		color: #000000 !important;
+	}
+	.card-primary .icon-big>i{
+		color: #000000 !important;
+	}
+	.card-primary .card-title {
+		color: #000000 !important;
+	}
+	.my-circle {
+	    content: attr(data-letters);
+	    display: inline-block;
+	    font-size: 1em;
+	    width: 2.5em;
+	    height: 2.5em;
+	    line-height: 2.5em;
+	    text-align: center;
+	    border-radius: 50%;
+	    vertical-align: middle;
+	    color: white;
+	}
+</style>
+			
+<div class="content">
+	<div class="panel-header bg-primary-gradient">
+		<div class="page-inner py-5">
+			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+				<div>
+					<h2 class="text-white pb-2 fw-bold">Merchant Dashboard</h2>
+				</div>
+				<div class="ml-md-auto py-2 py-md-0">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="page-inner mt--5">
+		<div class="row">
+			<!-- <div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body" style="padding: 25px!important;">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-list-ol" style="color: #00569D !important"></i>
+								</div>
+							</div>
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title">Total Transactions</h4>
+									<h4 class="card-title" style="color: #00569D !important">{{total_transaction|floatformat:2}}</h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-list-ol" style="color: #00569D !important"></i>
+								</div>
+							</div>
+							<!-- <div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title" style="font-size: 16px;">Total Transactions</h4>
+									<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">{{total_transaction|floatformat:2}}</a></p>
+									<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+								</div>
+							</div> -->
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title" style="font-size: 16px;">Total Transactions</h4>
+									<p class="card-category" style="color: #ff8c00 !important">{{total_transaction|floatformat:2}}</p>
+									<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-rupee-sign" style="color: #ff8c00 !important"></i>								
+								</div>
+							</div>
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title" style="font-size: 16px;">Total Payments</h4>
+									<p class="card-category" style="color: #ff8c00 !important">{{average_transaction|floatformat:2}}</p>
+									<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			
+			<!-- <div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body" style="padding: 25px!important;">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-chart-line" style="color: #63b90b !important"></i>
+								</div>
+							</div>
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title">Total Sales</h4>
+									<h4 class="card-title" style="color: #63b90b !important">{{total_sales|floatformat:2}}</h4>
+									<h4 class="card-title">&nbsp;</h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-chart-line" style="color: #63b90b !important"></i>							
+								</div>
+							</div>
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title" style="font-size: 16px;">Total Sales  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h4>
+									<p class="card-category" style="color: #ff8c00 !important">{{total_sales|floatformat:2}}</p>
+									<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body" style="padding: 25px!important;">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-percentage" style="color: #ff0000 !important" ></i>
+								</div>
+							</div>
+							<div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title">Average Sales</h4>
+									<h4 class="card-title" style="color: #ff0000 !important">{{average_sales|floatformat:2}}</h4>
+									<h4 class="card-title">&nbsp;</h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="col-sm-6 col-md-3">
+				<div class="card card-stats card-primary card-round">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-3">
+								<div class="icon-big text-center">
+									<i class="fas fa-percentage" style="color: #ff0000 !important" ></i>						
+								</div>
+							</div>
+							<!-- <div class="col-9 col-stats">
+								<div class="numbers">
+									<h4 class="card-title" style="font-size: 16px;">Total Sales</h4>
+									<p class="card-category" style="color: #ff8c00 !important"><a href="http://157.230.228.250/bill-info/" style="color: #ff8c00 !important">{{total_sales|floatformat:2}}</a></p>
+									<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+								</div>
+							</div> -->
+							<div class="col-9 col-stats">
+							<div class="numbers">
+								<h4 class="card-title" style="font-size: 16px;">Average Sales</h4>
+								<p class="card-category" style="color: #ff8c00 !important">{{average_sales|floatformat:2}}</p>
+								<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+                <div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-print" style="color: #00569D !important"></i>
+									</div>
+									
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title" style="font-size: 16px;">Bills Printed</h4>
+										<p class="card-category" style="color: #ff8c00 !important">{{exe_print_bill_status}}</p>
+										<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-paper-plane" style="color: #00569D !important"></i>
+									</div>
+
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title" style="font-size: 16px;">Bills Sent Digitally</h4>
+										<p class="card-category" style="color: #ff8c00 !important">{{send_bill_count}}</p>
+										<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-print" style="color: #00569D !important"></i>
+										<i class="fas fa-paper-plane" style="color: #00569D !important"></i>
+									</div>
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title" style="font-size: 16px;">Bills Printed & Sent</h4>
+										<p class="card-category" style="color: #ff8c00 !important">{{send_print_bill_count}}</p>
+										<p class="card-category" style="color: #ff8c00 !important">&nbsp;</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            
+        </div>
+
+		<div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                	<form class="form-control" action="/merchant-index/" method="POST" id="billing_analysis_form" name="billing_analysis_form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="submit_digital_bill" value="digital_bill">
+                                <div class="row">
+                                    <!-- <div class="col-md-1"></div> -->
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_from_date"
+                                                    id="billing_analysis_from_date" required value="{{from_date}}" max="{% now 'Y-m-d' %}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_to_date"
+                                                    id="billing_analysis_to_date" value="{{to_date}}" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-top: 3%">
+                                        <div class="form-group">
+                                            <!-- <button type="submit" name='submit' value='billing_analysis_btn' class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button> -->
+                                            <button class="btn btn-icon btn-link btn-primary btn-xs" name="submit" value="billing_analysis_btn"><span class="fas fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form>
+                </div>
+            </div>
+        </div>
+		<div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex justify-content-center">
+                        <div class="card-head-row">
+                            <div class="card-title">Billing Analysis</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        	<!-- <form class="form-control" action="/merchant-index/" method="POST" id="billing_analysis_form" name="billing_analysis_form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="submit_billing_analysis" value="billing_analysis">
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_from_date"
+                                                    id="billing_analysis_from_date" value="{{billing_analysis_from_date}}" max="{% now 'Y-m-d' %}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_to_date"
+                                                    id="billing_analysis_to_date" value="{{billing_analysis_to_date}}" max="{% now 'Y-m-d' %}" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-top: 4%">
+                                        <div class="form-group">
+                                            <button type="submit" name='submit' value='billing_analysis_btn' class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form> -->
+							<!-- <form class="form-control" action="/merchant-index/" method="POST" id="billing_analysis_form" name="billing_analysis_form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="submit_digital_bill" value="digital_bill">
+                                <div class="row">
+                                    
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_from_date"
+                                                    id="billing_analysis_from_date" required value="{{from_date}}" max="{% now 'Y-m-d' %}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="billing_analysis_to_date"
+                                                    id="billing_analysis_to_date" value="{{to_date}}" max="{% now 'Y-m-d' %}" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-top: 6%">
+                                        <div class="form-group">
+                                            
+                                            <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="billing_analysis_btn"><span class="fas fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form> -->
+                            <div class="chart-container">
+                                <canvas id="BillingAnalysisChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex justify-content-center">
+                        <div class="card-head-row">
+                            <div class="card-title">Digital Billing</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        	<!-- <form class="form-control" action="/merchant-index/" method="POST" id="digital_bill_form" name="digital-bill-form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="submit_digital_bill" value="digital_bill">
+                                <div class="row">
+                                    
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="digital_bill_from_date"
+                                                    id="digital_bill_from_date" required value="{{from_date}}" max="{% now 'Y-m-d' %}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="digital_bill_to_date"
+                                                    id="digital_bill_to_date" value="{{to_date}}" max="{% now 'Y-m-d' %}" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-top: 6%">
+                                        <div class="form-group">
+                                            <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="digital_bill_btn"><span class="fas fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form> -->
+                            <div class="chart-container">
+                                <canvas id="DigitalBillingChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas> 
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+    	</div>
+
+    	<div class="row">
+            <div class="col-md-12">
+            	<div class="card">
+                    <div class="card-header align-items-center d-flex justify-content-center">
+                        <div class="card-head-row">
+                            <div class="card-title">Overall Customer Analysis</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                    	<div class="row"> 
+                    		<!-- <form class="form-control" action="/merchant-index/" method="POST" id="customer-analysis-form" name="customer-analysis-form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="customer_analysis_from_date"
+                                                    id="customer_analysis_from_date" required value="{{from_date}}" max="{% now 'Y-m-d' %}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="customer_analysis_to_date"
+                                                    id="customer_analysis_to_date"  max="{% now 'Y-m-d' %}" value="{{to_date}}" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-top: 2%">
+                                        <div class="form-group">
+                                            <button type="submit" name='submit' value='customer_analysis_btn' class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form>  -->
+
+
+							<!-- <form class="form-control" action="/merchant-index/" method="POST" id="customer_analysis_form" name="customer_analysis_form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="promotion_id" value="coupon">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="customer_analysis_from_date"
+                                                    id="customer_analysis_from_date"  max="{% now 'Y-m-d' %}" required value="{{customer_analysis_from_date}}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="customer_analysis_to_date"
+                                                    id="customer_analysis_to_date"  max="{% now 'Y-m-d' %}" required value="{{customer_analysis_to_date}}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-top: 3%">
+                                        <div class="form-group">
+                                                                                        <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="customer_analysis_btn"><span class="fas fa-search"></span></button>
+
+                                        </div>
+                                    </div>
+                                </div>
+							</form> -->  
+                            <div class="col-md-12 d-flex flex-wrap justify-content-around pb-4 pt-4">
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-1"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">New Customer</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-2"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Returning Customer</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    	<div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex justify-content-center">
+                        <div class="card-head-row">
+                            <div class="card-title">Promotions</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        	<!-- <form class="form-control" action="/merchant-index/" method="POST" id="promotions-form" name="promotions-form" autocomplete="off" style="border:0px;">
+							    {% csrf_token %}
+								<input type="hidden" name="promotion_id" value="coupon">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>From Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="promotion_from_date"
+                                                    id="promotion_from_date" required value="{{from_date}}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>To Date<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="date" class="form-control" name="promotion_to_date"
+                                                    id="promotion_to_date" required value="{{to_date}}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-top: 3%">
+                                        <div class="form-group">
+                                            <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="promotion_btn"><span class="fas fa-search"></span></button>
+                                        </div>
+                                    </div>
+                                </div>
+							</form> -->
+                        	<div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="CouponsChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                            	<div class="chart-container">
+                                	<canvas id="OffersChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas> 
+                            	</div>  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    	</div>
+
+
+    	<div class="row">
+			<div class="col-md-12"><div class="card">
+					<div class="card-header">
+							<div class="card-head-row">
+								<div class="card-title">Bills Collection of Session 
+								{% if search_from_year and search_to_year %}
+									{{search_from_year}}-{{search_to_year}}
+									{% else %}
+									{{current_year}}-{{next_year}}
+								{% endif %} 
+								<span class="ml-5 box shadow" style="padding: 5px 8px 5px 8px;"> {% now "F" %} :<i class="fa fa-rupee-sign"></i> {{current_month_total}}</span>
+							</div>
+							<div class="card-tools">
+								<form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+									{% csrf_token %}
+									<div class="row">
+										<div class="col-md-9">
+											<label>Years <span style="color: red;">*</span></label>
+												<select class="form-control" name="years" id="" required="">
+													<option value="">Select</option>
+													{% for year1,year2 in yearslist %}
+													{% if year1 == years_value %} 
+                                                    <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+													{% else %}
+													<option value="{{year1}}">{{year1}} - {{year2}}</option>
+													{% endif %}
+													{% endfor %}
+													
+												</select>
+										</div>
+										
+										<div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 12px;">
+											<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_other_business_btn"><span class="fas fa-search" ></span></button>
+										</div>
+										<div class="col-md-12 text-center" id="BillsCollectionFilterError" style="font-size: 20px"></div>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="chart-container" style="min-height: 300px">
+							<canvas id="BillCollectionChart"></canvas>
+						</div>
+						<div id="vehiclestatusChartLegend"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="row">
+			<div class="col-md-12"><div class="card">
+					<div class="card-header">
+						<div class="card-head-row">
+							<div class="card-title">Bills Collection for {% now "F" %} {{current_year}}</div>
+							<div class="card-tools">
+								<!-- <form action="/merchant-index/" method="POST" id="bills_collection_filter_form" >
+									{% csrf_token %}
+									<div class="row"> -->
+										<!-- <div class="col-md-9">
+											<label>Years</label>
+												<select class="form-control" name="years" id="" required="">
+													<option value="">Select</option>
+													{% for year1,year2 in yearslist %}
+													{% if year1 == years_value %} 
+                                                    <option value="{{year1}}" selected="">{{year1}} - {{year2}}</option>
+													{% else %}
+													<option value="{{year1}}">{{year1}} - {{year2}}</option>
+													{% endif %}
+													{% endfor %}
+													
+												</select>
+										</div> -->
+										
+										<!-- <div class="col-md-3" style="margin-top: 6%; padding-left: 0px;padding-top: 12px;">
+											<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="bills_collection_other_business_btn"><span class="fas fa-search" ></span></button>
+										</div>
+										<div class="col-md-12 text-center" id="BillsCollectionFilterError" style="font-size: 20px"></div> -->
+									<!-- </div>
+
+								</form> -->
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="chart-container" style="min-height: 300px">
+							<canvas id="BillCollectionMonthWiseChart"></canvas>
+						</div>
+						<div id="billcollectionmonthChartLegend"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+        document.getElementById("billing_analysis_from_date").onchange = function () {
+        var input = document.getElementById("billing_analysis_to_date");
+        input.setAttribute("min", this.value);
+      }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=billing_analysis_to_date]').change(function() {
+	  //         var to_date = $('#billing_analysis_to_date').val();
+	  //         document.getElementById('billing_analysis_from_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=billing_analysis_from_date]').change(function() {
+	  //   var from_date = $('#billing_analysis_from_date').val();
+	  //     document.getElementById('billing_analysis_to_date').setAttribute("min", from_date);
+	  // })
+	});
+
+
+
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+  jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+      return this.optional(element) || new Date(value) >= new Date($(params).val());
+  },'Must be greater than from date.');
+
+$("#billing_analysis_form").validate({
+        rules: {
+            billing_analysis_from_date: {
+                required: true,
+                validDate: true
+            },
+            billing_analysis_to_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#billing_analysis_from_date"
+            },
+        },
+        messages: {
+            billing_analysis_from_date: {
+                required: "From Date is Required",
+            },
+            billing_analysis_to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+
+
+	// $("#digital_bill_form").validate({
+ //        rules: {
+ //            billing_analysis_from_date: {
+ //                required: true,
+ //            },
+ //            billing_analysis_to_date: {
+ //                required: true,
+ //            },           
+            
+ //        },
+
+ //        messages: {
+ //            billing_analysis_from_date: {
+ //                required: "From Date is Required",
+ //            },
+ //            billing_analysis_to_date: {
+ //                required: "To Date is Required",
+ //            },
+ //        },
+        
+
+ //    });
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=digital_bill_to_date]').change(function() {
+	  //         var to_date = $('#digital_bill_to_date').val();
+	  //         document.getElementById('digital_bill_from_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=digital_bill_from_date]').change(function() {
+	  //   var from_date = $('#digital_bill_from_date').val();
+	  //     document.getElementById('digital_bill_to_date').setAttribute("min", from_date);
+	  // })
+	});
+	$("#billing_analysis_form").validate({
+        rules: {
+            digital_bill_from_date: {
+                required: true,
+            },
+            digital_bill_to_date: {
+                required: true,
+                greaterStart: "#billing_analysis_from_date"
+            },           
+            
+        },
+
+        messages: {
+            digital_bill_from_date: {
+                required: "From Date is Required",
+            },
+            digital_bill_to_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  // $('input[name=customer_analysis_to_date]').change(function() {
+	  //         var to_date = $('#customer_analysis_to_date').val();
+	  //         document.getElementById('customer_analysis_from_date').setAttribute("max", to_date);
+	  // })
+
+	  // $('input[name=customer_analysis_from_date]').change(function() {
+	  //   var from_date = $('#customer_analysis_from_date').val();
+	  //     document.getElementById('customer_analysis_to_date').setAttribute("min", from_date);
+	  // })
+	});
+	$("#customer_analysis_form").validate({
+        rules: {
+            customer_analysis_from_date: {
+                required: true,
+            },
+            customer_analysis_to_date: {
+                required: true,
+                greaterStart: "#billing_analysis_from_date"
+            },           
+            
+        },
+
+        messages: {
+            customer_analysis_from_date: {
+                required: "From Date is Required",
+            },
+            customer_analysis_to_date: {
+                required: "To Date is Required",
+                greaterStart: "#billing_analysis_from_date"
+            },
+        },
+        
+
+    });
+	
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+	  $('input[name=promotion_to_date]').change(function() {
+	          var to_date = $('#promotion_to_date').val();
+	          document.getElementById('promotion_from_date').setAttribute("max", to_date);
+	  })
+
+	  $('input[name=promotion_from_date]').change(function() {
+	    var from_date = $('#promotion_from_date').val();
+	      document.getElementById('promotion_to_date').setAttribute("min", from_date);
+	  })
+	});
+	$("#promotions-form").validate({
+        rules: {
+            promotion_from_date: {
+                required: true,
+            },
+            promotion_to_date: {
+                required: true,
+                greaterStart: "#billing_analysis_from_date"
+            },           
+            
+        },
+
+        messages: {
+            promotion_from_date: {
+                required: "From Date is Required",
+            },
+            promotion_to_date: {
+                required: "To Date is Required",
+            },
+        },
+        
+
+    });
+
+</script>
+	
+<!-- <script>
+	$.validator.addMethod("validDate1", function(value, element) {
+    var currDate = new Date();
+    return Date.parse(currDate) >= Date.parse(value) ||value == "";
+	    }, "Please enter valid Date");
+
+	jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+	    return this.optional(element) || new Date(value) >= new Date($(params).val());
+	},'Must be greater than from date.');
+
+
+$("#promotions-form").validate({
+    rules: {
+        promotion_from_date: {
+            required: true,
+            validDate: true
+        },
+        promotion_to_date: {
+            required: true,
+            validDate: true,
+            greaterStart: "#promotion_from_date"
+        },
+    },
+    messages: {
+        promotion_from_date: {
+            required: "From Date is Required",
+        },
+        promotion_to_date: {
+            required: "To Date is Required",
+        },
+    }
+});
+
+$("#digital-bill-form").validate({
+    rules: {
+        digital_bill_from_date: {
+            required: true,
+            validDate: true
+        },
+        digital_bill_to_date: {
+            required: true,
+            validDate: true
+        },
+    },
+    messages: {
+        digital_bill_from_date: {
+            required: "From Date is Required",
+        },
+        digital_bill_to_date: {
+            required: "To Date is Required",
+        },
+    }
+});
+$("#billing_analysis_form").validate({
+    rules: {
+        billing_analysis_from_date: {
+            required: true,
+            validDate: true
+        },
+        billing_analysis_to_date: {
+            required: true,
+            validDate: true,
+            greaterStart: "#from_date2"
+        },
+    },
+    messages: {
+        billing_analysis_from_date: {
+            required: "From Date is Required",
+        },
+        billing_analysis_to_date: {
+            required: "To Date is Required",
+        },
+    }
+});
+</script> -->
+<script type="text/javascript">
+	window.onload = function() {
+		var ctx1 = document.getElementById('BillingAnalysisChart').getContext('2d');
+  		window.myPie = new Chart(ctx1, config1);
+
+		var ctx2 = document.getElementById('DigitalBillingChart').getContext('2d');
+		window.myPie = new Chart(ctx2, config2);
+
+		var ctx3 = document.getElementById('CouponsChart').getContext('2d');
+		window.myPie = new Chart(ctx3, config3);
+
+		var ctx4 = document.getElementById('OffersChart').getContext('2d');
+		window.myPie = new Chart(ctx4, config4);
+	}
+
+	// Billing Analysis Chart
+
+    var config1 = 
+    {
+      type: 'doughnut',
+      data: 
+      {
+        datasets: [{
+          data: {{billing_analysis_data|safe}},
+          backgroundColor: [
+              // '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+              '#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF',
+
+              ],
+             }],
+             labels: {{ billing_analysis_labels|safe }},
+        },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: false,
+            text: 'Bill Count',
+            fontSize: 16,
+        },
+        
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+    
+};
+
+// Digital Billing Chart
+
+    var config2 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: {{digital_billing_data|safe}},
+          backgroundColor: [
+              // '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+               '#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF',
+          ],
+        }],
+        labels: {{ digital_billing_labels|safe }},
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: false,
+            text: 'Bill Count',
+            fontSize: 16,
+        },
+        
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+    
+};
+
+// Coupons Chart
+
+    var config3 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: {{coupons_data|safe}},
+          backgroundColor: [
+              // '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+               '#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF',
+          ],
+        }],
+        labels: {{ coupons_labels|safe }},
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            text: 'Coupons',
+            fontSize: 16,
+        },
+        
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+    
+};
+
+// Offers Chart
+
+    var config4 = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: {{offer_data|safe}},
+          backgroundColor: [
+              // '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+               '#FF4500','#6A0DAD','#00FF00','#E9AB17','#FF0000','#00FFFF',
+          ],
+        }],
+        labels: {{ offer_labels|safe }},
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutoutPercentage: 70,
+        title: {
+            display: true,
+            text: 'Offers',
+            fontSize: 16,
+        },
+        
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: '#000000',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      
+    }
+    
+};
+
+
+
+var ctx = document.getElementById('BillCollectionChart').getContext('2d');
+
+		var vehiclestatusChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [ "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","Jan", "Feb", "Mar",],
+				datasets: [{
+					// label: 'My First Dataset',
+				    data: {{otherbillscollectionChart|safe}},
+				    fill: false,
+				    borderColor: 'rgb(75, 192, 192)',
+				    tension: 0.1
+				
+				}]
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					display: false
+				},
+				tooltips: {
+					bodySpacing: 4,
+					mode:"nearest",
+					intersect: 0,
+					position:"nearest",
+					xPadding:10,
+					yPadding:10,
+					caretPadding:10
+				},
+				layout:{
+					padding:{left:5,right:5,top:15,bottom:15}
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							fontStyle: "500",
+							beginAtZero: false,
+							maxTicksLimit: 5,
+							padding: 10
+						},
+						gridLines: {
+							drawTicks: false,
+							display: false
+						}
+					}],
+					xAxes: [{
+						gridLines: {
+							zeroLineColor: "transparent"
+						},
+						ticks: {
+							padding: 10,
+							fontStyle: "500"
+						}
+					}]
+				}, 
+				legendCallback: function(chart) { 
+					var text = []; 
+					text.push('<ul class="' + chart.id + '-legend html-legend">'); 
+					for (var i = 0; i < chart.data.datasets.length; i++) { 
+						text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>'); 
+						if (chart.data.datasets[i].label) { 
+							text.push(chart.data.datasets[i].label); 
+						} 
+						text.push('</li>'); 
+					} 
+					text.push('</ul>'); 
+					return text.join(''); 
+				}  
+			}
+		});
+
+		var vehiclestatusLegendContainer = document.getElementById("vehiclestatusChartLegend");
+
+		// generate HTML legend
+		vehiclestatusLegendContainer.innerHTML = vehiclestatusChart.generateLegend();
+
+		// bind onClick event to all LI-tags of the legend
+		var legendItems = vehiclestatusLegendContainer.getElementsByTagName('li');
+		for (var i = 0; i < legendItems.length; i += 1) {
+			legendItems[i].addEventListener("click", legendClickCallback, false);
+		}
+
+</script>
+<script type="text/javascript">
+
+var ctx = document.getElementById('BillCollectionMonthWiseChart').getContext('2d');
+
+		var billcollectionmonthChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: {{days_list|safe}},
+				datasets: [{
+					// label: 'My First Dataset',
+				    data: {{monthwisebillscollectionChart|safe}},
+				    fill: false,
+				    borderColor: 'rgb(75, 192, 192)',
+				    tension: 0.1
+				
+				}]
+			},
+			options : {
+				responsive: true, 
+				maintainAspectRatio: false,
+				legend: {
+					display: false
+				},
+				tooltips: {
+					bodySpacing: 4,
+					mode:"nearest",
+					intersect: 0,
+					position:"nearest",
+					xPadding:10,
+					yPadding:10,
+					caretPadding:10
+				},
+				layout:{
+					padding:{left:5,right:5,top:15,bottom:15}
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							fontStyle: "500",
+							beginAtZero: false,
+							maxTicksLimit: 5,
+							padding: 10
+						},
+						gridLines: {
+							drawTicks: false,
+							display: false
+						}
+					}],
+					xAxes: [{
+						gridLines: {
+							zeroLineColor: "transparent"
+						},
+						ticks: {
+							padding: 10,
+							fontStyle: "500"
+						}
+					}]
+				}, 
+				// legendCallback: function(chart) { 
+				// 	var text = []; 
+				// 	text.push('<ul class="' + chart.id + '-legend html-legend">'); 
+				// 	for (var i = 0; i < chart.data.datasets.length; i++) { 
+				// 		text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>'); 
+				// 		if (chart.data.datasets[i].label) { 
+				// 			text.push(chart.data.datasets[i].label); 
+				// 		} 
+				// 		text.push('</li>'); 
+				// 	} 
+				// 	text.push('</ul>'); 
+				// 	return text.join(''); 
+				// }  
+			}
+		});
+
+		// var vehiclestatusLegendContainer = document.getElementById("billcollectionmonthChartLegend");
+
+		// // generate HTML legend
+		// vehiclestatusLegendContainer.innerHTML = billcollectionmonthChart.generateLegend();
+
+		// // bind onClick event to all LI-tags of the legend
+		// var legendItems = vehiclestatusLegendContainer.getElementsByTagName('li');
+		// for (var i = 0; i < legendItems.length; i += 1) {
+		// 	legendItems[i].addEventListener("click", legendClickCallback, false);
+		// }
+
+</script>
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+<script src="/static/assets/js/setting-demo.js"></script>
+<script src="/static/assets/js/demo.js"></script>
+
+<script type="text/javascript">
+
+Circles.create({
+    id:'circles-1',
+    radius:70,
+    value:{{new_customers_value}},
+    maxValue:100,
+    width:8,
+    text: {{new_customers_text}},
+    colors:['#f1f1f1', '#FF9E27'],
+    duration:600,
+    wrpClass:'circles-wrp',
+    textClass:'circles-text',
+    styleWrapper:true,
+    styleText:true
+})
+
+Circles.create({
+    id:'circles-2',
+    radius:70,
+    value:{{returning_customers_value}},
+    maxValue:100,
+    width:8,
+    text: {{returning_customers_text}},
+    colors:['#f1f1f1', '#2BB930'],
+    duration:600,
+    wrpClass:'circles-wrp',
+    textClass:'circles-text',
+    styleWrapper:true,
+    styleText:true
+})
+	
+</script>
+
+{% endblock javascripts %}

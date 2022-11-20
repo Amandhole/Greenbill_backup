@@ -1,0 +1,601 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+		/* Responsive columns */
+		@media screen and (max-width: 600px) {
+			.column {
+				width: 100%;
+				display: block;
+				margin-bottom: 20px;
+			}
+		}
+	/* RESPONSIVE RULES */
+
+	@media screen and (max-width: 715px) {
+		header {
+			height: 250px;
+			background-position: 0 -30px;
+		}
+
+		header .mobile {
+			display: inline-block;
+		}
+
+		header .desktop {
+			display: none;
+		}
+	}
+
+	@media screen and (max-width: 500px) {
+		header {
+			height: 200px;
+			background-position: 0 -0px;
+		}
+	}
+	
+</style>
+
+<div class="content">
+	<div class="panel-header bg-primary-gradient">
+		<div class="page-inner py-5">
+			<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+				<div>
+					<h2 class="text-white pb-2 fw-bold">Owner Dashboard</h2>
+					<h5 class="text-white op-7 mb-2">Welcome to Owner Dashboard</h5>
+				</div>
+				<div class="ml-md-auto py-2 py-md-0">
+					<!-- <a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+						<a href="#" class="btn btn-secondary btn-round">Add Customer</a> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="page-inner mt--5">
+		<div class="row mt--2">
+
+
+
+			<!-- Page Heading -->
+
+
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="well">
+
+						<div class="card">
+							<div class="card-content">
+								<div class="card-body">
+									<div class="align-self-center">
+										<i class="fas fa-calendar fa-3x float-left"
+											style="color:#06529e;padding-right:10px;padding-top:37px;"></i>
+									</div>
+									<div style="text-align:left;padding-left:70px;">
+
+										<h4 style="color: #000000;font-size: 20px;"><b>Total Merchants</b></h4>
+										<p style="color:#06529e;padding-left:00px;font-size:20px;">256</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="well">
+
+						<div class="card">
+							<div class="card-content">
+								<div class="card-body">
+									<div class="align-self-center">
+										<i class="fas fa-user-circle fa-3x text-300 float-left"
+											style="color:#ff973a;padding-top:37px;padding-right:10px;margin-left:0%"></i>
+									</div>
+									<div style="text-align:left;padding-left:70px;">
+										<h4 style="color: #000000;font-size: 20px;"><b>Total Customers </b></h4>
+										<p style="color:#ff973a;padding-left:0px;font-size:20px;">256</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="well">
+
+						<div class="card">
+							<div class="card-content">
+								<div class="card-body">
+									<div class="align-self-center">
+										<div class="m-1 bg-warning">
+											<i class="fas fa-handshake fa-3x text-danger-300 float-left"
+												style="color:#61b810;padding-top:37px;padding-right:10px;"></i>
+										</div>
+									</div>
+									<div style="text-align:left;padding-left:85px;">
+
+										<h4 style="color: #000000;font-size: 20px;"><b> Total<br> Partners</b></h4>
+										<p style="color:#61b810;padding-left:0px;font-size:20px;">758</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-3">
+					<div class="well">
+
+						<div class="card">
+							<div class="card-content">
+								<div class="card-body">
+									<div class="align-self-center">
+										<i class="fas fa fa-rupee-sign  fa-3x text-warning-300 float-left"
+											style="color:#fd0007;padding-top:37px; padding-right:0px;"></i>
+									</div>
+
+									<div style="text-align:left;padding-left:65px;">
+										<h4 style="font-size: 22px;color:#000000;"><b> Total Payments </b></h4>
+										<p style="color:#fd0007;padding-left:0px;padding-bottom:0px;font-size:20px;">
+											56.023</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card full-height">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;">Top Categories</div>
+							<hr>
+							<div class="card-category"></div>
+							<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-1"></div>
+									<h6 class="fw-bold mt-3 mb-0">Electronics</h6>
+								</div>
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-2"></div>
+									<h6 class="fw-bold mt-3 mb-0">Furniture</h6>
+								</div>
+								<div class="px-2 pb-2 pb-md-0 text-center">
+									<div id="circles-3"></div>
+									<h6 class="fw-bold mt-3 mb-0">Toys</h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="card full-height">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;">Performance</div>
+							<hr>
+							<canvas id="speedChart" width="600" height="300"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<section style="padding-left: 20px;">
+	<section style="background-color: #ffffff; border-radius: 10px;width:97%;border: 1px solid #eeeee4;">
+		<div class="card-title" style="padding-left: 20px;color:#000000;padding-top:10px;">Customer Category Performance
+		</div>
+		<hr>
+		<br>
+
+		<div id="container" style="width: 85%; height:55%;padding-left:10%;">
+			<canvas id="canvas"></canvas>
+		</div>
+	</section>
+</section>
+
+<br>
+<section style="padding-left: 10px;">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="well">
+
+				<div class="card">
+					<div class="card-content">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;">Today's New Register</div>
+							<hr>
+							<div class="align-self-center">
+								<i class="fas fa-calendar fa-2x float-left"
+									style="color:#06529e;padding-right:10px;padding-top:20px;"></i>
+							</div>
+							<div style="text-align:left;padding-left:50px;">
+
+								<h4 style="color: #000000;font-size: 18px;"><b>Merchants</b></h4>
+								<p style="color:#06529e;padding-left:00px;font-size:18px;">256</p>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="well">
+
+				<div class="card">
+					<div class="card-content">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;">Today's New Register</div>
+							<hr>
+							<div class="align-self-center">
+								<i class="fas fa-user-circle fa-2x text-300 float-left"
+									style="color:#ff973a;padding-top:20px;padding-right:10px;margin-left:0%"></i>
+							</div>
+							<div style="text-align:left;padding-left:50px;">
+								<h4 style="color: #000000;font-size: 18px;"><b>Customers</b></h4>
+								<p style="color:#ff973a;padding-left:0px;font-size:18px;">256</p>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-3">
+			<div class="well">
+
+				<div class="card">
+					<div class="card-content">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;"> Data Collection</div>
+							<hr>
+							<div class="align-self-center">
+								<div class="m-1 bg-warning">
+									<i class="fas fa-tint fa-2x text-danger-300 float-left"
+										style="color:#61b810;padding-top:20px;padding-right:10px;"></i>
+								</div>
+							</div>
+							<div style="text-align:left;padding-left:50px;">
+
+								<h4 style="color: #000000;font-size: 18px;"><b> Petrol </b></h4>
+								<p style="color:#61b810;padding-left:0px;font-size:18px;">256</p>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="well">
+
+				<div class="card">
+					<div class="card-content">
+						<div class="card-body">
+							<div class="card-title" style="color: #000000;">Data Collection </div>
+							<hr>
+							<div class="align-self-center">
+								<i class="fas fa fa-car  fa-2x text-warning-300 float-left"
+									style="color:#fd0007;padding-top:20px; padding-right:0px;"></i>
+							</div>
+
+							<div style="text-align:left;padding-left:50px;">
+								<h4 style="font-size: 18px;color:#000000;"><b> Parking </b></h4>
+								<p style="color:#fd0007;padding-left:0px;padding-bottom:0px;font-size:18px;">
+									56023</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</section>
+
+<section style="padding-left: 20px;">
+
+	<section style="background-color: #ffffff; border-radius: 10px;width:97%;border: 1px solid #eeeee4;">
+		<div class="container">
+			<h2 style="color: #000000;padding-left:10px;padding-top:10px;">Recent Merchants</h2>
+			<hr>
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Business</th>
+						<th>Categories</th>
+						<th>Date</th>
+						<th>Mobile Number</th>
+						<th>Action </th>
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>SanCheet Maheshwari</td>
+						<td>Kaveri Cloth Shop</td>
+						<td>Cloths</td>
+						<td>22 may 2021</td>
+						<td>987654321</td>
+						
+						<td>
+							<ul class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm" id="pills-tab"
+								role="tablist">
+								<li class="nav-item">
+									<a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today"
+										role="tab" aria-selected="true">View</a>
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>Rashmi Joshi</td>
+						<td>Aish Furniture</td>
+						<td>Furniture</td>
+						<td>21 may 2021</td>
+						<td>987654321</td>
+						
+						<td>
+							<ul class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm" id="pills-tab"
+								role="tablist">
+								<li class="nav-item">
+									<a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today"
+										role="tab" aria-selected="true">View</a>
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>Neha Gadpal</td>
+						<td>Gift Gallery</td>
+						<td>Toy</td>
+						<td>20 may 2021</td>
+						<td>987654321</td>
+						
+						<td>
+							<ul class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm" id="pills-tab"
+								role="tablist">
+								<li class="nav-item">
+									<a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today"
+										role="tab" aria-selected="true">View</a>
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</section>
+<br>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo.js"></script>
+<script src="/static/assets/js/demo.js"></script>
+
+<script>
+	Circles.create({
+		id: 'circles-1',
+		radius: 45,
+		value: 60,
+		maxValue: 100,
+		width: 7,
+		text: 60,
+		colors: ['#f1f1f1', '#FF9E27'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-2',
+		radius: 45,
+		value: 36,
+		maxValue: 100,
+		width: 7,
+		text: 36,
+		colors: ['#f1f1f1', '#2BB930'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+	Circles.create({
+		id: 'circles-3',
+		radius: 45,
+		value: 75,
+		maxValue: 100,
+		width: 7,
+		text: 75,
+		colors: ['#f1f1f1', '#F25961'],
+		duration: 400,
+		wrpClass: 'circles-wrp',
+		textClass: 'circles-text',
+		styleWrapper: true,
+		styleText: true
+	})
+
+
+
+	var barChartData = {
+		labels: [
+			"Today's Data"
+
+		],
+		datasets: [
+			{
+				label: "Electronic",
+				backgroundColor: "pink",
+				borderColor: "pink",
+				borderWidth: 1,
+				data: [6]
+			},
+			{
+				label: "Food",
+				backgroundColor: "lightblue",
+				borderColor: "lightblue",
+				borderWidth: 1,
+				data: [4]
+			},
+			{
+				label: "XYZ",
+				backgroundColor: "#cd9575",
+				borderColor: "#cd9575",
+				borderWidth: 1,
+				data: [9]
+			},
+			{
+				label: "PQR",
+				backgroundColor: "#efdecd",
+				borderColor: "#efdecd",
+				borderWidth: 1,
+				data: [6]
+			},
+			{
+				label: "ABC",
+				backgroundColor: "#b2beb5",
+				borderColor: "b2beb5",
+				borderWidth: 1,
+				data: [3.7]
+			},
+			
+			{
+				label: "medical",
+				backgroundColor: "lightgreen",
+				borderColor: "lightgreen",
+				borderWidth: 1,
+				data: [10]
+			},
+			{
+				label: "Cloth",
+				backgroundColor: "gray",
+				borderColor: "gray",
+				borderWidth: 1,
+				data: [ 7]
+			},
+			{
+				label: "Toy",
+				backgroundColor: "#87a96b",
+				borderColor: "87a96b",
+				borderWidth: 1,
+				data: [5]
+			},
+			{
+				label: "Fruits",
+				backgroundColor: "#a52a2a",
+				borderColor: "#a52a2a",
+				borderWidth: 1,
+				data: [7]
+			},
+			{
+				label: "Retail",
+				backgroundColor: "yellow",
+				borderColor: "yellow",
+				borderWidth: 1,
+				data: [6]
+			}
+		]
+	};
+
+	var chartOptions = {
+		responsive: true,
+		legend: {
+			position: "top"
+		},
+		title: {
+			display: true,
+
+		},
+		scales: {
+			yAxes: [{
+				ticks: {
+					beginAtZero: true
+				}
+			}]
+		}
+	}
+
+	window.onload = function () {
+		var ctx = document.getElementById("canvas").getContext("2d");
+		window.myBar = new Chart(ctx, {
+			type: "bar",
+			data: barChartData,
+			options: chartOptions
+		});
+	};
+
+
+	var speedCanvas = document.getElementById("speedChart");
+
+	Chart.defaults.global.defaultFontFamily = "Lato";
+	Chart.defaults.global.defaultFontSize = 18;
+
+	var dataFirst = {
+		label: "Total Income",
+		data: [0, 59, 75, 20, 20, 55, 40],
+		lineTension: 0,
+		fill: false,
+		borderColor: 'pink'
+	};
+
+	var dataSecond = {
+		label: "Total SMS",
+		data: [20, 15, 60, 60, 65, 30, 70],
+		lineTension: 0,
+		fill: false,
+		borderColor: 'lightblue'
+	};
+	var dataThird = {
+		label: "Low Balance",
+		data: [78, 18, 60, 78, 45, 20, 75],
+		lineTension: 0,
+		fill: false,
+		borderColor: 'lightgreen'
+	};
+
+	
+	var speedData = {
+		labels: ["0", "10", "20", "30", "40", "50", "60"],
+		datasets: [dataFirst, dataSecond, dataThird]
+	};
+
+	var chartOptions = {
+		legend: {
+			display: true,
+			position: 'top',
+			labels: {
+				boxWidth: 15,
+				fontColor: 'black'
+			}
+		}
+	};
+
+	var lineChart = new Chart(speedCanvas, {
+		type: 'line',
+		data: speedData,
+		options: chartOptions
+	});
+</script>
+
+{% endblock javascripts %}

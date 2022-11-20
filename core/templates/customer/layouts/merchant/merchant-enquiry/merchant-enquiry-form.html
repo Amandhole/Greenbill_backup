@@ -1,0 +1,390 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} DM Services  {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Digital Marketing Services</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/merchant-enquiry/">Digital Marketing Services</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Digital Marketing Services</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form class="form-control" action="/merchant-enquiry/" method="POST" id="form1"
+                                    name="form" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Name<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+
+                                                    <input type="text" class="form-control mobile" name="customer_name"
+                                                        id="customer_name" placeholder="Name" value="{{merchant_data.m_user.first_name}}" />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Contact Number<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="tel" class="form-control mobile" name="contact_no"
+                                                        id="contact_no" placeholder="Contact Number"
+                                                        value="{{request.user}}" maxlength="10" required />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Business Name<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <select class="form-control mobile" name="bissiness_name"
+                                                        id="bissiness_name" placeholder="Select Business">
+                                                        <option value="">Select Business</option>
+                                                        {% for object in m_business %}
+                                                        <option value="{{object}}">{{object}}</option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Email<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="email" class="form-control mobile" name="email_id"
+                                                        id="email_id" placeholder="Email" value="{{merchant_data.m_user.m_email}}" required />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Interested In<span style="color: red;"> *</span></label>
+                                                <!-- <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile" name="intrested_in"
+                                                        id="intrested_in" placeholder="Intrested In" required />
+                                                </div> -->
+                                                <div class="input-group mb-6">
+                                                    <select class="form-control mobile" name="intrested_in"
+                                                        id="intrested_in" placeholder="Select Interest">
+                                                         <option value="">Select Interest</option> 
+                                                        
+                                                        <option value="search engine optimization">Search Engine Optimization (SEO)</option>
+                                                        <option value="pay-per click advertising">Pay-Per Click Advertising (PPC)</option>
+                                                        <option value="social media marketing">Social Media Marketing (SMM)</option>
+                                                        <option value="startup digital marketing plan">Startup Digital Marketing Plan</option>
+                                                        <option value="enterprise digital marketing plan">Enterprise Digital Marketing Plan</option>
+
+                                                        
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Comment<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <textarea name="comments" id="comments" class="form-control mobile"
+                                                        required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="text-center mt-3 mb-3">
+                                            <button type="submit" class="btn btn-primary">Send</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- View Enquary Modal -->
+
+    <div class="modal fade" id="myDisplayModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Digital Marketing Services  </h2>
+                </div>
+
+                <div class="modal-body" id="paraclear">
+
+
+
+                    <p id="cust_name" name="cust_name"></p>
+                    <p id="company_name" name="cust_name"></p>
+                    <p id="contactno" name="cust_name"> </p>
+                    <p id="email" name="cust_name"></p>
+                    <p id="intrest" name="cust_name"></p>
+                   
+                    <p id="comments_msg" name="cust_name"> </p>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+    <script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+        var viewmodaldiv = $("#view-modal-div");
+        $(".viewBtn").on("click", function () {
+            var cust_name = $(this).attr("data-name");
+            var company_name = $(this).data('company_name');
+            var contactnum = $(this).data('contact_no');
+            var email = $(this).data('email');
+            var intrested = $(this).data('intrested_in');
+            var comments_msg = $(this).data('comments');
+            
+
+            $("#cust_name").val(cust_name);
+            $('#cust_name').empty().append("Name: " + cust_name);
+            $('#company_name').empty().append("Business Name: " + company_name);
+            $('#contactno').empty().append("Contact Number: " + contactnum);
+            $('#email').empty().append("Email ID: " + email);
+            $('#intrest').empty().append("Intrested In: " + intrested);
+            
+            $('#comments_msg').empty().append("Comment: " + comments_msg);
+            $("#myDisplayModal").modal();
+
+        });
+
+        jQuery.validator.addMethod("mobile_number", function (value, element) {
+            if (/^[6-9][0-9]{9}$/.test(value)) {
+                return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid Mobile Number");
+
+        $("#form1").validate({
+            rules: {
+                customer_name: {
+                    required: true,
+                    
+                },
+                bissiness_name: {
+                    required: true,
+                    
+
+                },
+
+                contact_no: {
+                    mobile_number: true,
+                    required: true,
+                    minlength: 10,
+                },
+                email_id: {
+                    email: true,
+                    required: true
+                },
+                intrested_in: {
+
+                    required: true
+                },
+                comments: {
+
+                    required: true
+                },
+
+
+
+            },
+            // highlight: function (element) {
+            //     $(element).addClass("c1");
+            // },
+            // unhighlight: function (element) {
+            //     $(element).removeClass("c1");
+            // },
+            messages: {
+                customer_name: {
+                    required: "Name field is Required",
+                    
+                },
+                bissiness_name: {
+                    required: "Business Name field is Required",
+                    
+
+                },
+                contact_no: {
+                    required: "Contact Number field is Required",
+                    Mobile_num: true
+
+                },
+                email_id: {
+                    required: "Email field is Required",
+                },
+                intrested_in: {
+                    required: "Intrest field is Required",
+                },
+                comments: {
+                    required: "Comment field is required"
+                }
+
+            }
+        });
+
+        $(function () {
+            $('.deleteBtn').on('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var id = $(this).attr("data-id");
+                        $.ajax({
+                            type: "POST",
+                            url: "/delete-dm-enquiry/" + id,
+                            data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                            success: function (response) {
+                                Swal.fire(
+                                    'Deactive!',
+                                    'DM Service has been deleted.',
+                                    'success',
+                                    {
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                    })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                        });
+                    }
+                })
+            });
+        });
+
+        $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel',  'print'
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+    </script>
+
+
+    {% endblock content %}
+
+    {% block javascripts %}
+
+    {% endblock javascripts %}

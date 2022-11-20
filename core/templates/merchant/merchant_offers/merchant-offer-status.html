@@ -1,0 +1,582 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Offers {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+
+{{title}}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .radio_set{
+        margin-left: 7px;
+    }
+    #null_customer_data
+    {
+        display: none;
+    }
+    .add-row{
+        color: #666;
+    background: #f8f8f8;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+     padding: 8px 26px 8px 10px;
+        background-position: calc(100% - 8px) 9px;
+    }
+    
+
+
+</style>
+
+
+<style type="text/css">
+    #size {
+        width: 200px;
+        height: 30px;
+
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+
+ <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+.align{
+    width: 100px;
+}
+.width_set{
+    width: 460px;
+    height: 480px;
+
+    
+}
+.body1{
+    background: url('http://157.230.228.250/media/offers/imgbackg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 506px;
+}
+.content_name{
+    font-size: 15px;
+}
+.body2{
+    background: url('http://157.230.228.250/media/offers/background12.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    
+}
+.closebtn{
+    position: absolute;
+    left: 435px;
+}
+#hide_b_record{
+    display: none;
+}
+#hide_o_record{
+    display: none;
+}
+
+a, a:hover, a:focus, a:active {
+      text-decoration: none;
+      color: inherit;
+}
+
+
+</style>
+<div class="modal fade" id="DisplayOfferModal" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content width_set" style="height: 440px">
+            <div style="padding-left: 23px; margin-top: 20px;">
+                <img width="100" height="100" src="" id="view_offer_img">
+            </div>
+            <div class="closebtn">
+                <form method="POST" class="form" id="" autocomplete="off" action="/get-number-of-visit/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="offers_id" name="offers_id">
+                    <button class="close">&times;</button>
+                </form>
+            </div>
+                
+            <div class="">
+                <p style="text-align: left;"> 
+                    <div id="hide_o_record" style="text-align: left; padding-left: 22px; color: green; font-weight: bold; font-size: 15px;">
+                        <b style="text-size: 15px;" id="o_business_name_view"></b>
+                    </div>
+
+                    <div id="hide_b_record" style="text-align: left; padding-left: 22px; color: green; font-weight: bold; font-size: 15px;">
+                        <b style="text-size: 15px;" id="merchant_business_name_view"></b>
+                    </div>
+
+                    
+                    <div style="text-align: left; padding-left: 22px; color: black; font-size: 15px;">
+                        <span style="text-size: 18px;" id="offer_caption_view"></span>
+                    </div>
+                    <div style="text-align: left; padding-left: 22px; color: grey; font-size: 15px;">
+                        <b style="text-size: 14px;" id="offer_through_view"></b>
+                    </div>
+                    
+                </p>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant-view-offer/">Offers</a>
+                                </li>
+                            </ul>
+
+                            <!-- {% if is_merchant == True %}
+                                <div class=" ml-auto">
+                                    <div class="collapse" id="search-nav">
+                                        <form class="navbar-left navbar-form nav-search mr-md-3" action="/merchant-view-offer/" method="POST" autocomplete="off">
+                                        {% csrf_token %}
+                                            <div class="input-group">
+                                                
+                                                <select class="form-control" name="offer_business_category" id="offer_business_category_name">
+                                                    <option value="All" name="offer_business_category">Search</option>
+                                                    {% for business_category in merchnat_business_category %}
+                                                    <option value="{{ business_category.business_category_name }}" name="offer_business_category"
+                                                    {% if business_category.id == merchant_general_setting.m_business_category_id %} 
+                                                    selected 
+                                                    {% endif %}>{{ business_category.business_category_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="input-group-prepend">
+                                                    <button type="submit" class="btn btn-search pr-1">
+                                                        <i class="fa fa-search search-icon"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% for actions in merchant_action_permissions_list %}
+                                    {% if actions.module_id|lower == "Offers"|lower and actions.feature_id|lower == "Offers"|lower %}
+                                        {% if actions.view_permission == "1" %}
+                                            <div class=" ml-auto">
+                                                <div class="collapse" id="search-nav">
+                                                    <form class="navbar-left navbar-form nav-search mr-md-3" action="/merchant-view-offer/" method="POST" autocomplete="off">
+                                                    {% csrf_token %}
+                                                        <div class="input-group">
+                                                            
+                                                            <select class="form-control" name="offer_business_category" id="offer_business_category_name">
+                                                                <option value="All" name="offer_business_category">Search</option>
+                                                                {% for business_category in merchnat_business_category %}
+                                                                <option value="{{ business_category.business_category_name }}" name="offer_business_category"
+                                                                {% if business_category.id == merchant_general_setting.m_business_category_id %} 
+                                                                selected 
+                                                                {% endif %}>{{ business_category.business_category_name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            <div class="input-group-prepend">
+                                                                <button type="submit" class="btn btn-search pr-1">
+                                                                    <i class="fa fa-search search-icon"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %} -->
+                        </div>
+                    </div>
+
+                    {% if is_merchant == True %}  
+                        <div class="card-body" >
+                            <div class="row">
+                                {% if not offer_new %}
+                                <h2 style="color: red; text-align: center;">No Current Offer Available</h2>
+                                {% endif %}
+                                {% for object in offer_new %}
+                                    {% if object.status == "1" %}
+                                        {% if object.Offer_type == "Merchant" %}
+                                            <!-- <div class="col-sm-4">           
+                                                <div class="card">
+                                                    <a href="/view-offer-details/{{ object.id }}">
+                                                        <img class="card-img-top" src="{{object.offer_image.url}}" width="auto" height="300px">
+                                                    </a>
+                                                </div>           
+                                            </div> -->
+                                            <div class="col-sm-4">
+                                <a href="/view-offer-details/{{ object.id }}">
+                                    <div class="card" style="height:220px; width:220px;"> 
+                                        <div class="form-group" style="padding-top:30px;">
+
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.offer_name}}
+                                         on </span>
+
+                                        {% if object.offer_logo == '' %}
+                                        {% if object.offer_panel == "merchant" %}
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.merchant_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% if object.offer_panel == "owner" %}
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.o_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% endif %}
+
+                                        {% if object.offer_logo %}
+                                        {% if object.offer_panel == "merchant" %}
+                                        <span style="text-align: left; padding-left: 6px; color: black; font-size: 15px;">    
+                                            {{object.merchant_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% if object.offer_panel == "owner" %}
+                                        <span style="text-align: left; padding-left: 6px; color: black; font-size: 15px;">    
+                                            {{object.o_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% endif %}
+                                        </div><br>
+                                        
+                                        
+                                        <!-- <img class="card-img-top" src="{{object.offer_image.url}}" width="auto" height="10px"> -->
+                                        <div>                                        
+                                            <div style="padding-left: 90px; transform: rotate(-20deg); margin-top: 30px; opacity: 0.4;">
+                                          <img width="80" height="80" src="{{object.offer_image.url}}" id="">
+                                        </div>
+                                        </div>
+
+                                        <div  style="padding-left:30px; border-color: ;  position: absolute; padding-top: 180px;">
+                                            {% if object.offer_logo %}
+                                                <img src="{{object.offer_logo.url}}" height="35" width="35" style="border-radius: 50%;" alt="Logo">
+                                            {% endif %}
+                                        </div>
+                                    </div> 
+                                    </a>          
+                                </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchant_action_permissions_list %}
+                            {% if actions.module_id|lower == "Offers"|lower and actions.feature_id|lower == "Offers"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body" >
+                            <div class="row">
+                                {% if not offer_new %}
+                                <h2 style="color: red; text-align: center;">No Current Offer Available</h2>
+                                {% endif %}
+                                {% for object in offer_new %}
+                                    {% if object.status == "1" %}
+                                        {% if object.Offer_type == "Merchant" %}
+                                            <!-- <div class="col-sm-4">           
+                                                <div class="card">
+                                                    <a href="/view-offer-details/{{ object.id }}">
+                                                        <img class="card-img-top" src="{{object.offer_image.url}}" width="auto" height="300px">
+                                                    </a>
+                                                </div>           
+                                            </div> -->
+                                            <div class="col-sm-4">
+                                <a href="/view-offer-details/{{ object.id }}">
+                                    <div class="card" style="height:220px; width:220px;"> 
+                                        <div class="form-group" style="padding-top:30px;">
+
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.offer_name}}
+                                         on </span>
+
+                                        {% if object.offer_logo == '' %}
+                                        {% if object.offer_panel == "merchant" %}
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.merchant_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% if object.offer_panel == "owner" %}
+                                        <span style="text-align: left; color: black; font-size: 15px;">    
+                                            {{object.o_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% endif %}
+
+                                        {% if object.offer_logo %}
+                                        {% if object.offer_panel == "merchant" %}
+                                        <span style="text-align: left; padding-left: 6px; color: black; font-size: 15px;">    
+                                            {{object.merchant_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% if object.offer_panel == "owner" %}
+                                        <span style="text-align: left; padding-left: 6px; color: black; font-size: 15px;">    
+                                            {{object.o_business_name}}
+                                        </span>
+                                        {% endif %}
+                                        {% endif %}
+                                        </div><br>
+                                        
+                                        
+                                        <!-- <img class="card-img-top" src="{{object.offer_image.url}}" width="auto" height="10px"> -->
+                                        <div>                                        
+                                            <div style="padding-left: 90px; transform: rotate(-20deg); margin-top: 30px; opacity: 0.4;">
+                                          <img width="80" height="80" src="{{object.offer_image.url}}" id="">
+                                        </div>
+                                        </div>
+
+                                        <div  style="padding-left:30px; border-color: ;  position: absolute; padding-top: 180px;">
+                                            {% if object.offer_logo %}
+                                                <img src="{{object.offer_logo.url}}" height="35" width="35" style="border-radius: 50%;" alt="Logo">
+                                            {% endif %}
+                                        </div>
+                                    </div> 
+                                    </a>          
+                                </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                                    
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    $(".viewAdsBtn").on("click", function () {
+    var id = $(this).data("id");
+    var offer_image = $(this).data("offer_image");
+    var offer_name = $(this).data("offer_name");
+    var offer_caption = $(this).data("offer_caption");
+    var offer_panel = $(this).data("offer_panel");
+    var merchant_business_name = $(this).data("merchant_business_name");
+    var o_business_name = $(this).data("o_business_name");
+    var valid_through = $(this).data("valid_through");
+    var merchant_business_id = $(this).data("merchant_business_id");
+    
+    if(offer_panel == "merchant"){
+        
+        document.getElementById("hide_b_record").style.display = "block";
+        document.getElementById("hide_o_record").style.display = "none";
+        $('#merchant_business_name_view').empty().append(merchant_business_name);
+    }
+    else{
+        document.getElementById("hide_b_record").style.display = "none";
+        document.getElementById("hide_o_record").style.display = "block";
+       $('#o_business_name_view').empty().append(o_business_name); 
+    }
+    
+
+    
+    $('#offers_id').val( id);
+    $('#view_offer_img').attr('src', offer_image);
+    $('#offer_name_view').val( offer_name);
+    $('#offer_name_view').empty().append(offer_name);
+    $('#offer_caption_view').empty().append(offer_caption);
+    $('#offer_through_view').empty().append(valid_through);
+    $('#merchant_business_id_view').empty().append(merchant_business_id);
+
+    $("#DisplayOfferModal").modal();
+});
+
+</script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

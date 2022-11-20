@@ -1,0 +1,537 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} My Bill {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Bill</title>
+  <style type="text/css">
+    
+    @media only screen and (min-width: 600px){
+      .main{
+        margin: 0px auto;
+        width: 100%;
+        max-width: 100%;
+        background-color: rgb(255, 255, 255);
+        position: relative;
+      }
+    }
+    @media only screen and (min-width: 992px){
+      .main{
+        margin: 0px auto;
+        width: 100%;
+        max-width: 480px;
+        background-color: rgb(255, 255, 255);
+        position: relative;
+      }
+    }
+
+    .header{
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      box-shadow: rgb(102 102 102 / 20%) 0px 2px 10px 0px;
+      background: white;
+      margin-bottom:5px;
+    }
+
+    .header-details{
+      width: 100%;
+      position: relative;
+      left: 0px;
+      transition: all 0.5s ease 0s;
+    }
+
+    .header-div{
+      /*min-height: 100px;*/
+      height: 100%;
+      /*display: flex;*/
+      -webkit-box-pack: justify;
+      justify-content: space-between;
+      -webkit-box-align: center;
+      align-items: center;
+      padding: 22px 24px;
+    }
+
+    .header-logo{
+      margin-right: 32px;
+      width: auto;
+      height: auto;
+      max-width: 150px;
+      max-height: 80px;
+    }
+
+    .footer-logo{
+      width: auto;
+      height: auto;
+      max-width: 130px;
+      max-height: 60px;
+    }
+
+    .bill-footer{
+      z-index: 9999;
+      width: 100%;
+      height: 80px;
+      background: rgb(255, 255, 255);
+      align-items: center;
+      position: fixed;
+      bottom: 0px;
+      overflow: hidden;
+      box-shadow: rgb(77 77 77 / 20%) -1px -1px 5px 4px;
+      padding: 10px !important;
+    }
+
+    @media only screen and (min-width: 992px){
+      .bill-footer{
+        z-index: 9999;
+        width: 100%;
+        height: 80px;
+        max-width: 480px;
+        background: rgb(255, 255, 255);
+        align-items: center;
+        position: fixed;
+        bottom: 0px;
+        overflow: hidden;
+        box-shadow: rgb(77 77 77 / 20%) -1px -1px 5px 4px;
+        padding: 10px !important;
+      }
+    }
+    .bill-body{
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bill-image-border{
+      width: 94%;
+      margin: 0px 3%;
+      height: 150px;
+      background: linear-gradient(rgba(255, 255, 255, 0), rgb(255, 255, 255));
+      position: absolute;
+      bottom: 0px;
+    }
+
+    @media only screen and (min-width: 600px){
+      .title{
+        font-size: 2em !important;
+      }
+    }
+
+    @media only screen and (min-width: 992px){
+      .title{
+        font-size: 1em !important;
+      }
+    }
+
+    .bill-rating{
+      text-align: center;
+      padding: 20px 0px;
+      font-family: AvenirLTStd-Heavy, sans-serif;
+      background-color: rgb(242, 245, 248);
+    }
+
+    .show-more-btn{
+      border: none;
+      width: 94%;
+      margin: 0px 3%;
+      padding: 10px 0px;
+      font-size: 1em;
+      outline: none !important;
+      background: rgb(255, 255, 255);
+      border-radius: 0px;
+      color: #00569d;
+      /*color: rgb(0, 0, 0);*/
+    }
+
+    .show-less-btn{
+      border: none;
+      width: 94%;
+      margin: 0px 3%;
+      padding: 10px 0px;
+      font-size: 1em;
+      outline: none !important;
+      background: rgb(255, 255, 255);
+      border-radius: 0px;
+      /*color: rgb(0, 0, 0);*/
+      color: #00569d;
+    }
+
+    .powered-by{
+      text-align: center;
+      padding: 10px 0px;
+      background-color: rgb(242, 245, 248);
+      margin-bottom: 80px;
+    }
+
+    @media only screen and (min-width: 600px){
+      .powered-by{
+        text-align: center;
+        padding: 10px 0px;
+        background-color: rgb(242, 245, 248);
+        margin-bottom: 80px;
+      }
+    }
+
+    @media only screen and (min-width: 992px){
+      .powered-by{
+        text-align: center;
+        padding: 10px 0px;
+        background-color: rgb(242, 245, 248);
+        margin-bottom: 80px;
+      }
+    }
+
+    .download-btn{
+      color: rgb(255, 255, 255);
+      background: #63b90b;
+      font-family: Roboto, sans-serif;
+      font-weight: 400;
+      font-size: 1em;
+      border: 0px;
+      outline: none;
+      cursor: pointer;
+      padding: 5px 15px;
+      text-decoration: none;
+      border-radius: 4px;
+
+    }
+
+    .download-btn:hover, .download-btn:focus {
+      color: white !important;
+      text-decoration: none;
+    }
+
+    .fa {
+      padding: 10px;
+      font-size: 30px !important;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      text-decoration: none;
+      margin: 4px 4px;
+      border-radius: 50%;
+    }
+
+    .fa:hover {
+        opacity: 0.8;
+        color: white;
+        text-decoration-line: none;
+    }
+
+    .fa-facebook {
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-twitter {
+      background: #55ACEE;
+      color: white;
+    }
+
+    .fa-instagram {
+      background: #F77737;
+      color: white;
+    }
+
+    .fa-apple {
+      background: #D3D3D3;
+      color: white !important;
+    }
+
+    .fa-android {
+      background: #63b90b;
+      color: white !important;
+    }
+    .fa-snapchat-ghost {
+      background: #fffc00;
+      color: white !important;
+      text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+    .fa-pinterest {
+      background: #cb2027;
+      color: white!important;
+    }
+    .fa-google {
+      background: #dd4b39;
+      color: white !important;
+    }
+    .fa-skype {
+      background: #00aff0;
+      color: white!important;
+    }
+    .fa-linkedin {
+      background: #007bb5;
+      color: white !important;
+    }
+
+    .fa-youtube {
+      background: #bb0000;
+      color: white;
+    }
+
+    .fa-phone{
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-globe{
+      background: #3B5998;
+      color: white;
+    }
+
+    .fa-map{
+      background: #3B5998;
+      color: white;
+    }
+
+</style>
+
+<style type="text/css">
+
+.visuhide {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.star__container:hover .star__item, .star__radio:checked ~ .star__item {
+  -webkit-filter: grayscale(0);
+          filter: grayscale(0);
+}
+
+.star__container:not(:hover) > .star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4) ~ .star__item, .star__container:not(:hover) > .star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5) ~ .star__item, .star__item, .star__item:hover ~ .star__item {
+  -webkit-filter: grayscale(1);
+          filter: grayscale(1);
+}
+
+.star__radio:nth-of-type(1):checked ~ .star__item:nth-of-type(1)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(2):checked ~ .star__item:nth-of-type(2)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(3):checked ~ .star__item:nth-of-type(3)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(4):checked ~ .star__item:nth-of-type(4)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__radio:nth-of-type(5):checked ~ .star__item:nth-of-type(5)::before {
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.25, 1);
+}
+.star__container {
+  display: flex;
+  margin: auto;
+  /* border-radius: .25em;
+  background-color: #c6f09b;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.25);
+  transition: box-shadow .3s ease; */
+}
+/* .star__container:focus-within {
+  box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.5);
+} */
+.star__item {
+  display: inline-flex;
+  width: 1.90em;
+  height: 1.5em;
+}
+.star__item::before {
+  content: "{{bill_design.rating_emoji}}";
+  display: inline-block;
+  margin: auto;
+  font-size: .75em;
+  vertical-align: top;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  -webkit-transform-origin: 50% 33.3%;
+          transform-origin: 50% 33.3%;
+  transition: -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+}
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="main">
+    <div class="header">
+        <block style="">
+          <div class="header-details">
+            <div class="header-div">
+              <div class="row">
+                  <div class="col-md-12 d-flex align-items-center justify-content-center">
+                      <img class="header-logo" src="http://157.230.228.250/static/assets/img/dashboard-logo.png">
+                  </div>
+              </div>
+             <div class="text-center">
+              <div class="form-group">
+              202, Maharishi Artharva Apt,<br>
+              Plot No.14, shankar Nagar, Nagpur
+              </div>
+          </div> 
+            <div class="text-center">
+              <div class="form-group">
+                Rate Our Service<br>
+                <a  style="color: #FDCC0D;" class="fa fa-star"></a><a style="color: #FDCC0D;;" class="fa fa-star"></a><a style="color: #FDCC0D;;" class="fa fa-star"></a><a style="color: #FDCC0D;" class="fa fa-star"></a><a style="color: #FDCC0D;;" class="fa fa-star"></a>
+              </div>
+            </div>
+            </div>
+          </div>
+        </block>
+    </div> 
+    <div class="bill-body">
+      <div class="bill-content">
+        <div class="row">
+          <div class="col-md-12" style="max-height:280px; overflow:hidden;" id="bill-div">
+            
+            <img src="http://157.230.228.250/media/dummybill1.png" width="100%">          
+            <div class="bill-image-border" id="bill-image-border-div"></div>
+          </div>
+          <button type="button" class="show-more-btn title" id="show-more-btn">Show More</button>
+          <button type="button" class="show-less-btn title" style="display: none;" id="show-less-btn">Show Less</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <img src="http://157.230.228.250/media/bill-border.png" width="100%">
+        </div>
+      </div>
+      <div class="form-group">
+      <div class="col-md-12 d-flex align-items-center justify-content-center"  >
+       <div class="row">
+          <div class="col">
+            <button class="btn btn-primary  w-70 fw-bold mb-3">Pay Now </button> 
+          
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+           
+            <div type="button" style="margin-bottom: 10px;" class="reject-bill-btn title" data-toggle="modal" data-target="#RejectBillModal">Reject Bill?Click </div>
+          </div>
+          
+          
+        </div>
+        </div>
+      </div>
+      <!-- <div class="text-center">
+        <div class="form-group">
+          <a  style="color:white;" class="fa fa-facebook fa" href="https://www.facebook.com/gopaperlessgodigital"></a>
+          <a style="color: white;" class="fa fa-instagram" href="https://www.instagram.com/greenbill_gb/"></a>
+          <a style="color:white;" class="fab fa-twitter fa" href="https://www.linkedin.com/company/greenbill"></a>
+          <a style="color: #FDCC0D;" class="fa fa-linkedin fa" href="https://www.linkedin.com/company/greenbill/"></a>
+        </div>
+      </div> -->
+      <div class="">
+      <div class="col-md-12 d-flex align-items-center justify-content-center">
+       <div class="row">
+          <div class="col">
+            <a  style="color:white;" class="fa fa-facebook fa" href="https://www.facebook.com/gopaperlessgodigital"></a>
+          
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+           
+            <a style="color: white;" class="fa fa-instagram" href="https://www.instagram.com/greenbill_gb/"></a>
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+           
+            <a style="color:white;" class="fab fa-twitter fa" href="https://www.linkedin.com/company/greenbill"></a>
+
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+           
+            <a style="color: #FDCC0D;" class="fa fa-linkedin fa" href="https://www.linkedin.com/company/greenbill/"></a>
+          </div>
+        </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card advertisement">
+              <div class="card-body" style="padding: 0rem;">
+                <a href="https://www.greenbill.in/"><img src="http://157.230.228.250/media/EI-01.jpg" width="100%"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       <div class="powered-by">
+        <p class="title">Digital bill powered by</p>
+        <a target="_blank" href="https://www.greenbill.in/">
+          <img src="http://157.230.228.250/static/assets/img/dashboard-logo.png" width="80px" alt="greenbill">
+        </a>
+      </div>
+      <!-- <div class="bill-footer">
+       <div class="row" style="margin-top: 3%">
+          <div class="col">
+            <img class="footer-logo" src="http://157.230.228.250/static/assets/img/dashboard-logo.png" style="margin-left: 10px">
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+            <a href="{{bill_details.bill.url}}" class="download-btn" download="">
+                Download Bill
+            </a> -->
+            <!-- <a href="https://www.greenbill.in/" class="fa fa-android"></a> -->
+       <!--    </div>
+        </div>
+      </div> -->
+      <div class="bill-footer">
+      <div class="col-md-12 d-flex align-items-center justify-content-center">
+       <div class="row">
+          <div class="col">
+            <a class="fa fa-apple" href="https://apps.apple.com/in/app/green-bill-hind-software/id1592444682" style="background-color: blue;"></a>
+          </div>
+          <div class="col d-flex align-items-center justify-content-center" style="float: right;">
+            <a href="https://play.google.com/store/apps/details?id=com.greenBill.green_bill" class="fa fa-android"></a>
+          </div>
+        </div>
+        </div>
+      </div>
+      </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#show-less-btn").hide();
+
+    $("#show-more-btn").click(function(){
+        $('#bill-div').css({"max-height":"none", "overflow":"hidden"});
+        $('#bill-image-border-div').hide();
+        $("#show-less-btn").show();
+        $("#show-more-btn").hide();
+    });
+
+    $("#show-less-btn").click(function(){
+        $('#bill-div').css({"max-height":"320px", "overflow":"hidden"});
+        $('#bill-image-border-div').show();
+        $("#show-less-btn").hide();
+        $("#show-more-btn").show();
+    });
+  });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}

@@ -1,0 +1,74 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} My Bill {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    
+    @media only screen and (max-width: 600px) {
+        #login-img {
+            display: none !important;
+        }
+    }
+
+</style>
+
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-4">    
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>
+                                <center>My Bill</center>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body" >
+                        <img src="{{bill_details.bill_file.url}}" width="100%" height="400px">
+                        <!-- <iframe
+                        src="{{bill_details.bill_file.url}}#toolbar=0&navpanes=0"
+                        frameBorder="0"
+                        scrolling="auto"
+                        height="400px"
+                        width="100%"
+                    ></iframe> -->
+                    <!-- <object data="{{bill_details.bill_file.url}}#toolbar=0&navpanes=0" type="application/png" height="400px" width="100%"> -->
+                   <!--  <iframe src="http://157.230.228.250/{{bill_details.bill_file.url}}#toolbar=0&navpanes=0" height="400px" width="100%" frameBorder="0"></iframe> -->
+                    <!-- <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill_details.bill_file.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe> -->
+                        <!-- <object data="{{bill_details.bill.url}}#toolbar=0&navpanes=0" type="application/pdf" height="400px" width="100%">
+                            
+                        </object> -->
+                        <!-- <object data="{{bill_details.bill.url}}" type="application/pdf">
+                          <embed src="{{bill_details.bill.url}}" type="application/pdf" />
+                        </object> -->
+                        <!-- <embed src="https://www.invoicesimple.com/wp-content/uploads/2018/05/InvoiceSimple-PDF-Template.pdf" type="application/pdf" frameBorder="0" scrolling="auto" height="400px" width="100%" ></embed> -->
+                    </div>
+                    <div class="card-action">
+                        <a href="http://www.greenbill.in/demo/" class="logo" style="width: 108px; height: 62px;">
+                            <img src="/static/assets/img/dashboard-logo.png" alt="navbar brand" class="navbar-brand">
+                        </a>
+                        <a href="{{bill_details.bill_file.url}}" download="">
+                            <button type="submit" class="btn btn-success" style="float: right;">Download Bill</button>
+                        </a>
+                        
+                        &nbsp; &nbsp;
+                        <!-- <span>Not a member?</span> Please Become Member Now -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}

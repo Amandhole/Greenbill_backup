@@ -1,0 +1,2264 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Subscription Plans {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+</style>
+
+<!-- Create Subscription Modal -->
+<div class="modal fade" id="create-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+     <form method="POST" action="/subscription-plans/" class="form-control" name="subscription_form" id="subscription_form_id">
+        {% csrf_token %}
+        <input type="hidden" name="plan_id" value="">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title w-100 text-center">Create Subscription</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Subscription Name<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" maxlength="30" id="subscription_name" name="subscription_name"
+                                placeholder="Subscription Name" value="" required />
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Valid For<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <select class="form-control" name="valid_for_month" required>
+                                <option value="1">1 Month</option>
+                                <option value="3">3 Months</option>
+                                <option value="6">6 Months</option>
+                                <option value="12">12 Months</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Suited For<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" maxlength="20" name="suited_for"
+                                placeholder="Suited For" value="" required />
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Subscription Plan<span style="color: red;"> *</span></label>
+                        <div id="input-type" class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="subscriptionplan" id="greenbillsubsplan_id" class="select-Subscription-Plan" value="greenbillsubsplan" type="radio" autocomplete="off">
+                                    GreenBill Subscription Plan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="subscriptionplan" id="loyaltypointsubsplan_id" class="select-Subscription-Plan" value="loyaltypointsubsplan" type="radio" autocomplete="off">
+                                    Loyalty Subscription Plan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input  name="subscriptionplan" id="bothplansubsplan_id" class="select-Subscription-Plan" value="bothsubsplan" id="" type="radio" autocomplete="off">
+                                    Both Plan</label>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Per SMS Cost <span style="color: red;">(in Rs)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Bill<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" maxlength="20" class="form-control" name="per_bill_cost" placeholder="Cost" id="per_bill_cost" value="" required/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_receipt_cost" placeholder="Cost" id="per_receipt_cost" value="" required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cash Memo<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_cash_memo_cost" placeholder="Cost" id="per_cash_memo_cost" value="" required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="row">
+                        
+                    </div> -->
+                </div>
+                <div class="col-md-4">
+                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Per Digital Cost <span style="color: red;">(in Rs)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Bill<span style="color: red;"> *</span></label>
+                                <div class="input-group ">
+                                    <input type="number" class="form-control "  name="per_digital_bill_cost" placeholder="Cost" id="per_digital_bill_cost" value=""
+                                        required/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_digital_receipt_cost" placeholder="Cost" id="per_digital_receipt_cost" value="" required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cash Memo<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_digital_cash_memo_cost" placeholder="Cost" id="per_digital_cash_memo_cost" value=""
+                                        required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="row">
+                        
+                    </div> -->
+                </div>
+
+
+                <div class="col-md-4">
+                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Per Url Cost <span style="color: red;">(in Rs)</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Bill<span style="color: red;"> *</span></label>
+                                <div class="input-group ">
+                                    <input type="number" class="form-control "  name="per_url_cost" placeholder="Cost" id="per_url_cost" value=""
+                                        required/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_digital_receipt_cost" placeholder="Cost" id="per_digital_receipt_cost" value="" required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cash Memo<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_digital_cash_memo_cost" placeholder="Cost" id="per_digital_cash_memo_cost" value=""
+                                        required min="0"/>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="row">
+                        
+                    </div> -->
+                </div>
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>No. of Users<span style="color: red;"> *</span></label>
+                       <!-- <select class="js-example-basic-multiple"  name="number_of_users" id="number_of_users" multiple="multiple" style="width: 100%;" >
+                            <option value="2">0 - 2</option> 
+                            <option value="5">2 - 5</option>
+                            <option value="10">5 - 10</option>
+                        </select> -->
+                        <select class="form-control" name="number_of_users" id="number_of_users">
+                            <option value="2">0 - 2</option> 
+                            <option value="5">3 - 5</option>
+                            <option value="10">6 - 10</option> 
+                            <option value="25">11 - 25</option>  
+                            <option value="50">26 - 50</option> 
+                            <option value="100">51 - 100</option> 
+                        </select>
+                    </div>
+                    <!-- <div id="number_of_usersError"></div> -->
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Per User Cost Per Month<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" max='100' min='1' name="cost_for_users" placeholder="Cost For" id="software_maintainace_cost" value="0" maxlength="4" >
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Software Maintainance Cost<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="software_maintainace_cost" placeholder="Software Maintainance"
+                                id="software_maintainace_cost" value="" required="" min="1"/>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- <div class="col-md-2"></div> -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Recharge Amount<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" maxlength="5" name="recharge_amount" placeholder="Recharge Amount" id="recharge_amount"  value="" required="" min="1"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Discount Type<span style="color: red;"> *</span></label>
+                        <div id="input-type" class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="discount_in" id="discount_in_none" class="select-discount-type" value="none" type="radio" autocomplete="off" checked="">
+                                    None</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="discount_in" id="discount_in_percentage" class="select-discount-type" value="percentage" type="radio" autocomplete="off">
+                                    Percentage</label>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <input type="number" name="discount_percentage" id="discount_percentage" type="text" class="form-control percentage" placeholder="Discount in Percentage" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input  name="discount_in" id="discount_in_amount" class="select-discount-type" value="amount" id="" type="radio" autocomplete="off">
+                                    Amount</label>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <input type="number" name="discount_amount" id="discount_amount" type="text" class="form-control value" placeholder="Discount in Amount" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>User Type<span style="color: red;"> *</span></label>
+                        <div id="input-type" class="row">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="user_type_category" value="category" type="radio"
+                                        autocomplete="off" checked="">
+                                    Category</label>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label>Select Business Category</label>
+                                        <select class="js-example-basic-multiple" name="business_category" id="business_category_id" multiple="multiple" style="width: 200px;">
+                                            {% for business_category in merchnat_business_category %}
+                                                <option value="{{ business_category.id }}">{{ business_category.business_category_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="hidden" name="business_category_value" id="business_category_value" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="user_type_merchant" value="merchant" type="radio" autocomplete="off">
+                                    Merchant</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Select Merchant</label>
+                                    <select class="js-example-basic-multiple" name="merchant_name" id="business_name_id" multiple="multiple" style="width: 200px;">
+                                        {% for merchant in merchant_list %}
+                                            <option value="{{ merchant.id }}"> 
+                                                {{merchant.m_business_name}} 
+                                                {% if merchant.m_area %}
+                                                    ({{ merchant.m_area }})
+                                                {% endif %}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="merchant_name_value" id="merchant_name_value" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" value="all" id="user_type_all" type="radio" autocomplete="off" checked="">
+                                    All</label>
+                                </div>
+                                <div class="row">
+                                    
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" value="partner" id="user_type_partner" type="radio" autocomplete="off">
+                                    Partner</label>
+                                </div>
+                                <div class="row">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin: 0px">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Subscription Plan Cost<span style="color: red;"> *</span></label>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" name="subscription_plan_cost" id="subscription_plan_cost" placeholder="Plan Cost" value="" required readonly="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Create">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+<!-- Create Link Modal End -->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Green Bill Subscription Plan</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Subscription Plans</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/get-subscription-plans/">Green Bill Subscription Plan</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+
+                                {% if is_superuser == True %}
+                                    <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-subscription-modal">
+                                        <i class="fa fa-plus"></i>
+                                        &nbsp;Create Subscription
+                                    </button>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.module_id|lower == "Subscription Plans"|lower and actions.feature_id|lower == "Green Bill Subscription Plan"|lower %}
+                                            {% if actions.add_permission == "1" %}
+                                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-subscription-modal">
+                                                    <i class="fa fa-plus"></i>
+                                                    &nbsp;Create Subscription
+                                                </button>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-6 col-md-3">
+                          <div class="card card-stats card-round">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Subscription Plan</p>
+                                    <h4 class="card-title">{{count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-md-4">
+                    <h2>Total Subscription Plan :- {{count}} </h2>
+                   </div> -->
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="SMSsubscription" class="display table table-hover" >
+                                            <thead>
+                                                <tr style="text-align: center;">
+                                                    <th>Sr. No.</th>
+                                                    <th>Subscription Name</th>
+                                                   <!--  <th>Valid for Month</th> -->
+                                                    <th>Cost per User</th>
+                                                    <th>Recharge Amount</th>
+                                                    <th>Subscription Plan Cost</th>
+                                                    <th>User Type</th>
+                                                    <th align="center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for subscription_plan in sms_subscription_plans %}
+                                                <tr >
+                                                    <td>
+                                                        {{ forloop.counter }}
+                                                    </td>
+                                                    <td>
+                                                        {{ subscription_plan.subscription_name }}
+                                                    </td>
+                                                    <!-- <td>
+                                                        {{ subscription_plan.valid_for_month }} Months
+                                                    </td> -->
+                                                    <td>
+                                                        ₹ {{ subscription_plan.cost_for_users|floatformat:3 }}
+                                                    </td>
+                                                    <td>
+                                                        ₹ {{ subscription_plan.recharge_amount|floatformat:3 }}
+                                                    </td>
+                                                    <td>
+                                                        ₹ {{ subscription_plan.subscription_plan_cost|floatformat:3 }}
+                                                    </td>
+                                                    <td>
+                                                        {% if subscription_plan.user_type == "category" %}
+                                                            Category
+                                                        {% elif subscription_plan.user_type == "merchant" %}
+                                                            Merchant
+                                                        {% elif subscription_plan.user_type == "all" %}
+                                                            All
+                                                        {% else %}
+                                                            Partner
+                                                        {% endif %}
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                            <!-- <button type="button" data-toggle="tooltip" title=""
+                                                            class="btn btn-link btn-primary btn-lg EditSmsSubscriptionBtn"
+                                                            data-original-title="Edit Subscription"
+                                                            data-id="{{subscription_plan.id}}"
+                                                            id="edit_sms_subscription">
+                                                            <i class="fa fa-edit"></i>
+                                                            </button> -->
+                                                            <!-- <span>
+                                                            <a href="/view-subscription-plans-details/{{ subscription_plan.subscription_name }}/" 
+                                                            data-original-title="Views-Subscription"class="btn btn-link btn-primary btn-lg"style="padding-right:0px;"><button type="button" class="btn btn-link" style="font-size:15px; color:blue;"><i class="fa fa-file-alt"></i></button></a>
+                                                            </span> -->
+                                                            <span data-original-title="Status" data-toggle="tooltip">
+                                                                 <a href="/view-subscription-plans-details/{{subscription_plan.subscription_name}}/"><button type="submit" class="btn btn-link btn-primary"><i class="fa fa-file-alt"></i></button></a>
+                                                            </span>
+                                                            <button type="button" data-toggle="tooltip" title=""
+                                                            class="btn btn-link btn-primary btn-lg ViewSubscriptionBtn"
+                                                            data-original-title="View Subscription"
+                                                            data-id="{{subscription_plan.id}}"
+                                                            id="view_sms_subscription">
+                                                            <i class="fa fa-eye"></i>
+                                                            </button>
+                                                            {% if subscription_plan.is_active == True %}
+                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DisableSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Disable Subscription" id="delete_sms_subscription">
+                                                                    <i class="fas fa-times-circle"></i>
+                                                                </button>
+                                                            {% endif %}
+
+                                                            {% if subscription_plan.is_active == False %}
+                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary EnableSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Enable Subscription" id="delete_sms_subscription">
+                                                                        <i class="far fa-check-circle"></i>
+                                                                </button>
+                                                            {% endif %}
+
+                                                            <!-- <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DeleteSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Delete Subscription" id="delete_sms_subscription">
+                                                                        <i class="fas fa-trash"></i>
+                                                            </button> -->
+                                                                    
+                                                            </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Subscription Plans"|lower and actions.feature_id|lower == "Transactonal SMS Subscription Plan"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <table id="SMSsubscription" class="display table table-hover" >
+                                                        <thead>
+                                                            <tr style="text-align: center;">
+                                                                <th>Sr. No.</th>
+                                                                <th>Subscription Name</th>
+                                                               <!--  <th>Valid for Month</th> -->
+                                                                <th>Cost per User</th>
+                                                                <th>Recharge Amount</th>
+                                                                <th>Subscription Plan Cost</th>
+                                                                <th>User Type</th>
+                                                                <th align="center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            {% for subscription_plan in sms_subscription_plans %}
+                                                            <tr >
+                                                                <td>
+                                                                    {{ forloop.counter }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ subscription_plan.subscription_name }}
+                                                                </td>
+                                                                <!-- <td>
+                                                                    {{ subscription_plan.valid_for_month }} Months
+                                                                </td> -->
+                                                                <td>
+                                                                    ₹ {{ subscription_plan.cost_for_users|floatformat:3 }}
+                                                                </td>
+                                                                <td>
+                                                                    ₹ {{ subscription_plan.recharge_amount|floatformat:3 }}
+                                                                </td>
+                                                                <td>
+                                                                    ₹ {{ subscription_plan.subscription_plan_cost|floatformat:3 }}
+                                                                </td>
+                                                                <td>
+                                                                    {% if subscription_plan.user_type == "category" %}
+                                                                        Category
+                                                                    {% elif subscription_plan.user_type == "merchant" %}
+                                                                        Merchant
+                                                                    {% elif subscription_plan.user_type == "all" %}
+                                                                        All
+                                                                    {% else %}
+                                                                        Partner
+                                                                    {% endif %}
+                                                                </td>
+                                                                
+                                                                <td>
+                                                                    <div class="form-button-action">
+                                                                        <!-- <button type="button" data-toggle="tooltip" title=""
+                                                                        class="btn btn-link btn-primary btn-lg EditSmsSubscriptionBtn"
+                                                                        data-original-title="Edit Subscription"
+                                                                        data-id="{{subscription_plan.id}}"
+                                                                        id="edit_sms_subscription">
+                                                                        <i class="fa fa-edit"></i>
+                                                                        </button> -->
+                                                                        <!-- <span>
+                                                                        <a href="/view-subscription-plans-details/{{ subscription_plan.subscription_name }}/" 
+                                                                        data-original-title="Views-Subscription"class="btn btn-link btn-primary btn-lg"style="padding-right:0px;"><button type="button" class="btn btn-link" style="font-size:15px; color:blue;"><i class="fa fa-file-alt"></i></button></a>
+                                                                        </span> -->
+                                                                        <span data-original-title="Status" data-toggle="tooltip">
+                                                                             <a href="/view-subscription-plans-details/{{subscription_plan.subscription_name}}/"><button type="submit" class="btn btn-link btn-primary"><i class="fa fa-file-alt"></i></button></a>
+                                                                        </span>
+                                                                        <button type="button" data-toggle="tooltip" title=""
+                                                                        class="btn btn-link btn-primary btn-lg ViewSubscriptionBtn"
+                                                                        data-original-title="View Subscription"
+                                                                        data-id="{{subscription_plan.id}}"
+                                                                        id="view_sms_subscription">
+                                                                        <i class="fa fa-eye"></i>
+                                                                        </button>
+                                                                        {% if subscription_plan.is_active == True %}
+                                                                            <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DisableSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Disable Subscription" id="delete_sms_subscription">
+                                                                                <i class="fas fa-times-circle"></i>
+                                                                            </button>
+                                                                        {% endif %}
+
+                                                                        {% if subscription_plan.is_active == False %}
+                                                                            <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary EnableSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Enable Subscription" id="delete_sms_subscription">
+                                                                                    <i class="far fa-check-circle"></i>
+                                                                            </button>
+                                                                        {% endif %}
+
+                                                                        <!-- <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DeleteSmsSubscriptionBtn" id="delete_role_btn" data-id='{{subscription_plan.id}}' data-original-title="Delete Subscription" id="delete_sms_subscription">
+                                                                                    <i class="fas fa-trash"></i>
+                                                                        </button> -->
+                                                                                
+                                                                        </div>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ViewCashMemoModal3">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- <div class="card" style="height: 200px; width:400px;"> -->
+                
+                <div class="col-sm-12">
+                    <div class="card card-stats card card-round" style="height: 112px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color: #63b90b !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b> Active Merchant</b></h4>
+                                        <p style="color:#000000;padding-left:10px;font-size:20px;">{{merchant_active}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="card card-stats card card-round" style="height: 112px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color:red !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b> Inactive Merchant</b></h4>
+                                        <p style="color:#000000;padding-left:10px;font-size:20px;">{{merchant_inactive}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="card card-stats card card-round" style="height: 112px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="icon-big text-center">
+                                        <i class="fas fa fas fa-user" style="color: blue !important;"></i>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="numbers">
+                                        <h4 style="color: #000000;font-size: 18px;"><b> Total Merchant</b></h4>
+                                        <p style="color:#000000;padding-left:10px;font-size:20px;">{{total_merchant}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+            </div>
+        </div>
+    <!-- </div> -->
+</div>
+<!-- Edit SMS subscription plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="edit-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form method="POST" class="form" name="edit_subscription_form" id="edit_subscription_form" action="/subscription-plans/">
+            {% csrf_token %}
+            <input type="hidden" name="plan_id" id="edit_plan_id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Subscription</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Subscription Name<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="subscription_name"
+                                        placeholder="Subscription Name" id="edit_subscription_name" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Valid For<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <select class="form-control" name="valid_for_month" id="edit_valid_for_month" required>
+                                        <option value="1">1 Month</option>
+                                        <option value="3">3 Months</option>
+                                        <option value="6">6 Months</option>
+                                        <option value="12">12 Months</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Suited For<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="suited_for" id="edit_suited_for" 
+                                        placeholder="Suited For" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per SMS Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="edit_per_bill_cost" placeholder="Cost" id="edit_per_bill_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_receipt_cost" placeholder="Cost" id="edit_per_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                               <!--  <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_cash_memo_cost" placeholder="Cost" id="edit_per_cash_memo_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <!-- <div class="row">
+                                
+                            </div> -->
+                        </div>
+                        <div class="col-md-4">
+                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per Digital Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="edit_per_digital_bill_cost" placeholder="Cost" id="edit_per_digital_bill_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_receipt_cost" placeholder="Cost" id="edit_per_digital_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_cash_memo_cost" placeholder="Cost" id="edit_per_digital_cash_memo_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                            <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per Url Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="edit_per_url_cost" placeholder="Cost" id="edit_per_url_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_receipt_cost" placeholder="Cost" id="edit_per_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                               <!--  <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_cash_memo_cost" placeholder="Cost" id="edit_per_cash_memo_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <!-- <div class="row">
+                                
+                            </div> -->
+                        </div>
+                            <!-- <div class="row">
+                                
+                            </div> -->
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Software Maintainance Cost<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="software_maintainace_cost" placeholder="Software Maintainance"
+                                        id="edit_software_maintainace_cost" value="" required="" min="0"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Recharge Amount<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="recharge_amount" placeholder="Recharge Amount" id="edit_recharge_amount" value="" required="" min="0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Discount Type<span style="color: red;"> *</span></label>
+                                <div id="input-type" class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input name="discount_in" id="edit_discount_in_none" class="select-discount-type-edit" value="none" type="radio" autocomplete="off">
+                                            None</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input name="discount_in" id="edit_discount_in_percentage" class="select-discount-type-edit" value="percentage" type="radio" autocomplete="off">
+                                            Percentage</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <input name="discount_percentage" id="edit_discount_percentage" type="text" class="form-control percentage" placeholder="Discount in Percentage">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input name="discount_in" id="edit_discount_in_amount" class="select-discount-type-edit" value="amount" id="" type="radio" autocomplete="off">
+                                            Amount</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <input name="discount_amount" id="edit_discount_amount" type="text" class="form-control value" placeholder="Discount in Amount">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>User Type<span style="color: red;"> *</span></label>
+                                <div id="input-type" class="row">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="edit_user_type_category" value="category" type="radio"
+                                                autocomplete="off" checked="">
+                                            Category</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label>Select Business Category</label>
+                                                <select class="js-example-basic-multiple" name="business_category" id="edit_business_category_id" multiple="multiple" style="width: 200px;">
+                                                    {% for business_category in merchnat_business_category %}
+                                                        <option value="{{ business_category.id }}">{{ business_category.business_category_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <input type="hidden" name="business_category_value" id="edit_business_category_value" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="edit_user_type_merchant" value="merchant" type="radio" autocomplete="off">
+                                            Merchant</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Select Merchant</label>
+                                            <select class="js-example-basic-multiple" name="merchant_name" id="edit_business_name_id" multiple="multiple" style="width: 200px;">
+                                                {% for merchant in merchant_list %}
+                                                    <option value="{{ merchant.id }}"> 
+                                                        {{merchant.mobile_no}} 
+                                                        {% if merchant.first_name %}
+                                                            ({{ merchant.first_name }} {{ merchant.last_name }})
+                                                        {% endif %}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type="hidden" name="merchant_name_value" id="edit_merchant_name_value" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="radio-inline">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" value="all" id="edit_user_type_all" type="radio" autocomplete="off">
+                                            All</label>
+                                        </div>
+                                        <div class="row">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Subscription Plan Cost<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="subscription_plan_cost" id="edit_subscription_plan_cost" placeholder="Plan Cost" value="" required readonly="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="edit_sms_subscription_form_submit_btn" type="submit" class="btn btn-primary" value="Save"
+                        data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+
+    jQuery.validator.addMethod("lettersonlys", function(value, element) {
+    return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
+}, "Letters only please");
+
+    jQuery.validator.addMethod("dollarsscents", function(value, element) {
+        return this.optional(element) || /^\d{0,4}(\.\d{0,2})?$/i.test(value);
+    }, "You must include two decimal places");
+
+    jQuery.validator.addMethod("decimalplaces", function(value, element) {
+        return this.optional(element) || /^\d{0,4}(\.\d{0,3})?$/i.test(value);
+    }, "You must include Three decimal places");
+
+    $('#subscription_form_id').validate({
+        rules: { 
+            subscription_name: {
+                required: true,
+                lettersonlys: true,
+            },
+            per_bill_cost: { 
+                min: 0,
+                required: true,
+                maxlength: 7,
+                decimalplaces: true,
+            },
+            per_url_cost: { 
+                min: 0,
+                required: true,
+                maxlength: 7,
+                decimalplaces: true,
+            },
+            per_digital_bill_cost: {
+                min: 0,
+                maxlength: 7,
+                decimalplaces: true,
+            },
+            cost_for_users: {
+                min: 0,
+                maxlength: 7,
+                dollarsscents: true,
+                required: true,
+            },
+            discount_percentage: {
+                min: 0,
+                maxlength: 7,
+                range: [1, 100]
+            },
+            discount_amount: {
+                min: 0,
+                maxlength: 7,
+                dollarsscents: true,
+            },
+        },
+    });
+
+    
+</script>
+<script>
+$(document).ready(function(){
+    $(".mul-select").select2({
+        placeholder: "Select Days",
+        tags: true,
+        tokenSeparators: ['/',','" "]
+    });
+})
+
+    $(".viewBtn").on("click", function () {
+
+        var message = $(this).data('message');
+
+         $('#message_id').empty().append(message);
+
+        $("#ViewCashMemoModal3").modal();
+    });
+</script>
+<script>
+
+$( "form[name='subscription_form']" ).validate({
+  rules: {
+    subscription_name : {
+      required: true,
+    },
+    per_bill_cost : {
+      required: true,
+      min: 0,
+    },
+    per_url_cost : {
+      required: true,
+      min: 0,
+    },
+    recharge_amount : {
+      required: true,
+      number: true
+    },
+    per_digital_bill_cost : {
+        min: 0,
+    },
+    discount_percentage: {
+        required: function(element){
+            return $("#discount_in_percentage").is(':checked');
+        }
+    },
+    discount_amount: {
+        required: function(element){
+            return $("#discount_in_amount").is(':checked');
+        }
+    },
+    business_category: {
+        required: function(element){
+            return $("#user_type_category").is(':checked');
+        }
+    },
+    merchant_name: {
+        required: function(element){
+            return $("#user_type_merchant").is(':checked');
+        }
+    },
+  },
+  messages: {
+        recharge_amount: {
+            required: "Recharge Amount is Required",
+            number: "Only number please",
+        },
+    },
+});
+
+$( "form[name='edit_subscription_form']" ).validate({
+  rules: {
+    subscription_name : {
+      required: true
+    },
+    per_bill_cost : {
+      required: true,
+      min: 0
+    },
+    per_url_cost : {
+      required: true,
+      min: 0
+    },
+    digital_bill : {
+      required: true,
+      min: 0
+    },
+    discount_percentage: {
+        required: function(element){
+            return $("#edit_discount_in_percentage").is(':checked');
+        }
+    },
+    discount_amount: {
+        required: function(element){
+            return $("#edit_discount_in_amount").is(':checked');
+        }
+    },
+    business_category: {
+        required: function(element){
+            return $("#edit_user_type_category").is(':checked');
+        }
+    },
+    merchant_name: {
+        required: function(element){
+            return $("#edit_user_type_merchant").is(':checked');
+        }
+    },  
+  },
+});
+
+$(function() {
+    $('.DisableSmsSubscriptionBtn').on('click', function(e) {
+      e.preventDefault();
+        Swal.fire({
+          title: 'Are you sure?',
+        //   text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Disable it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            
+            $.ajax({
+              type: "POST",
+              url: "/disable-subscription-plans/"+id+"/",
+              data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+              success: function(response) {
+                  if(response["status"] == "success"){
+                    Swal.fire({
+                        title:'Disable!',
+                        text: 'Subscription has been Disable.',
+                        icon: 'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                    location.reload();
+                    });
+                  }
+                  else if(response["status"] == "error"){
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Fail to Disable!", 
+                    timer:1500,
+                    showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+                  else{
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+              },
+              error: function() {
+                Swal.fire({
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  timer:1500,
+                  showConfirmButton:false,
+                })
+                  .then(function() {
+                    location.reload();
+                  });       
+              }
+          });
+          }
+        })
+    });
+  });
+
+$(function() {
+    $('.EnableSmsSubscriptionBtn').on('click', function(e) {
+      e.preventDefault();
+        Swal.fire({
+          title: 'Are you sure?',
+        //   text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Enable it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            
+            $.ajax({
+              type: "POST",
+              url: "/enable-subscription-plans/"+id+"/",
+              data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+              success: function(response) {
+                  if(response["status"] == "success"){
+                    Swal.fire({
+                        title:'Enable!',
+                        text: 'Subscription has been Enable.',
+                        icon: 'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                    location.reload();
+                    });
+                  }
+                  else if(response["status"] == "error"){
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Fail to Enable!", 
+                    timer:1500,
+                    showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+                  else{
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+              },
+              error: function() {
+                Swal.fire({
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  timer:1500,
+                  showConfirmButton:false,
+                })
+                  .then(function() {
+                    location.reload();
+                  });       
+              }
+          });
+          }
+        })
+    });
+  });
+
+$(function() {
+    $('.DeleteSmsSubscriptionBtn').on('click', function(e) {
+      e.preventDefault();
+        Swal.fire({
+          title: 'Are you sure?',
+        //   text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            
+            $.ajax({
+              type: "POST",
+              url: "/delete-subscription-plans/"+id+"/",
+              data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+              success: function(response) {
+                  if(response["status"] == "success"){
+                    Swal.fire({
+                        title:'Deleted!',
+                        text: 'Subscription has been deleted.',
+                        icon: 'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                    location.reload();
+                    });
+                  }
+                  else if(response["status"] == "error"){
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Fail to Delete!", 
+                    timer:1500,
+                    showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+                  else{
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                  }
+              },
+              error: function() {
+                Swal.fire({
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  timer:1500,
+                  showConfirmButton:false,
+                })
+                  .then(function() {
+                    location.reload();
+                  });       
+              }
+          });
+          }
+        })
+    });
+  });
+
+    $(".EditSmsSubscriptionBtn").on("click", function () {
+        $.ajax({
+            url: "/get-subscription-plans/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+                $("#edit_subscription_name").val(data["subscription_plan"]["subscription_name"]);
+
+                $('#edit_valid_for_month option[value='+ data["subscription_plan"]["valid_for_month"] + ']').attr('selected','selected');
+                
+                $("#edit_per_bill_cost").val(data["subscription_plan"]["per_bill_cost"]);
+                $("#edit_per_url_cost").val(data["subscription_plan"]["per_url_cost"]);
+                $("#edit_per_receipt_cost").val(data["subscription_plan"]["per_receipt_cost"]);
+                $("#edit_per_cash_memo_cost").val(data["subscription_plan"]["per_cash_memo_cost"]);
+                $("#edit_per_digital_bill_cost").val(data["subscription_plan"]["per_digital_bill_cost"]);
+                $("#edit_per_digital_receipt_cost").val(data["subscription_plan"]["per_digital_receipt_cost"]);
+                $("#edit_per_digital_cash_memo_cost").val(data["subscription_plan"]["per_digital_cash_memo_cost"]);
+
+                $("#edit_software_maintainace_cost").val(data["subscription_plan"]["software_maintainace_cost"]);
+                $("#edit_recharge_amount").val(data["subscription_plan"]["recharge_amount"]);
+
+                var discount_in = data["subscription_plan"]["discount_in"];
+
+                if(discount_in == "none") {
+                    $('#edit_discount_in_none').prop('checked', true);
+                    $('#edit_discount_percentage').prop({ disabled: true, });
+                    $('#edit_discount_percentage').val("");
+                    $('#edit_discount_amount').prop({ disabled: true });
+                    $('#edit_discount_amount').val("");
+                }
+                else if(discount_in == "percentage") {
+                    $('#edit_discount_in_percentage').prop('checked', true);
+                    $("#edit_discount_percentage").val(data["subscription_plan"]["discount_percentage"]);
+                    $('#edit_discount_percentage').prop({ disabled: false, });
+                    $('#edit_discount_amount').prop({ disabled: true });
+                    $('#edit_discount_amount').val("");
+                }
+                else if(discount_in == "amount") {
+                    $('#edit_discount_in_amount').prop('checked', true);
+                    $("#edit_discount_amount").val(data["subscription_plan"]["discount_amount"]);
+                    $('#edit_discount_percentage').prop({ disabled: true, });
+                    $('#edit_discount_amount').prop({ disabled: false });
+                    $('#edit_discount_percentage').val("");
+                }
+
+                var user_type = data["subscription_plan"]["user_type"];
+
+                // console.log(user_type)
+
+                if(user_type == "category")
+                {
+                    $('#edit_user_type_category').prop('checked', true);
+                    $("#edit_business_category_id").prop('disabled', false);
+                    $("#edit_business_name_id").prop('disabled', true);
+                    $("#edit_business_name_id").val('').trigger('change')
+                }
+                else if(user_type == "merchant")
+                {
+                    $('#edit_user_type_merchant').prop('checked', true);
+                    $("#edit_business_category_id").prop('disabled', true);
+                    $("#edit_business_name_id").prop('disabled', false);
+                    $("#edit_business_category_id").val('').trigger('change')
+                }
+                else if(user_type == "all")
+                {
+                    $('#edit_user_type_all').prop('checked', true);
+                    $("#edit_business_category_id").prop('disabled', true);
+                    $("#edit_business_name_id").prop('disabled', true);
+                    $("#edit_business_category_id").val('').trigger('change')
+                    $("#edit_business_name_id").val('').trigger('change')
+                }
+
+                $('#edit_subscription_plan_cost').val(data['subscription_plan']["subscription_plan_cost"]);
+                
+                $('#edit_plan_id').val(data['subscription_plan']["subscription_plans_id"]);
+
+                $("#edit_business_category_id").val('').trigger('change')
+
+                if(data['subscription_plan']["business_category_list"].length > 0){
+                    for(i = 0; i < data['subscription_plan']["business_category_list"].length; i++){
+                        val = data['subscription_plan']["business_category_list"][i]
+                        $("#edit_business_category_id option[value="+val+"]").prop("selected",true).trigger("change")
+                    }
+                }
+
+                $("#edit_business_name_id").val('').trigger('change')
+
+                if(data['subscription_plan']["business_name_list"].length > 0){
+                    for(i = 0; i < data['subscription_plan']["business_name_list"].length; i++){
+                        val = data['subscription_plan']["business_name_list"][i]
+                        $("#edit_business_name_id option[value="+val+"]").prop("selected",true).trigger("change")
+                    }
+                }
+
+                if(data['subscription_plan']["customized_plan_for"] == "business_category"){
+                    $("#edit_business_category_id").prop('disabled', false);
+                    $("#edit_business_name_id").prop('disabled', true);
+                    $("#edit_business_name_id").val('').trigger('change');
+                    $('#edit_user_type_category').prop('checked', true);
+                }
+
+                if(data['subscription_plan']["customized_plan_for"] == "merchant"){
+                    $("#edit_business_category_id").prop('disabled', true);
+                    $("#edit_business_name_id").prop('disabled', false);
+                    $("#edit_business_category_id").val('').trigger('change');
+                    $('#edit_user_type_merchant').prop('checked', true);
+                }
+
+                $("#edit-subscription-modal").modal();
+            }
+        })
+    });
+    
+
+    $(".ViewSubscriptionBtn").on("click", function () {
+        $.ajax({
+            url: "/get-subscription-plans/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+
+                $("#view_subscription_name").empty().append(data["subscription_plan"]["subscription_name"]);
+                $("#view_subscription_name_body").empty().append(data["subscription_plan"]["subscription_name"]);  
+                $("#view_subscription_valid_for").empty().append(data["subscription_plan"]["valid_for_month"]);
+                $("#view_subscription_suited_for").empty().append(data["subscription_plan"]["suited_for"]);
+                // if(data["subscription_plan"]["per_url_cost"]==""){
+                // alert(data["subscription_plan"]["per_url_cost"]);
+                // }
+                $("#view_per_url_cost").empty().append(data["subscription_plan"]["per_url_cost"]);
+                $("#view_per_bill_cost").empty().append(data["subscription_plan"]["per_bill_cost"]);
+                $("#view_per_receipt_cost").empty().append(data["subscription_plan"]["per_receipt_cost"]);
+                $("#view_per_cash_memo_cost").empty().append(data["subscription_plan"]["per_cash_memo_cost"]);
+                $("#view_per_digital_bill_cost").empty().append(data["subscription_plan"]["per_digital_bill_cost"]);
+                $("#view_per_digital_receipt_cost").empty().append(data["subscription_plan"]["per_digital_receipt_cost"]);
+                $("#view_per_digital_cash_memo_cost").empty().append(data["subscription_plan"]["per_digital_cash_memo_cost"]);
+
+                $("#view_software_maintainace_cost").empty().append(data["subscription_plan"]["software_maintainace_cost"]);
+                $("#view_cost_for_users").empty().append(data["subscription_plan"]["cost_for_users"]);
+                $("#view_recharge_amount").empty().append(data["subscription_plan"]["recharge_amount"]);
+
+                var discount_in = data["subscription_plan"]["discount_in"];
+
+                if(discount_in == "none") {
+                    $('#view_discount_in_none').prop('checked', true);
+                    $('#view_discount_percentage').val("");
+                    $('#view_discount_amount').val("");
+                }
+                else if(discount_in == "percentage") {
+                    $('#view_discount_in_percentage').prop('checked', true);
+                    $("#view_discount_percentage").empty().append(data["subscription_plan"]["discount_percentage"] + ' %');
+                    $('#view_discount_amount').empty().append("");
+                }
+                else if(discount_in == "amount") {
+                    $('#view_discount_in_amount').prop('checked', true);
+                    $("#view_discount_amount").empty().append('₹ ' + data["subscription_plan"]["discount_amount"]);
+                    $('#view_discount_percentage').empty().append("");
+                }
+
+                var user_type = data["subscription_plan"]["user_type"];
+
+                console.log(data["subscription_plan"]["partner_name"])
+
+                if(user_type == "category")
+                {
+                    $('#view_user_type_category').prop('checked', true);
+                    $('#view_user_type_merchant').prop('checked', false);
+                    $('#view_user_type_all').prop('checked', false);
+                    $('#view_user_type_partner').prop('checked', false);
+                    // $('#view_business_category_name').empty().append(data["subscription_plan"]["business_category_name"]);          
+                }
+                else if(user_type == "merchant")
+                {
+                    $('#view_user_type_merchant').prop('checked', true);
+                    $('#view_user_type_category').prop('checked', false);
+                    $('#view_user_type_all').prop('checked', false);
+                    $('#view_user_type_partner').prop('checked', false);
+                    // $('#view_merchant_name').empty().append(data["subscription_plan"]["merchant_name"]);
+                }
+                else if(user_type == "partner")
+                {
+                    $('#view_user_type_all').prop('checked', false);
+                    $('#view_user_type_category').prop('checked', false);
+                    $('#view_user_type_merchant').prop('checked', false);
+                    $('#view_user_type_partner').prop('checked', true);
+                    // $('#view_partner_name').empty().append(data["subscription_plan"]["merchant_name"]);
+                
+                }
+                else 
+                {
+                    // else if(user_type == "all")
+                    $('#view_user_type_all').prop('checked', true);
+                    $('#view_user_type_category').prop('checked', false);
+                    $('#view_user_type_merchant').prop('checked', false);
+                    $('#view_user_type_partner').prop('checked', false);
+                }
+
+                $('#view_subscription_plan_cost').empty().append(data['subscription_plan']["subscription_plan_cost"]);
+
+                $("#view-subscription-modal").modal();
+            }
+        })
+    });
+
+</script>
+
+<!-- View subscription plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="view-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="view_subscription_name"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-5">
+                        <h4>Subscription Name: <span id="view_subscription_name_body"></span></h4>
+                    </div>
+                    <!-- <div class="col-md-3">
+                        <h4>Valid For: <span id="view_subscription_valid_for"></span> Month</h4>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Suited For: <span id="view_subscription_suited_for"></span></h4>
+                    </div> -->
+                </div>
+                <hr>
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-4">
+                        <h4>Per SMS Cost : ₹ <span id="view_per_bill_cost"></span></h4>
+                        <!-- <ul>
+                            <li>Per Bill Cost : ₹ <span id="view_per_bill_cost"></span></li> -->
+                            <!-- <li>Per Receipt Cost: ₹ <span id="view_per_receipt_cost"></span></li>
+                            <li>Per Cash Memo Cost: ₹ <span id="view_per_cash_memo_cost"></span></li> -->
+                        <!-- </ul> -->
+                        
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Per Digital Cost : ₹ <span id="view_per_digital_bill_cost"></span></h4>
+                        <!-- <ul>
+                            <li>Per Digital Bill Cost: ₹ <span id="view_per_digital_bill_cost"></span></li> -->
+                            <!-- <li>Per Digital Receipt Cost: ₹ <span id="view_per_digital_receipt_cost"></span></li>
+                            <li>Per Digital Cash Memo Cost: ₹ <span id="view_per_digital_cash_memo_cost"></span></li> -->
+                        <!-- </ul> -->
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Per Url Cost : ₹ <span id="view_per_url_cost"></span></h4>
+                      <!--   <ul>
+                            <li>Per Url Bill Cost: ₹ <span id="view_per_url_cost"></span></li> -->
+                            <!-- <li>Per Digital Receipt Cost: ₹ <span id="view_per_digital_receipt_cost"></span></li>
+                            <li>Per Digital Cash Memo Cost: ₹ <span id="view_per_digital_cash_memo_cost"></span></li> -->
+                        <!-- </ul> -->
+                    </div>
+                </div>
+                <hr>
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-5">
+                        <h4>Cost Per User: ₹ <span id="view_cost_for_users"></span></h4>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Recharge Amount: ₹ <span id="view_recharge_amount"></span></h4>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-12">
+                        <h4>Discount Type</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="input-type" class="row">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="discount_in" id="view_discount_in_none" class="select-discount-type-edit" value="none" type="radio" autocomplete="off" disabled="">
+                                    None</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="discount_in" id="view_discount_in_percentage" class="select-discount-type-edit" value="percentage" type="radio" autocomplete="off" disabled="">
+                                    Percentage</label>
+                                </div>
+                                <div class="row" style="padding-left: 10px;">
+                                    <div class="form-group">
+                                        <small>&nbsp;&nbsp;&nbsp;&nbsp;<span id="view_discount_percentage"></span></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input name="discount_in" id="view_discount_in_amount" class="select-discount-type-edit" value="amount" id="" type="radio" autocomplete="off" disabled="">
+                                    Amount</label>
+                                </div>
+                                <div class="row" style="padding-left: 10px;">
+                                    <div class="form-group">
+                                        <small>&nbsp;&nbsp;&nbsp;&nbsp;<span id="view_discount_amount"></span></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-12">
+                        <h4>User Type</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <div id="input-type" class="row">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="select-mode" id="view_user_type_category" value="category" type="radio"
+                                        autocomplete="off" checked="" disabled="">
+                                    Category</label>
+                                </div>
+                                <div class="row" style="padding-left: 10px;">
+                                    <div class="form-group">
+                                        <!-- <small id="view_business_category_name"></small> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="view_user_type_merchant" value="merchant" type="radio" autocomplete="off" disabled="">
+                                    Merchant</label>
+                                </div>
+                                <div class="form-group" style="padding-left: 10px;">
+                                   <!-- <small id="view_merchant_name"></small> -->
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="select-mode" value="all" id="view_user_type_all" type="radio" autocomplete="off" disabled="">
+                                    All</label>
+                                </div>
+                                <div class="row">
+                                    
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="radio-inline">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="user_type" class="select-mode" id="view_user_type_partner" value="partner" type="radio" autocomplete="off" disabled="">
+                                    Partner</label>
+                                </div>
+                                <div class="form-group" style="padding-left: 10px;">
+                                   <!-- <small id="view_partner_name"></small> -->
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row" style="padding-left: 30px;">
+                    <div class="col-md-12">
+                        <h4>Subscription Plan Cost: ₹ <span id="view_subscription_plan_cost"></span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script>
+
+    $(document).ready(function(){
+        $('#discount_percentage').prop({ disabled: true });
+        $('#discount_amount').prop({ disabled: true });
+    });
+
+    $(function () {
+        $('.select-discount-type').click(function () {
+            if ($(this).val() == 'percentage') {
+                $('#discount_percentage').prop({ disabled: false, });
+                $('#discount_amount').prop({ disabled: true });
+                $('#discount_amount').val("");
+            }
+            else if ($(this).val() == 'amount') {
+                $('#discount_percentage').prop({ disabled: true, });
+                $('#discount_amount').prop({ disabled: false });
+                $('#discount_percentage').val("");
+            }
+            else {
+                $('#discount_percentage').prop({ disabled: true, });
+                $('#discount_percentage').val("");
+                $('#discount_amount').prop({ disabled: true });
+                $('#discount_amount').val("");
+            }
+        });
+    });
+
+    $(function () {
+        $('.select-discount-type-edit').click(function () {
+            if ($(this).val() == 'percentage') {
+                $('#edit_discount_percentage').prop({ disabled: false, });
+                $('#edit_discount_amount').prop({ disabled: true });
+                $('#edit_discount_amount').val("");
+            }
+            else if ($(this).val() == 'amount') {
+                $('#edit_discount_percentage').prop({ disabled: true, });
+                $('#edit_discount_amount').prop({ disabled: false });
+                $('#edit_discount_percentage').val("");
+            }
+            else {
+                $('#edit_discount_percentage').prop({ disabled: true, });
+                $('#edit_discount_percentage').val("");
+                $('#edit_discount_amount').prop({ disabled: true });
+                $('#edit_discount_amount').val("");
+            }
+        });
+    });
+
+
+	$(document).ready(function() {
+        $('#SMSsubscription').DataTable( {
+            dom: 'lBfrtip',
+            "ordering": false,
+            buttons: [
+               'excel', 'pdf', 'print'
+            ]
+        } );
+        $('#CustomSubscrition').DataTable( {
+            dom: 'lBfrtip',
+            buttons: [
+               'excel', 'pdf', 'print'
+            ]
+        } );
+    });
+        
+    $(document).ready(function() {
+
+        $("#business_category_id").select2({
+            placeholder:" Select Business Category",
+            closeOnSelect: false,
+        })
+        $("#business_category_id").on('change', function()
+        {
+            var opts = [],opt;
+            var len = business_category_id.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = business_category_id.options[i];
+                if (opt.selected) {
+                opts.push(opt.value);
+                }
+            }
+            $("#business_category_value").val(opts)
+        })
+        
+        $("#business_name_id").select2({
+            placeholder:" Select Merchant",
+            closeOnSelect: false,
+        })
+        $("#business_name_id").on('change', function()
+        {
+            var opts1 = [],opt1;
+            var len = business_name_id.options.length;
+            for (var i = 0; i < len; i++) {
+                opt1 = business_name_id.options[i];
+                if (opt1.selected) {
+                opts1.push(opt1.value);
+                }
+            }
+            $("#merchant_name_value").val(opts1)
+        })
+
+    })
+
+        $(document).ready(function() {
+            $("#edit_business_category_id").select2({
+                placeholder:" Select Business Category",
+                closeOnSelect: false,
+            })
+
+            $("#edit_business_category_id").on('change', function()
+            {
+                var opts2 = [], opt2;
+                var len = edit_business_category_id.options.length;
+                for (var i = 0; i < len; i++) {
+                    opt2 = edit_business_category_id.options[i];
+                    if (opt2.selected) {
+                    opts2.push(opt2.value);
+                    }
+                }
+                $("#edit_business_category_value").val(opts2)
+            })
+            
+            $("#edit_business_name_id").select2({
+                placeholder:" Select Merchant",
+                closeOnSelect: false,
+            })
+
+            $("#edit_business_name_id").on('change', function()
+            {
+                var opts3 = [], opt3;
+                var len = edit_business_name_id.options.length;
+                for (var i = 0; i < len; i++) {
+                    opt3 = edit_business_name_id.options[i];
+                    if (opt3.selected) {
+                    opts3.push(opt3.value);
+                    }
+                }
+                $("#edit_merchant_name_value").val(opts3)
+            })
+
+        })
+
+        $(document).ready(function() {
+
+            $("#user_type_category").on('click', function()
+            {
+                $("#business_category_id").prop('disabled', false);
+                $("#business_name_id").prop('disabled', true);
+                $("#business_name_id").val('').trigger('change')
+            })
+            $("#user_type_merchant").on('click', function()
+            {
+                $("#business_category_id").prop('disabled', true);
+                $("#business_name_id").prop('disabled', false);
+                $("#business_category_id").val('').trigger('change')
+            })
+            $("#user_type_all").on('click', function()
+            {
+                $("#business_category_id").prop('disabled', true);
+                $("#business_name_id").prop('disabled', true);
+                $("#business_category_id").val('').trigger('change')
+                $("#business_name_id").val('').trigger('change')
+            })
+             $("#user_type_partner").on('click', function()
+            {
+                $("#business_category_id").prop('disabled', true);
+                $("#business_name_id").prop('disabled', true);
+                $("#business_category_id").val('').trigger('change')
+                $("#business_name_id").val('').trigger('change')
+            })
+            
+        })
+
+        $(document).ready(function() {
+
+            $("#edit_user_type_category").on('click', function()
+            {
+                $("#edit_business_category_id").prop('disabled', false);
+                $("#edit_business_name_id").prop('disabled', true);
+                $("#edit_business_name_id").val('').trigger('change')
+            })
+            $("#edit_user_type_merchant").on('click', function()
+            {
+                $("#edit_business_category_id").prop('disabled', true);
+                $("#edit_business_name_id").prop('disabled', false);
+                $("#edit_business_category_id").val('').trigger('change')
+            })
+            $("#edit_user_type_all").on('click', function()
+            {
+                $("#edit_business_category_id").prop('disabled', true);
+                $("#edit_business_name_id").prop('disabled', true);
+                $("#edit_business_category_id").val('').trigger('change')
+                $("#edit_business_name_id").val('').trigger('change')
+            })  
+        })
+
+        $("#business_name_id").prop('disabled', true);
+        $("#business_category_id").prop('disabled', true);
+
+        $("#software_maintainace_cost, #recharge_amount, #discount_percentage, #discount_amount").keyup(function(){
+
+          var software_maintainace_cost = $("#software_maintainace_cost").val()
+          var number_of_users = $("#number_of_users").val()
+          if(software_maintainace_cost == ""){
+            software_maintainace_cost = 0;
+          }
+          if(number_of_users == ""){
+            number_of_users = 0;
+          }
+
+          var recharge_amount = $("#recharge_amount").val()
+          if(recharge_amount == ""){
+            recharge_amount = 0;
+          }
+
+          if($("#discount_in_percentage").is(':checked')){
+            var discount_percentage = $("#discount_percentage").val();
+            if(discount_percentage == ""){
+                discount_percentage = 0;
+            }
+            // discount_cost_percentage = ((parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount))/100) * parseFloat(discount_percentage)
+            if (discount_percentage <= 100){
+            discount_cost_percentage = (parseFloat(recharge_amount)/100) * parseFloat(discount_percentage)
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount)) - parseFloat(discount_cost_percentage)
+            var subscription_plan_cost = (parseFloat(recharge_amount)) - parseFloat(discount_cost_percentage)
+            }else{
+                var subscription_plan_cost = 0
+            }
+          }
+          else if($("#discount_in_amount").is(':checked')){
+            var discount_amount = $("#discount_amount").val();
+            // if(discount_amount == ""){
+            //     discount_amount = 0;
+            // }
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount)) - parseFloat(discount_amount)
+            // alert(discount_amount)
+            // alert(recharge_amount)
+            var discount_amount = $("#discount_amount").val();
+            if (parseFloat(recharge_amount) >= parseFloat(discount_amount)){
+                
+                var subscription_plan_cost = (parseFloat(recharge_amount)) - parseFloat(discount_amount)
+            }            
+            else{
+               var subscription_plan_cost = 0; 
+            }
+          }
+          else{
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount))
+            var subscription_plan_cost = (parseFloat(recharge_amount))
+          }
+
+          $("#subscription_plan_cost").val(subscription_plan_cost)
+
+        });
+
+        $("#discount_in_percentage").change(function() {
+            var software_maintainace_cost = $("#software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount))
+            var subscription_plan_cost = (parseFloat(recharge_amount))
+            $("#subscription_plan_cost").val(subscription_plan_cost)
+        });
+        $("#discount_in_amount").change(function() {
+            var software_maintainace_cost = $("#software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount))
+            var subscription_plan_cost = (parseFloat(recharge_amount))
+            $("#subscription_plan_cost").val(subscription_plan_cost)
+        });
+
+        $("#discount_in_none").change(function() {
+            var software_maintainace_cost = $("#software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            // var subscription_plan_cost = (parseFloat(software_maintainace_cost) * parseFloat(number_of_users) + parseFloat(recharge_amount))
+            var subscription_plan_cost = (parseFloat(recharge_amount))
+            $("#subscription_plan_cost").val(subscription_plan_cost)
+        });
+
+        
+
+        $("#edit_software_maintainace_cost, #edit_recharge_amount, #edit_discount_percentage, #edit_discount_amount").keyup(function(){
+
+          var software_maintainace_cost = $("#edit_software_maintainace_cost").val()
+          if(software_maintainace_cost == ""){
+            software_maintainace_cost = 0;
+          }
+
+          var recharge_amount = $("#edit_recharge_amount").val()
+          if(recharge_amount == ""){
+            recharge_amount = 0;
+          }
+
+          if($("#edit_discount_in_percentage").is(':checked')){
+            var discount_percentage = $("#edit_discount_percentage").val();
+            if(discount_percentage == ""){
+                discount_percentage = 0;
+            }
+            discount_cost_percentage = ((parseFloat(software_maintainace_cost) + parseFloat(recharge_amount))/100) * parseFloat(discount_percentage)
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount)) - parseFloat(discount_cost_percentage)
+          }
+          else if($("#edit_discount_in_amount").is(':checked')){
+            var discount_amount = $("#edit_discount_amount").val();
+            if(discount_amount == ""){
+                discount_amount = 0;
+            }
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount)) - parseFloat(discount_amount)
+          }
+          else{
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount))
+          }
+
+          $("#edit_subscription_plan_cost").val(subscription_plan_cost)
+
+        });
+
+        $("#edit_discount_in_percentage").change(function() {
+            var software_maintainace_cost = $("#edit_software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#edit_recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount))
+            $("#edit_subscription_plan_cost").val(subscription_plan_cost)
+        });
+
+        $("#edit_discount_in_amount").change(function() {
+            var software_maintainace_cost = $("#edit_software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#edit_recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount))
+            $("#edit_subscription_plan_cost").val(subscription_plan_cost)
+        });
+
+        $("#edit_discount_in_none").change(function() {
+            var software_maintainace_cost = $("#edit_software_maintainace_cost").val()
+            if(software_maintainace_cost == ""){
+                software_maintainace_cost = 0;
+            }
+
+            var recharge_amount = $("#edit_recharge_amount").val()
+            if(recharge_amount == ""){
+                recharge_amount = 0;
+            }
+            var subscription_plan_cost = (parseFloat(software_maintainace_cost) + parseFloat(recharge_amount))
+            $("#edit_subscription_plan_cost").val(subscription_plan_cost)
+        });
+
+        if ( window.history.replaceState ) {
+          window.history.replaceState( null, null, window.location.href );
+        }
+        
+        
+	</script>
+
+
+{% endblock javascripts %}
+

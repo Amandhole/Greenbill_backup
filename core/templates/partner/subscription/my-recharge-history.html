@@ -1,0 +1,231 @@
+{% extends "layouts/partner-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Recharge History {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .table th, .table td{
+        padding: 5px !important;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">My Subscriptions</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>My Subscriptions</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/recharge-history/">Recharge History</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                         <div class="d-flex align-items-center">
+                            <h4 class="card-title">Recharge History</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>My Subscriptions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-recharge-history/">Recharge History</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table id="my-recharge-history" class="display table table-hover" >
+                                        <thead>
+                                            <tr>
+                                                <th>Invoice No.</th>
+                                                <th>Subscription Name</th>
+                                                <th>Plan Type</th>
+                                                <!-- <th>Per Bill Cost</th>
+                                                <th>Per Digital Bill</th>
+                                                <th>Total SMS</th> -->
+                                                
+                                                <th>Purchase Date</th>
+                                                <th>Transaction Id </th>
+                                                <th>Mode</th>
+                                                <th>Total Cost</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for recharge in recharge_history %}
+                                                <tr>
+                                                    <td>
+                                                            {% if recharge.invoice_no %}
+                                                        {{ recharge.invoice_no }}
+                                                        {% else %}
+                                                        GB
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {{ recharge.subscription_name }}
+                                                    </td>
+                                                    <td>
+                                                        {% if recharge.is_subscription_plan == True %}
+                                                            Green Bill Subscription
+                                                        {% elif recharge.is_promotional_sms_plan == True %}
+                                                            Promotional SMS Plan
+                                                        {% elif recharge.is_transactional_sms_plan == True %}
+                                                            Transactional SMS Plan
+                                                        {% elif recharge.is_add_on_plan == True %}
+                                                            Add On's Plan
+                                                        {% endif %}
+                                                    </td>
+                                                    <!-- <td>
+                                                        {% if recharge.per_bill_cost %}
+                                                          ₹ {{ recharge.per_bill_cost|floatformat:2 }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if recharge.per_digital_bill_cost %}
+                                                           ₹ {{ recharge.per_digital_bill_cost|floatformat:2 }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if recharge.total_sms %}
+                                                            {{ recharge.total_sms }}
+                                                        {% endif %}
+                                                    </td> -->
+                                                    
+                                                    <td>
+                                                        {{ recharge.purchase_date|date:'d-m-Y' }}
+                                                    </td>
+                                                    <td>
+                                                        {% if recharge.transaction_id %}
+                                                        {{ recharge.transaction_id }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                        {{recharge.mode}}
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        ₹ {{ recharge.end_value|floatformat:2 }}
+                                                    </td>
+                                                    <td>
+                                                        {% if recharge.mode == "cashwithoutbill" %}
+                                                             <!-- <button type="button disabled" title="View Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Bill">
+                                                            <a href="/my-subscription-bill-partner/{{recharge.id}}/" >
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a> -->
+                                                            <!-- <i class="fa fa-eye-slash"></i> -->
+                                                        </button>
+                                                        {% else %}
+                                                         <button type="button " title="View Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Bill">
+                                                            <a href="/my-subscription-bill-partner/{{recharge.id}}/" >
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        </button>
+
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>                   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script>
+    $(document).ready(function() {
+        $('#my-recharge-history').DataTable( {
+            dom: 'lBfrtip',
+            buttons: [
+               'excel', 'pdf', 'print'
+            ],
+            "ordering": false
+        } );
+        $('#CustomSubscrition').DataTable( {
+            dom: 'lBfrtip',
+            buttons: [
+               'excel', 'pdf', 'print'
+            ]
+        } );
+    });
+</script>
+
+{% endblock javascripts %}

@@ -1,0 +1,392 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Permission {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    /*select option {
+   
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}*/
+  
+</style>
+
+<!-- Assign Role Modal -->
+<div class="modal fade" id="myAssignRoleModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" name="assign_role_form">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Assign Role</h2>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                <label for="description">Mobile Number:</label>
+                <input type="text" name="auth_name" class="form-control" value="" id="auth_name" readonly>
+                <input type="hidden" name="auth_id" id="auth_id" value="">
+                <input type="hidden" name="user_role_id" id="user_role_id" value="">
+                <input type="hidden" name="previous_role_id" id="previous_role_id" value="">
+            </div>
+            <div class="form-group">
+                <select class="form-control form-control" name="role_name" id="role_name">
+                    <option value="">Select Role</option>
+                    {% for object1 in role_list %}
+                        <option value="{{ object1.id }}" >{{ object1.role_name }}</option>
+                    {% endfor %}
+                </select>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <input id="assign_role_form_submit_btn" type="submit" class="btn btn-primary" value="Save" data-id="">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Assign Role Modal End-->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Assign Role</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>My Team</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/role/">Roles & Permissions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/role/assign/">Assign Role</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                        <input type="hidden" value="1" name="access_permission" id="access_permission">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <form action="\role/permission/update/" method="POST">
+                                    {% csrf_token %}
+                                    <table id="add-row" class="display table table-hover" >
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Mobile Number</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                        
+                                            {% for object in user_list %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+
+                                                <td>{{ object.mobile_no }}</td>
+
+                                                <td>{{ object.first_name }} {{ object.last_name }}</td>
+
+                                                <td>{{ object.email }}</td>
+
+                                                <td>{{ object.role_name }}</td>
+
+                                                <td>
+                                                    <div class="form-button-action">
+                                                    
+                                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg assignRoleBtn"
+                                                    data-original-title="Assign Role" data-role_id="{{ object.role_id }}" data-auth_id="{{ object.id }}" 
+                                                    data-mobile_no="{{ object.mobile_no }}" data-user_role_id = "{{ object.role }}">
+                                                        <i class="fas fa-tags"> </i>
+                                                    </button>
+                                                        
+                                                    </div>
+                                                </td>
+                                            </tr>
+                            
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </form>   
+
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "Roles & Permissions"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <form action="\role/permission/update/" method="POST">
+                                                {% csrf_token %}
+                                                <table id="add-row" class="display table table-striped table-hover" >
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sr. No.</th>
+                                                            <th>Mobile Number</th>
+                                                            <th>Name</th>
+                                                            <th>Email</th>
+                                                            <th>Role</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    
+                                                    <tbody>
+                                                    
+                                                        {% for object in user_list %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+
+                                                            <td>{{ object.mobile_no }}</td>
+
+                                                            <td>{{ object.first_name }} {{ object.last_name }}</td>
+
+                                                            <td>{{ object.email }}</td>
+
+                                                            <td>{{ object.role_name }}</td>
+
+                                                            <td>
+                                                                <div class="form-button-action">
+                                                                {% for actions in action_permissions_list %}
+                                                                    {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "Roles & Permissions"|lower %}
+                                                                        {% if actions.add_permission == "1" or actions.edit_permission == "1" %}
+                                                                            <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg assignRoleBtn"
+                                                                            data-original-title="Assign Role" data-role_id="{{ object.role_id }}" data-auth_id="{{ object.id }}" 
+                                                                            data-mobile_no="{{ object.mobile_no }}" data-user_role_id = "{{ object.role }}">
+                                                                                <i class="fas fa-tags"> </i>
+                                                                            </button>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}    
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                        
+                                                        {% endfor %}
+
+                                                    </tbody>
+                                                </table>
+                                            </form>   
+
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<!-- To show Access Denied div start -->
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+
+<!-- To show Access Denied div end -->
+
+<script>
+    var assignrolemodaldiv = $("#assign-role-modal-div");
+    $(".assignRoleBtn").on("click", function() {
+    
+            $("#auth_name").val($(this).attr("data-mobile_no"));
+            $("#auth_id").val($(this).attr("data-auth_id"));
+            $('#role_name').val($(this).attr("data-role_id"));
+            $('#user_role_id').val($(this).attr("data-user_role_id"));
+            $('#previous_role_id').val($(this).attr("data-role_id"));
+            $("#myAssignRoleModal").modal();
+    });
+
+    jQuery.validator.addMethod("check_role_same", function (value, element) {
+        var previous_role_id = $('#previous_role_id').val()
+        console.log(previous_role_id)
+
+        return value != previous_role_id;
+        }, "Please enter valid Role (This role is already assigned).");
+
+    $( "form[name='assign_role_form']" ).validate({
+        rules: {
+           role_name: {
+                required: true,
+                check_role_same: true,
+            }
+        },
+        messages: {
+            role_name: {
+                required: "Role field is required.",
+            } 
+            // check_role_same: "Please enter valid Role (This role is already assigned)."
+        },
+        submitHandler: function() {
+            var id = $("#assign_role_form_submit_btn").attr("data-id");
+            $.ajax({
+                type: "POST",
+                url: "add/",
+                data: $('form').serialize(),
+                success: function(response) {
+                $('#myAssignRoleModal').modal('hide');
+                swal.fire({
+                    icon:"success",
+                    title: "Success!",
+                    text: "Role Assigned.",
+                    type: "success",
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });
+                },
+                error: function() {
+                $('#myAssignRoleModal').modal('hide');
+                swal.fire({ 
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Something went wrong!", 
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+                .then(function() {
+                location.reload();
+                });       
+                }
+            });
+        }
+        });
+</script>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+			$('#basic-datatables').DataTable({
+			});
+
+			$('#multi-filter-select').DataTable( {
+				"pageLength": 5,
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select class="form-control"><option value=""></option></select>')
+						.appendTo( $(column.footer()).empty() )
+						.on( 'change', function () {
+							var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val()
+								);
+
+							column
+							.search( val ? '^'+val+'$' : '', true, false )
+							.draw();
+						} );
+
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
+			});
+            
+            $('#add-row').DataTable( {
+                dom: 'Bfrtip',
+                "ordering": false,
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+			var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+			$('#addRowButton').click(function() {
+				$('#add-row').dataTable().fnAddData([
+					$("#addName").val(),
+					$("#addPosition").val(),
+					$("#addOffice").val(),
+					action
+					]);
+				$('#addRowModal').modal('hide');
+
+			});
+		});
+    </script>
+
+{% endblock javascripts %}

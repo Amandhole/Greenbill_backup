@@ -1,0 +1,544 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Received Bills {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+    text-align: left !important;
+    }
+    .table td, .table th{
+        padding: 5px !important;
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"> 
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Sent Bills</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Bill Info</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/owner-sent-bills/">Sent Bills</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                        <div class="card-body center">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="POST" action="/owner-sent-bills/" id="received_bills_filter_form">
+                                      {% csrf_token %}
+                                      <div class="row">
+                                          <div class="col-md-2">
+                                          </div>
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label>From Date <span style="color: red;">*</span> </label>
+                                                  <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                                              </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label>To Date <span style="color: red;">*</span></label>
+                                                  <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}">
+                                              </div>
+                                          </div>
+                                          
+                                          <div class="col-md-2" style="padding-top: 2.7%;">
+                                              <div class="form-group" >
+                                                  <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+                                              </div>
+                                          </div>
+                                          <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                                          </div>
+                                      </div>
+                                    </form>
+                                    <div class="row" style="margin-bottom: 20px;" id="hide_bills_created"><hr width="100%"></div>
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="card card-stats card-primary card-round">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <div class="icon-big text-center">
+                                                                <i class="flaticon-interface-6"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-9 col-stats">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Total Bills Received</p>
+                                                                <h4 class="card-title">{{received_bills}}</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4" id="hide_amount_collect">
+                                            <div class="card card-stats card-info card-round">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-3">
+                                                            <div class="icon-big text-center">
+                                                                <i class="flaticon-coins text-success"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-9 col-stats">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Total Amount</p>
+                                                                <h4 class="card-title">₹ {{received_amount|floatformat:2}}</h4>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="add-row" class="display table table-hover">
+                                            <thead>
+                                                <tr align="center">
+                                                    <th>Sr. No.</th>
+                                                    <!-- <th>Mobile Number</th> -->
+                                                    <th>Invoice Number</th>
+                                                    <th>Business Name</th>
+                                                    <th>Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for bill in bills %}
+                                                <tr align="center">
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <!-- <td>{{ bill.mobile_no }}</td> -->
+                                                    <td>{{ bill.invoice_no }}</td>
+                                                    <td>
+                                                        {% if bill.business.m_business_name %}
+                                                            {{ bill.business.m_business_name }}
+                                                        {% elif bill.business %} 
+                                                            {{bill.business}}
+                                                        {% else %}
+                                                            Green Bill
+                                                        {% endif %}</td>
+                                                    <td>₹ {% if bill.amount %}{{ bill.amount|floatformat:2 }}{% endif %}</td>
+                                                    <td>{{ bill.date}}</td>
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                            {% if bill.bill_file %}
+                                                                <a class="btn btn-link btn-primary" href="http://157.230.228.250/my-bill-merchant/{{bill.bill_url}}/" target="_blank">
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </a>
+                                                                <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                    <a href="{% if bill.bill_file %}{{bill.bill_file.url}}{% endif %}" download>
+                                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </button>
+                                                                <!-- <button type="submit" class="btn btn-link btn-primary senbill" data-bill_id="{{bill.bill_id}}" data-original-title="send bill" data-toggle="modal" data-target="#sendbilmodel"><i class="fa fa-plus"></i></button> -->
+                                                            {% else %}
+
+
+                                                            {% if bill.db_table == "recharge_history" %}
+
+                                                            <button type="button" title="View Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Bill">
+                                                                <a href="/my-subscription-bill/{{bill.bill_id}}/" >
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </a>
+                                                            </button>
+
+                                                            <button type="button" data-toggle="tooltip"
+                                                                    title="Delete"
+                                                                    class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                                    data-original-title="Delete"
+                                                                    data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}">
+                                                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                            {% else %}
+                                                            
+                                                            <button type="button" title="View Bill" data-toggle="tooltip" class="btn btn-link btn-primary" 
+                                                                data-original-title="View Bill">
+                                                                <a href="/my-subscription-bill-partner/{{bill.bill_id}}/" >
+                                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </a>
+                                                            </button>
+
+                                                            <button type="button" data-toggle="tooltip"
+                                                                    title="Delete"
+                                                                    class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                                    data-original-title="Delete"
+                                                                    data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}"
+                                                                    data-db_table="{{bill.db_table}}">
+                                                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                            {% endif %}
+                                                            {% endif %}
+                                                           
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>           
+                    </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="sendbilmodel" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="send_bill_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Send Bill</h2>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="send_bill_id" name="send_bill_id" value="" />
+            <select class="form-control" id="send_bill_to_merchant" name="send_bill_to_merchant">
+                <option value="">Select Business</option>
+                {% for object in business_name_dictionary %}
+                <option value="{{ object.id }}">{{ object.send_merchant_business }}</option>
+                {% endfor %}
+            </select>
+          </div>
+          <div class="modal-footer">
+            <input id="send_bill_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+        document.getElementById("from_date").onchange = function () {
+        var input = document.getElementById("to_date");
+        input.setAttribute("min", this.value);
+      }
+</script>
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    
+    $(function () {
+    $('.deleteBtn').on('click', function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                var db_table = $(this).attr("data-db_table");
+                $.ajax({
+                    type: "POST",
+                    url: "/deletesentbill/" + id + "/" + db_table + "/",
+                    data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                    success: function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Bill deleted successfully.',
+                            'success',
+                            {
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                            })
+                            .then(function () {
+                                location.reload();
+                            });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Something went wrong!",
+                            confirmButtonClass: "btn-success",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                            .then(function () {
+                                location.reload();
+                            });
+                    }
+                });
+            }
+        })
+    });
+});
+
+</script>
+
+
+
+<script>
+    $.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+  jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+      return this.optional(element) || new Date(value) >= new Date($(params).val());
+  },'Must be greater than from date.');
+
+$("#received_bills_filter_form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date"
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+    $('.senbill').on('click', function(e) {
+    var id = $(this).data("bill_id");
+    $('#send_bill_id').val(id);
+});
+$('#send_bill_form').validate({
+    rules:{
+      reason:{
+        required: true
+      }
+    },
+    submitHandler: function () {
+      
+            $.ajax({
+            type: "POST",
+            url: "/send-bill-to-merchant/",
+            data: $('#send_bill_form').serialize(),
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Transfer!',
+                    text:'Bill Transfer successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+      }
+    });
+
+</script>
+<script>
+    $(document).ready(function() {
+  $('input[name=to_date]').change(function() {
+          var to_date = $('#to_date').val();
+          document.getElementById('from_date').setAttribute("max", to_date);
+  })
+
+  $('input[name=from_date]').change(function() {
+    var from_date = $('#from_date').val();
+      document.getElementById('to_date').setAttribute("min", from_date);
+  })
+})
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+
+
+$( "#received_bills_filter_form").validate({
+  rules: {
+    user: {
+      required: function (element) {
+          return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+        }
+    },
+    from_date: {
+        required: function (element) {
+          return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+        }
+    },
+    to_date: {
+        required: function (element) {
+          return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+        }
+    },
+  },
+  messages: {
+    user: "Please Select at least one filter.",
+    from_date: "Please Select at least one filter.",
+    to_date: "Please Select at least one filter.",
+  },
+  errorPlacement: function (error, element) {
+        if (element.attr("name") == "user")
+            $("#billInfoFilterError").html(error);
+        if (element.attr("name") == "from_date")
+            $("#billInfoFilterError").html(error);
+        if (element.attr("name") == "to_date")
+            $("#billInfoFilterError").html(error);      
+    }
+})
+</script>
+<script type="text/javascript">
+$(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 10,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+
+
+// $(document).ready(function () {
+     $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+});
+
+</script>
+<style>
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

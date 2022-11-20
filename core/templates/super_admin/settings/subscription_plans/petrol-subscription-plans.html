@@ -1,0 +1,997 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Petrol Parking Plans{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Petrol Parking Plans</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Subscription Plans</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/get-promotions-subscription-plan/">Petrol Parking Plans</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Petrol / Parking Plans</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Subscription Plans</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/get-promotions-subscription-plan/">Petrol / Parking Plans</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- <h3 style="text-align: center;">Add new Subscription</h3>
+                                <br> -->
+                                <form method="POST" action="/get-petrol-pump-parking-subscription-plan/"
+                                    class="form-control" name="subscription_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="pet_park_id" value="">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Subscription Name<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" name="subscription_name"
+                                                        placeholder="Subscription Name" value="" required />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Per bill Cost<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" name="per_bill_cost"
+                                                        placeholder="Per Bill Cost" value="" required />
+                                                </div>
+                                                <div id="perbillcostError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Per SMS Cost<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-3">
+                                                    <input type="number" class="form-control" name="per_sms_cost"
+                                                        placeholder="Per SMS Cost" id="" value="" required min="0.1"/>
+                                                </div>
+                                                <div id="persmscostError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Total Cost<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-3">
+                                                    <input type="number" class="form-control" name="total_cost"
+                                                        placeholder="Total Cost" id="digital_bill" value="" required />
+                                                </div>
+                                                <div id="totalcostError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Select Business<span style="color: red;"> *</span></label>
+                                                <div id="input-type" class="row">
+
+                                                    <div class="col-sm-6">
+                                                        <label class="radio-inline">
+                                                            <input name="category" id="" value="petrol pump"
+                                                                type="radio" autocomplete="off">
+                                                            Petrol Pump </label>
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        <label class="radio-inline">
+                                                            <label class="radio-inline">
+                                                                <input name="category" id="" value="parking Lot"
+                                                                    type="radio" autocomplete="off">
+                                                                Parking Lot</label>
+                                                    </div>
+
+                                                </div>
+                                                <div id="categoryError"></div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+
+                                                <div id="input-type" class="row">
+
+                                                    <div class="col-sm-4">
+                                                        <label class="radio-inline">
+                                                            <input name="amount_in" class="select-mode check-coupon "
+                                                                id="" value="percentage" type="radio"
+                                                                autocomplete="off">
+                                                            Discount in Percentage </label>
+                                                    </div>
+                                                    <div class="col-sm-1"></div>
+                                                    <div class="col-sm-4">
+                                                        <label class="radio-inline">
+                                                            <input name="amount_in" class="select-mode" value="fix"
+                                                                id="" type="radio" autocomplete="off">
+                                                            Discount in Fix Amount </label>
+                                                    </div>
+                                                    <!-- <div id="amountinError"></div> -->
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input id="percentage_id" name="percent_value" type="text"
+                                                                class="form-control percentage"
+                                                                placeholder="Discount in Percentage">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input name="fix_value" id="value_id" type="text"
+                                                                class="form-control value"
+                                                                placeholder="Discount in Fix Amount">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="table-responsive">
+                                    <table id="SMSsubscription" class="display table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Subscription Name</th>
+                                                <th>Per Bill Cost</th>
+                                                <th>Per SMS Cost</th>
+                                                <th>Total Cost</th>
+                                                <th>Discount Amount</th>
+                                                <th>Category</th>
+
+                                                <th align="center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for parking_ptrol_plans in all_prarking_petrol_plans %}
+                                            <tr>
+                                                <td>
+                                                    {{ forloop.counter }}
+                                                </td>
+                                                <td>
+                                                    {{parking_ptrol_plans.subscription_name}}
+                                                </td>
+                                                <td>
+                                                    {{ parking_ptrol_plans.per_bill_cost }}
+                                                </td>
+                                                <td>
+                                                    {{ parking_ptrol_plans.per_sms_cost }}
+                                                </td>
+                                                <td>
+                                                    {{ parking_ptrol_plans.total_sms_cost }}
+                                                </td>
+                                                <td>
+                                                    {% if parking_ptrol_plans.discount_amount %}
+                                                        {{ parking_ptrol_plans.discount_amount }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if parking_ptrol_plans.category == "petrol pump" %}
+                                                        Petrol Pump
+                                                    {% elif parking_ptrol_plans.category == "parking Lot" %}
+                                                        Parking Lot
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    <div class="form-button-action">
+
+                                                        <button type="button" data-toggle="tooltip" title=""
+                                                            class="btn btn-link btn-primary btn-lg EditSmsSubscriptionBtn"
+                                                            data-original-title="Edit Subscription"
+                                                            data-id="{{parking_ptrol_plans.id}}"
+                                                            id="edit_sms_subscription">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        {% if parking_ptrol_plans.is_active == True %}
+                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DisablePetrolSubscriptionBtn" id="delete_role_btn" data-id='{{parking_ptrol_plans.id}}' data-original-title="Disable Subscription" id="delete_sms_subscription">
+                                                                    <i class="fas fa-times-circle"></i>
+                                                                </button>
+                                                            {% endif %}
+
+                                                            {% if parking_ptrol_plans.is_active == False %}
+                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary EnablePetrolSubscriptionBtn" id="delete_role_btn" data-id='{{parking_ptrol_plans.id}}' data-original-title="Enable Subscription" id="delete_sms_subscription">
+                                                                        <i class="far fa-check-circle"></i>
+                                                                </button>
+                                                            {% endif %}
+
+                                                        <button type="button" data-toggle="tooltip" title=""
+                                                            class="btn btn-link btn-danger DeleteSmsSubscriptionBtn"
+                                                            id="delete_role_btn" data-id='{{parking_ptrol_plans.id}}'
+                                                            data-original-title="Disable Subscription"
+                                                            id="delete_sms_subscription">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit SMS subscription plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="edit-sms-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form method="POST" class="form" name="edit_sms_subscription_form" id="edit_sms_subscription_form">
+            {% csrf_token %}
+            <input type="hidden" name="pet_park_id" id="edit_par_pet_id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Petrol/Parking Subscription</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Subscription Name<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="subscription_name"
+                                        placeholder="Subscription Name" value="" id="edit_subscription_name" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Per Bill Cost<span style="color: red;">*</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="per_bill_cost"
+                                        placeholder="Per Bill Cost" id="edit_total_sms" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Per SMS Cost<span style="color: red;">*</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="per_sms_cost"
+                                        placeholder="Per SMS Cost" id="edit_per_sms_cost" value="" required min="0.1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Total Cost<span style="color: red;">*</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="total_cost" placeholder="Total Cost"
+                                        id="edit_total_sms_cost" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Select Business<span style="color: red;"> *</span></label>
+                                <div id="input-type" class="row">
+
+                                    <div class="col-sm-6">
+                                        <label class="radio-inline">
+                                            <input name="category" id="edit_petrol_pump" value="petrol pump" type="radio"
+                                                autocomplete="off">
+                                            Petrol Pump </label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="radio-inline">
+                                            <label class="radio-inline">
+                                                <input name="category" id="edit_parking_lot" value="parking Lot" type="radio"
+                                                    autocomplete="off">
+                                                Parking Lot</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+
+                                <div id="input-type" class="row">
+
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input name="amount_in" class="select-mode check-coupon" id=""
+                                                value="percentage" type="radio" autocomplete="off">
+                                            Discount In Percentage </label>
+                                    </div>
+                                    <div class="col-sm-1"></div>
+                                    <div class="col-sm-4">
+                                        <label class="radio-inline">
+                                            <input name="amount_in" class="select-mode" value="fix" id="" type="radio"
+                                                autocomplete="off">
+                                            Discount In Fix Amount </label>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input id="" name="percent_value" type="text"
+                                                class="form-control percentage" placeholder="Percentage">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input name="fix_value" id="" type="text" class="form-control value"
+                                                placeholder="Fix Amount">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input id="edit_sms_subscription_form_submit_btn" type="submit" class="btn btn-primary" value="Save"
+                        data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+<script>
+
+
+
+    $(document).ready(function(){
+  
+    $('.percentage').prop({ readonly: true, });
+    $('.value').prop({ readonly: true });
+    
+});
+    $("form[name='subscription_form']").validate({
+        rules: {
+            subscription_name: {
+                required: true
+            },
+            per_bill_cost: {
+                required: true,
+                digits: true
+            },
+            digital_bill: {
+                required: true,
+                digits: true
+            },
+            min_recharge: {
+
+                digits: true
+            },
+            category: {
+                required: true,
+            },
+            percent_value: {
+                digits: true,
+            },
+            fix_value: {
+                digits: true,
+            },
+            total_cost:{
+                digits:true,
+            }
+
+
+        },
+         errorPlacement: function (error, element) {
+            if (element.attr("name") == "per_sms_cost")
+                $("#persmscostError").html(error);
+            if (element.attr("name") == "per_bill_cost")
+                $("#perbillcostError").html(error);
+            if (element.attr("name") == "total_cost")
+                $("#totalcostError").html(error);
+            if (element.attr("name") == "category")
+                $("#categoryError").html(error);
+           
+
+
+        },
+    });
+
+    $("form[name='edit_sms_subscription_form']").validate({
+        rules: {
+            subscription_name: {
+                required: true
+            },
+            per_bill_cost: {
+                required: true,
+                digits: true
+            },
+            digital_bill: {
+                required: true,
+                digits: true
+            },
+            min_recharge: {
+                required: true,
+                digits: true
+            },
+            category: {
+                required: true,
+            },
+            percent_value: {
+                digits: true,
+            },
+            fix_value: {
+                digits: true,
+            },
+            total_cost:{
+                digits:true,
+            }
+
+            // amount_in: {
+            //     required: true,
+            // }
+
+        },
+
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "per_sms_cost")
+                $("#persmscostError").html(error);
+            if (element.attr("name") == "per_bill_cost")
+                $("#perbillcostError").html(error);
+            if (element.attr("name") == "total_cost")
+                $("#totalcostError").html(error);
+            if (element.attr("name") == "category")
+                $("#categoryError").html(error);
+           
+
+
+        },
+     
+
+        submitHandler: function () {
+            var id = $("#edit_sms_subscription_form_submit_btn").attr("data-id");
+
+            $.ajax({
+                type: "POST",
+                url: "/get-petrol-pump-parking-subscription-plan/",
+                data: $('#edit_sms_subscription_form').serialize(),
+                success: function (response) {
+                    $('#edit-sms-subscription-modal').modal('hide');
+                    swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: "Subscription Updated.",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    })
+                        .then(function () {
+                            location.reload();
+                        });
+                },
+                error: function () {
+                    $('#edit-sms-subscription-modal').modal('hide');
+                    swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        timer: 1500,
+                        showConfirmButton: false,
+                    })
+                        .then(function () {
+                            location.reload();
+                        });
+                }
+            });
+        }
+    });
+
+
+
+$(function() {
+        $('.DisablePetrolSubscriptionBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+            //   text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, Disable it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                
+                $.ajax({
+                  type: "POST",
+                  url: "/disable-petrol-parking-plans/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                            title:'Disable!',
+                            text: 'Petrol & Parking Subscription has been Disable.',
+                            icon: 'success',
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Disable!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                            Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Something went wrong!", 
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      timer:1500,
+                      showConfirmButton:false,
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+
+    $(function() {
+        $('.EnablePetrolSubscriptionBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+            //   text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, Enable it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                
+                $.ajax({
+                  type: "POST",
+                  url: "/enable-petrol-parking-plans/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                            title:'Enable!',
+                            text: 'Petrol & Parking Subscription has been Enable.',
+                            icon: 'success',
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Enable!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                            Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Something went wrong!", 
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      timer:1500,
+                      showConfirmButton:false,
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+
+
+
+    $(function () {
+        $('.DeleteSmsSubscriptionBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                //   text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-parking-petrol-plan/" + id + "/",
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            if (response["status"] == "success") {
+                                Swal.fire({
+                                    title: 'Deleted!',
+                                    text: 'Subscription has been deleted.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                            else if (response["status"] == "error") {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Fail to Delete!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(".EditSmsSubscriptionBtn").on("click", function () {
+        $.ajax({
+            url: "/get-petrol_parking-plans/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+                edit_subscription_name
+                $("#edit_subscription_name").val(data["parking_petrol_plan"]["parking_petrol_plan_subscription_name"]);
+                $("#edit_total_sms").val(data["parking_petrol_plan"]["parking_petrol_plan_total_sms"]);
+                $("#edit_per_sms_cost").val(data["parking_petrol_plan"]["parking_petrol_plan_per_cost_sms"]);
+                $("#edit_total_sms_cost").val(data["parking_petrol_plan"]["parking_petrol_plan_total_sms_cost"]);
+
+                $('#edit_par_pet_id').val(data['parking_petrol_plan']["parking_petrol_plan_id"]);
+                
+
+                var category = data['parking_petrol_plan']["parking_petrol_plan_category"]
+                if (category == "petrol pump") {
+                    $('#edit_petrol_pump').prop('checked', true);
+                }
+                else if (category == "parking Lot") {
+                    $('#edit_parking_lot').prop('checked', true);
+                }
+
+                $("#edit-sms-subscription-modal").modal();
+
+               
+            }
+        });
+    });
+
+</script>
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+
+
+    $(function () {
+
+
+        $('.select-mode').click(function () {
+            if ($(this).val() == 'percentage') {
+
+                $('.percentage').prop({ readonly: false, });
+                $('.value').prop({ readonly: true });
+            }
+            else if ($(this).val() == 'fix') {
+
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: false });
+            }
+            else {
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: true });
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#SMSsubscription').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+        $('#CustomSubscrition').DataTable({
+            dom: 'lBfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+    });
+
+    $(document).ready(function () {
+        $("#business_category_id").select2({
+            placeholder: " Select Business Category",
+            closeOnSelect: false,
+        })
+        $("#business_category_id").on('change', function () {
+            var opts = [], opt;
+            var len = business_category_id.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = business_category_id.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+            // business_category = $("#business_category_id option:selected").val()
+            $("#business_category_value").val(opts)
+        })
+
+        $("#business_name_id").select2({
+            placeholder: " Select Merchant Name",
+            closeOnSelect: false,
+        })
+        $("#business_name_id").on('change', function () {
+            var opts1 = [], opt1;
+            var len = business_name_id.options.length;
+            for (var i = 0; i < len; i++) {
+                opt1 = business_name_id.options[i];
+                if (opt1.selected) {
+                    opts1.push(opt1.value);
+                }
+            }
+            // business_category = $("#business_category_id option:selected").val()
+            $("#merchant_name_value").val(opts1)
+        })
+
+    })
+
+    // $(document).ready(function () {
+    //     $("#edit_business_category_id1").select2({
+    //         placeholder: " Select Business Category",
+    //         closeOnSelect: false,
+    //     })
+    //     $("#edit_business_category_id1").on('change', function () {
+    //         var opts2 = [], opt2;
+    //         var len = edit_business_category_id1.options.length;
+    //         for (var i = 0; i < len; i++) {
+    //             opt2 = edit_business_category_id1.options[i];
+    //             if (opt2.selected) {
+    //                 opts2.push(opt2.value);
+    //             }
+    //         }
+    //         // business_category = $("#business_category_id option:selected").val()
+    //         $("#edit_business_category_value1").val(opts2)
+    //     })
+
+    //     $("#edit_business_name_id1").select2({
+    //         placeholder: " Select Merchant Name",
+    //         closeOnSelect: false,
+    //     })
+
+    //     $("#edit_business_name_id1").on('change', function () {
+    //         var opts3 = [], opt3;
+    //         var len = edit_business_name_id1.options.length;
+    //         for (var i = 0; i < len; i++) {
+    //             opt3 = edit_business_name_id1.options[i];
+    //             if (opt3.selected) {
+    //                 opts3.push(opt3.value);
+    //             }
+    //         }
+    //         // business_category = $("#business_category_id option:selected").val()
+    //         $("#edit_business_name_value1").val(opts3)
+    //     })
+
+    // })
+
+    // $(document).ready(function () {
+    //     $("#customized_plan_for_business_category").on('click', function () {
+    //         $("#business_category_id").prop('disabled', false);
+    //         $("#business_name_id").prop('disabled', true);
+    //         $("#business_name_id").val('').trigger('change')
+    //     })
+    //     $("#customized_plan_for_business").on('click', function () {
+    //         $("#business_category_id").prop('disabled', true);
+    //         $("#business_name_id").prop('disabled', false);
+    //         $("#business_category_id").val('').trigger('change')
+    //     })
+    // })
+
+    // $(document).ready(function () {
+    //     $("#edit_customized_plan_for_business_category").on('click', function () {
+    //         $("#edit_business_category_id1").prop('disabled', false);
+    //         $("#edit_business_name_id1").prop('disabled', true);
+    //         $("#edit_business_name_id1").val('').trigger('change')
+    //     })
+    //     $("#edit_customized_plan_for_merchant").on('click', function () {
+    //         $("#edit_business_category_id1").prop('disabled', true);
+    //         $("#edit_business_name_id1").prop('disabled', false);
+    //         $("#edit_business_category_id1").val('').trigger('change')
+    //     })
+    // })
+
+    // $("#business_name_id").prop('disabled', true);
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+</script>
+
+
+{% endblock javascripts %}

@@ -1,0 +1,668 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Permission {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+  
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Roles & Permissions</h4>
+            
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Permissions for Role</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>My Team</a>
+                                </li>
+                                <li class="separator">
+                                  <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant-role/">Roles & Permissions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant-role/">Permissions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% if is_merchant == True %}
+                        <input type="hidden" value="1" name="access_permission" id="access_permission">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <form action="/merchant-role/permission/update/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="list_length" value="{{ feature_list.count }}">
+                                    <table id="add-row" class="display table table-hover" >
+                                        <thead>
+                                            <tr>
+                                               <!--  <th>Sr. No.</th> -->
+                                                <th>Module</th>
+                                                <th>Feature</th>
+                                                <th>View</th>
+                                                <th>Add</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                        
+                                            {% for object in feature_list %}
+
+                                                {% if m_business_category_name == "Parking Lot" %}
+
+                                                    {% if object.module_id.module_name == "Ad On Products" or object.module_id.module_name == "Manage Products" or object.feature_id == "Manage Nozzle" or object.module_id.module_name == "Suggest a Petrol Pump" or object.feature_id == "Cash Memos" or object.feature_id == "Receipts" or object.feature_id == "Stamps" or object.feature_id == "Bill Design Request" or object.module_id.module_name == "Promotions" or object.module_id.module_name == "Customer Info" %}
+
+                                                    {% else %}
+
+                                                        <tr>
+                                                            <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                            <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                            
+                                                            <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.module_id }}</td>
+
+                                                            <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.feature_id }}</td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.view_permission == "1" and object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                        
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.add_permission == "1" and object.add == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.add == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.delete == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+
+                                                {% elif m_business_category_name == "Petrol Pump" %}
+
+                                                    {% if object.module_id.module_name == "Exit Parked Vehicles" or object.module_id.module_name == "Parking Lot Management" or object.module_id.module_name == "Parking Passes" or object.module_id.module_name == "Suggest a Parking" or object.feature_id == "Cash Memos" or object.feature_id == "Receipts" or object.feature_id == "Stamps" or object.feature_id == "Bill Design Request" or object.module_id.module_name == "Promotions" or object.module_id.module_name == "Customer Info" %}
+
+                                                    {% else %}
+
+                                                        <tr>
+                                                            <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                            <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                            
+                                                            <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.module_id }}</td>
+
+                                                            <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.feature_id }}</td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.view_permission == "1" and object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                        
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.add_permission == "1" and object.add == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.add == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.delete == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if object.module_id.module_name == "Exit Parked Vehicles" or object.module_id.module_name == "Parking Lot Management" or object.module_id.module_name == "Parking Passes" or object.module_id.module_name == "Suggest a Parking" or object.module_id.module_name == "Ad On Products" or object.module_id.module_name == "Manage Products" or object.feature_id == "Manage Nozzle" or object.module_id.module_name == "Suggest a Petrol Pump" or object.feature_id == "Bill Layout" or object.feature_id == "Flag Reason" or object.feature_id == "Flagged Bills" %}
+
+                                                    {% else %}
+                                                        <tr>
+                                                            <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                            <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                            
+                                                            <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.module_id }}</td>
+
+                                                            <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                            <td>{{ object.feature_id }}</td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.view_permission == "1" and object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.view == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                        
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.add_permission == "1" and object.add == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.add == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.edit == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    <label class="form-check-label">
+                                                                        {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                            <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                            <span class="form-check-sign"></span>
+                                                                        {% elif object.delete == "1" %}
+                                                                        <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                        <span class="form-check-sign"></span>
+                                                                        {% endif %}
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %} 
+                                        </tbody>
+                                        <tfoot>
+                                            <tr><td colspan="7" align="center">
+                                            <div class="text-center mt-3 mb-3">
+                                                <input id="add_role_form_submit" type="submit" class="btn btn-primary" value="Save">
+                                            </div></td></tr>
+                                        </tfoot> 
+                                    </table>
+                                </form>   
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchant_action_permissions_list %}
+                            {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "Roles & Permissions"|lower %}
+                                {% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+                                <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <form action="\role/permission/update/" method="POST">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="list_length" value="{{ feature_list.count }}">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <!-- <th>Sr. No.</th> -->
+                                                        <th>Module</th>
+                                                        <th>Feature</th>
+                                                        <th>View</th>
+                                                        <th>Add</th>
+                                                        <th>Edit</th>
+                                                        <th>Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                
+                                                <tbody>
+                                                
+                                                    {% for object in feature_list %}
+
+                                                        {% if m_business_category_name == "Parking Lot" %}
+
+                                                            {% if object.module_id.module_name == "Ad On Products" or object.module_id.module_name == "Manage Products" or object.feature_id == "Manage Nozzle" or object.module_id.module_name == "Suggest a Petrol Pump" or object.feature_id == "Cash Memos" or object.feature_id == "Receipts" or object.feature_id == "Stamps" or object.feature_id == "Bill Design Request" or object.module_id.module_name == "Promotions" or object.module_id.module_name == "Customer Info" %}
+
+                                                            {% else %}
+                                                                <tr>
+                                                                    <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                                    <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                                    
+                                                                    <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.module_id }}</td>
+
+                                                                    <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.feature_id }}</td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.view_permission == "1" and object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                                
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.add_permission == "1" and object.add == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.add == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.delete == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+
+                                                        {% elif m_business_category_name == "Petrol Pump" %}
+
+                                                            {% if object.module_id.module_name == "Exit Parked Vehicles" or object.module_id.module_name == "Parking Lot Management" or object.module_id.module_name == "Parking Passes" or object.module_id.module_name == "Suggest a Parking" or object.feature_id == "Cash Memos" or object.feature_id == "Receipts" or object.feature_id == "Stamps" or object.feature_id == "Bill Design Request" or object.module_id.module_name == "Promotions" or object.module_id.module_name == "Customer Info" %}
+
+                                                            {% else %}
+                                                                <tr>
+                                                                    <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                                    <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                                    
+                                                                    <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.module_id }}</td>
+
+                                                                    <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.feature_id }}</td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.view_permission == "1" and object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                                
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.add_permission == "1" and object.add == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.add == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.delete == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% else %}
+                                                        
+                                                            {% if object.module_id.module_name == "Exit Parked Vehicles" or object.module_id.module_name == "Parking Lot Management" or object.module_id.module_name == "Parking Passes" or object.module_id.module_name == "Suggest a Parking" or object.module_id.module_name == "Ad On Products" or object.module_id.module_name == "Manage Products" or object.feature_id == "Manage Nozzle" or object.module_id.module_name == "Suggest a Petrol Pump" or object.feature_id == "Bill Layout" or object.feature_id == "Flag Reason" or object.feature_id == "Flagged Bills" %}
+
+                                                            {% else %}
+                                                                <tr>
+                                                                    <!-- <td>{{ forloop.counter }}</td> -->
+
+                                                                    <input type="hidden" value="{{ role_name }}" name="role_id[{{ forloop.counter }}]">
+                                                                    
+                                                                    <input type="hidden" value="{{ object.module_id }}" name="module_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.module_id }}</td>
+
+                                                                    <input type="hidden" value="{{ object.feature_id }}" name="feature_id[{{ forloop.counter }}]">
+                                                                    <td>{{ object.feature_id }}</td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.view_permission == "1" and object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.view == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="view_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                                
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.add_permission == "1" and object.add == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.add == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="add_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.edit_permission == "1" and object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.edit == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="edit_permission[{{ forloop.counter }}]">
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label">
+                                                                                {% if object.delete_permission == "1" and object.delete == "1" %}
+                                                                                    <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]" checked>
+                                                                                    <span class="form-check-sign"></span>
+                                                                                {% elif object.delete == "1" %}
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="delete_permission[{{ forloop.counter }}]">
+                                                                                <span class="form-check-sign"></span>
+                                                                                {% endif %}
+                                                                            </label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %} 
+                                                </tbody>
+                                                <tfoot>
+                                                {% for actions in merchant_action_permissions_list %}
+                                                    {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "Roles & Permissions"|lower %}
+                                                        {% if actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+                                                    <tr><td colspan="7" align="center">
+                                                        <div class="text-center mt-3 mb-3">
+                                                            <input id="add_role_form_submit" type="submit" class="btn btn-primary" value="Save">
+                                                        </div></td></tr>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tfoot> 
+                                            </table>
+                                        </form>   
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script>
+    $(document).ready(function() {
+        var access_permission = $('#access_permission').val();
+        if(access_permission == 1)
+        {
+        $(".permission-denied").hide();
+        }
+        else
+        {
+        $(".permission-denied").show();
+        }
+  });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+			$('#basic-datatables').DataTable({
+			});
+
+			$('#multi-filter-select').DataTable( {
+				"pageLength": 5,
+				initComplete: function () {
+					this.api().columns().every( function () {
+						var column = this;
+						var select = $('<select class="form-control"><option value=""></option></select>')
+						.appendTo( $(column.footer()).empty() )
+						.on( 'change', function () {
+							var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val()
+								);
+
+							column
+							.search( val ? '^'+val+'$' : '', true, false )
+							.draw();
+						} );
+
+						column.data().unique().sort().each( function ( d, j ) {
+							select.append( '<option value="'+d+'">'+d+'</option>' )
+						} );
+					} );
+				}
+			});
+            
+            $('#add-row').DataTable( {
+                dom: 'Bfrtip',
+                "ordering": false,
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ],
+                "bPaginate": false,
+            } );
+
+			var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+			$('#addRowButton').click(function() {
+				$('#add-row').dataTable().fnAddData([
+					$("#addName").val(),
+					$("#addPosition").val(),
+					$("#addOffice").val(),
+					action
+					]);
+				$('#addRowModal').modal('hide');
+
+			});
+		});
+	</script>
+
+{% endblock javascripts %}

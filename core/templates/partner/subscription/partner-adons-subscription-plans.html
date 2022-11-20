@@ -1,0 +1,457 @@
+{% extends "layouts/partner-base.html" %} {% block title %} Subscription Plans {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+.table th, .table td{
+    padding: 5px !important;
+}
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Add On's Plan</h4>
+                             <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-comision/">Subscription Plans</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-comision/">Add On's Plan</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="table-responsive">
+                                    <!-- <div class="row align-items-center justify-content-center">
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-user"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Merchants</p>
+                                                    <h4 class="card-title">{{merchants_count}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Commission</p>
+                                                    <h4 class="card-title">{{overall_commision|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Monthly Commission</p>
+                                                    <h4 class="card-title">{{partner_month_comission|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div> -->
+                                    <table id="merchant-info-table" class="display table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th id="test_2" colspan="2"></th> -->
+                        
+                                            </tr>
+                                            <tr align="center">
+                                                <th>Sr. No.</th>
+                                                <th>Add On's Name</th>
+                                                <th>Action</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for add_on_plan in all_add_on %}
+                                        <tr align="center">
+                                                <td>
+                                                    {{ forloop.counter }}
+                                                </td>
+                                                <td align="center">
+                                                    {{add_on_plan.add_on_name}}
+                                                </td>
+                                                <td>
+                                                    <div class="form-button-action">
+                                                        <button type="button" data-toggle="tooltip" title=""
+                                                        class="btn btn-link btn-primary btn-lg ViewAddOnBtn"
+                                                        data-original-title="View Subscription"
+                                                        data-id="{{add_on_plan.id}}"
+                                                        id="view_sms_subscription">
+                                                        <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+ $(".ViewAddOnBtn").on("click", function () {
+        $.ajax({
+            url: "/get-add-on-plan-details/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+
+                $("#view_subscription_name").empty().append(data["plan"]["add_on_name"]);
+                $("#view_subscription_name_body").empty().append(data["plan"]["add_on_name"]);  
+
+                $("#view_per_bill_cost").empty().append(data["plan"]["per_bill_cost"]);
+                $("#view_per_receipt_cost").empty().append(data["plan"]["per_receipt_cost"]);
+                $("#view_per_cash_memo_cost").empty().append(data["plan"]["per_cash_memo_cost"]);
+                $("#view_per_digital_bill_cost").empty().append(data["plan"]["per_digital_bill_cost"]);
+                $("#view_per_digital_receipt_cost").empty().append(data["plan"]["per_digital_receipt_cost"]);
+                $("#view_per_digital_cash_memo_cost").empty().append(data["plan"]["per_digital_cash_memo_cost"]);
+
+                $("#view_recharge_amount").empty().append(data["plan"]["recharge_amount"]);
+
+                $('#view_subscription_plan_cost').empty().append(data['plan']["subscription_plan_cost"]);
+
+                $("#view_recharge_amount1").empty().append(data["plan"]["recharge_amount_one"]);
+                $("#view_recharge_amount2").empty().append(data["plan"]["recharge_amount_two"]);
+                $("#view_recharge_amount3").empty().append(data["plan"]["recharge_amount_three"]);
+                $("#view_recharge_amount4").empty().append(data["plan"]["recharge_amount_four"]);
+                $("#view_recharge_amount5").empty().append(data["plan"]["recharge_amount_five"]);
+                $("#view_recharge_amount6").empty().append(data["plan"]["recharge_amount_six"]);
+                $("#view_recharge_amount7").empty().append(data["plan"]["recharge_amount_seven"]);
+                $("#view_recharge_amount8").empty().append(data["plan"]["recharge_amount_eight"]);
+                $("#view_recharge_amount9").empty().append(data["plan"]["recharge_amount_nine"]);
+                $("#view_recharge_amount10").empty().append(data["plan"]["recharge_amount_ten"]);
+                $("#view_recharge_amount11").empty().append(data["plan"]["recharge_amount_eleven"]);
+                $("#view_recharge_amount12").empty().append(data["plan"]["recharge_amount_twelve"]);
+                $("#view_recharge_amount13").empty().append(data["plan"]["recharge_amount_thirteen"]);
+                $("#view_recharge_amount14").empty().append(data["plan"]["recharge_amount_fourteen"]);
+                $("#view_recharge_amount15").empty().append(data["plan"]["recharge_amount_fifteen"]);
+
+                // alert('aaaaa')
+
+
+                $("#view-add-on-modal").modal();
+            }
+        })
+    });
+
+</script>
+
+<!-- View add-on plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="view-add-on-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="view_subscription_name"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Add On's Name: <span id="view_subscription_name_body"></span></h4>
+                    </div>
+                </div>
+                <hr>
+                <!-- <div class="row">
+                    <div class="col-md-6">
+                        <h4>Per SMS Cost</h4>
+                        <ul> -->
+                           <!--  <li>Per Bill Cost: ₹ <span id="view_per_bill_cost"></span></li> -->
+                            <!-- <li>Per Receipt Cost: ₹ <span id="view_per_receipt_cost"></span></li>
+                            <li>Per Cash Memo Cost: ₹ <span id="view_per_cash_memo_cost"></span></li> -->
+                        <!-- </ul>
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Per Digital Cost</h4>
+                        <ul>
+                            <li>Per Digital Bill Cost: ₹ <span id="view_per_digital_bill_cost"></span></li> -->
+                            <!-- <li>Per Digital Receipt Cost: ₹ <span id="view_per_digital_receipt_cost"></span></li>
+                            <li>Per Digital Cash Memo Cost: ₹ <span id="view_per_digital_cash_memo_cost"></span></li> -->
+                        <!-- </ul>
+                    </div>
+                </div>
+                <hr> -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 1: ₹ <span id="view_recharge_amount1"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 2: ₹ <span id="view_recharge_amount2"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 3: ₹ <span id="view_recharge_amount3"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 4: ₹ <span id="view_recharge_amount4"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 5: ₹ <span id="view_recharge_amount5"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 6: ₹ <span id="view_recharge_amount6"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 7: ₹ <span id="view_recharge_amount7"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 8: ₹ <span id="view_recharge_amount8"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 9: ₹ <span id="view_recharge_amount9"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 10: ₹ <span id="view_recharge_amount10"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 11: ₹ <span id="view_recharge_amount11"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 12: ₹ <span id="view_recharge_amount12"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 13: ₹ <span id="view_recharge_amount13"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 14: ₹ <span id="view_recharge_amount14"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 15: ₹ <span id="view_recharge_amount15"></span></h4>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Merchant Modal End-->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    // Add Row
+    // $("#add-row").DataTable({
+    //   pageLength: 10,
+    // });
+
+    $('#merchant-info-table').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+            this.api().columns([2,]).every(function () {
+                var column = this;
+                console.log(column[0][0])
+                console.log("#test_" + column[0][0])
+
+                var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                    // var id = "#test_" + column[0][0];
+
+                    .appendTo($("#test_" + column[0][0]).empty())
+                    // .appendTo( $(column.header()).empty() )
+                    .on('change', function () {
+
+                        // var val = $.fn.dataTable.util.escapeRegex(
+                        //     $(this).val()
+                        // );
+
+                        var val = $(':selected', select).map(function (index, element) {
+                            return $.fn.dataTable.util.escapeRegex($(this).val());
+                        }).toArray().join('|');
+
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+            });
+
+
+          }
+    });
+
+    $("#column_id_2").select2({
+        placeholder: " Select Category",
+        closeOnSelect: true,
+        width: '100%',
+        // allowClear: true
+    })
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+  });
+</script>
+{% endblock javascripts %}

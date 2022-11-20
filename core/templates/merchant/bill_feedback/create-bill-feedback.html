@@ -1,0 +1,386 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Bill Feedback {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row" id="bill-design">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"> 
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Set Rating Question</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <!-- <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Feedback</a>
+                                </li> -->
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bill-feedback/">Set Rating Question</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body center">
+                      	<div class="row ">
+
+                          	<div class="col-md-4">
+                          		<form action="/update-bill-feedback-rating/1/" method="POST" id="rating1Form">
+                          			{% csrf_token %}
+	                          		<div class="card">
+	                          			<div class="card-header">
+	                          				<h6 class="card-title">1 Rating Question/Message</h6>
+	                          			</div>
+	                          			<div class="card-body">
+	                      					<div class="form-group" >
+	                      						<label>Question</label>
+	                      						<input type="text" name="question" class="form-control" placeholder="Question" value="{{for_rating_1_object.question}}" maxlength="50" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      					</div>
+	                      					<div class="form-group">
+	                      						<label>Options</label>
+	                      						
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 1</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_1" class="form-control"
+	                      								placeholder="Option 1" value="{{for_rating_1_object.option_1}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 2</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_2" class="form-control"
+	                      								placeholder="Option 2" value="{{for_rating_1_object.option_2}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px; padding-bottom: 6px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 3</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_3" class="form-control"
+	                      								placeholder="Option 3" value="{{for_rating_1_object.option_3}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<small style="color:red; "><li>You can add max 3 options.</li></small>
+	                      						<small style="color:red;"><li>Leave option blank if not needed.</li></small>
+	                      					</div>
+	                          			</div>
+	                          			<div class="card-footer">
+					                        <div class="text-center">
+					                            <button type="submit" class="btn btn-primary">Save</button>
+					                        </div>
+					                    </div>
+	                          		</div>
+                          		</form>
+                          	</div>
+
+                          	<div class="col-md-4">
+                          		<form action="/update-bill-feedback-rating/2/" method="POST" id="rating2Form">
+                          			{% csrf_token %}
+	                          		<div class="card">
+	                          			<div class="card-header">
+	                          				<h6 class="card-title">2 Rating Question/Message</h6>
+	                          			</div>
+	                          			<div class="card-body">
+	                      					<div class="form-group">
+	                      						<label>Question</label>
+	                      						<input type="text" name="question" class="form-control"
+	                      						placeholder="Question" value="{{for_rating_2_object.question}}" maxlength="50" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      					</div>
+	                      					<div class="form-group">
+	                      						<label>Options</label>
+	                      						
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 1</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_1" class="form-control"
+	                      								placeholder="Option 1" value="{{for_rating_2_object.option_1}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 2</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_2" class="form-control"
+	                      								placeholder="Option 2" value="{{for_rating_2_object.option_2}}"maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px; padding-bottom: 6px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 3</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_3" class="form-control"
+	                      								placeholder="Option 3" value="{{for_rating_2_object.option_3}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<small style="color:red; "><li>You can add max 3 options.</li></small>
+	                      						<small style="color:red;"><li>Leave option blank if not needed.</li></small>
+	                      					</div>
+	                          			</div>
+	                          			<div class="card-footer">
+					                        <div class="text-center">
+					                            <button type="submit" class="btn btn-primary">Save</button>
+					                        </div>
+					                    </div>
+	                          		</div>
+                          		</form>
+                          	</div>
+
+                          	<div class="col-md-4">
+                          		<form action="/update-bill-feedback-rating/3/" method="POST" id="rating3Form">
+                          			{% csrf_token %}
+	                          		<div class="card">
+	                          			<div class="card-header">
+	                          				<h6 class="card-title">3 Rating Question/Message</h6>
+	                          			</div>
+	                          			<div class="card-body">
+	                      					<div class="form-group">
+	                      						<label>Question</label>
+	                      						<input type="text" name="question" class="form-control" 
+	                      						placeholder="Question" value="{{for_rating_3_object.question}}" maxlength="50" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      					</div>
+	                      					<div class="form-group">
+	                      						<label>Options</label>
+	                      						
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 1</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_1" class="form-control"
+	                      								placeholder="Option 1" value="{{for_rating_3_object.option_1}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 2</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_2" class="form-control"
+	                      								placeholder="Option 2" value="{{for_rating_3_object.option_2}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px; padding-bottom: 6px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 3</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_3" class="form-control"
+	                      								placeholder="Option 3" value="{{for_rating_3_object.option_3}}"maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<small style="color:red; "><li>You can add max 3 options.</li></small>
+	                      						<small style="color:red;"><li>Leave option blank if not needed.</li></small>
+	                      					</div>
+	                          			</div>
+	                          			<div class="card-footer">
+					                        <div class="text-center">
+					                            <button type="submit" class="btn btn-primary">Save</button>
+					                        </div>
+					                    </div>
+	                          		</div>
+                          		</form>
+                          	</div>
+
+                          	<div class="col-md-4">
+                          		<form action="/update-bill-feedback-rating/4/" method="POST" id="rating4Form">
+                          			{% csrf_token %}
+	                          		<div class="card">
+	                          			<div class="card-header">
+	                          				<h6 class="card-title">4 Rating Question/Message</h6>
+	                          			</div>
+	                          			<div class="card-body">
+	                      					<div class="form-group">
+	                      						<label>Question</label>
+	                      						<input type="text" name="question" class="form-control" placeholder="Question"
+	                      						 value="{{for_rating_4_object.question}}" maxlength="50" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      					</div>
+	                      					<div class="form-group">
+	                      						<label>Options</label>
+	                      						
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 1</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_1" class="form-control"
+	                      								placeholder="Option 1" value="{{for_rating_4_object.option_1}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 2</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_2" class="form-control"
+	                      								placeholder="Option 2" value="{{for_rating_4_object.option_2}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px; padding-bottom: 6px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 3</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_3" class="form-control"
+	                      								placeholder="Option 3" value="{{for_rating_4_object.option_3}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<small style="color:red; "><li>You can add max 3 options.</li></small>
+	                      						<small style="color:red;"><li>Leave option blank if not needed.</li></small>
+	                      					</div>
+	                          			</div>
+	                          			<div class="card-footer">
+					                        <div class="text-center">
+					                            <button type="submit" class="btn btn-primary">Save</button>
+					                        </div>
+					                    </div>
+	                          		</div>
+                          		</form>
+                          	</div>
+
+                          	<div class="col-md-4">
+                          		<form action="/update-bill-feedback-rating/5/" method="POST" id="rating5Form">
+                          			{% csrf_token %}
+	                          		<div class="card">
+	                          			<div class="card-header">
+	                          				<h6 class="card-title">5 Rating Question/Message</h6>
+	                          			</div>
+	                          			<div class="card-body">
+	                      					<div class="form-group">
+	                      						<label>Question</label>
+	                      						<input type="text" name="question" class="form-control" placeholder="Question"
+	                      						 value="{{for_rating_5_object.question}}" maxlength="50" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      					</div>
+	                      					<div class="form-group">
+	                      						<label>Options</label>
+	                      						
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 1</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_1" class="form-control"
+	                      								placeholder="Option 1" value="{{for_rating_5_object.option_1}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 2</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_2" class="form-control"
+	                      								placeholder="Option 2" value="{{for_rating_5_object.option_2}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<div class="row" style="padding-left:12px; padding-bottom: 6px;">
+	                      							<!-- <div class="col-md-3" style="padding-top:15px;"><label>Option 3</label></div> -->
+	                      							<div class="col" style="padding-left: 5px;padding-top:5px;">
+	                      								<input type="text" name="option_3" class="form-control"
+	                      								placeholder="Option 3" value="{{for_rating_5_object.option_3}}" maxlength="30" pattern="[a-zA-Z\s]+" title="It should only contains letters with spaces.">
+	                      							</div>
+	                      						</div>
+	                      						<small style="color:red; "><li>You can add max 3 options.</li></small>
+	                      						<small style="color:red;"><li>Leave option blank if not needed.</li></small>
+	                      					</div>
+	                          			</div>
+	                          			<div class="card-footer">
+					                        <div class="text-center">
+					                            <button type="submit" class="btn btn-primary">Save</button>
+					                        </div>
+					                    </div>
+	                          		</div>
+                          		</form>
+                          	</div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+$.validator.addMethod("lettersonly", function(value, element) 
+    {
+    return this.optional(element) || /^[a-z ]+$/i.test(value);
+    }, "Letters and spaces only please");
+
+$("#rating1Form").validate({
+    rules: {
+        question: {
+            required: true,
+            
+        },
+        option_1: {
+            required: true,
+        },
+    }
+})
+
+
+
+$("#rating2Form").validate({
+    rules: {
+        question: {
+            required: true,
+            
+        },
+        option_1: {
+            required: true,
+           
+        },
+    }
+})
+
+$("#rating3Form").validate({
+    rules: {
+        question: {
+            required: true,
+         
+        },
+        option_1: {
+            required: true,
+
+        },
+    }
+})
+
+$("#rating4Form").validate({
+    rules: {
+        question: {
+            required: true,
+
+        },
+        option_1: {
+            required: true,
+
+        },
+    }
+})
+
+$("#rating5Form").validate({
+    rules: {
+        question: {
+            required: true,
+           
+        },
+        option_1: {
+            required: true,
+
+        },
+    }
+})
+
+</script>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

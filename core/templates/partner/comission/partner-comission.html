@@ -1,0 +1,678 @@
+{% extends "layouts/partner-base.html" %} {% block title %} Commission {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+.table th, .table td{
+    padding: 5px !important;
+}
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">{% if partner_category.p_category == 'Software Partner' %}Spending{% else %}Commission{% endif %}</h4>
+                             <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-comision/">{% if partner_category.p_category == 'Software Partner' %}Spending{% else %}Commission{% endif %}</a>
+                                </li>
+                                {% if partner_category.p_category == 'Software Partner' %}
+                                    <b><span class="card-title">&nbsp;&nbsp;Spending Per Bill Cost: &nbsp;₹ {{partner_category.p_commission_per_bill|floatformat:2}}</span></b>
+                                    {% endif %} 
+                            </ul>
+                            <div class="ml-auto">
+                              {% if partner_category.p_category == 'Marketing Partner' %}<a href="/marketing-partner-monthly-commision/{{par_mob_no}}/"><button class="btn btn-primary btn-round ml-auto">
+                              <i class="fa fa-check"></i>Commission History</button></a>{% endif %}
+                              {% if partner_category.p_category == 'Marketing Partner' %}
+                                <button class="btn btn-primary btn-round" data-toggle="modal" data-target="#CommisionStructureData">
+                                    <i class="fa fa-check"></i> Commssion Structure</button>
+                                </button>
+                              {% endif %}
+
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <form class="form-control" action="/partner-comision/" method="POST" id="partner-analysis-form"
+                                        name="partner-analysis-form" autocomplete="off" style="border:0px;">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>From Date<span style="color: red;"> *</span></label>
+                                                    <div class="input-group mb-6">
+                                                        <input type="date" class="form-control" name="from_date1"
+                                                            id="from_date1" required value="{{from_date1}}" max="{% now 'Y-m-d' %}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>To Date<span style="color: red;"> *</span></label>
+                                                    <div class="input-group mb-6">
+                                                        <input type="date" class="form-control" name="to_date1"
+                                                            id="to_date1" required value="{{to_date1}}" max="{% now 'Y-m-d' %}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" style="padding-top: 3%">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary" name="submit" value="merchant_analysis_btn"><i class="fa fa-search">&nbsp; Search</i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="table-responsive">
+                                  <!-- div id="container" style="width: 30%;">
+                                    
+                                  </div>
+ -->                                    
+                                    <div class="row align-items-center justify-content-center">
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-user"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Merchants</p>
+                                                    <h4 class="card-title">{{merchants_count}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">{% if partner_category.p_category == 'Marketing Partner' %}Total Commission{% else %}Total Spending{% endif %}</p>
+                                                    <h4 class="card-title">₹ {{overall_commision|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {% if partner_category.p_category == 'Marketing Partner' %}
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Monthly</p>
+                                                    <h4 class="card-title">₹ {{partner_month_comission|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div class="col-md-12" style="height:70%">
+                                      <!-- <div class="card"> -->
+                                          <!-- <div class="card-header align-items-center d-flex justify-content-center">
+                                              <div class="card-head-row">
+                                                  <div class="card-title">Bussiness Analysis</div>
+                                              </div>
+                                          </div>
+                                          <div class="card-body">
+                                              <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex justify-content-center">
+                                                  <canvas id="chart" width="30%" height="30%"></canvas>
+                                                  
+                                                </div>
+
+                                                <div class="col-md-4 align-items-center d-flex justify-content-center">
+                                                 
+                                                  <canvas id="chart2" width="30%" height="30%"></canvas>
+                                                </div>
+
+                                                <div class="col-md-4 align-items-center d-flex justify-content-center">
+                                                  
+                                                  <canvas id="chart3" width="30%" height="30%"></canvas>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+ -->
+                                          <!-- <div class="card-body">
+                                              <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex justify-content-center">
+                                                  
+                                                  <canvas id="chart2" width="30%" height="30%"></canvas>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="card-body">
+                                              <div class="row">
+                                                <div class="col-md-4 align-items-center d-flex justify-content-center">
+                                                  
+                                                  <canvas id="chart3" width="30%" height="30%"></canvas>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div> -->
+                                    <!-- </div> -->
+                                    <table id="merchant-info-table" class="display table table-hover">
+                                        <thead>
+                	                        <tr>
+                                                <!-- <th id="test_2" colspan="2"></th> -->
+                        
+                                            </tr>
+                                            <tr align="center">
+                                                <th>Sr. No.</th>
+                                                <th>Mobile Number</th>
+                                                <th>Business Id</th>
+                                                <th>Business Name</th>
+                                                <th>Total {% if partner_category.p_category == 'Marketing Partner' %}Commission{% else %}Spending{% endif %}</th>
+                                                <!-- <th>Comission per sms</th>
+                                                <th>Comission per digital bill</th>
+                                                <th>Comission per Subscription</th>
+                                                <th>Comission per Other Services</th> -->
+                                            </tr>
+                                        </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for object in data %} 
+
+                                        <tr align="center"> 
+                                            <td width="9%">{{ forloop.counter }}</td>
+                                            <td>{{object.m_number}}</td>
+                                            <td>{{ object.m_unique_id }}</td>
+                                            <td width="15%">{{ object.m_business_name }}</td>
+                                            <td>₹ {{object.total_comission|floatformat:2}}</td>
+                                            
+                                           
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CommisionStructureData" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Commission Structure</h2>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+              <div class="row align-items-center justify-content-center">
+                <div class="col-sm-12 col-md-12">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-icon">
+                          <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                            <i class="fas fa fas fa fa-user"></i>
+                          </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                          <div class="numbers">
+                            <p class="card-category">Commission per SMS</p>
+                            <h4 class="card-title">₹ {{partner_category.p_commission_per_sms_bill|floatformat:2}}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-icon">
+                          <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                            <i class="fas fa fas fa fa-credit-card"></i>
+                          </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                          <div class="numbers">
+                            <p class="card-category">Commission per digital bills</p>
+                            <h4 class="card-title">₹ {{partner_category.p_commission_per_digital_bill|floatformat:2}}</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-icon">
+                          <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                            <i class="fas fa fas fa fa-credit-card"></i>
+                          </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                          <div class="numbers">
+                            <p class="card-category">Commission per Subscription</p>
+                            <h4 class="card-title"> {{partner_category.merchant_commission}} %</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-12">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-icon">
+                          <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                            <i class="fas fa fas fa fa-credit-card"></i>
+                          </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                          <div class="numbers">
+                            <p class="card-category">Commission per Other Services</p>
+                            <h4 class="card-title"> 5 %</h4>
+                            <!-- <h4 class="card-title">₹ {{partner_category.merchant_commission|floatformat:2}}</h4> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+                
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+       </form>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Edit Merchant Modal End-->
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script> -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script type="text/javascript">
+  
+  console.log("Entered >>>>>>> printing f")
+  // console.log({{bill_comission}});
+  var t = "{{xdata| safe}}"
+  console.log(t);
+
+
+   let ctx2 = document.getElementById("chart2").getContext("2d");
+
+let chart2 = new Chart(ctx2, {
+  type: "pie",
+  data: {
+     // labels: ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi", "Lemon"],
+     labels: {{ydata| safe}},
+     datasets: [
+        {
+          label: "SMS SENT PER MERCHANT",
+          backgroundColor: ['#FF7A00','#864000','#D44000','#f191b8','#d43d51'],
+          borderColor: "#417690",
+          data:{{xdata2|safe}},
+          // data: [52, 48, 160, 94, 75, 71, 490, 82, 46, 17],
+        }
+     ]
+  },
+  options: {
+     title: {
+        text: "SMS ",
+        display: true,
+        responsive:true
+     }
+  }
+});
+
+
+
+   let ctx3 = document.getElementById("chart3").getContext("2d");
+
+let chart3 = new Chart(ctx3, {
+  type: "pie",
+  data: {
+     // labels: ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi", "Lemon"],
+     labels: {{ydata| safe}},
+     datasets: [
+        {
+          label: "SUBSCRIPTION SENT PER MERCHANT",
+          backgroundColor: ['#FF7A00','#864000','#D44000','#f191b8','#d43d51'],
+          borderColor: "#417690",
+          data:{{xdata1|safe}},
+          // data: [52, 48, 160, 94, 75, 71, 490, 82, 46, 17],
+        }
+     ]
+  },
+  options: {
+     title: {
+        text: "SUBSCRIPTION ",
+        display: true,
+        responsive:true
+     }
+  }
+});
+
+
+let ctx = document.getElementById("chart").getContext("2d");
+
+let chart = new Chart(ctx, {
+  type: "pie",
+  data: {
+     labels: {{ydata| safe}},
+     // labels: '{{ f }}',
+     datasets: [
+        {
+          label: "DIGITAL BILL SENT PER MERCHANT",
+          backgroundColor:['#FF7A00','#864000','#D44000','#f191b8','#d43d51'],
+          borderColor: "#417690",
+          data:{{xdata3|safe}},
+          // data: [52, 48, 160, 94, 75, 71, 490, 82, 46, 17],
+        }
+     ]
+  },
+  options: {
+     title: {
+        text: "DIGITAL BILL ",
+        display: true,
+        responsive:true
+     }
+  }
+});
+
+
+
+</script>
+<script>
+
+
+
+    $("#partner-analysis-form").validate({
+        rules: {
+            from_date1: {
+                required: true,
+                validDate: true
+            },
+            to_date1: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date1"
+            },
+        },
+        messages: {
+            from_date1: {
+                required: "From Date is Required",
+            },
+            to_date1: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+
+console.log("Test")
+// console.log({{xdata3|safe}})
+// let ctx = document.getElementById("chart").getContext("2d");
+
+// let chart = new Chart(ctx, {
+//   type: "pie",
+//   data: {
+//      labels: {{ydata| safe}},
+//      // labels: '{{ f }}',
+//      datasets: [
+//         {
+//           label: "DIGITAL BILL SENT PER MERCHANT",
+//           backgroundColor:['#1e3f8f','#9974b3','#de425b','#f191b8','#d43d51'],
+//           borderColor: "#417690",
+//           data:{{xdata3|safe}},
+//           // data: [52, 48, 160, 94, 75, 71, 490, 82, 46, 17],
+//         }
+//      ]
+//   },
+//   options: {
+//      title: {
+//         text: "DIGITAL BILL ",
+//         display: true,
+//         responsive:true
+//      }
+//   }
+// });
+
+
+
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    // Add Row
+    // $("#add-row").DataTable({
+    //   pageLength: 10,
+    // });
+
+
+
+    $('#merchant-info-table').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+            this.api().columns([2,]).every(function () {
+                var column = this;
+                console.log(column[0][0])
+                console.log("#test_" + column[0][0])
+
+                var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                    // var id = "#test_" + column[0][0];
+
+                    .appendTo($("#test_" + column[0][0]).empty())
+                    // .appendTo( $(column.header()).empty() )
+                    .on('change', function () {
+
+                        // var val = $.fn.dataTable.util.escapeRegex(
+                        //     $(this).val()
+                        // );
+
+                        var val = $(':selected', select).map(function (index, element) {
+                            return $.fn.dataTable.util.escapeRegex($(this).val());
+                        }).toArray().join('|');
+
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+            });
+
+
+          }
+    });
+
+    $("#column_id_2").select2({
+        placeholder: " Select Category",
+        closeOnSelect: true,
+        width: '100%',
+        // allowClear: true
+    })
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+  });
+</script>
+{% endblock javascripts %}

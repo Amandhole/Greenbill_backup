@@ -1,0 +1,352 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Parking Pass Charges {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                   <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Pass Charges</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Parking Passes</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/get-all-parking-pass-charges/">Pass Charges</a>
+                                </li>
+                            </ul>
+                            
+                           
+                        </div>
+                    </div>
+                      {% if is_merchant == True %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form class="form-control" action="/get-all-parking-pass-charges/" method="POST" enctype="multipart/form-data"
+                                        id="form" name="form" autocomplete="off" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="m_business_id" id="m_business_id" value="{{ merchant_general_setting_id }}" />       
+                                        <div class="row">       
+                                            <!-- <div class="col-md-4">
+                                                <div class="form-group">
+                                                  {{ ParkingPassChargesForm.per_visit_charges.label_tag }}
+                                                  <input type="number" class="form-control" name="per_visit_charges" id="id_per_visit_charges" placeholder="Per Visit Charges" value="{{per_visit_charges}}">
+                                              </div>
+                                            </div> -->
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                {{ ParkingPassChargesForm.monthly_charges.label_tag }}
+                                                <input type="number" class="form-control" name="monthly_charges" id="id_monthly_charges" placeholder="Monthly Charges" value="{{monthly_charges}}">
+                                              </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                {{ ParkingPassChargesForm.quarterly_charges.label_tag }}
+                                                <input type="number" class="form-control" name="quarterly_charges" id="id_quarterly_charges" placeholder="Quarterly Charges" value="{{quarterly_charges}}">
+                                              </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                {{ ParkingPassChargesForm.half_yearly_charges.label_tag }}
+                                                <input type="number" class="form-control" name="half_yearly_charges" id="id_half_yearly_charges" placeholder="Half Yearly Charges" value="{{half_yearly_charges}}">
+                                              </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                {{ ParkingPassChargesForm.yearly_charges.label_tag }}
+                                                <input type="number" class="form-control" name="yearly_charges" id="id_yearly_charges" placeholder="Yearly Charges" value="{{yearly_charges}}">
+                                              </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="text-center mt-3 mb-3">
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                
+                                  <!-- <div class="table-responsive">
+                                        <table id="add-row" class="display table table-hover">
+                                          <thead>
+                                            <tr>
+                                              <th>Sr. No.</th>
+                                              <th>Per Visit Charges</th>
+                                              <th>Monthly Charges</th>
+                                              <th>Quarterly Charges</th>
+                                              <th>Half Yearly Charges</th>
+                                              <th>Yearly Charges</th>
+                                              
+                                              <th style="width: 10%">Action</th>
+                                            </tr>
+                                          </thead>
+                                          <tfoot>
+                                          </tfoot>
+                                          <tbody>
+
+                                            {% for object in passcharges %}
+                                            <tr>
+                                              <td>{{ forloop.counter }}</td>
+                                              <td>{{object.per_visit_charges}}</td>
+                                              <td>{{object.monthly_charges}}</td>
+                                              <td>{{object.quarterly_charges}}</td>
+                                              <td>{{object.half_yearly_charges}}</td>
+                                              <td>{{object.half_yearly_charges}}</td> -->
+                                              
+                                            
+                                            
+                                              <!-- <td>
+                                                <div class="material-switch">
+                                                  {% csrf_token %}
+                                                  <input id="merchant{{ merchant.m_user_id }}" name="someSwitchOption001" type="checkbox" data-role="merchant" class="chk" data-rowid="{{ merchant.m_user_id }}" value="checked" {% if merchant.m_user.is_active == True %} checked="checked" {% endif %} />
+                                                  <label for="merchant{{ merchant.m_user_id }}" class="label-success"></label>
+                                                </div>
+                                              </td> -->
+                                              <!-- <td>
+                                                <div class="form-button-action">
+                                                    <button type="submit" class="btn btn-link btn-danger passChargesDeleteBtn" data-original-title="Delete" data-toggle="tooltip" data-id="{{ object.id }}"><i class="fa fa-trash"></i></button>
+                                                  
+                                                </div>
+                                              </td>
+                                            </tr>
+                                            {% endfor %}
+                                          </tbody>
+                                        </table>
+                                      </div> -->
+
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                          {% for actions in merchnat_action_permissions_list %}
+                              {% if actions.module_id|lower == "Parking Passes"|lower and actions.feature_id|lower == "Pass Charges"|lower %}
+                                  {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                      <div class="row">
+                                          <div class="col-md-12">
+                                              <form class="form-control" action="/get-all-parking-pass-charges/" method="POST" enctype="multipart/form-data"
+                                                  id="form" name="form" autocomplete="off" enctype="multipart/form-data">
+                                                  {% csrf_token %}
+                                                  <input type="hidden" name="m_business_id" id="m_business_id" value="{{ merchant_general_setting_id }}" />       
+                                                  <div class="row">       
+                                                      <!-- <div class="col-md-4">
+                                                          <div class="form-group">
+                                                            {{ ParkingPassChargesForm.per_visit_charges.label_tag }}
+                                                            <input type="number" class="form-control" name="per_visit_charges" id="id_per_visit_charges" placeholder="Per Visit Charges" value="{{per_visit_charges}}">
+                                                        </div>
+                                                      </div> -->
+                                                      <div class="col-md-4">
+                                                          <div class="form-group">
+                                                          {{ ParkingPassChargesForm.monthly_charges.label_tag }}
+                                                          <input type="number" class="form-control" name="monthly_charges" id="id_monthly_charges" placeholder="Monthly Charges" value="{{monthly_charges}}">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-4">
+                                                          <div class="form-group">
+                                                          {{ ParkingPassChargesForm.quarterly_charges.label_tag }}
+                                                          <input type="number" class="form-control" name="quarterly_charges" id="id_quarterly_charges" placeholder="Quarterly Charges" value="{{quarterly_charges}}">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-4">
+                                                          <div class="form-group">
+                                                          {{ ParkingPassChargesForm.half_yearly_charges.label_tag }}
+                                                          <input type="number" class="form-control" name="half_yearly_charges" id="id_half_yearly_charges" placeholder="Half Yearly Charges" value="{{half_yearly_charges}}">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-4">
+                                                          <div class="form-group">
+                                                          {{ ParkingPassChargesForm.yearly_charges.label_tag }}
+                                                          <input type="number" class="form-control" name="yearly_charges" id="id_yearly_charges" placeholder="Yearly Charges" value="{{yearly_charges}}">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-12">
+                                                          <div class="text-center mt-3 mb-3">
+                                                            {% if actions.edit_permission == "1" %}
+                                                              <button type="submit" class="btn btn-primary">Update</button>
+                                                            {% endif %}
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    {% endif %}
+                              {% endif %}
+                          {% endfor %}
+                          <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                          </div>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+
+$('.passChargesDeleteBtn').on('click', function(e) {
+    
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          var id = $(this).attr("data-id");
+          $.ajax({
+            type: "POST",
+            url: "/delete-parking-pass-charges/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+              Swal.fire({
+                      title:'Deleted!',
+                      text:'Pass Charges Deleted Successfully !!!',
+                      icon:'success',
+                      timer:1500,
+                      showConfirmButton:false,
+                    })
+              .then(function() {
+                location.reload();
+              });
+            },
+            error: function() {
+              Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+              })
+                .then(function() {
+                  location.reload();
+                });       
+            }
+        });
+        }
+      })
+  });
+    
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

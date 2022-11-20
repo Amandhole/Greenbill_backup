@@ -1,0 +1,492 @@
+{% extends "layouts/merchant-base.html" %}
+{% load staticfiles %}
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Customer Information</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/customer-info/">Customer Information</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="tab" href="#profile" role="tab"
+                                        aria-selected="false">Customer Information</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body center">
+                        <div class="row ">
+                            <div class="col-md-4">
+                                <form class="form-control" action="/customer-info/" method="POST" id="form" name="form"
+                                    autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>First Name<small style="color: red;"> *</small></label>
+                                                <div class="input-group mb-6">
+
+                                                    <input type="text" class="form-control mobile"
+                                                        name="cust_first_name" id="cust_first_name"
+                                                        placeholder="First Name" value="" required />
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Last Name<small style="color: red;"> *</small></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile"
+                                                        name="cust_last_lname" id="cust_last_lname"
+                                                        placeholder="Last Name" value="" required />
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email Id<small style="color: red;"> *</small></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile" name="cust_email"
+                                                        id="cust_email" placeholder="Email ID" value="" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Contact Number<small style="color: red;"> *</small></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="tel" maxlength="10" class="form-control mobile"
+                                                        name="cust_mobile_num" id="cust_mobile_num"
+                                                        placeholder="Contact Number">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Area<span>*</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile" name="customer_area"
+                                                        id="customer_area" placeholder="Area">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Pin Code<span>*</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="number" class="form-control mobile"
+                                                        name="customer_pin_code" id="customer_pin_code"
+                                                        placeholder="Pin Code">
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </div>
+                                </form>
+                                <div class="text-center mt-3 mb-3">
+                                    <button type="button" data-toggle="tooltip" data-target=" #uploadcsv" title=""
+                                        class="btn  btn-primary btn-lg uploadbtn" id="uploadcsv-modal-div">Upload CSV
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-8">
+
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Sr. No.</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Mobile No.</th>
+
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for object in mer_info_data %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{ object.cust_first_name }}</td>
+                                        <td>{{ object.cust_last_lname }}</td>
+                                        <td>{{ object.cust_mobile_num }}</td>
+
+                                        <td>
+                                            <div class="form-button-action">
+                                                <button type="button" data-toggle="tooltip" data-target=" #myViewModal"
+                                                    title="" class="btn btn-link btn-primary btn-lg viewBtn"
+                                                    id="edit-modal-div" data-original-title="View customer info"
+                                                    data-url="{{object.id}}" data-id="{{object.id}}"
+                                                    data-firstname="{{ object.cust_first_name }}"
+                                                    data-lastname="{{ object.cust_last_lname }}"
+                                                    data-email="{{ object.cust_email }}"
+                                                    data-mobile_num="{{ object.cust_mobile_num }}"
+                                                    data-area="{{ object.customer_area }}"
+                                                    data-pin_code="{{ object.customer_pin_code }}">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+
+                                                <button type="button" data-toggle="tooltip" data-target=" #myEditModal"
+                                                    title="" class="btn btn-link btn-primary btn-lg editBtn"
+                                                    id="edit-modal-div" data-original-title="Edit customer info"
+                                                    data-url="{{object.id}}" data-id="{{object.id}}"
+                                                    data-firstname="{{ object.cust_first_name }}"
+                                                    data-lastname="{{ object.cust_last_lname }}"
+                                                    data-email="{{ object.cust_email }}"
+                                                    data-mobile_num="{{ object.cust_mobile_num }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+
+
+                                                <button type="button" data-toggle="tooltip" data-target="" title=""
+                                                    class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                    id="deactivate-modal-div" data-original-title="Delete Customer"
+                                                    data-url="{{object.id}}" data-id="{{object.id}}">
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                </button>
+
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Edit Role Modal -->
+
+<div class="modal fade" id="myEditModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+
+        <form method="POST" class="form" name="edit_role_form" action="/edit_cust_info/">
+            {% csrf_token %}
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Customer Information</h2>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" name="mid" id="mid" value="" />
+                        <label for="name">First Name<small style="color: red;"> *</small></label>
+                        <input type="text" name="edit_fname" class="form-control" value="" id="edit_first_name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Last Name<small style="color: red;"> *</small></label>
+                        <input type="text" name="edit_lname" class="form-control" value="" id="edit_last_name">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Email<small style="color: red;"> *</small></label>
+                        <input type="email" name="edit_email" class="form-control" value="" id="edit_email">
+
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number<span>*</span></label>
+                        <div class="input-group mb-6">
+                            <input type="tel" maxlength="10" class="form-control mobile" name="edit_mobile"
+                                id="edit_mobile" placeholder="Contact Number">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Save" data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- Edit Role Modal End-->
+<div class="modal fade" id="uploadcsv" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+
+        <form method="POST" class="form" name="csvfileupload" action="/customer-csv-upload/" method="POST"
+            enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Upload CSV</h2>
+
+                    <h6 class="modal-title w-100 text-center">Download CSV sample File Here<a
+                            href="http://localhost:8000/localhost:8000/media/Customer_CSV_Sample/sample_csv.csv"
+                            download> Download File</a></h6>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="file">Upload File</label>
+                        <input type="file" name="csvfileupload" class="form-control" value="" id="csvfileupload">
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Save" data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="myDisplayModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Digital Marketing Enquiry </h2>
+            </div>
+
+            <div class="modal-body" id="paraclear">
+
+
+
+                <p id="c_fname" name="c_fname"></p>
+                <p id="c_lname" name="c_lname"></p>
+                <p id="c_email" name="c_email"> </p>
+                <p id="c_mobile" name="c_mobile"></p>
+                <p id="c_area" name="c_area"></p>
+                <p id="c_pin_code" name="c_pin_code"> </p>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    var editmodaldiv = $("#edit-modal-div");
+    $(".editBtn").on("click", function () {
+        var id = $(this).data('id')
+        var firstname = $(this).data('firstname');
+        var lastname = $(this).data('lastname');
+        var email = $(this).data('email');
+        var mobile = $(this).data('mobile_num');
+
+        $("#mid").val(id)
+        $('#edit_first_name').val(firstname)
+        $('#edit_last_name').val(lastname)
+        $('#edit_email').val(email)
+        $('#edit_mobile').val(mobile)
+        $("#myEditModal").modal();
+
+    });
+
+
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var cust_fname = $(this).data("firstname");
+        var cust_lname = $(this).data('lastname');
+        var cust_email = $(this).data('email');
+        var cust_mobile = $(this).data('mobile_num');
+        var cust_area = $(this).data('area');
+        var cust_pin_code = $(this).data('pin_code');
+
+
+
+        $('#c_fname').empty().append("First Name: " + cust_fname);
+        $('#c_lname').empty().append("Last Name: " + cust_lname);
+        $('#c_email').empty().append("Email: " + cust_email);
+        $('#c_mobile').empty().append("Mobile No.: " + cust_mobile);
+        $('#c_area').empty().append("Area: " + cust_area);
+        $('#c_pin_code').empty().append("Pin Code: " + cust_pin_code);
+        $("#myDisplayModal").modal();
+
+    });
+
+
+    var editmodaldiv = $("#uploadcsv-modal-div");
+    $(".uploadbtn").on("click", function () {
+
+        $("#uploadcsv").modal();
+
+    });
+    uploadcsv
+
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete_cust/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+                                'Delete!',
+                                'Customer has been deleted.',
+                                'success',
+                                {
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                })
+                                .then(function () {
+                                    location.href = "/customer-info/";
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+        if (/^[6-9][0-9]{9}$/.test(value)) {
+            return true;   // PASS validation when REGEX matches
+        } else {
+            return false;  // FAIL validation
+        };
+    }, "Please enter valid Mobile Number");
+    $("#form").validate({
+        rules: {
+            cust_first_name: {
+                required: true,
+
+            },
+            cust_last_lname: {
+                required: true,
+
+            },
+
+            cust_email: {
+                required: true,
+                email: true,
+
+            },
+            cust_mobile_num: {
+                mobile_number: true,
+                required: true,
+
+            },
+        },
+        highlight: function (element) {
+            $(element).addClass("c1");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("c1");
+        },
+        messages: {
+            cust_first_name: {
+                required: "First Name  is Required",
+
+            },
+            cust_last_lname: {
+                required: "Last Name  is Required",
+
+
+            },
+            cust_email: {
+                required: "Email is Required",
+
+            },
+            cust_mobile_num: {
+                required: "Mobile Number is Required",
+            }
+        }
+    });
+
+</script>
+<style>
+    .error {
+        color: red;
+    }
+
+    .c1 {
+        border: 2px red ridge;
+    }
+</style>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

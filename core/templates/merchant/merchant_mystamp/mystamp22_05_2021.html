@@ -1,0 +1,715 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} merchant Stamp {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+    input {
+        margin: .4rem 0;
+    }
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    .container1{ 
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+    }
+    .rect-gray{
+        color: #555;
+        border: 0.5rem double #555;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;
+      }
+      .container2{
+	    margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;    
+      }
+      .rect-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;  
+      }
+      .container3{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row; 
+      }
+      .rect-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;
+      }
+      .container4{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+      }
+      .rect-blue{
+        color: #0000FF;
+        border: 1rem double #0000FF; 
+        font-size: 4rem;
+        font-family: "Open sans", Helvetica, Arial, sans-serif;
+        border-radius: 0;
+        padding: 0.5rem;
+      }
+      .container5{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .circle-black{
+        color: #555;
+        font-size: 3rem;
+        font-weight: 700;
+        border: 0.50rem solid #555;
+        display: inline-block;
+        padding: 0.5rem 2.9rem;
+        text-transform: uppercase;
+        border-radius: 50%;
+        font-family: 'Courier';
+      }
+      .container6{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .circle-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        border-radius: 50%;
+        font-size: 3rem;  
+      }
+      .container7{                
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;   
+    }
+      .circle-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928;
+        border-radius: 50%;
+        font-size: 3rem; 
+      }
+      .container8{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+        display: flex;
+      }
+      .circle-blue{
+        margin: 30px;
+        color: #0000FF;
+        border: 1rem double #0000FF;
+        font-size: 6rem;
+        font-family: "Open sans";
+        border-radius: 60%;
+        padding: 0.5rem;
+      }
+      .container9{
+        width: 100%;
+	    height: 100%;
+        margin: 30px;
+      }
+      .square-black{
+        color: #555;
+        border: 1rem double #555;  
+        font-size: 2rem;
+        font-family: "Open sans", Helvetica, Arial, sans-serif;
+        border-radius: 0;
+        padding: 0.5rem;
+      }
+      .container10{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .square-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        font-size: 3rem; 
+      }
+      .container11{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+      }
+      .square-blue{
+        color: #0000FF;
+        border: 1rem double #0000FF; 
+        font-size: 3rem;
+        font-family: "Open sans", Helvetica, Arial, sans-serif;
+        border-radius: 0;
+        padding: 0.5rem;
+      }
+      .container12{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .square-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928; 
+        font-size: 2rem;
+      }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Design</h4>
+                            <ul class="breadcrumbs">
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <h4 class="card-title">Stamp</h4>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                    <div class="row">
+                                        {% for status in status %}
+                                        {% if status.option_color == "Green" %}
+                                        {% if status.selection_design == "Square" %}
+                                            <div class="col-md-4">
+                                                <div class="stamp1">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="form-group" style="border: 1px solid black;" >
+                                                                    <div class="container12" style="margin-left: 1px;">
+                                                                    <span class="square-green" style="margin-right: 60px;">{{status.stamp_content}} </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div style="margin-left: 80px;">
+                                                                        <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>                                           
+                                        {% endif %}
+                                        {% endif %}
+
+                                                    {% if status.option_color == "Blue" %}
+                                                    {% if status.selection_design == "Square" %}
+                                                    <div class="col-md-4">
+                                                    <div class="stamp2">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="form-group" style="border: 1px solid black;" >
+                                                                    <div class="container11">
+                                                                      <span class="square-blue" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                    </div>
+                                                                    <div style="margin-left: 50px;">
+                                                                    <label>Select : <INPUT type="checkbox"> </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                       </div>
+                                                   </div>
+                                                   </div>
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    
+                                                    {% if status.option_color == "Black" %}
+                                                    {% if status.selection_design == "Square" %}
+                                                    <div class="col-md-4">
+                                                    <div class="stamp2">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="form-group" style="border: 1px solid black;" >
+                                                                        <div class="container9">
+                                                                          <span class="square-black" style="margin-right: 90px;">{{status.stamp_content}}</span>
+                                                                        </div><br>
+                                                                        <div style="margin-left: 100px;">
+                                                                        <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Red" %}
+                                                    {% if status.selection_design == "Square" %}
+                                                    <div class="col-md-4">
+                                                        <div class="stamp4">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="form-group" style="border: 1px solid black;">
+                                                                            <div class="container10">
+                                                                            <span class="square-red" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                            </div>
+                                                                            <div style="margin-left: 140px;">
+                                                                            <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                            </div>
+                                                                        </div> 
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Green" %}
+                                                    {% if status.selection_design == "circle" %}
+                                                        <div class="col-md-4">
+                                                            <div class="stamp5">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container7">
+                                                                                    <span class="circle-green" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 80px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Blue" %}
+                                                    {% if status.selection_design == "circle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp6">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container8">
+                                                                                    <span class="circle-blue" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 90px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Black" %}
+                                                    {% if status.selection_design == "circle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp8">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container5">
+                                                                                <span class="circle-black" style="margin-right: 60px;">{{status.stamp_content}} </span>
+                                                                                </div>
+                                                                                <div style="margin-left: 120px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Red" %}
+                                                    {% if status.selection_design == "circle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp9">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container6">
+                                                                                <span class="circle-red" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 120px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+                                                     {% endif %}
+                                                     {% endif %}
+
+                                                    {% if status.option_color == "Green" %}
+                                                    {% if status.selection_design == "Rectangle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp10">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container3">
+                                                                                    <span class="rect-green" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 120px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                   </div>
+                                                            </div>
+                                                            </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+
+                                                    {% if status.option_color == "Blue" %}
+                                                    {% if status.selection_design == "Rectangle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp11">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container4">
+                                                                                    <span class="rect-blue" style="margin-right: 80px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 120px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    
+
+                                                    {% if status.option_color == "Black" %}
+                                                    {% if status.selection_design == "Rectangle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp12">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container1">
+                                                                                    <span class="rect-gray" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 130px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                                    {% if status.option_color == "Red" %}
+                                                    {% if status.selection_design == "Rectangle" %}
+                                                            <div class="col-md-4">
+                                                            <div class="stamp13">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="form-group" style="border: 1px solid black;">
+                                                                                <div class="container2">
+                                                                                <span class="rect-red" style="margin-right: 60px;">{{status.stamp_content}}</span>
+                                                                                </div>
+                                                                                <div style="margin-left: 120px;">
+                                                                                <label>Select : <INPUT type="checkbox" name="chk" onclick="return myfun()"></label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+                                                    {% endif %}
+                                                    {% endif %}
+
+                                            <div>
+                                                <h2><span id="notvalid" style="color: red;"> </span></h2>
+                                            </div>
+<script type="text/javascript">
+    function myfun(){
+        var a = document.getElementsByName('chk');
+        var newvar = 0;
+        var count;
+        for(count=0; count<a.length; count++){
+            if(a[count].checked==true){
+                newvar = newvar +1;
+            }
+        }
+        if(newvar>=3){
+            document.getElementById('notvalid').innerHTML="**Please Select Only Two**"
+            return false;
+        } 
+    }
+</script>
+                                                        
+<!-- action eye button -->
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content').empty().append(stamp_content);
+        $("#exampleModal").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn1").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content1').empty().append(stamp_content); 
+        $("#exampleModal1").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn2").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+       
+        $('#view_stamp_content2').empty().append(stamp_content);
+        $("#exampleModal2").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn3").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content3').empty().append(stamp_content);
+        $("#exampleModal3").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn4").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content4').empty().append(stamp_content);
+        $("#exampleModal4").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn5").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content5').empty().append(stamp_content);
+        $("#exampleModal5").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn6").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content6').empty().append(stamp_content);
+        $("#exampleModal6").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn7").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content7').empty().append(stamp_content);
+        $("#exampleModal7").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn8").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content8').empty().append(stamp_content);
+        $("#exampleModal8").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn9").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content9').empty().append(stamp_content);
+        $("#exampleModal9").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn10").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content10').empty().append(stamp_content);
+        $("#exampleModal10").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn11").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content11').empty().append(stamp_content);
+        $("#exampleModal11").modal();
+    });
+</script>
+
+<!-- cobination selection -->
+<script>
+    function admSelectCheck(nameSelect)
+    {
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal1").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal2").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal3").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal4").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal5").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal6").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal7").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal8").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal9").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal10").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal11").style.display = val == 'Rectangle' ? "block" : 'none';    
+    }
+</script>          
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    
+<div class="modal-footer" style="margin-right: 600px;">           
+<button type="button" class="btn btn-default" data-dismiss="modal">Save</button>
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}
+
+
+
+

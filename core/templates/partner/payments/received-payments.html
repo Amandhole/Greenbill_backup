@@ -1,0 +1,282 @@
+{% extends "layouts/partner-base.html" %}
+{% load custom_tags %}
+{% block title %} Received Payments {% endblock %} 
+
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Received Payments</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Payments</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-received-payments/">Received Payments</a>
+                                </li>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+              <div class="row">
+                  <div class="col-md-12">
+                    <form method="POST" action="/partner-received-payments/" id="par_received_pay_filter_form">
+                      {% csrf_token %}
+                      <div class="row">
+                          <div class="col-md-2">
+                          </div>
+                          <div class="col-md-3">
+                              <div class="form-group">
+                                  <label>From Date <span style="color: red;">*</span> </label>
+                                  <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}" required>
+                              </div>
+                          </div>
+                          <div class="col-md-3">
+                              <div class="form-group">
+                                  <label>To Date<span style="color: red;">*</span></label>
+                                  <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}"  required>
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-2" style="padding-top: 2.7%;">
+                              <div class="form-group">
+                                  <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
+                              </div>
+                          </div>
+                          <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+              </div>
+                      <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+                        <div class="row align-items-center justify-content-center">
+                          <div class="col-sm-6 col-md-4">
+                            <div class="card card-stats card-round">
+                              <div class="card-body ">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                      <i class="fas fa-rupee-sign"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Total Payment Received</p>
+                                      <h4 class="card-title">{{total_payment|floatformat:2}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-4">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                      <i class="fas fa-list-ol"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Total Payment Received Count</p>
+                                      <h4 class="card-title">{{total_payments_count}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-hover">
+                                <thead>
+                                    <tr>
+                                        <!-- <th>Sr. No.</th> -->
+                                        <th>Sr. No.</th>
+                                        <th>Mobile Number</th>
+                                        <th>Transaction Mode</th>
+                                        <th>Payment Date</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for payment in received_payments %}
+                                      <tr>
+                                         <td>{{ forloop.counter }}</td>
+                                          <td>{% if payment.mobile_no %}{{ payment.mobile_no }}{% else %}Green Bill{% endif %}</td>
+
+                                          <td> 
+                                            {{ payment.transaction_id }}
+                                             
+                                          </td>
+                                          <!-- <td>{{ payment.name }}</td> -->
+                                          <td>{{ payment.payment_date|date:'d-m-Y'}}</td>
+                                          <td>₹{{ payment.amount|floatformat:2}}</td>
+                                          <!-- <td>{{ payment.description }}</td> -->
+                                      </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied">Permission Denied</div> 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        document.getElementById("from_date").onchange = function () {
+        var input = document.getElementById("to_date");
+        input.setAttribute("min", this.value);
+      }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+  $(document).ready(function() {
+$('input[name=to_date]').change(function() {
+        var to_date = $('#to_date').val();
+        document.getElementById('from_date').setAttribute("max", to_date);
+})
+
+$('input[name=from_date]').change(function() {
+  var from_date = $('#from_date').val();
+    document.getElementById('to_date').setAttribute("min", from_date);
+})
+})
+
+if (window.history.replaceState) {
+  window.history.replaceState(null, null, window.location.href);
+}
+
+
+
+$( "#par_received_pay_filter_form").validate({
+rules: {
+  user: {
+    required: function (element) {
+        return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+      }
+  },
+  from_date: {
+      required: function (element) {
+        return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+      }
+  },
+  to_date: {
+      required: function (element) {
+        return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+      }
+  },
+},
+messages: {
+  user: "Please Select at least one filter.",
+  from_date: "Please Select at least one filter.",
+  to_date: "Please Select at least one filter.",
+},
+errorPlacement: function (error, element) {
+      if (element.attr("name") == "user")
+          $("#billInfoFilterError").html(error);
+      if (element.attr("name") == "from_date")
+          $("#billInfoFilterError").html(error);
+      if (element.attr("name") == "to_date")
+          $("#billInfoFilterError").html(error);      
+  }
+})
+</script>
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "ordering": false,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+		});
+	</script>
+
+{% endblock javascripts %}

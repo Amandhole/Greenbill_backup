@@ -1,0 +1,388 @@
+{% extends "layouts/customer-base.html" %}
+ {% block title %} Cash Memo {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} 
+
+{% block content %}
+
+<style>
+    /*.error {
+            color: red;
+            position:top;
+        }*/
+
+    /*.c1 {
+            border: 2px red ridge;
+        }*/
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+.width_set{
+    width: 430px;
+    height: 506px;
+
+    
+}
+.body1{
+    background: url('http://157.230.228.250/media/offers/imgbackg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 506px;
+}
+.content_name{
+    font-size: 15px;
+}
+.body2{
+    background: url('http://157.230.228.250/media/offers/background2.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    
+}
+.closebtn{
+    position: absolute;
+    left: 406px;
+    opacity: 0.3;
+}
+.decoration{
+    text-decoration: none;
+    color: rgb(105,105,105);
+}
+
+
+    
+}
+</style>
+ 
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Cash Memo</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                    <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Cash Memo & Receipt</a>
+                                </li>
+                                <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                <a href="/view-customer-cash-memo/">Cash Memo</a>
+                                </li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+                      <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-primary card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-interface-6"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Cash Memo Created</p>
+                                                                    <h4 class="card-title">{{cash_memo_count}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-info card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-coins text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Amount</p>
+                                                                    <h4 class="card-title">₹ {{total_cost_cashmemo|floatformat:2}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>      
+                    <div class="content">
+                        <div class="card-body">
+                            <div class="table-responsive">
+
+                                <table id="add-row" class="display table table-hover" align="center">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>Sr No</th>
+                                            <th>Cash Memo No.</th>
+                                            <th>Business Name</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            
+                                            <th>Action</th>                                        
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+            
+                                    </tfoot>
+                                    <tbody>
+                                        {% for object in data %}
+                                        <tr align="center">
+                                            <td>{{forloop.counter }}</td>
+                                            <td>{{object.memo_no}}</td>
+                                            <td>{{object.merchant_business_id.m_business_name}}</td>
+                                            <td>{{ object.date|date:'d-m-Y' }}</td>
+                                            <td>₹ {{ object.total|floatformat:2 }}</td>
+                                            
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" title="View Cash Memo" data-toggle="tooltip" class="{% if object.rejected_cash_memo == True %} ml-5 {% endif %} btn btn-link btn-primary" data-original-title="View Cash Memo">
+                                                        <a href="/cash-memo/{{object.memo_url}}/" target="_blank">
+                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                        </a>
+                                                    </button>
+                                                    <!-- {% if object.rejected_cash_memo == True %}
+                                                        <button type="button" data-toggle="tooltip" data-target="" 
+                                                        title="Rejected"
+                                                        class="btn btn-link btn-danger" id="deactivate-modal-div"
+                                                        data-original-title="Status" data-url="{{object.id}}"
+                                                        data-id="{{object.id}}"><i class="fas fa-thumbs-down"></i>
+                                                        </button>
+                                                    {% endif %} -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+
+    //for table validation
+
+ 
+    
+
+    function alphaOnly(event) {
+        var key = event.keyCode;
+        return ((key >= 65 && key <= 90) || key == 8);
+    };
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+</script>
+<style>
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+{% endblock content %}

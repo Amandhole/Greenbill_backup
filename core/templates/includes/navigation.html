@@ -1,0 +1,552 @@
+		<div class="main-header"> 
+
+			<!-- Logo Header -->
+			<div class="logo-header" data-background-color="white">
+				
+				<a href="/" class="logo">
+					<img src="/static/assets/img/dashboard-logo.png" alt="navbar brand" class="navbar-brand">
+				</a>
+				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon">
+						<i class="icon-menu"></i>
+					</span>
+				</button>
+				<button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+				<!-- <div class="nav-toggle">
+					<button class="btn btn-toggle toggle-sidebar">
+						<i class="icon-menu"></i>
+					</button>
+				</div> -->
+			</div>
+			<!-- End Logo Header -->
+
+			<!-- Navbar Header -->
+			<nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue">
+				
+				{% if request.user.is_authenticated %}
+				<div class="container-fluid">
+					<div class="collapse" id="search-nav">
+						<form method="POST" action="/search/" class="navbar-left navbar-form nav-search mr-md-3">
+							{% csrf_token %}
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button type="submit" class="btn btn-search pr-1">
+										<i class="fa fa-search search-icon"></i>
+									</button>
+								</div>
+								<input type="text" placeholder="Search Number ..." class="form-control" name="search_keyword">
+							</div>
+						</form>
+					</div>
+					<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+						<li class="nav-item toggle-nav-search hidden-caret">
+							<a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+								<i class="fa fa-search"></i>
+							</a>
+						</li>
+						<li class="nav-item hidden-caret">
+		                    <a class="nav-link" href="/owner-notice-board/" id="notifDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		                        <i class="fa fa-bell"></i>
+		                       <!--  <span class="notification">+</span> -->
+		                    </a>
+		                </li>
+						<!-- <li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-bell"></i>
+							</a>
+							<ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+								<li>
+									<div class="dropdown-title">Notifications</div>
+								</li>
+								<li >
+									<div class="notif-scroll scrollbar-outer">
+										<div class="notif-center">
+											<div style="align-content: center; padding-left: 45px;">
+												<a href="/owner-notice-board-list/">
+												<div class="notif-icon notif-success"> <i class="fa fa-comments"></i> </div>
+												<div class="notif-content">
+													<span class="block" style="padding-top: 10px;">
+													<b>	My Notifications</b>
+													</span>
+												
+												</div>
+											</a>
+											<a href="/owner-notice-board/"   >
+												<div class="notif-icon notif-primary"> <i class="fa fa-user-plus"></i> </div>
+												<div class="notif-content" style="text-align: center;">
+													<span class="block">
+													<b>	Send Notification</b>
+													</span>
+												</div>
+											</a>
+										</div>
+										</div>
+									</div>
+								</li>
+								
+							</ul>
+						</li> -->
+						<!-- <li class="nav-item dropdown hidden-caret">
+							<a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+								<i class="fas fa-layer-group"></i>
+							</a>
+							<div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+								<div class="quick-actions-header">
+									<span class="title mb-1">Quick Actions</span>
+									<span class="subtitle op-8">Shortcuts</span>
+								</div>
+								<div class="quick-actions-scroll scrollbar-outer">
+									<div class="quick-actions-items">
+										<div class="row m-0">
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-user"></i>
+													<span class="text">Assign Role</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-user"></i>
+													<span class="text">Create User</span>
+												</div>
+											</a>
+											<a class="col-6 col-md-4 p-0" href="#">
+												<div class="quick-actions-item">
+													<i class="flaticon-list"></i>
+													<span class="text">Create New Category</span>
+												</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li> -->
+						<li class="nav-item dropdown hidden-caret">
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+								<div class="avatar-sm">
+									{% if ProfileImages %}
+										{% for ProfileImage in ProfileImages %}
+											{% if ProfileImage.profile_image %}
+												<img src="{{ ProfileImage.profile_image.url }}" alt="..." class="avatar-img rounded-circle">
+											{% else %}
+								  				<img src="/static/assets/img/user-profile-pic.png" alt="..." class="avatar-img rounded-circle">
+								  			{% endif %}
+										{% endfor %}
+								  	{% else %}
+								  		<img src="/static/assets/img/user-profile-pic.png" alt="..." class="avatar-img rounded-circle">
+								  	{% endif %}
+								</div>
+							</a>
+							<ul class="dropdown-menu dropdown-user animated fadeIn">
+								<div class="dropdown-user-scroll scrollbar-outer">
+									<li>
+										<div class="user-box">
+											<div class="avatar-lg">
+												{% if ProfileImages %}
+													{% for ProfileImage in ProfileImages %}
+														{% if ProfileImage.profile_image %}
+															<img src="{{ ProfileImage.profile_image.url }}" alt="..." class="avatar-img rounded-circle">
+														{% else %}
+											  				<img src="/static/assets/img/user-profile-pic.png" alt="..." class="avatar-img rounded-circle">
+											  			{% endif %}
+													{% endfor %}
+												{% else %}
+													<img src="/static/assets/img/user-profile-pic.png" alt="image profile" class="avatar-img rounded">
+												{% endif %}
+											</div>
+											<div class="u-text">
+												<h4>
+													{{ request.user.mobile_no }}
+												</h4>
+												<!-- <p class="text-muted"></p><a href="/profile/" class="btn btn-xs btn-secondary btn-sm">View Profile</a> -->
+											</div>
+										</div>
+									</li>
+
+
+									<li>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="/profile/">My Profile</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#" data-toggle="modal" data-target="#chnagePassModal">Change Password</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="" id="logout-nav">Logout</a>
+									</li>
+								</div>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				{% endif %}
+				
+			</nav>
+			<!-- End Navbar -->
+        </div>
+		
+
+	<!-- Add role Modal -->
+	<div class="modal fade" id="chnagePassModal" role="dialog" >
+		<div class="modal-dialog">
+		<!-- Modal content-->
+		<form method="POST" class="form" id="change_password_form">
+			{% csrf_token %}
+			<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title w-100 text-center">Change Password</h3>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<i class="icon-lock"></i>
+							</span>
+						</div>
+						<input type="password" name="password" placeholder="Current Password" class="form-control" id="id_password">
+						<div class="input-group-append">
+							<span class="input-group-text">
+								<span class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
+							</span>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<i class="icon-lock"></i>
+							</span>
+						</div>
+						<input type="password" name="password1" placeholder="New Password" class="form-control" id="id_password_1">
+						<div class="input-group-append">
+							<span class="input-group-text">
+								<span class="fa fa-fw fa-eye-slash field-icon toggle-password-1"></span>
+							</span>
+						</div>
+						
+					</div>
+					<span class="text-danger" id="password_error"></span>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<i class="icon-lock"></i>
+							</span>
+						</div>
+						<input type="password" name="password2" placeholder="Confirm Password" class="form-control" id="id_password_2">
+						<div class="input-group-append">
+							<span class="input-group-text">
+								<span class="fa fa-fw fa-eye-slash field-icon toggle-password-2"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<input id="change_password_btn" type="submit" class="btn btn-primary" value="Change">
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetPassModalFunction()">Close</button>
+			</div>
+			</div>
+		</form>
+		</div>
+	</div>
+	<!-- Add role Modal End -->	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+	
+	<script type="text/javascript">
+		$(".toggle-password").click(function() {
+			$(this).toggleClass("fa-eye-slash fa-eye");
+			var input = document.getElementById("id_password")
+				if (input.type == "password") {
+					input.type = "text";
+				} else {
+					input.type = "password";
+				}
+			});
+
+		$(".toggle-password-1").click(function() {
+			$(this).toggleClass("fa-eye-slash fa-eye");
+			var input = document.getElementById("id_password_1")
+			if (input.type == "password") {
+				input.type = "text";
+			} else {
+				input.type = "password";
+			}
+		});
+
+		$(".toggle-password-2").click(function() {
+			$(this).toggleClass("fa-eye-slash fa-eye");
+			var input = document.getElementById("id_password_2")
+				if (input.type == "password") {
+					input.type = "text";
+				} else {
+					input.type = "password";
+				}
+		});
+	</script>
+
+	<script>
+	function resetPassModalFunction() 
+	{
+        document.getElementById("change_password_form").reset();
+    }
+	// $('#chnagePassModal').on('hidden.bs.modal', function () {
+	// 	alert(2)
+	// 	$(this).find('#change_password_form').trigger('reset');
+	// })
+
+	jQuery.validator.addMethod("uppercase_val", function(value, element){
+		if (/[A-Z]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 upper case letter."); 
+
+	jQuery.validator.addMethod("number_val", function(value, element){
+		if (/[0-9]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 number."); 
+
+	jQuery.validator.addMethod("specialchar_val", function(value, element){
+		if (/(?=.*[ -\/:-@\[-\`{-~]{1,})/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 special character."); 
+
+	jQuery.validator.addMethod("old_pass_not_equal_new_pass", function(value, element, param) {
+	  return this.optional(element) || value != $(param).val();
+	}, "The password you entered is the same as the old password. Please enter a different password.");
+
+	$( "#change_password_form" ).validate({
+		rules: {
+			password: {
+				required: true,
+			},
+			password1: {
+				required: true,
+				old_pass_not_equal_new_pass: "#id_password",
+				// uppercase_val: true,
+				// number_val: true,
+				// specialchar_val: true,
+				minlength: 8,
+			},
+			password2: {
+				required: true,
+				equalTo : "#id_password_1"
+			}
+		},
+		messages: {
+			password: {
+				required: "Old password field is required.",
+			},
+			password1: {
+				required: "Password field is required.",
+				minlength: "This password is too short. It must contain at least {0} characters."
+			},
+			password2: {
+				required: "Confirm Password field is required",
+				equalTo: "New Password and Confirm Password must be the same.",
+			}
+		},
+		submitHandler: function() {
+			$.ajax({
+					type: "POST",
+					url: "{% url 'change password' %}",
+					data: $('form').serialize(),
+					success: function(response) {
+						if(response.status == 'success'){
+							$('#chnagePassModal').modal('hide');
+							swal.fire({
+							icon:"success",
+							title: "Success!",
+							text: "Password Changed.",
+							type: "success",
+							confirmButtonClass: "btn-success",
+							allowOutsideClick: false,
+							allowEscapeKey: false
+							})
+							.then(function() {
+							location.reload();
+							});
+						}
+						else if(response.status == 'error'){
+							// $('#chnagePassModal').modal('hide');
+								swal.fire({ 
+								icon:"warning",
+								title: "Oops...", 
+								text: "Current Password is incorrect", 
+								confirmButtonClass: "btn-success",
+								allowOutsideClick: false,
+								allowEscapeKey: false
+							})	
+						} else if(response.status == 'errorPass'){
+							errorDiv = "#password_error";
+							$(errorDiv).empty().append(response.msg);
+                		}
+					},
+					error: function() {
+					$('#chnagePassModal').modal('hide');
+						swal.fire({ 
+						icon:"error",
+						title: "Oops...", 
+						text: "Something went wrong!", 
+						confirmButtonClass: "btn-success",
+						allowOutsideClick: false,
+						allowEscapeKey: false
+					})
+					.then(function() {
+						location.reload();
+					});    
+					}
+			});
+		}
+		});
+
+$(function() {
+    $('#logout-nav').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure, you want to logout ?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Logout!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            	function getCookie(name) {
+					var cookieValue = null;
+					if (document.cookie && document.cookie != '') {
+						var cookies = document.cookie.split(';');
+						for (var i = 0; i < cookies.length; i++) {
+							var cookie = jQuery.trim(cookies[i]);
+							// Does this cookie string begin with the name we want?
+							if (cookie.substring(0, name.length + 1) == (name + '=')) {
+								cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+								break;
+							}
+						}
+					}
+					return cookieValue;
+				}
+				var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                type: "POST",
+                url: "{% url 'logout' %}",
+                data: {csrfmiddlewaretoken: csrftoken},
+                success: function(response) {
+                    window.location.href = "{% url 'login' %}";
+                }
+            })
+        }
+        })
+    })
+})
+
+$(function() {
+    $('#logout-sidebar').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure, you want to logout ?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Logout!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            	function getCookie(name) {
+					var cookieValue = null;
+					if (document.cookie && document.cookie != '') {
+						var cookies = document.cookie.split(';');
+						for (var i = 0; i < cookies.length; i++) {
+							var cookie = jQuery.trim(cookies[i]);
+							// Does this cookie string begin with the name we want?
+							if (cookie.substring(0, name.length + 1) == (name + '=')) {
+								cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+								break;
+							}
+						}
+					}
+					return cookieValue;
+				}
+				var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                type: "POST",
+                url: "{% url 'logout' %}",
+                data: {csrfmiddlewaretoken: csrftoken},
+                success: function(response) {
+                    window.location.href = "{% url 'login' %}";
+                }
+            })
+        }
+        })
+    })
+})
+</script>
+
+
+<!-- Owner Notifications -->
+{% for object in unread_notification_status %}
+<script>
+
+    $(function () {
+
+        var placementFrom = "top";
+        var placementAlign = "right";
+        var state = "secondary";
+        var style = "withicon";
+        var content = {};
+        var notification_id = "{{ object | safe }}"
+        var notice_id = "{{ object.id | safe }}"
+
+        content.message = "{{ object.notice_id.message | slice:'0:25' }}";
+        content.title = "{{ object.notice_id.notice_title | safe }}";
+        // onClose = readNotification();
+        if (style == "withicon") {
+            content.icon = 'fa fa-bell';
+        } else {
+            content.icon = 'none';
+        }
+        content.url = "";
+        content.target = '_blank';
+
+        var notify = $.notify(content, {
+            type: state,
+            placement: {
+                from: placementFrom,
+                align: placementAlign
+            },
+            time: 5000,
+            delay: 1000,
+            allow_dismiss: false,
+            onClosed: readNotification(notice_id),
+        });
+
+        
+
+
+    });
+
+    function readNotification(notice_id){
+       
+        $.ajax({
+            type: "POST",
+            url: "/read-owner-notification/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'notification_id': notice_id
+            },
+        });
+    }
+
+</script>
+{% endfor %}

@@ -1,0 +1,1065 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Sent Bills {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /*.error {
+            color: red;
+            position:top;
+        }*/
+
+    /*.c1 {
+            border: 2px red ridge;
+        }*/
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+.width_set{
+    width: 430px;
+    height: 506px;
+
+    
+}
+.body1{
+    background: url('http://157.230.228.250/media/offers/imgbackg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 506px;
+}
+.content_name{
+    font-size: 15px;
+}
+.body2{
+    background: url('http://157.230.228.250/media/offers/background2.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    
+}
+.closebtn{
+    position: absolute;
+    left: 406px;
+    opacity: 0.3;
+}
+.decoration{
+    text-decoration: none;
+    color: rgb(105,105,105);
+}
+
+
+    
+}
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"> 
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Sent Bills</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Bill Info</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bill-info/">Sent Bills</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body center">
+                        <div class="row">
+                            {% if is_merchant == True %}
+                                <div class="col-md-12">
+                                    <form method="POST" action="/bill-info/" id="bill_info_filter_form">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-2">
+
+                                                <!-- <div class="form-group">
+                                                    <label>Select User</label>
+                                                    <div class="input-group mb-3">
+                                                        <select class="form-control" id="user_id" name="user">
+                                                        <option value="">Select</option>
+                                                        {% for user in merchant_user %}
+
+                                                            {% if user.user_id.id == custom_user %}  
+                                                                <option value="{{user.user_id.id}}" selected="">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+                                                            {% else %}
+                                                                <option value="{{user.user_id.id}}">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div -->>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>From Date <span style="color: red;"> *</span></label>
+                                                    <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label>To Date <span style="color: red;"> *</span></label>
+                                                    <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-2" style="padding-top: 2.7%;">
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                        <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-primary card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-interface-6"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Bills Created</p>
+                                                                    <h4 class="card-title">{{total_bills_created}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-info card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-coins text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Amount Collected</p>
+                                                                    <h4 class="card-title">₹ {{total_amount_collected|floatformat:2}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-primary card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-interface-6"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Bills Rejected</p>
+                                                                    <h4 class="card-title">{{total_reject_count}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if merchant_business_category_id == 11 or merchant_business_category_id == 12 %}
+                                                <div class="col-sm-6 col-md-4">
+                                                    <div class="card card-stats card-primary card-round">
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <div class="icon-big text-center">
+                                                                        <i class="flaticon-symbol-1"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-9 col-stats">
+                                                                    <div class="numbers">
+                                                                        <p class="card-category">Total Bills Flagged</p>
+                                                                        <h4 class="card-title">{{total_flag_bills}}</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <!--<div class="col-sm-6 col-md-3">
+                                                <div class="card card-stats card-success card-round">
+                                                    <div class="card-body ">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-analytics"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Sales</p>
+                                                                    <h4 class="card-title">$ 1,345</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card card-stats card-secondary card-round">
+                                                    <div class="card-body ">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-success"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Order</p>
+                                                                    <h4 class="card-title">576</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    
+                                    <!-- <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                    <div class="row ">
+                                        <div class="col-md-12">
+                                            <div class="table-responsive">
+                                                <table id="add-row" class="display table table-hover">
+                                                    <thead>
+                                                        <tr align="center">
+                                                            <th>Sr. No.</th>
+                                                            <th>Invoice Number</th>
+                                                            <th>Mobile Number</th>
+                                                            <th>Created Date</th>
+                                                            <th>Created By</th>
+                                                            <th>Amount</th>
+                                                            <th>Rating</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        {% for bill in bills %}
+                                                        <tr align="center">
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ bill.invoice_no }}</td>
+                                                            <td>{{ bill.mobile_no }}</td>
+                                                            <td>{{ bill.bill_date }}</td>
+                                                            <td>{{ bill.created_by }}</td>
+                                                            <td>{{ bill.amount }}</td>
+                                                            <td width="15%">
+                                                                {% if bill.rating %}
+                                                                    {{bill.bill_ratings}}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-button-action">
+                                                                    {% if bill.bill_file %}
+                                                                        <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                            <a href="{{bill.bill_file}}" download>
+                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </button>
+                                                                    {% endif %}
+
+                                                                    {% if bill.customer_added == False and bill.bill_file %}
+                                                                        <button type="button" data-toggle="tooltip" data-target="" title="" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send SMS" data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}" data-mobile_no="{{bill.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="card-body">
+                            <div class="table-responsive">
+
+                                <table id="add-row" class="display table table-hover" align="center">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>Sr. No.</th>
+                                            <th>Invoice Number</th>
+                                            <th>Mobile Number</th>
+                                            <th>Created Date</th>
+                                            <th>Created By</th>
+                                            <th>Amount</th>
+                                            <th>Rating</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+            
+                                    </tfoot>
+                                    <tbody>
+                                        {% for bill in bills %}
+                                                        <tr align="center">
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ bill.invoice_no }}</td>
+                                                            <td>{{ bill.mobile_no }}</td>
+                                                            <td>{{ bill.created_at }}</td>
+                                                            <td>{{ bill.created_by }}</td>
+                                                            <td>₹ {{ bill.amount|floatformat:2 }}</td>
+                                                            <td width="15%">
+                                                                {% if bill.rating %}
+                                                                    {{bill.bill_ratings}}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-button-action">
+                                                                    {% if bill.bill_file %}
+                                                                        <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                            <a href="{{bill.bill_file}}" download>
+                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </button>
+                                                                    {% endif %}
+
+                                                                    {% if bill.customer_added == False and bill.bill_file %}
+                                                                        <button type="button" data-toggle="tooltip" data-target="" title="Send Sms" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send SMS" data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}" data-mobile_no="{{bill.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                                    {% endif %}
+                                                                    <button type="button" title="View Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Bill">
+                                                                        <a href="{{ bill.url }}">
+                                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </button>
+                                                                    <!-- <button type="button" class="btn btn-link printBill"
+                                                                        data-toggle="tooltip" data-target="#exampleModal" id="view-modal-div"
+                                                                        data-original-title="Print Bill" data-url="{{bill.id}}"
+                                                                        data-id="{{bill.bill_url}}" 
+                                                                        data-url1="{{bill.bill_url}}"
+                                                                        data-table="{{bill.db_table}}" 
+                                                                        >
+                                                                        <i class="fa fa-print"></i>
+                                                                    </button> -->
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                            {% else %}
+                                {% for actions in merchant_action_permissions_list %}
+                                    {% if actions.module_id|lower == "Bill Info"|lower and actions.feature_id|lower == "Sent Bills"|lower %}
+                                        {% if actions.view_permission == "1" %}
+                                            <div class="col-md-12">
+                                    <form method="POST" action="/bill-info/" id="bill_info_filter_form">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-2">
+
+                                                <!-- <div class="form-group">
+                                                    <label>Select User</label>
+                                                    <div class="input-group mb-3">
+                                                        <select class="form-control" id="user_id" name="user">
+                                                        <option value="">Select</option>
+                                                        {% for user in merchant_user %}
+
+                                                            {% if user.user_id.id == custom_user %}  
+                                                                <option value="{{user.user_id.id}}" selected="">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+                                                            {% else %}
+                                                                <option value="{{user.user_id.id}}">{{user.user_id.first_name}} {{user.user_id.last_name}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div -->>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>From Date</label>
+                                                    <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>To Date</label>
+                                                    <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}" max="{% now 'Y-m-d' %}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="text-center mt-3 mb-3">
+                                                    <button type="submit" class="btn btn-primary">Search</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                        <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-primary card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-interface-6"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Bills Created</p>
+                                                                    <h4 class="card-title">{{total_bills_created}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-4">
+                                                <div class="card card-stats card-info card-round">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-3">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-coins text-success"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-9 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Total Amount Collected</p>
+                                                                    <h4 class="card-title">₹ {{total_amount_collected|floatformat:2}}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if merchant_business_category_id == 11 or merchant_business_category_id == 12 %}
+                                                <div class="col-sm-6 col-md-4">
+                                                    <div class="card card-stats card-primary card-round">
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    <div class="icon-big text-center">
+                                                                        <i class="flaticon-symbol-1"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-9 col-stats">
+                                                                    <div class="numbers">
+                                                                        <p class="card-category">Total Bills Flagged</p>
+                                                                        <h4 class="card-title">{{total_flag_bills}}</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <!--<div class="col-sm-6 col-md-3">
+                                                <div class="card card-stats card-success card-round">
+                                                    <div class="card-body ">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-analytics"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Sales</p>
+                                                                    <h4 class="card-title">$ 1,345</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="card card-stats card-secondary card-round">
+                                                    <div class="card-body ">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <div class="icon-big text-center">
+                                                                    <i class="flaticon-success"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-7 col-stats">
+                                                                <div class="numbers">
+                                                                    <p class="card-category">Order</p>
+                                                                    <h4 class="card-title">576</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    
+                                    <!-- <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                    <div class="row ">
+                                        <div class="col-md-12">
+                                            <div class="table-responsive">
+                                                <table id="add-row" class="display table table-hover">
+                                                    <thead>
+                                                        <tr align="center">
+                                                            <th>Sr. No.</th>
+                                                            <th>Invoice Number</th>
+                                                            <th>Mobile Number</th>
+                                                            <th>Created Date</th>
+                                                            <th>Created By</th>
+                                                            <th>Amount</th>
+                                                            <th>Rating</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        {% for bill in bills %}
+                                                        <tr align="center">
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ bill.invoice_no }}</td>
+                                                            <td>{{ bill.mobile_no }}</td>
+                                                            <td>{{ bill.bill_date }}</td>
+                                                            <td>{{ bill.created_by }}</td>
+                                                            <td>{{ bill.amount }}</td>
+                                                            <td width="15%">
+                                                                {% if bill.rating %}
+                                                                    {{bill.bill_ratings}}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-button-action">
+                                                                    {% if bill.bill_file %}
+                                                                        <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                            <a href="{{bill.bill_file}}" download>
+                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </button>
+                                                                    {% endif %}
+
+                                                                    {% if bill.customer_added == False and bill.bill_file %}
+                                                                        <button type="button" data-toggle="tooltip" data-target="" title="" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send SMS" data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}" data-mobile_no="{{bill.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <div class="card-body">
+                            <div class="table-responsive">
+
+                                <table id="add-row" class="display table table-hover" align="center">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>Sr. No.</th>
+                                            <th>Invoice Number</th>
+                                            <th>Mobile Number</th>
+                                            <th>Created Date</th>
+                                            <th>Created By</th>
+                                            <th>Amount</th>
+                                            <th>Rating</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+            
+                                    </tfoot>
+                                    <tbody>
+                                        {% for bill in bills %}
+                                                        <tr align="center">
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ bill.invoice_no }}</td>
+                                                            <td>{{ bill.mobile_no }}</td>
+                                                            <td>{{ bill.created_at }}</td>
+                                                            <td>{{ bill.created_by }}</td>
+                                                            <td>{{ bill.amount }}</td>
+                                                            <td width="15%">
+                                                                {% if bill.rating %}
+                                                                    {{bill.bill_ratings}}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-button-action">
+                                                                    {% if bill.bill_file %}
+                                                                        <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                            <a href="{{bill.bill_file}}" download>
+                                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </button>
+                                                                    {% endif %}
+
+                                                                    {% if bill.customer_added == False and bill.bill_file %}
+                                                                        <button type="button" data-toggle="tooltip" data-target="" title="Send Sms" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send SMS" data-url="{{bill.bill_id}}" data-id="{{bill.bill_id}}" data-db_table="{{bill.db_table}}" data-mobile_no="{{bill.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                                    {% endif %}
+
+                                                                    
+                                                                    <!-- <button type="button" class="btn btn-link printBill"
+                                                                        data-toggle="tooltip" data-target="#exampleModal" id="view-modal-div"
+                                                                        data-original-title="Print Bill" data-url="{{bill.id}}"
+                                                                        data-id="{{bill.bill_url}}" 
+                                                                        data-url1="{{bill.bill_url}}"
+                                                                        data-table="{{bill.db_table}}" 
+                                                                        >
+                                                                        <i class="fa fa-print"></i>
+                                                                    </button> -->
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="card-body permission-denied" style="display:none">
+                                    <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+        document.getElementById("from_date").onchange = function () {
+        var input = document.getElementById("to_date");
+        input.setAttribute("min", this.value);
+      }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+    
+
+    // merchant_url = 'http://157.230.228.250/my-bill-merchant/' + url1 + '/'
+
+    // parking_url = 'http://157.230.228.250/parking-lot-bill/' + url1 + '/'
+
+    // petrol_url = 'http://157.230.228.250/petrol-pump-bill/' + url1 + '/'
+    
+        jQuery(document).ready(function ($) {
+            $(".printBill").on("click", function () {
+                var table = $(this).data("table");
+                var url1 = $(this).data("id");
+
+                var customer_url = 'http://157.230.228.250/my-bill/' + url1 + '/';
+
+                var printWindow = window.open(customer_url, "to_print", "width=700,height=400,_blank");
+                var printAndClose = function () {
+                    if (printWindow.document.readyState == 'complete') {
+                        clearInterval(sched);
+                        printWindow.print();
+                        printWindow.close();
+                    }
+                }
+                var sched = setInterval(printAndClose, 200);
+            });
+        });
+</script>
+<script>
+    $(document).ready(function() {
+        var access_permission = $('#access_permission').val();
+        if(access_permission == 1)
+        {
+        $(".permission-denied").hide();
+        }
+        else
+        {
+        $(".permission-denied").show();
+        }
+    });
+</script>
+
+<script>
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+    return this.optional(element) || new Date(value) >= new Date($(params).val());
+},'Must be greater than from date.');
+
+$("#bill_info_filter_form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date"
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+$(document).ready(function() {
+  // $('input[name=to_date]').change(function() {
+  //         var to_date = $('#to_date').val();
+  //         document.getElementById('from_date').setAttribute("max", to_date);
+  // })
+
+  // $('input[name=from_date]').change(function() {
+  //   var from_date = $('#from_date').val();
+  //     document.getElementById('to_date').setAttribute("min", from_date);
+  // })
+})
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+
+
+$( "#bill_info_filter_form").validate({
+  rules: {
+  //   user: {
+  //     required: function (element) {
+  //         return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+  //       }
+  //   },
+  //   from_date: {
+  //       required: function (element) {
+  //         return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+  //       }
+  //   },
+  //   to_date: {
+  //       required: function (element) {
+  //         return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+  //       }
+    // },
+  },
+  messages: {
+    user: "Please Select at least one filter.",
+    from_date: "Please Select at least one filter.",
+    to_date: "Please Select at least one filter.",
+  },
+  errorPlacement: function (error, element) {
+        if (element.attr("name") == "user")
+            $("#billInfoFilterError").html(error);
+        if (element.attr("name") == "from_date")
+            $("#billInfoFilterError").html(error);
+        if (element.attr("name") == "to_date")
+            $("#billInfoFilterError").html(error);      
+    }
+})
+
+$(function() {
+    $('.SendBillBtn').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_no = $(this).attr("data-mobile_no");
+        $.ajax({
+            type: "POST",
+            url: "/bill-info-send-bill-sms-web/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_no},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+    
+$(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 10,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+<style>
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

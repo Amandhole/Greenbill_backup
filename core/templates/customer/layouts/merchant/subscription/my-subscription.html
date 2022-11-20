@@ -1,0 +1,156 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Recharge {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">My Subscriptions</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/my-subscription/">My Subscriptions</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <h4 class="card-title"></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            {% if subscription_name != "" %}
+                                <div class="col-sm-6 col-md-5">
+                                    <div class="card card-stats card-primary card-round">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <div class="icon-big text-center">
+                                                        <i class="flaticon-success"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-7 col-stats">
+                                                    <div class="numbers">
+                                                        <p class="card-category">Active Subscription</p>
+                                                        <h4 class="card-title">{{subscription_name}}</h4>
+                                                        <h6>Cost: ₹ {{purchase_cost}}</h6>
+                                                        <h6>Purchase Date: {{purchase_date|date:"d-m-Y"}}</h6>
+                                                        <h6>Per Bill Cost: ₹ {{ per_bill_cost }}</h6>
+                                                        <h6>Per Digital Bill: ₹ {{ digital_bill }}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="card card-stats card-primary card-round">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <div class="icon-big text-center">
+                                                        <i class="flaticon-coins"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-7 col-stats">
+                                                    <div class="numbers">
+                                                        <p class="card-category">₹ {{total_amount_avilable}}  Amount Balance</p>
+                                                        <h4 class="card-title"></h4>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                            </div>
+                            {% else %}
+                                <div class="col-md-8">
+                                    <h3 style="color: red">Please purchase Subscription</h3>
+                                </div>
+                            {% endif %}
+                            <div class="col-md-1"></div>
+                            
+                            <div class="col-md-3" style="text-align: right;">
+                                    <a href="/recharge/">
+                                        <button class="btn btn-primary btn-block">
+                                        <span class="btn-label">
+                                            <i class="fa fa-plus"></i>
+                                        </span>
+                                        &nbsp;Recharge
+                                        </button>
+                                    </a>
+                                    
+                                    <br><br>
+                                    <a href="/recharge-history/">
+                                        <button class="btn btn-primary btn-block">
+                                        <span class="btn-label">
+                                            <i class="fa fa-info"></i>
+                                        </span>
+                                        &nbsp;Recharge History
+                                        </button>
+                                    </a>
+                            </div>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

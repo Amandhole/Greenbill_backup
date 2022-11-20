@@ -1,0 +1,160 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Email Setting {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Settings</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">settings</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Email Setting</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Email</h4>
+                             <ul class="breadcrumbs">
+                                    <li class="nav-home">
+                                        <a href="/merchant-index/">
+                                            <i class="flaticon-home"></i>
+                                        </a>
+                                    </li>
+                                    <li class="separator">
+                                        <i class="flaticon-right-arrow"></i>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#">settings</a>
+                                    </li>
+                                    <li class="separator">
+                                        <i class="flaticon-right-arrow"></i>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#">Email Setting</a>
+                                    </li>
+                                </ul>
+                        </div>
+                        <!-- <div class="row">
+                            
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="tab" href="#profile" role="tab" aria-selected="false">Email</a>
+                                </li>
+                            </ul>
+                        </div> -->
+                    </div>
+                    <div class="card-body">
+                        <form class="form-control" action="/merchant-email-setting/" method="POST" id="email_form"
+                            name="email_form" autocomplete="off">
+                            {% csrf_token %}
+                            
+
+                            <div class="card-body">
+                                <div class="form-group form-show-validation row">
+                                    <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">From Name
+                                        <span class="required-label">*</span></label>
+                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                        <input type="text" class="form-control" id="from_name" name="from_name" placeholder="Enter Name" value="{{ data.from_name }}" required />
+                                    </div>
+                                </div>
+                                <div class="form-group form-show-validation row">
+                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">From Email Id<span class="required-label">*</span></label>
+                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                        <input type="text" class="form-control" id="from_email" name="from_email"
+                                            placeholder="Enter Email" value="{{ data.from_email }}"
+                                            required />
+                                    </div>
+                                </div>
+                                <div class="form-group form-show-validation row">
+                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Footer<span class="required-label">*</span></label>
+                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                        <textarea type="password" class="form-control" id="footer"
+                                            name="footer" placeholder="Enter Footer"
+                                            required >{{ data.footer }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group form-show-validation row">
+                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Signature<span class="required-label">*</span></label>
+                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                        <input type="text" class="form-control" id="signature" name="signature" placeholder="Enter Signature" value="{{ data.signature }}" required />
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="card-action">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="text-center mt-3 mb-3">
+                                        <input class="btn btn-primary" type="submit" value="Submit" />
+                                        <!-- <input class="btn btn-danger float-right" type="reset" value="Reset" /> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    $("#email_form").validate({
+        rules: {
+            from_name: {
+                required: true,
+            },
+            from_email: {
+                required: true,
+                email :true,
+            },
+            footer: {
+                required: true,
+            },
+            signature: {
+                required: true,
+            },
+        },
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

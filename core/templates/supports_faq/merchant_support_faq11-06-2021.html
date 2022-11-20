@@ -1,0 +1,639 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Support & FAQs {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Supports & FAQs</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Merchant Supports & FAQs</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                        <h4 class="card-title">Support & FAQ's</h4>
+                                        <ul class="breadcrumbs">
+                                            <li class="nav-home">
+                                                <a href="/merchant-index/">
+                                                    <i class="flaticon-home"></i>
+                                                </a>
+                                            </li>
+                                            <li class="separator">
+                                                <i class="flaticon-right-arrow"></i>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="/merchant-supports-faqs/">Support & FAQ's</a>
+                                            </li>
+                                        </ul>
+                                </div>
+                            </div>
+                            {% if is_merchant == True %}
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="col-md-3 form-control">
+                                            <div class="tab-content" id="v-pills-tabContent">
+                                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                                    aria-orientation="vertical">
+                                                    {% for category in merchant_module %}
+
+                                                    {% if forloop.counter == 1 %}
+                                                    <a class="nav-link active" id="v-pills-home-tab-{{ forloop.counter }}"
+                                                        data-toggle="pill" href="#v-pills-home-{{ forloop.counter }}" role="tab"
+                                                        aria-controls="v-pills-home-{{ forloop.counter }}"
+                                                        aria-selected="true">{{category.module_name}}</a>
+                                                    {% else %}
+                                                    <a class="nav-link" id="v-pills-home-tab-{{ forloop.counter }}" data-toggle="pill"
+                                                        href="#v-pills-home-{{ forloop.counter }}" role="tab"
+                                                        aria-controls="v-pills-home-{{ forloop.counter }}"
+                                                        aria-selected="true">{{category.module_name}}</a>
+                                                    {% endif %}
+
+
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9 form-control">
+
+                                            <div class="tab-content" id="v-pills-tabContent">
+
+                                                {% for category in merchant_module %}
+
+                                                {% if forloop.counter == 1 %}
+
+
+
+                                                <div class="tab-pane fade show active " id="v-pills-home-{{ forloop.counter }}"
+                                                    role="tabpanel" aria-labelledby="v-pills-home-tab-{{ forloop.counter }}">
+                                                    <ul class="nav nav-pills mb-5" id="pills-tab-{{ forloop.counter }}"
+                                                        role="tablist">
+
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="pills-contact-tab" -{{ forloop.counter }}
+                                                                data-toggle="pill" href="#pills-contact-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-contact-{{ forloop.counter }}"
+                                                                aria-selected="false">FAQ's</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="pills-profile-tab-{{ forloop.counter }}"
+                                                                data-toggle="pill" href="#pills-profile-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-profile-{{ forloop.counter }}"
+                                                                aria-selected="false">Video </a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link " id="pills-home-tab-{{ forloop.counter }}"
+                                                                data-toggle="pill" href="#pills-home-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-home-{{ forloop.counter }}"
+                                                                aria-selected="true">Blog</a>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                    <div class="tab-content" id="pills-tabContent-{{ forloop.counter }}">
+
+                                                       
+                                                         <div class="tab-pane fade show active" id="pills-contact-{{ forloop.counter }}"
+                                                            role="tabpanel"
+                                                            aria-labelledby="pills-contact-tab-{{ forloop.counter }}">
+
+
+                                                            <div class="tab-content" id="v-pills-tabContent">
+                                                                <div class="tab-pane fade active show" id="v-pills-quality-icons"
+                                                                    role="tabpanel" aria-labelledby="v-pills-quality-tab-icons">
+                                                                    <div class="accordion accordion-secondary">
+                                                                        {% for faq in category.faq_details %}
+                                                                        <div class="card">
+                                                                            <div class="card-header collapsed" id="heading"
+                                                                                data-toggle="collapse" data-target="#{{ faq.id }}"
+                                                                                aria-expanded="false" aria-controls="collapseone"
+                                                                                role="button">
+                                                                                <div class="span-icon">
+                                                                                    <div class="fas fa-question-circle"
+                                                                                        style="color: #007bff">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="span-title" style="color: #007bff">
+                                                                                    {{ faq.question }}
+                                                                                </div>
+                                                                                <div class="span-mode" style="color: #007bff"></div>
+                                                                            </div>
+
+                                                                            <div id="{{ faq.id }}" class="collapse"
+                                                                                aria-labelledby="heading" data-parent="#accordion"
+                                                                                role="button">
+                                                                                <div class="card-body">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-12">
+                                                                                            {{ faq.answer }}
+                                                                                        </div>
+                                                                                    </div>
+
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div class="tab-pane fade" id="pills-profile-{{ forloop.counter }}"
+                                                            role="tabpanel"
+                                                            aria-labelledby="pills-profile-tab-{{ forloop.counter }}">
+                                                            {% for video in category.video_details %}
+                                                            <center>
+                                                                <h4 class="center">{{video.video_url|safe}}</h4>
+                                                            </center>
+                                                            {% endfor %}
+
+                                                        </div>
+                                                         <div class="tab-pane fade " id="pills-home-{{ forloop.counter }}"
+                                                            role="tabpanel" aria-labelledby="pills-home-tab-{{ forloop.counter }}">
+
+                                                            {% for blog in category.blog_details %}
+                                                            <h2>{{blog.blog_title}}</h2>
+
+                                                            <p class="show-read-more" data-comments="{{ blog.blog }}">
+                                                                {{blog.blog|safe}}</p>
+                                                            {% endfor %}
+
+                                                        </div>
+
+                                                       
+
+                                                    </div>
+                                                </div>
+                                                {% else %}
+
+                                                <div class="tab-pane fade show " id="v-pills-home-{{ forloop.counter }}"
+                                                    role="tabpanel" aria-labelledby="v-pills-home-tab-{{ forloop.counter }}">
+                                                    <ul class="nav nav-pills mb-3" id="pills-tab-{{ forloop.counter }}"
+                                                        role="tablist">
+
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" id="pills-contact-tab-{{ forloop.counter }}"
+                                                                data-toggle="pill" href="#pills-contact-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-contact-{{ forloop.counter }}"
+                                                                aria-selected="false">FAQ's</a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" id="pills-profile-tab-{{ forloop.counter }}"
+                                                                data-toggle="pill" href="#pills-profile-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-profile{{ forloop.counter }}"
+                                                                aria-selected="false">Video </a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link " id="pills-home-tab-{{ forloop.counter }}"
+                                                                data-toggle="pill" href="#pills-home-{{ forloop.counter }}"
+                                                                role="tab" aria-controls="pills-home{{ forloop.counter }}"
+                                                                aria-selected="true">Blog </a>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                    <div class="tab-content" id="pills-tabContent-{{ forloop.counter }}">
+
+                                                        <div class="tab-pane fade show active" id="pills-contact-{{ forloop.counter }}"
+                                                            role="tabpanel"
+                                                            aria-labelledby="pills-contact-tab-{{ forloop.counter }}">
+
+
+                                                            <div class="tab-content" id="v-pills-tabContent">
+                                                                <div class="tab-pane fade active show" id="v-pills-quality-icons"
+                                                                    role="tabpanel" aria-labelledby="v-pills-quality-tab-icons">
+                                                                    <div class="accordion accordion-secondary">
+                                                                        {% for faq in category.faq_details %}
+                                                                        <div class="card">
+                                                                            <div class="card-header collapsed" id="heading"
+                                                                                data-toggle="collapse" data-target="#{{ faq.id }}"
+                                                                                aria-expanded="false" aria-controls="collapseone"
+                                                                                role="button">
+                                                                                <div class="span-icon">
+                                                                                    <div class="fas fa-question-circle"
+                                                                                        style="color: #007bff">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="span-title" style="color: #007bff">
+                                                                                    {{ faq.question }}
+                                                                                </div>
+                                                                                <div class="span-mode" style="color: #007bff"></div>
+                                                                            </div>
+
+                                                                            <div id="{{ faq.id }}" class="collapse"
+                                                                                aria-labelledby="heading" data-parent="#accordion"
+                                                                                role="button">
+                                                                                <div class="card-body">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-12">
+                                                                                            {{ faq.answer }}
+                                                                                        </div>
+                                                                                    </div>
+
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+
+
+                                                        <div class="tab-pane fade" id="pills-profile-{{ forloop.counter }}"
+                                                            role="tabpanel"
+                                                            aria-labelledby="pills-profile-tab-{{ forloop.counter }}">
+                                                             {% for video in category.video_details %}
+                                                            <center>
+                                                                <h4 class="center">{{video.video_url|safe}}</h4>
+                                                            </center>
+                                                            {% endfor %}
+
+                                                        </div>
+                                                        <div class="tab-pane fade " id="pills-home-{{ forloop.counter }}"
+                                                            role="tabpanel" aria-labelledby="pills-home-tab-{{ forloop.counter }}">
+
+                                                            {% for blog in category.blog_details %}
+                                                            <h2>{{blog.blog_title}}</h2>
+
+                                                            <p class="show-read-more" data-comments="{{ blog.blog }}">
+                                                                {{blog.blog|safe}}</p>
+                                                            {% endfor %}
+                                                        </div>
+
+                                                        
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {% else %}
+                                {% for actions in merchnat_action_permissions_list %}
+                                    {% if actions.module_id|lower == "Support & FAQ's"|lower and actions.feature_id|lower == "Support & FAQ's"|lower %}
+                                        {% if actions.view_permission == "1" %}
+                                            <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                            <div class="card-body">
+                                                <div class="row">
+
+                                                    <div class="col-md-3 form-control">
+                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                                                aria-orientation="vertical">
+                                                                {% for category in merchant_module %}
+
+                                                                {% if forloop.counter == 1 %}
+                                                                <a class="nav-link active" id="v-pills-home-tab-{{ forloop.counter }}"
+                                                                    data-toggle="pill" href="#v-pills-home-{{ forloop.counter }}" role="tab"
+                                                                    aria-controls="v-pills-home-{{ forloop.counter }}"
+                                                                    aria-selected="true">{{category.module_name}}</a>
+                                                                {% else %}
+                                                                <a class="nav-link" id="v-pills-home-tab-{{ forloop.counter }}" data-toggle="pill"
+                                                                    href="#v-pills-home-{{ forloop.counter }}" role="tab"
+                                                                    aria-controls="v-pills-home-{{ forloop.counter }}"
+                                                                    aria-selected="true">{{category.module_name}}</a>
+                                                                {% endif %}
+
+
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-9 form-control">
+
+                                                        <div class="tab-content" id="v-pills-tabContent">
+
+                                                            {% for category in merchant_module %}
+
+                                                            {% if forloop.counter == 1 %}
+
+
+
+                                                            <div class="tab-pane fade show active " id="v-pills-home-{{ forloop.counter }}"
+                                                                role="tabpanel" aria-labelledby="v-pills-home-tab-{{ forloop.counter }}">
+                                                                <ul class="nav nav-pills mb-5" id="pills-tab-{{ forloop.counter }}"
+                                                                    role="tablist">
+
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link active" id="pills-contact-tab" -{{ forloop.counter }}
+                                                                            data-toggle="pill" href="#pills-contact-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-contact-{{ forloop.counter }}"
+                                                                            aria-selected="false">FAQ's</a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link" id="pills-profile-tab-{{ forloop.counter }}"
+                                                                            data-toggle="pill" href="#pills-profile-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-profile-{{ forloop.counter }}"
+                                                                            aria-selected="false">Video </a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link " id="pills-home-tab-{{ forloop.counter }}"
+                                                                            data-toggle="pill" href="#pills-home-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-home-{{ forloop.counter }}"
+                                                                            aria-selected="true">Blog</a>
+                                                                    </li>
+                                                                    
+                                                                </ul>
+                                                                <div class="tab-content" id="pills-tabContent-{{ forloop.counter }}">
+
+                                                                   
+                                                                     <div class="tab-pane fade show active" id="pills-contact-{{ forloop.counter }}"
+                                                                        role="tabpanel"
+                                                                        aria-labelledby="pills-contact-tab-{{ forloop.counter }}">
+
+
+                                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                                            <div class="tab-pane fade active show" id="v-pills-quality-icons"
+                                                                                role="tabpanel" aria-labelledby="v-pills-quality-tab-icons">
+                                                                                <div class="accordion accordion-secondary">
+                                                                                    {% for faq in category.faq_details %}
+                                                                                    <div class="card">
+                                                                                        <div class="card-header collapsed" id="heading"
+                                                                                            data-toggle="collapse" data-target="#{{ faq.id }}"
+                                                                                            aria-expanded="false" aria-controls="collapseone"
+                                                                                            role="button">
+                                                                                            <div class="span-icon">
+                                                                                                <div class="fas fa-question-circle"
+                                                                                                    style="color: #007bff">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="span-title" style="color: #007bff">
+                                                                                                {{ faq.question }}
+                                                                                            </div>
+                                                                                            <div class="span-mode" style="color: #007bff"></div>
+                                                                                        </div>
+
+                                                                                        <div id="{{ faq.id }}" class="collapse"
+                                                                                            aria-labelledby="heading" data-parent="#accordion"
+                                                                                            role="button">
+                                                                                            <div class="card-body">
+                                                                                                <div class="row">
+                                                                                                    <div class="col-md-12">
+                                                                                                        {{ faq.answer }}
+                                                                                                    </div>
+                                                                                                </div>
+
+
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {% endfor %}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                    <div class="tab-pane fade" id="pills-profile-{{ forloop.counter }}"
+                                                                        role="tabpanel"
+                                                                        aria-labelledby="pills-profile-tab-{{ forloop.counter }}">
+                                                                        {% for video in category.video_details %}
+                                                                        <center>
+                                                                            <h4 class="center">{{video.video_url|safe}}</h4>
+                                                                        </center>
+                                                                        {% endfor %}
+
+                                                                    </div>
+                                                                     <div class="tab-pane fade " id="pills-home-{{ forloop.counter }}"
+                                                                        role="tabpanel" aria-labelledby="pills-home-tab-{{ forloop.counter }}">
+
+                                                                        {% for blog in category.blog_details %}
+                                                                        <h2>{{blog.blog_title}}</h2>
+
+                                                                        <p class="show-read-more" data-comments="{{ blog.blog }}">
+                                                                            {{blog.blog|safe}}</p>
+                                                                        {% endfor %}
+
+                                                                    </div>
+
+                                                                   
+
+                                                                </div>
+                                                            </div>
+                                                            {% else %}
+
+                                                            <div class="tab-pane fade show " id="v-pills-home-{{ forloop.counter }}"
+                                                                role="tabpanel" aria-labelledby="v-pills-home-tab-{{ forloop.counter }}">
+                                                                <ul class="nav nav-pills mb-3" id="pills-tab-{{ forloop.counter }}"
+                                                                    role="tablist">
+
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link active" id="pills-contact-tab-{{ forloop.counter }}"
+                                                                            data-toggle="pill" href="#pills-contact-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-contact-{{ forloop.counter }}"
+                                                                            aria-selected="false">FAQ's</a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link" id="pills-profile-tab-{{ forloop.counter }}"
+                                                                            data-toggle="pill" href="#pills-profile-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-profile{{ forloop.counter }}"
+                                                                            aria-selected="false">Video </a>
+                                                                    </li>
+                                                                    <li class="nav-item">
+                                                                        <a class="nav-link " id="pills-home-tab-{{ forloop.counter }}"
+                                                                            data-toggle="pill" href="#pills-home-{{ forloop.counter }}"
+                                                                            role="tab" aria-controls="pills-home{{ forloop.counter }}"
+                                                                            aria-selected="true">Blog </a>
+                                                                    </li>
+                                                                    
+                                                                </ul>
+                                                                <div class="tab-content" id="pills-tabContent-{{ forloop.counter }}">
+
+                                                                    <div class="tab-pane fade show active" id="pills-contact-{{ forloop.counter }}"
+                                                                        role="tabpanel"
+                                                                        aria-labelledby="pills-contact-tab-{{ forloop.counter }}">
+
+
+                                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                                            <div class="tab-pane fade active show" id="v-pills-quality-icons"
+                                                                                role="tabpanel" aria-labelledby="v-pills-quality-tab-icons">
+                                                                                <div class="accordion accordion-secondary">
+                                                                                    {% for faq in category.faq_details %}
+                                                                                    <div class="card">
+                                                                                        <div class="card-header collapsed" id="heading"
+                                                                                            data-toggle="collapse" data-target="#{{ faq.id }}"
+                                                                                            aria-expanded="false" aria-controls="collapseone"
+                                                                                            role="button">
+                                                                                            <div class="span-icon">
+                                                                                                <div class="fas fa-question-circle"
+                                                                                                    style="color: #007bff">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="span-title" style="color: #007bff">
+                                                                                                {{ faq.question }}
+                                                                                            </div>
+                                                                                            <div class="span-mode" style="color: #007bff"></div>
+                                                                                        </div>
+
+                                                                                        <div id="{{ faq.id }}" class="collapse"
+                                                                                            aria-labelledby="heading" data-parent="#accordion"
+                                                                                            role="button">
+                                                                                            <div class="card-body">
+                                                                                                <div class="row">
+                                                                                                    <div class="col-md-12">
+                                                                                                        {{ faq.answer }}
+                                                                                                    </div>
+                                                                                                </div>
+
+
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {% endfor %}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+
+                                                                    <div class="tab-pane fade" id="pills-profile-{{ forloop.counter }}"
+                                                                        role="tabpanel"
+                                                                        aria-labelledby="pills-profile-tab-{{ forloop.counter }}">
+                                                                         {% for video in category.video_details %}
+                                                                        <center>
+                                                                            <h4 class="center">{{video.video_url|safe}}</h4>
+                                                                        </center>
+                                                                        {% endfor %}
+
+                                                                    </div>
+                                                                    <div class="tab-pane fade " id="pills-home-{{ forloop.counter }}"
+                                                                        role="tabpanel" aria-labelledby="pills-home-tab-{{ forloop.counter }}">
+
+                                                                        {% for blog in category.blog_details %}
+                                                                        <h2>{{blog.blog_title}}</h2>
+
+                                                                        <p class="show-read-more" data-comments="{{ blog.blog }}">
+                                                                            {{blog.blog|safe}}</p>
+                                                                        {% endfor %}
+                                                                    </div>
+
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            {% endfor %}
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                <div class="card-body permission-denied" style="display:none">
+                                  <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                                </div>
+                            {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        var maxLength = 250;
+        $(".show-read-more").each(function () {
+            var myStr = $(this).text();
+            if ($.trim(myStr).length > maxLength) {
+                var newStr = myStr.substring(0, maxLength);
+                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                $(this).empty().html(newStr);
+                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                $(this).append('<span class="more-text">' + removedStr + '</span>');
+            }
+        });
+        $(".read-more").click(function () {
+            $(this).siblings(".more-text").contents().unwrap();
+            $(this).remove();
+        });
+    });
+
+</script>
+<style>
+    .show-read-more .more-text {
+        display: none;
+    }
+</style>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+
+
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+{% endblock javascripts %}

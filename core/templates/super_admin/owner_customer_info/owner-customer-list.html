@@ -1,0 +1,747 @@
+{% extends "layouts/base.html" %} {% block title %} Customer Info {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+    text-align: left !important;
+    }
+    .table td, .table th{
+        padding: 5px !important;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Customer Information</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer_list/">Customer Information</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>       
+                <div class="card-body center">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card-body">
+                                    <div class="table-responsive">
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-sm-6 col-md-3">
+                                              <div class="card card-stats card-round">
+                                                <div class="card-body">
+                                                  <div class="row align-items-center">
+                                                    <div class="col-icon">
+                                                      <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                        <i class="fas fa fas fa-user"></i>
+                                                      </div>
+                                                    </div>
+                                                    <div class="col col-stats ml-3 ml-sm-0">
+                                                      <div class="numbers">
+                                                        <p class="card-category">Total customer</p>
+                                                        <h4 class="card-title">{{total_bill_count}}</h4>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        <!-- <table id="add-row" class="display table  table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Mobile No.</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th> 
+                                                    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for object in data %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td><a href="/customer_list/{{ object.mobile_no }}">{{ object.mobile_no }}</a></td>
+                                                    <td>{{ object.first_name }}</td>
+                                                    <td>{{ object.cust_email }}</td>
+                                                    
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                            <button type="button" data-toggle="tooltip" data-target=" #myViewModal"
+                                                                title="" class="btn btn-link btn-primary btn-lg viewBtn"
+                                                                id="edit-modal-div" data-original-title="View customer info"
+                                                                data-url="{{object.id}}" data-id="{{object.id}}"
+                                                                data-firstname="{{ object.first_name }}"
+                                                                data-lastname="{{ object.last_name }}"
+                                                                data-email="{{ object.cust_email }}"
+                                                                data-mobile_num="{{ object.mobile_no }}"
+                                                                data-area="{{ object.customer_area }}"
+                                                                data-pin_code="{{ object.customer_pin_code }}">
+                                                                <i class="fa fa-eye"></i>
+                                                            </button>
+
+                                                            <button type="button" data-toggle="tooltip" data-target="" title=""
+                                                                class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                                id="deactivate-modal-div" data-original-title="Delete Customer"
+                                                                data-url="{{object.id}}" data-id="{{object.id}}">
+                                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+
+                                        </table> -->
+                                        <div class="card-body">
+                                        <div class="table-responsive">
+                                        <table id="add-row" class="display table table-hover">
+                                            <thead>
+                                                <tr>
+                                                     <th id="type_filter_3" colspan="2"></th>
+                                                    <th id="type_filter_4" colspan="2"></th>
+                                                    <th colspan="5"></th>
+                                                </tr>
+                                                <tr align="center">
+                                                    <th>Sr. No</th>
+                                                    <!-- <th>Sr No</th> -->
+                                                    <th>Mobile Number</th>
+                                                    <th>Email</th>
+                                                    <th >Name</th>
+                                                    <th style="width:15%">State</th>
+                                                    <th>City</th>  
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for data in data %}
+                                                <tr align="center">
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <!-- <td>{{forloop.counter}}</td> -->
+                                                    <td><a href="/customer_list/{{ data.mobile_no }}">{{ data.mobile_no }}</a></td>
+                                                    <td>{{ data.email }}</td>
+                                                    <td>{{ data.first_name }} {{ data.last_name }}</td>
+                                                    <td> {{ data.c_state }} </td>
+                                                    <td>  
+                                                    {{data.c_city}} 
+                                                    </td>
+                                                    <!-- <td> -->
+<!--                                                         <div class="form-button-action">
+                                                            {% if data.bill_file %}
+                                                                <button type="button" title="Download Bill" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="Download Bill">
+                                                                    <a href="{{data.bill_file}}" download>
+                                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </button>
+                                                            {% endif %}
+
+                                                            {% if data.customer_added == False and data.bill_file %}
+                                                                <button type="button" data-toggle="tooltip" data-target="" title="" class="btn btn-link btn-primary btn-lg SendBillBtn" id="deactivate-modal-div" data-original-title="Send " data-url="{{data.bill_id}}" data-id="{{data.bill_id}}" data-db_table="{{data.db_table}}" data-mobile_no="{{data.mobile_no}}"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+                                                            {% endif %}
+                                                        </div> -->
+                                                    <!-- </td> -->
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Role Modal -->
+
+<div class="modal fade" id="uploadcsv" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+
+        <form method="POST" class="form" name="csvfileupload" action="/customer-csv-upload/" method="POST"
+            enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Import Customer</h2>
+
+                    <h6 class="modal-title w-100 text-center">Download CSV sample File Here<a
+                            href="http://157.230.228.250/media/customer_csv_sample/sample_csv.csv"
+                            download> Download File</a></h6>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="file">Upload File</label>
+                        <input type="file" name="csvfileupload" class="form-control" value="" id="csvfileupload">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Import" data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myDisplayModal" role="dialog">
+    <div class="modal-dialog modal-lg" style="width: 400px; height: 500px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center"><b>Customer Information</b></h2>
+            </div>
+
+            <div class="modal-body" id="paraclear">
+
+
+
+                <b id="c_fname" name="c_fname"></b><br><br>
+                <b id="c_lname" name="c_lname"></b><br><br>
+                <b id="c_email" name="c_email"> </b><br><br>
+                <b id="c_mobile" name="c_mobile"></b><br><br>
+                <b id="c_area" name="c_area"></b><br><br>
+                <b id="c_pin_code" name="c_pin_code"></b><br><br>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    var editmodaldiv = $("#edit-modal-div");
+    $(".editBtn").on("click", function () {
+        var id = $(this).data('id')
+        var firstname = $(this).data('firstname');
+        var lastname = $(this).data('lastname');
+        var email = $(this).data('email');
+        var mobile = $(this).data('mobile_num');
+        var cust_area = $(this).data('area');
+        var cust_pin_code = $(this).data('pin_code');
+
+        $("#mid").val(id)
+        $('#edit_first_name').val(firstname)
+        $('#edit_last_name').val(lastname)
+        $('#edit_email').val(email)
+        $('#edit_mobile').val(mobile)
+        $('#edit_area').val(cust_area);
+        $('#edit_pin_code').val(cust_pin_code);
+        $("#myEditModal").modal();
+
+    });
+
+
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var cust_fname = $(this).data("firstname");
+        var cust_lname = $(this).data('lastname');
+        var cust_email = $(this).data('email');
+        var cust_mobile = $(this).data('mobile_num');
+        var cust_area = $(this).data('area');
+        var cust_pin_code = $(this).data('pin_code');
+
+
+
+        $('#c_fname').empty().append("First Name: " + cust_fname);
+        $('#c_lname').empty().append("Last Name: " + cust_lname);
+        $('#c_email').empty().append("Email: " + cust_email);
+        $('#c_mobile').empty().append("Mobile No.: " + cust_mobile);
+        $('#c_area').empty().append("Area: " + cust_area);
+        $('#c_pin_code').empty().append("Pin Code: " + cust_pin_code);
+        $("#myDisplayModal").modal();
+
+    });
+
+
+    var editmodaldiv = $("#uploadcsv-modal-div");
+    $(".uploadbtn").on("click", function () {
+
+        $("#uploadcsv").modal();
+
+    });
+    uploadcsv
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-customer-list/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Customer has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                    text: 'Customer has been deleted',
+                                    icon: 'success',
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+
+
+$('#cust_mobile_num').keyup(function () {
+    var c_num = $("#cust_mobile_num").val()
+    if(c_num.length == 10){
+        $.ajax({
+            type: "POST",
+            url: "/check_number/" + c_num,
+            data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+            success: function (response) {
+                if(response.success == true){
+                    Swal.fire(
+                    {
+                        title :'Exist',
+                        icon: "warning",
+                        text : 'Contact Number Already Exist',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton:false,
+                        timer : 1500
+                    })
+
+                    $("#save-btn").prop('disabled', true);
+                }
+                else{
+                    $("#save-btn").prop('disabled', false);
+                }
+            },
+        })
+    }
+});
+
+    // jQuery.validator.addMethod("check_mobile_exist", function (value, element) {
+    //     var c_num = $("#cust_mobile_num").val()
+    //     if(c_num.length == 10){
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/check_number/" + c_num,
+    //             data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+    //             success: function (response) {
+    //                 console.log(response.success)
+    //                 if(response.success == false){
+    //                     console.log("hii")
+    //                     return true;
+    //                 }
+    //                 else {
+    //                     return false;
+    //                     console.log("bye")
+    //                 };
+    //             },
+    //         })
+    //     }
+    // }, "Contact Number Already Exist");
+
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+        if (/^[6-9][0-9]{9}$/.test(value)) {
+            return true;   // PASS validation when REGEX matches
+        } else {
+            return false;  // FAIL validation
+        };
+    }, "Please enter valid Mobile Number");
+    $("#form").validate({
+        rules: {
+            cust_first_name: {
+                required: true,
+
+            },
+            cust_last_lname: {
+                required: true,
+
+            },
+
+            cust_email: {
+                
+                email: true,
+
+            },
+            cust_mobile_num: {
+                mobile_number: true,
+                required: true,
+                // check_mobile_exist: true
+            },
+            customer_pin_code:{
+                maxlength:6,
+                digits:true
+            }
+        },
+        messages: {
+            cust_first_name: {
+                required: "First Name is Required",
+
+            },
+            cust_last_lname: {
+                required: "Last Name is Required",
+
+
+            },
+            cust_email: {
+                
+
+            },
+            cust_mobile_num: {
+                required: "Mobile Number is Required",
+            }
+        }
+    });
+
+    $("#edit-customer-form").validate({
+        rules: {
+            edit_fname: {
+                required: true,
+
+            },
+            edit_lname: {
+                required: true,
+
+            },
+
+            edit_email: {
+               
+                email: true,
+
+            },
+            edit_mobile: {
+                mobile_number: true,
+                required: true,
+                // check_mobile_exist: true
+            },
+            edit_pin_code:{
+                maxlength:6,
+                digits:true
+            }
+        },
+        messages: {
+            edit_fname: {
+                required: "First Name is Required",
+
+            },
+            edit_lname: {
+                required: "Last Name is Required",
+
+
+            },
+            edit_email: {
+               
+
+            },
+            edit_mobile: {
+                required: "Mobile Number is Required",
+            }
+        }
+    });
+ 
+</script>
+<script>
+    $(document).ready(function() {
+      $('#add-row').DataTable({
+          dom: 'lBfrtip',
+          "ordering": false,
+          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          buttons: [
+             'excel', 'pdf', 'print'
+          ],
+          initComplete: function () {
+          this.api().columns([3,4]).every( function () {
+              var column = this;
+              var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+              
+              .appendTo( $("#type_filter_" + column[0][0]).empty())
+                  
+              .on( 'change', function () {
+
+              var val = $(':selected', select).map(function(index, element) {
+              return $.fn.dataTable.util.escapeRegex($(this).val());
+              }).toArray().join('|');
+                    
+              column
+                  .search( val ? '^'+val+'$' : '', true, false )
+                  .draw();
+              } );
+
+              column.data().unique().sort().each( function ( d, j ) {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              });
+          });        
+        }
+      });
+
+      $("#column_id_3").select2({
+        placeholder:" Select State",
+        closeOnSelect: true,
+        width: '50%',
+      })
+
+      $("#column_id_4").select2({
+        placeholder:" Select City",
+        closeOnSelect: true,
+        width: '50%',
+      })
+
+    });
+  </script>
+<style>
+        /*.error {
+            color: red;
+        }*/
+
+        /*.c1 {
+            border: 2px red ridge;
+        }*/
+
+        /* Datatable => to float button right  */
+            div.dt-buttons {
+                position: relative;
+                float: right;
+                border-radius: 20px;
+            }
+
+            /* Datatable => rounded corner button  */
+            button.dt-button {
+                border-radius: 20px;
+            }
+
+            .permission-denied {
+                color: red;
+                display: flex;
+                justify-content: center;
+                font-size: 25px;
+                font-weight: 500;
+            }
+    </style>
+
+
+<script>
+        $(document).ready(function() {
+            var access_permission = $('#access_permission').val();
+            if(access_permission == 1)
+            {
+            $(".permission-denied").hide();
+            }
+            else
+            {
+            $(".permission-denied").show();
+            }
+        });
+</script>
+    
+<script>
+    
+    $(document).ready(function() {
+      $('input[name=to_date]').change(function() {
+              var to_date = $('#to_date').val();
+              document.getElementById('from_date').setAttribute("max", to_date);
+      })
+    
+      $('input[name=from_date]').change(function() {
+        var from_date = $('#from_date').val();
+          document.getElementById('to_date').setAttribute("min", from_date);
+      })
+    })
+    
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    
+    $( "#bill_info_filter_form").validate({
+      rules: {
+        user: {
+          required: function (element) {
+              return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+            }
+        },
+        from_date: {
+            required: function (element) {
+              return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+            }
+        },
+        to_date: {
+            required: function (element) {
+              return $("#user_id").val() == "" && $("#from_date").val() == "" && $("#to_date").val() == "";
+            }
+        },
+      },
+      messages: {
+        user: "Please Select at least one filter.",
+        from_date: "Please Select at least one filter.",
+        to_date: "Please Select at least one filter.",
+      },
+      errorPlacement: function (error, element) {
+            if (element.attr("name") == "user")
+                $("#billInfoFilterError").html(error);
+            if (element.attr("name") == "from_date")
+                $("#billInfoFilterError").html(error);
+            if (element.attr("name") == "to_date")
+                $("#billInfoFilterError").html(error);      
+        }
+    })
+    
+    $(function() {
+        $('.SendBillBtn').on('click', function(e) {
+            e.preventDefault(); 
+            var id = $(this).attr("data-id");
+            var db_table = $(this).attr("data-db_table");
+            var mobile_no = $(this).attr("data-mobile_no");
+            $.ajax({
+                type: "POST",
+                url: "/customer-info-send-bill-sms-web-owner/"+id+"/",
+                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_no},
+                beforeSend: function () {
+                    swal.fire({
+                        imageUrl: '../../../media/loading.gif',
+                        showConfirmButton: false,
+                        confirmButtonClass: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    });
+                    $(".swal2-modal").css('background-color', 'transparent');
+                },
+                success: function(response) {
+                    if(response["status"] == "success"){
+                    Swal.fire({
+                    text:'SMS send successfully',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                        })
+                    .then(function() {
+                    location.reload();
+                    });
+                    }
+                    else if(response["status"] == "error"){
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Fail to send SMS.", 
+                    timer:1500,
+                    showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                    }
+                    else{
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Something went wrong!", 
+                    timer:1500,
+                    showConfirmButton:false,
+                    })
+                    .then(function() {
+                        location.reload();
+                    });   
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                    icon:"error",
+                    title: "Oops...", 
+                    text: "Something went wrong!", 
+                    confirmButtonClass: "btn-success",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                    })
+                    .then(function() {
+                    location.reload();
+                    });       
+                },
+                complete: function (data) {
+                    // Hide image container
+                    $("#loader").hide();
+                }
+            });
+        });
+    });
+        
+</script>
+   
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

@@ -1,0 +1,324 @@
+{% extends "layouts/partner-base.html" %}
+{% load custom_tags %}
+{% block title %} Commission {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+</style>
+
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">{% if partner_object_id.p_category == "Software Partner" %}Spending History{% else %}Commission History{% endif %}</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Partner Info</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/view-partner-monthly-commision/{{par_id}}/">{% if partner_object_id.p_category == "Software Partner" %}Spending History{% else %}Commission History{% endif %}</a>
+                                </li>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                                
+                          </div>
+                        </div>
+                    </div>
+
+                    
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Month</th>
+                                            <th>Year</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <!-- <th>Action</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for object in commision_record %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                {% if object.month == '1' %}
+                                                January
+                                                {% elif object.month == '2' %}
+                                                February
+                                                {% elif object.month == '3' %}
+                                                March
+                                                {% elif object.month == '4' %}
+                                                April
+                                                {% elif object.month == '5' %}
+                                                May
+                                                {% elif object.month == '6' %}
+                                                June
+                                                {% elif object.month == '7' %}
+                                                July
+                                                {% elif object.month == '8' %}
+                                                August
+                                                {% elif object.month == '9' %}
+                                                September
+                                                {% elif object.month == '10' %}
+                                                October
+                                                {% elif object.month == '11' %}
+                                                November
+                                                {% else %}
+                                                December
+                                                {% endif %}
+                                            </td>
+                                            <td width="20%">{{ object.year }}</td>
+                                            
+                                            <td>{{ object.amount|floatformat:2 }}</td>
+                                            <td>
+                                                {% if object.status == '1' %}
+                                                Paid
+                                                {% else %}
+                                                Pending
+                                                {% endif %}
+                                            </td>
+                                           <!--  <td>
+                                                <div class="form-button-action">
+                                                    {% if object.status == '1' %} -->
+                                                    <!-- <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deletePaymentLinkBtn" id="delete_role_btn" data-id='{{object.id}}' data-original-title="Payment" disabled="">
+                                                    <i class="fa fa-credit-card"></i>
+                                                                      </button> -->----
+
+                                                <!--   {% else %}
+                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deletePaymentLinkBtn" id="delete_role_btn" data-id='{{object.id}}' data-original-title="Payment">
+                                                                          <i class="fa fa-credit-card"></i>
+                                                                      </button>
+                                                {% endif %}
+                                                      
+                                                </div>
+                                  
+                                            </td> -->
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+</script>
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+<script>
+jQuery.validator.addMethod("mobile_number", function(value, element){
+		if (/^[6-9][0-9]{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Please enter valid Mobile Number");
+    
+$( "#create_payment_link" ).validate({
+  rules: {
+    mobile_no: {
+      required: true,
+      mobile_number: true,
+      maxlength: 10,
+      minlength: 10,
+      digits: true
+    },
+    email:{
+        required: true,
+        email: true
+    },
+    name: {
+        required: true,
+        minlength:3,
+    },
+    amount: {
+        required: true,
+        min:1
+    },
+    description: {
+        required: true
+    }
+  },
+  messages: {
+    mobile_no: {
+        required: "Mobile Number field is required.",
+        maxlength: "Mobile Number must contain 10 digits.",
+        minlength: "Mobile Number must contain 10 digits.",
+        digits: "Only digits are acceptable."
+    },
+    email: "Email filed is required.",
+    name: "Name field is required.",
+    description: "Description field is required."
+  },
+});
+
+  
+$(function() {
+    $('.deletePaymentLinkBtn').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Payement Transfer!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Transfer!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            $.ajax({
+                type: "POST",
+                url: "/add-commision-status/"+id+"/",
+                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                success: function(response) {
+
+                    if(response['success'] == true){
+                        Swal.fire({
+                            title: 'Transfer!',
+                            text: 'Payment Transfer Successfully',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                    else{
+                        Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Fail to Transfer.", 
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                
+                },
+                error: function() {
+                    Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                    .then(function() {
+                    location.reload();
+                    });       
+                }
+            });
+            }
+        })
+    });
+});
+
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "ordering": false,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+		});
+	</script>
+
+{% endblock javascripts %}

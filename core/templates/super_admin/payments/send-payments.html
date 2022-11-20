@@ -1,0 +1,544 @@
+{% extends "layouts/base.html" %}
+{% load custom_tags %}
+{% block title %} Create Payment Link {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+    #partner_object_div{
+        display: none;
+    }
+    #div_bank_id{
+        display: none;
+    }
+    #div_cheque_id{
+        display: none;
+    }
+</style>
+
+<!-- Create Link Modal -->
+
+
+    <div class="modal fade" id="send-payment-modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form method="POST" class="form" id="send_payment_form" action="/send-payment-manually/">
+                {% csrf_token %}
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Send Payment</h3>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                           <div class="form-group">
+                            <input type="radio" name="user" value="merchant" id="merchant_user" checked="" onclick="MerchantPartnerDiv(0)">&nbsp;&nbsp;&nbsp;&nbsp;<b>Merchant</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="radio" name="user" value="partner" id="partner_user" onclick="MerchantPartnerDiv(1)">&nbsp;&nbsp;&nbsp;&nbsp;<b>Partner</b>
+                           </div> 
+                        </div>
+                        <div class="col-md-6" id="merchant_object_div">
+                            <div class="form-group">
+                                <label>Merchant<small style="color: red;"> *</small></label>
+                                <select name="merchant_business" id="merchant_business" class="form-control">
+                                    <option disabled selected value>Select Merchant</option>
+                                    {% for object in merchants %}
+                                        <option value="{{object.id}}">{{object.m_business_name}} ({{object.m_area}})</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="merchant_business_error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="partner_object_div">
+                            <div class="form-group">
+                                <label>Merchant<small style="color: red;"> *</small></label>
+                                <select name="partner_id" id="partner_id" class="form-control">
+                                    <option disabled selected value>Select Partner</option>
+                                    {% for object in partners %}
+                                        {% if object.p_user %}
+                                        <option value="{{object.p_user}}">{{object.p_user}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <div id="partner_id_error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Amount<small style="color: red;"> *</small></label>
+                                <input type="number" name="amount" class="form-control" id="amount" placeholder="Amount" >
+                                <div id="amount_error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Payment Mode<small style="color: red;"> *</small></label>
+                                <input type="radio" name="payment_mode" id="payment_mode" value="Cash" onclick="PaymentMode(0)">
+                                &nbsp;&nbsp;&nbsp;<b>Cash</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="payment_mode" id="payment_mode" value="Bank" onclick="PaymentMode(1)">
+                                &nbsp;&nbsp;&nbsp;<b>Bank</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="payment_mode" id="payment_mode" value="Cheque" onclick="PaymentMode(2)">
+                                &nbsp;&nbsp;&nbsp;<b>Cheque</b>
+                                <div id="payment_mode_error"></div>
+                            </div>
+
+                        </div>
+                    
+                        
+                        <div class="col-md-6" id="div_bank_id">
+                            <div class="form-group">
+                                <label>Bank ID<small style="color: red;"> *</small></label>
+                                <input type="text" name="bank_id" class="form-control" id="bank_id" placeholder="Bank ID" >
+                                <div id="bank_id_error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="div_cheque_id">
+                            <div class="form-group">
+                                <label>Cheque ID<small style="color: red;"> *</small></label>
+                                <input type="text" name="cheque_id" class="form-control" id="cheque_id" placeholder="Cheque ID" >
+                                <div id="cheque_id_error"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Description<small style="color: red;"> *</small></label>
+                                <input type="text" name="description" class="form-control" id="description" placeholder="Description" >
+                                <div id="description_error"></div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Send">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+
+<!-- Create Link Modal End -->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Send Payment</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Payments</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/send-payment-manually/">Send Payment</a>
+                                </li>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                                {% if is_superuser == True %}
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#send-payment-modal">
+                                    <i class="fa fa-plus"></i>
+                                    &nbsp;Send Payment
+                                </button>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.feature_id|lower == "Send Payments"|lower %}
+                                            {% if actions.add_permission == "1" or actions.add_permission == "1" or actions.add_permission == "1" or actions.delete_permission == "1" %}
+                                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#send-payment-modal">
+                                                <i class="fa fa-plus"></i>
+                                                &nbsp;Send Payment
+                                            </button>
+                                          {% endif %}
+                                        {% endif %}
+                                    {% endfor %}  
+                                {% endif %}
+                                
+                          </div>
+                        </div>
+                    </div>
+
+                        <div class="card-body">
+                            <form method="POST" action="/send-payment-manually/" id="received_payments_filter_form">
+                      {% csrf_token %}
+                      <div class="row">
+                          <div class="col-md-2"></div> 
+                          <div class="col-md-3">
+                              <div class="form-group">
+                                  <label>From Date <span style="color: red;">*</span> </label>
+                                  <input name="from_date" id="from_date" type="date" class="form-control datepicker" value="{{from_date}}" max="{% now 'Y-m-d' %}">
+                              </div>
+                          </div>
+                          <div class="col-md-3">
+                              <div class="form-group">
+                                  <label>To Date <span style="color: red;">*</span></label>
+                                  <input name="to_date" id="to_date" type="date" class="form-control datepicker" value="{{to_date}}" >
+                              </div>
+                          </div>
+                          
+                          <div class="col-md-2" style="padding-top: 3%;">
+                              <div class="form-group">
+                                  <button type="submit" class="btn btn-primary" name="submit" value="search">Search</button>
+                              </div>
+                          </div>
+                          <div class="col-md-12 text-center" id="billInfoFilterError" style="font-size: 20px">
+                          </div>
+                      </div>
+                    </form>
+                      <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+                        <div class="row align-items-center justify-content-center">
+                          <div class="col-sm-6 col-md-4">
+                            <div class="card card-stats card-round">
+                              <div class="card-body ">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                      <i class="fas fa-rupee-sign"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Total Payment</p>
+                                      <h4 class="card-title">{{total_payment|floatformat:2}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-4">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                      <i class="fas fa-list-ol"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Total Payment Count</p>
+                                      <h4 class="card-title">{{total_payments_count}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover" >
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Merchant Business</th>
+                                            <th>Partner Number</th>
+                                            <th>Description</th>
+                                            <th>Created Date</th>
+                                            <th>Payment Mode</th>
+                                            <th>Amount</th>
+                                            <th>Transaction Id</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for payment in payments %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ payment.merchant }}</td>
+                                            <td>{{ payment.partner_id }}</td>
+                                            <td>{{ payment.description }}</td>
+                                            <td width="14%">{{ payment.created_at|date:'d-m-Y' }}</td>
+                                           <td>{{payment.payment_mode}}</td>
+                                            <td>₹ {{ payment.amount|floatformat:2 }}</td>
+                                            <td>{% if payment.bank_transaction_id %}{{payment.bank_transaction_id}}{% else %}{{payment.cheque_id}}{% endif %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        document.getElementById("from_date").onchange = function () {
+        var input = document.getElementById("to_date");
+        input.setAttribute("min", this.value);
+      }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+</script>
+<script type="text/javascript">
+    function MerchantPartnerDiv(x){
+
+        if (x == 0){
+            document.getElementById("merchant_object_div").style.display = "block";
+            document.getElementById("partner_object_div").style.display = "none";
+
+        }
+        else {
+            document.getElementById("merchant_object_div").style.display = "none";
+            document.getElementById("partner_object_div").style.display = "block";
+        }
+
+    }
+    function PaymentMode(mode){
+        if (mode == 0){
+            document.getElementById("div_bank_id").style.display = "none";
+            document.getElementById("div_cheque_id").style.display = "none";
+        }
+        else if(mode == 1){
+            document.getElementById("div_bank_id").style.display = "block";
+            document.getElementById("div_cheque_id").style.display = "none";
+        }
+        else{
+           document.getElementById("div_bank_id").style.display = "none";
+           document.getElementById("div_cheque_id").style.display = "block"; 
+        }
+    }
+</script>
+
+<script>
+jQuery.validator.addMethod("dollarsscents", function(value, element) {
+        return this.optional(element) || /^\d{0,8}(\.\d{0,2})?$/i.test(value);
+    }, "You must include two decimal places");
+    
+$( "#send_payment_form" ).validate({
+  rules: {
+    user: {
+      required: true,
+    },
+    merchant_business:{
+        required: true,
+    },
+    partner_id: {
+        required: true,
+    },
+    amount: {
+        required: true,
+        min:1,
+        dollarsscents: true
+    },
+    payment_mode: {
+        required: true,
+        maxlength: 45,
+    },
+    description: {
+        required: true,
+        maxlength: 45,
+    }
+  },
+  messages: {
+    merchant_business: {
+      required: "This Field is required.",
+    },
+    amount: {
+      required: "This Field is required.",
+      min: "Amount Must be greater than 1",
+    },
+    partner_id: {
+      required: "This Field is required.",
+    },
+    description: {
+        required: "This Field is required.",
+    },
+    payment_mode: {
+        required: "This Field is required.",
+    } 
+  },
+  errorPlacement: function (error, element) {
+        if (element.attr("name") == "payment_mode")
+            $("#payment_mode_error").html(error);
+        if (element.attr("name") == "description")
+            $("#description_error").html(error);
+        if (element.attr("name") == "partner_id")
+            $("#partner_id_error").html(error);
+        if (element.attr("name") == "amount")
+            $("#amount_error").html(error);
+        if (element.attr("name") == "merchant_business")
+            $("#merchant_business_error").html(error);
+    }
+});
+
+
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+
+  jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+      return this.optional(element) || new Date(value) >= new Date($(params).val());
+  },'Must be greater than from date.');
+
+$("#received_payments_filter_form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true,
+                greaterStart: "#from_date"
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+
+  
+$(function() {
+    $('.deletePaymentLinkBtn').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            $.ajax({
+                type: "POST",
+                url: "/owner-delete-payment-link/"+id+"/",
+                data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                success: function(response) {
+
+                    if(response['success'] == true){
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Payment Link deleted Successfully',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                    else{
+                        Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Fail to delete Link.", 
+                            timer: 1500,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    }
+                
+                },
+                error: function() {
+                    Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                    .then(function() {
+                    location.reload();
+                    });       
+                }
+            });
+            }
+        })
+    });
+});
+
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="/static/assets/js/setting-demo2.js"></script>
+    <script >
+        $(document).ready(function() {
+
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "ordering": false,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+        });
+    </script>
+
+{% endblock javascripts %}

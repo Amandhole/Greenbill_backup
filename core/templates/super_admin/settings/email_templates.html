@@ -1,0 +1,132 @@
+{% extends "layouts/base.html" %} {% block title %} Email Setting {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Settings</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">settings</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">General Setting</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Email Templates</h4>
+                            <div class="ml-auto">
+                          </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-control" action="/general-setting/" method="POST" id="form"
+                            name="form" autocomplete="off">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-8">
+                                  <div class="row">
+                                      <input type="hidden" name="user_id" value="{{ request.user.id }}"/>
+                                  <div class="col-md-6">
+                                    <div class="form-group">
+                                      <label>Business Name<span>*</span></label>
+                                      <div class="input-group mb-3">       
+                                        {{ form.media }}
+                                        {{ form.as_p }}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="col-md-12">
+                                    <!-- <div class="form-group">
+                                      <label class="text-center" style="display: block;">Business Logo</label>
+                                      <div class="input-file input-file-image">
+                                        {% if data.o_business_logo %}
+                                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                                              src="{{ data.o_business_logo.url }}" alt="preview" />
+                                          
+                                        {% else %}
+                                          <img class="img-upload-preview img-circle center" width="100" height="100" src="/media/business_logos/business_logo.jpg" alt="preview" />
+                                        {% endif %}
+                  
+                                        <input type="file" class="form-control form-control-file center" id="uploadImg" name="o_profile_image" accept="image/*" value="">
+                  
+                                        <label for="uploadImg" class="center btn btn-primary btn-round btn-md text-center" style=" display:inherit; margin-left: auto;
+                                        margin-right: auto; ">
+                                        <i class="fa fa-file-image"></i>  Select Business Logo</label>                       
+                                      </div>
+                                    </div> -->
+                                  </div>
+                                </div>
+                                
+                              </div>
+                              <div class="text-center mt-3 mb-3">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                              </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    $("#form").validate({
+        rules: {
+            business_name: {
+                required: true,
+            },
+            business_code: {
+                required: true,
+            },
+            mobile_no: {
+                required: true,
+            },
+            email: {
+                required: true,
+            },
+        },
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

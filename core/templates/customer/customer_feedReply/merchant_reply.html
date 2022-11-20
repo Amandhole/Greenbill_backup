@@ -1,0 +1,450 @@
+{% extends "layouts/customer-base.html" %}
+
+{% block title %} Customer Rating {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+  
+
+
+
+.checked {
+  color: orange;
+}
+
+/* Three column layout */
+.side {
+  float: left;
+  width: 15%;
+  margin-top: 10px;
+}
+
+.middle {
+  float: left;
+  width: 70%;
+  margin-top: 10px;
+}
+
+/* Place text to the right */
+.right {
+  text-align: center;
+  margin: 0px;
+    padding: 0px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The bar container */
+.bar-container {
+  width: 100%;
+  background-color: #f1f1f1;
+  text-align: center;
+  color: white;
+}
+
+/* Individual bars */
+.bar-5 {width: {{star5percentage}}%; height: 18px; background-color: red;}
+.bar-4 {width: {{star4percentage}}%; height: 18px; background-color: red;}
+.bar-3 {width: {{star3percentage}}%; height: 18px; background-color: red;}
+.bar-2 {width: {{star2percentage}}%; height: 18px; background-color: red;}
+.bar-1 {width: {{star1percentage}}%; height: 18px; background-color: red;}
+
+/* Responsive layout - make the columns stack on top of each other instead of next to each other */
+@media (max-width: 400px) {
+  .side, .middle {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+  }
+  /* Hide the right column on small screens */
+  .right {
+    display: none;
+  }
+}
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Reply</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer_reply/">Reply</a>
+                                </li>
+                            </ul>
+                            <!-- <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#Viewratinganalysis">
+                                    <i class="fa  fa-plus"></i>Analysis
+                                </button> -->
+                        </div>
+                    </div> 
+                      <div class="card-body">
+                        <div class="table-responsive">
+                            
+                            <form action="/customer_reply/" method="POST" enctype="multipart/form-data" id="filter-rating-form" name="rating_form" autocomplete="off">  
+                                    {% csrf_token %} 
+                                    <div class="row">                                
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <select id="rating_filter" id="rating_filter" name="rating_filter" class="form-control" required="required"/>
+                                                   <option selected value>Select Rating</option>
+                                                    <option value="1" {% if rating == 1 %} 
+                                                      selected 
+                                                      {% endif %}>{{feedback_emoji}}</option>
+                                                                                <option value="2" {% if rating == 2 %} 
+                                                      selected 
+                                                      {% endif %}>{{feedback_emoji}}{{feedback_emoji}}</option>
+                                                                                <option value="3" {% if rating == 3 %} 
+                                                      selected 
+                                                      {% endif %}>{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}</option>
+                                                                                <option value="4" {% if rating == 4 %} 
+                                                      selected 
+                                                      {% endif %}>{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}</option>
+                                                                                <option value="5" {% if rating == 5 %} 
+                                                      selected 
+                                                      {% endif %}>{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}{{feedback_emoji}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 1%">
+                                            <div class="form-group">
+                                                <button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card" name="submit" value="vehical_type_wise_collection_btn" onclick="return Validate()"><span class="fas fa-search"></span></button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                        <div class=" col-md-4">
+                                            <div class="row">
+                                             <div class="card card-stats card-round" style="margin-left: 50px;">
+                                                <div class="card-body">
+                                                  <div class="row align-items-center">
+                                                    <div class="col-icon">
+                                                      <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                        <i class="fas fa fas fa-user"></i>
+                                                      </div>
+                                                    </div>
+                                                    <div class="col col-stats ml-3 ml-sm-0">
+                                                      <div class="numbers">
+                                                        <p class="card-category">Total Count</p>
+                                                        <h4 class="card-title">{{feedback_count}}</h4>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                            <table id="add-row" class="display table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">Sr. No.</th>
+                                        <th style="text-align: center;">Invoice Number</th>
+                                        <th style="text-align: center;">Date</th>
+                                        <th style="text-align: center;">Store Feedbck</th>
+                                        <th style="text-align: center;">Store Reply</th> 
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for reply in data_reply %}
+                                    <tr>
+                                        <td style="text-align: center;">{{ forloop.counter }}</td>
+                                        <td style="text-align: center;">{{ reply.invoice_no }}</td>
+                                        <td style="text-align: center;">{{ reply.bill_date }}</td>
+                                        <td style="text-align: center;">
+
+                                            {% if reply.rating == "1" %}
+                                                {{reply.feedback_emoji}}
+                                            {% endif %}
+                                            {% if reply.rating == "2" %}
+                                                {{reply.feedback_emoji}}{{reply.feedback_emoji}}
+                                            {% endif %}
+                                            {% if reply.rating == "3" %}
+                                                {{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}
+                                            {% endif %}
+                                            {% if reply.rating == "4" %}
+                                                {{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}
+                                            {% endif %}
+                                            {% if reply.rating == "5" %}
+                                                {{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}{{reply.feedback_emoji}}
+                                            {% endif %}  
+                                        </td>
+                                        <td style="text-align: center;">{{ reply.feedback_reply }}</td>
+                                        <!-- <td>
+                                      </td> -->
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Viewratinganalysis" role="dialog">
+    <div class="modal-dialog modal-md">
+    <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center"><b>Rating Analysis</b></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-body">
+
+<!-- <span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span> -->
+
+                        <hr style="border:3px solid #f1f1f1">
+
+                        <div class="row">
+
+                          <div class="side">
+                            <div>5 Star</div>
+                          </div>
+                          <div class="middle">
+                            <div class="bar-container">
+                              <div class="bar-5"></div>
+                            </div>
+                          </div>
+                          <div class="side right">
+                            <div>{{rating5}}</div>
+                          </div>
+                          <div class="side">
+                            <div>4 Star</div>
+                          </div>
+                          <div class="middle">
+                            <div class="bar-container">
+                              <div class="bar-4"></div>
+                            </div>
+                          </div>
+                          <div class="side right">
+                            <div>{{rating4}}</div>
+                          </div>
+                          <div class="side">
+                            <div>3 Star</div>
+                          </div>
+                          <div class="middle">
+                            <div class="bar-container">
+                              <div class="bar-3"></div>
+                            </div>
+                          </div>
+                          <div class="side right">
+                            <div>{{rating3}}</div>
+                          </div>
+                          <div class="side">
+                            <div>2 Star</div>
+                          </div>
+                          <div class="middle">
+                            <div class="bar-container">
+                              <div class="bar-2"></div>
+                            </div>
+                          </div>
+                          <div class="side right">
+                            <div>{{rating2}}</div>
+                          </div>
+                          <div class="side">
+                            <div>1 Star</div>
+                          </div>
+                          <div class="middle">
+                            <div class="bar-container">
+                              <div class="bar-1"></div>
+                            </div>
+                          </div>
+                          <div class="side right">
+                            <div>{{rating1}}</div>
+                          </div>
+                        </div>
+                            <!-- <div class="chart-container">
+                                <div class="chartjs-size-monitor">
+                                    
+                                    <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                                            <div style="position:absolute;width:200%;height:200%;left:0; top:0">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <canvas id="chartContainerMerchant" width="100" height="100" class="chartjs-render-monitor" ></canvas>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+        
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+
+      var ctx5 = document.getElementById('chartContainerMerchant').getContext('2d');
+      window.myChart = new Chart(ctx5, config5);
+
+    };
+
+    var config5 = {
+    type: 'bar',
+    
+    data: {
+        labels: ['1 Star','2 Star','3 Star','4 Star','5 Star'],
+        datasets: [{
+            label: 'Ratings',
+            data: {{ data1|safe }},
+            backgroundColor: [
+                '#FFA07A','#6c757d','#8B0000', '#A9A9A9','#0000FF','#00FFFF','#006400','#00008B','#9932CC','#17a2b8','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+            ],
+            borderColor: [
+               '#17a2b8','#dc3545','#fd7e14', '#17a2b8','#6f42c1','#ffc107','#28a745','#dc3545','#28a745','#17a2b8','#00FF00','#808000', '#FFBF00','#9FE2BF','#DE3163','#DFFF00','#40E0D0','#87c440','#CD5C5C','#40ae49','#FFE800','#006eb6','#07bbc1','#f68e1f','#e21836','#00adef'
+            ],
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+        scaleShowValues: true,
+          scales: {
+            xAxes: [{
+              ticks: {
+                autoSkip: false
+              }
+            }]
+        }
+    }
+}
+</script>
+<script type="text/javascript">
+$("#filter-rating-form").validate({
+        rules: {
+            rating_filter: {
+                required: false,
+            },
+        },
+
+        messages: {
+            rating_filter: {
+                required: "Select rating",
+            },   
+        },
+    });
+</script>
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var feedback_reply = $(this).data("feedback_reply");
+        
+        $('#view_feedback_reply').empty().append(feedback_reply);
+        $("#exampleModal").modal();
+    });
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    var access_permission = $('#access_permission').val();
+    if(access_permission == 1)
+    {
+      $(".permission-denied").hide();
+    }
+    else
+    {
+      $(".permission-denied").show();
+    }
+  });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script >
+		$(document).ready(function() {
+
+            $('#add-row').DataTable( {
+                dom: 'lBfrtip',
+                "ordering": false,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: [
+                   'excel', 'pdf', 'print'
+                ]
+            } );
+
+		});
+	</script>
+
+{% endblock javascripts %}

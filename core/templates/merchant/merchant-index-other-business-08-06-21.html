@@ -1,0 +1,479 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+ 
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+	.card-primary {
+    	background: #ffffff !important;
+	}
+	.card-primary .card-category {
+		color: #000000 !important;
+	}
+	.card-primary .icon-big>i{
+		color: #000000 !important;
+	}
+	.card-primary .card-title {
+		color: #000000 !important;
+	}
+	.my-circle {
+	    content: attr(data-letters);
+	    display: inline-block;
+	    font-size: 1em;
+	    width: 2.5em;
+	    height: 2.5em;
+	    line-height: 2.5em;
+	    text-align: center;
+	    border-radius: 50%;
+	    vertical-align: middle;
+	    color: white;
+	}
+</style>
+			
+	<div class="content">
+		<div class="panel-header bg-primary-gradient">
+			<div class="page-inner py-5">
+				<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+					<div>
+						<h2 class="text-white pb-2 fw-bold">Merchant Dashboard</h2>
+					</div>
+					<div class="ml-md-auto py-2 py-md-0">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="page-inner mt--5">
+			<div class="row">
+				<div class="col-sm-6 col-md-3">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-list-ol" style="color: #00569D !important"></i>
+									</div>
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title">Total Transactions</h4>
+										<h4 class="card-title" style="color: #00569D !important">{{total_transaction}}</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-percentage" style="color: #ff8c00 !important"></i>
+									</div>
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title">Average Transactions</h4>
+										<h4 class="card-title" style="color: #ff8c00 !important">{{average_transaction|floatformat:2}}</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-chart-line" style="color: #63b90b !important"></i>
+									</div>
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title">Total Sales</h4>
+										<h4 class="card-title" style="color: #63b90b !important">{{total_sales|floatformat:2}}</h4>
+										<h4 class="card-title">&nbsp;</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="card card-stats card-primary card-round">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<div class="icon-big text-center">
+										<i class="fas fa-percentage" style="color: #ff0000 !important" ></i>
+									</div>
+								</div>
+								<div class="col-9 col-stats">
+									<div class="numbers">
+										<h4 class="card-title">Average Sales</h4>
+										<h4 class="card-title" style="color: #ff0000 !important">{{average_sales|floatformat:2}}</h4>
+										<h4 class="card-title">&nbsp;</h4>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			
+			<div class="row">
+	            <div class="col-md-6">
+	                <div class="card">
+	                    <div class="card-header align-items-center d-flex justify-content-center">
+	                        <div class="card-head-row">
+	                            <div class="card-title">Billing Analysis</div>
+	                        </div>
+	                    </div>
+	                    <div class="card-body">
+	                        <div class="row">
+                                <div class="chart-container">
+                                    <canvas id="BillingAnalysisChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="col-md-6">
+	                <div class="card">
+	                    <div class="card-header align-items-center d-flex justify-content-center">
+	                        <div class="card-head-row">
+	                            <div class="card-title">Digital Billing</div>
+	                        </div>
+	                    </div>
+	                    <div class="card-body">
+	                        <div class="row">
+                                <div class="chart-container">
+                                    <canvas id="DigitalBillingChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas> 
+                                </div>  
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+        	</div>
+
+        	<div class="row">
+	            <div class="col-md-12">
+	            	<div class="card">
+	                    <div class="card-header align-items-center d-flex justify-content-center">
+	                        <div class="card-head-row">
+	                            <div class="card-title">Overall Customer Analysis</div>
+	                        </div>
+	                    </div>
+	                    <div class="card-body">
+	                    	<div class="row">   
+	                            <div class="col-md-12 d-flex flex-wrap justify-content-around pb-4 pt-4">
+	                                <div class="px-2 pb-2 pb-md-0 text-center">
+	                                    <div id="circles-1"></div>
+	                                    <h6 class="fw-bold mt-3 mb-0">New Customer</h6>
+	                                </div>
+	                                <div class="px-2 pb-2 pb-md-0 text-center">
+	                                    <div id="circles-2"></div>
+	                                    <h6 class="fw-bold mt-3 mb-0">Returning Customer</h6>
+	                                </div>
+	                                <!-- <div class="px-2 pb-2 pb-md-0 text-center">
+	                                    <div id="circles-3"></div>
+	                                    <h6 class="fw-bold mt-3 mb-0">Total  Points</h6>
+	                                </div> -->
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+
+        	<div class="row">
+	            <div class="col-md-12">
+	                <div class="card">
+	                    <div class="card-header align-items-center d-flex justify-content-center">
+	                        <div class="card-head-row">
+	                            <div class="card-title">Promotions</div>
+	                        </div>
+	                    </div>
+	                    <div class="card-body">
+	                        <div class="row">
+	                        	<div class="col-md-6">
+	                                <div class="chart-container">
+	                                    <canvas id="CouponsChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+	                                </div>
+	                            </div>
+	                            <div class="col-md-6">
+	                            	<div class="chart-container">
+                                    	<canvas id="OffersChart" style="width: 463px; height: 350px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas> 
+                                	</div>  
+                                </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+        	</div>
+
+		</div>
+	</div>
+
+	
+
+	<script type="text/javascript">
+		window.onload = function() {
+			var ctx1 = document.getElementById('BillingAnalysisChart').getContext('2d');
+      		window.myPie = new Chart(ctx1, config1);
+
+			var ctx2 = document.getElementById('DigitalBillingChart').getContext('2d');
+			window.myPie = new Chart(ctx2, config2);
+
+			var ctx3 = document.getElementById('CouponsChart').getContext('2d');
+			window.myPie = new Chart(ctx3, config3);
+
+			var ctx4 = document.getElementById('OffersChart').getContext('2d');
+			window.myPie = new Chart(ctx4, config4);
+		}
+
+		// Billing Analysis Chart
+
+	    var config1 = {
+	      type: 'doughnut',
+	      data: {
+	        datasets: [{
+	          data: {{billing_analysis_data|safe}},
+	          backgroundColor: [
+	              '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+	          ],
+	        }],
+	        labels: {{ billing_analysis_labels|safe }},
+	      },
+	      options: {
+	        responsive: true,
+	        maintainAspectRatio: false,
+	        rotation: 1 * Math.PI,
+	        circumference: 1 * Math.PI,
+	        cutoutPercentage: 70,
+	        title: {
+	            display: false,
+	            text: 'Bill Count',
+	            fontSize: 16,
+	        },
+	        
+	        legend: {
+	            position : 'bottom',
+	            labels : {
+	                fontColor: '#000000',
+	                fontSize: 11,
+	                usePointStyle : true,
+	                padding: 20
+	            }
+	            },
+	        
+	        layout: {
+	            padding: {
+	                left: 10,
+	                right: 10,
+	                top: 10,
+	                bottom: 10
+	            }
+	        }
+	      
+	    }
+	    
+	};
+
+	// Digital Billing Chart
+
+	    var config2 = {
+	      type: 'doughnut',
+	      data: {
+	        datasets: [{
+	          data: {{digital_billing_data|safe}},
+	          backgroundColor: [
+	              '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+	          ],
+	        }],
+	        labels: {{ digital_billing_labels|safe }},
+	      },
+	      options: {
+	        responsive: true,
+	        maintainAspectRatio: false,
+	        rotation: 1 * Math.PI,
+	        circumference: 1 * Math.PI,
+	        cutoutPercentage: 70,
+	        title: {
+	            display: false,
+	            text: 'Bill Count',
+	            fontSize: 16,
+	        },
+	        
+	        legend: {
+	            position : 'bottom',
+	            labels : {
+	                fontColor: '#000000',
+	                fontSize: 11,
+	                usePointStyle : true,
+	                padding: 20
+	            }
+	            },
+	        
+	        layout: {
+	            padding: {
+	                left: 10,
+	                right: 10,
+	                top: 10,
+	                bottom: 10
+	            }
+	        }
+	      
+	    }
+	    
+	};
+
+	// Coupons Chart
+
+	    var config3 = {
+	      type: 'doughnut',
+	      data: {
+	        datasets: [{
+	          data: {{coupons_data|safe}},
+	          backgroundColor: [
+	              '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+	          ],
+	        }],
+	        labels: {{ coupons_labels|safe }},
+	      },
+	      options: {
+	        responsive: true,
+	        maintainAspectRatio: false,
+	        rotation: 1 * Math.PI,
+	        circumference: 1 * Math.PI,
+	        cutoutPercentage: 70,
+	        title: {
+	            display: true,
+	            text: 'Coupons',
+	            fontSize: 16,
+	        },
+	        
+	        legend: {
+	            position : 'bottom',
+	            labels : {
+	                fontColor: '#000000',
+	                fontSize: 11,
+	                usePointStyle : true,
+	                padding: 20
+	            }
+	            },
+	        
+	        layout: {
+	            padding: {
+	                left: 10,
+	                right: 10,
+	                top: 10,
+	                bottom: 10
+	            }
+	        }
+	      
+	    }
+	    
+	};
+
+	// Offers Chart
+
+	    var config4 = {
+	      type: 'doughnut',
+	      data: {
+	        datasets: [{
+	          data: {{offer_data|safe}},
+	          backgroundColor: [
+	              '#00adef', '#f68e1f', '#e21836', '#07bbc1', '#006eb6', '#FFE800', '#40ae49', '#CD5C5C', '#87c440', '#40E0D0', '#DFFF00', '#DE3163', '#9FE2BF', '#FFBF00', '#808000' , '#00FF00', '#008080', '#800080', '#000080', '#008000', '#00FFFF', '#0000FF', '#808080', '#800000', '#C0C0C0', '#FA8072'
+	          ],
+	        }],
+	        labels: {{ offer_labels|safe }},
+	      },
+	      options: {
+	        responsive: true,
+	        maintainAspectRatio: false,
+	        rotation: 1 * Math.PI,
+	        circumference: 1 * Math.PI,
+	        cutoutPercentage: 70,
+	        title: {
+	            display: true,
+	            text: 'Offers',
+	            fontSize: 16,
+	        },
+	        
+	        legend: {
+	            position : 'bottom',
+	            labels : {
+	                fontColor: '#000000',
+	                fontSize: 11,
+	                usePointStyle : true,
+	                padding: 20
+	            }
+	            },
+	        
+	        layout: {
+	            padding: {
+	                left: 10,
+	                right: 10,
+	                top: 10,
+	                bottom: 10
+	            }
+	        }
+	      
+	    }
+	    
+	};
+
+</script>
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+<script src="/static/assets/js/setting-demo.js"></script>
+<script src="/static/assets/js/demo.js"></script>
+
+<script type="text/javascript">
+
+	Circles.create({
+        id:'circles-1',
+        radius:70,
+        value:{{new_customers_value}},
+        maxValue:100,
+        width:8,
+        text: {{new_customers_text}},
+        colors:['#f1f1f1', '#FF9E27'],
+        duration:600,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+
+    Circles.create({
+        id:'circles-2',
+        radius:70,
+        value:{{returning_customers_value}},
+        maxValue:100,
+        width:8,
+        text: {{returning_customers_text}},
+        colors:['#f1f1f1', '#2BB930'],
+        duration:600,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+	
+</script>
+
+{% endblock javascripts %}

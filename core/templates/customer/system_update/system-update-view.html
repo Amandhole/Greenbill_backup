@@ -1,0 +1,159 @@
+{% extends "layouts/customer-base.html" %}
+
+{% block title %} System Updates {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    img{
+        max-width: 100%;
+    }
+    .accordion .card .card-body{
+        padding: 15px;
+    }
+    .accordion.accordion-secondary .card .card-header{
+        color: #00569d;
+    }
+    .accordion .card {
+        border-radius:0px!important;
+        border:1px solid #d4d4d4;
+        background:#fff!important;
+        margin-bottom: 0px;
+    }
+    .accordion .card:first-of-type{
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .card-heading{
+        margin-bottom: 27px;
+        text-align: center;
+        font-weight: bolder;
+        margin-top: 30px;
+        
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">System Updates</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/customer-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="/customer-system-updates/">System Updates</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-space">
+                    <!-- <div class="card-header">
+                        <h4 class="card-title">Notifications List</h4>
+                    </div> -->
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">System Updates</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a href="/customer-system-updates/">System Updates</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-12">
+                                <div class="tab-content" id="v-pills-tabContent">
+                                    <div class="tab-pane fade active show" id="v-pills-quality-icons" role="tabpanel" aria-labelledby="v-pills-quality-tab-icons">
+                                        <div class="accordion accordion-secondary">
+                                            {% for update in all_system_update %}
+                                            <div class="card">
+                                                <div class="card-header collapsed" id="heading" data-toggle="collapse" data-target="#{{ update.id }}" aria-expanded="false" aria-controls="collapseone" role="button">
+                                                    <div class="span-icon">
+                                                        <div class="flaticon-alarm-1" style="color: #00569D"></div>
+                                                    </div>
+                                                    <div class="span-title" style="color: #000000">
+                                                        <b>{{ update.title }}</b>
+                                                    </div>
+                                                    <div class="span-mode" style="color: #00569D"></div>
+                                                </div>
+                                                <div id="{{ update.id }}" class="collapse" aria-labelledby="heading" data-parent="#accordion" role="button">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                {{ update.message|safe }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}
+
+

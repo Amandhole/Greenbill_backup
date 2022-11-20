@@ -1,0 +1,1382 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} General Setting {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'assets/css/cropper.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/cropper.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+<style>
+  .center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+<div class="content">
+  <div class="page-inner">
+   <!--  <div class="page-header">
+      <h4 class="page-title">General Setting</h4>
+      <ul class="breadcrumbs">
+        <li class="nav-home">
+          <a href="/merchant-index/">
+            <i class="flaticon-home"></i>
+          </a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a>Settings</a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a href="/merchant-general-setting/">General Setting</a>
+        </li>
+      </ul>
+    </div> -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Business Setting</h4>
+                <ul class="breadcrumbs">
+                    <li class="nav-home">
+                      <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                      </a>
+                    </li>
+                    <li class="separator">
+                      <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                      <a>Settings</a>
+                    </li>
+                    <li class="separator">
+                      <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/merchant-general-setting/">Business Settings</a>
+                    </li>
+                  </ul>
+            </div>
+            <!-- <div class="row">
+              <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active show" data-toggle="tab" href="#profile" role="tab"
+                    aria-selected="false">General</a>
+                </li>
+              </ul>
+            </div> -->
+          </div>
+          {% if is_merchant == True %}
+              <div class="card-body">
+                <form class="form-control" action="/merchant-general-setting/" method="POST" id="form" name="form"
+                  autocomplete="off" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" name="merchant_setting_id" id="merchant_setting_id"
+                    value="{{ merchant_general_setting.id }}">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Company Name <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control mobile" name="business_name" id="business_name"
+                                placeholder="Company Name" value="{{ merchant_general_setting.m_business_name }}"
+                                required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Business Category</label>
+                            <div class="input-group mb-3">
+                              <select class="form-control" name="merchant_business_category" id="merchant_business_category"
+                                required>
+                                <option value="">Select Business Category</option>
+                                {% for business_category in merchnat_business_category %}
+                                <option value="{{ business_category.id }}" 
+                                {% if business_category.id == merchant_general_setting.m_business_category_id %} 
+                                selected 
+                                {% endif %}>{{ business_category.business_category_name }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Pin Code <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="tel" class="form-control" name="pin_code" id="pin_code" placeholder="Pin Code"
+                                value="{{ merchant_general_setting.m_pin_code }}" required maxlength="6" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>City <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="city" id="city" placeholder="City"
+                                value="{{ merchant_general_setting.m_city }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Area <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <!-- <input type="text" class="form-control" name="area" id="area" placeholder="Area"
+                                value="{{ merchant_general_setting.m_area }}" required /> -->
+                                <textarea class="form-control" name="area" id="area" placeholder="Area" rows="1" required>{{ merchant_general_setting.m_area }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>District <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="district" id="district" placeholder="District"
+                                value="{{ merchant_general_setting.m_district }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>State <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="state" id="state" placeholder="State"
+                                value="{{ merchant_general_setting.m_state }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Address <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <textarea class="form-control" name="address" id="address"
+                                placeholder="Address">{{ merchant_general_setting.m_address }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Landline Number</label>
+                            <div class="input-group mb-3">
+                              <input type="tel" class="form-control" name="landline_number" id="landline_number"
+                                placeholder="Landline Number" value="{{ merchant_general_setting.m_landline_number }}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Alternate Mobile Number <span style="color: red"> *</span></label>
+                            <div class="input-group mb-3">
+                              <input type="tel" class="form-control" name="alternate_mobile_number"
+                                id="alternate_mobile_number" placeholder="Alternate Mobile Number"
+                                value="{{ merchant_general_setting.m_alternate_mobile_number }}" maxlength="10" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Company Email <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="email" class="form-control" id="company_email" name="company_email"
+                                value="{{ merchant_general_setting.m_company_email }}" placeholder="Company Email" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Alternate Email</label>
+                            <div class="input-group mb-3">
+                              <input type="email" class="form-control" id="alternate_email" name="alternate_email"
+                                value="{{ merchant_general_setting.m_alternate_email }}" placeholder="Alternate Email" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>PAN Number <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" id="pan_number" name="pan_number"
+                                value="{{ merchant_general_setting.m_pan_number }}" placeholder="PAN Number" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>GSTIN</label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="gstin" id="gstin" placeholder="GSTIN"
+                                value="{{ merchant_general_setting.m_gstin }}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>GSTIN Certificate</label>
+                            <div class="input-group mb-3">
+                              <input type="file" class="form-control" name="GSTIN_certificate" id="GSTIN_certificate"
+                                placeholder="GSTIN" value="" />
+                              <input type="hidden" name="gstin_certificate_file" id="gstin_certificate_file" value="{{ merchant_general_setting.m_GSTIN_certificate }}">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>CIN</label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="cin" id="cin" placeholder="CIN"
+                                value="{{ merchant_general_setting.m_cin }}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>CIN Certificate</label>
+                            <div class="input-group mb-3">
+                              <input type="file" class="form-control" name="CIN_certificate" id="CIN_certificate"
+                                placeholder="CIN Certificate" value="" />
+                              <input type="hidden" name="cin_certificate_file" id="cin_certificate_file" value="{{ merchant_general_setting.m_CIN_certificate }}">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Bank Account Number <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="tel" class="form-control" name="bank_account_number" id="bank_account_number"
+                                placeholder="Bank Account Number"
+                                value="{{ merchant_general_setting.m_bank_account_number }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Bank IFSC code <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="bank_IFSC_code" id="bank_IFSC_code"
+                                placeholder="Bank IFSC code" value="{{ merchant_general_setting.m_bank_IFSC_code }}"
+                                required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Bank Name <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="bank_name" id="bank_name"
+                                placeholder="Bank Name" value="{{ merchant_general_setting.m_bank_name }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Bank Branch <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="bank_branch" id="bank_branch"
+                                placeholder="Bank Branch" value="{{ merchant_general_setting.m_bank_branch }}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>TIN/VAT Number <span style="color: red;">*</span></label>
+                            <div class="input-group mb-3">
+                              <input type="tel" maxlength="11" class="form-control" name="tin_vat_number" id="tin_vat_number"
+                                placeholder="TIN/VAT Number" value="{{merchant_general_setting.m_vat_tin_number}}" required />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Canceled Bank Cheque Photo</label>
+                            <div class="input-group mb-3">
+                              <input type="file" class="form-control" name="cancel_bank_cheque_photo" id="cancel_bank_cheque_photo"
+                                placeholder="Canceled Bank Cheque Photo" value="" />
+                              <input type="hidden" name="cin_certificate_file" id="cin_certificate_file" value="">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Other Documents 1</label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="other_document1" id="other_document1"
+                                placeholder="Other Documents 1" value="{{merchant_general_setting.m_other_document1}}" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Other Documents Certificate 1</label>
+                            <div class="input-group mb-3">
+                              <input type="file" class="form-control" name="other_document_certificate1" id="other_document_certificate1"
+                                placeholder="Other Documents Certificate 1" value="" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Other Documents 2</label>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="other_document2" id="other_document2"
+                                placeholder="Other Documents 2" value="" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>Other Documents Certificate 2</label>
+                            <div class="input-group mb-3">
+                              <input type="file" class="form-control" name="other_document_certificate2" id="other_document_certificate2"
+                                placeholder="Other Documents Certificate 2" value="" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <!-- <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="text-center" style="display: block;">Profile Picture</label>
+                          <div class="input-file input-file-image">
+                            {% if ProfileImages %}
+                            {% for ProfileImage in ProfileImages %}
+                            {% if ProfileImage.m_profile_image %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="{{ ProfileImage.m_profile_image.url }}" alt="preview" />
+                            {% else %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/user-profile-pic.png" alt="preview" />
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/user-profile-pic.png" alt="preview" />
+                            {% endif %}
+
+                            <input type="file" class="form-control form-control-file center" id="uploadImg1"
+                              name="profile_image" accept="image/*" value="">
+
+                            <label for="uploadImg1" class="center btn btn-primary btn-round btn-md text-center" style=" display:inherit; margin-left: auto;
+                                                margin-right: auto; ">
+                              <i class="fas fa-image"></i> Select Profile Image</label>
+                          </div>
+                        </div>
+                      </div> -->
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="text-center" style="display: block;">Business Logo</label>
+                          <div class="input-file input-file-image">
+                            {% if merchant_general_setting.m_business_logo %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="{{ merchant_general_setting.m_business_logo.url }}" alt="preview" />
+                            {% else %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/Business-logo.png" alt="preview" />
+                            {% endif %}
+
+                            <input type="file" class="form-control form-control-file center" id="uploadImg2"
+                              name="business_logo" accept="image/*" value="">
+                            {% if merchant_general_setting.m_business_logo %}
+                              <div class="row">
+                              <div class="col-md-6">
+                                <label class="uploadlogo center btn btn-primary btn-round btn-sm text-center"
+                                data-id="{{ merchant_general_setting.id }}">
+                                  <i class="fas fa-image" style="color: white;"></i><span style="color: white;"> &nbsp Select</span></label>
+                              </div>
+                              <div class="col-md-6">
+                                <a href="{% url 'merchant-business-logo-remove' %}">
+                                  <label class="center btn btn-primary btn-round btn-sm text-center">
+                                    <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp Remove</span>
+                                  </label>
+                                </a>
+                              </div>
+                            </div>
+                            {% else %}
+
+                              <label class="uploadlogo center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto;
+                                              margin-right: auto; ">
+                                <i class="fas fa-image"></i> Select Business Logo</label>
+                                 
+                            {% endif %}
+                            <p class="text-center center" style="color: #63b90b;"><b>Logo should be less than 500 KB</b></p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="text-center" style="display: block;">Business Stamp</label>
+                          <div class="input-file input-file-image">
+                            {% if merchant_general_setting.m_business_stamp %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="{{ merchant_general_setting.m_business_stamp.url }}" alt="preview" />
+                            {% else %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/Business-stamp.png" alt="preview" />
+                            {% endif %}
+
+                            <input type="file" class="form-control form-control-file center" id="uploadImg3"
+                              name="business_stamp" accept="image/*" value="">
+                            {% if merchant_general_setting.m_business_stamp %}
+                              <div class="row">
+                              <div class="col-md-6">
+                                <label  class="uploadstamp center btn btn-primary btn-round btn-sm text-center"
+                                data-id="{{ merchant_general_setting.id }}">
+                                  <i class="fas fa-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                              </div>
+                              <div class="col-md-6">
+                                <a href="{% url 'merchant-business-stamp-remove' %}">
+                                  <label class="center btn btn-primary btn-round btn-sm text-center">
+                                    <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                                  </label>
+                                </a>
+                              </div>
+                            </div>
+                            {% else %}
+                              <label class="uploadstamp center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto; margin-right: auto; ">
+                                <i class="fas fa-image"></i> Select Business Stamp</label>
+                                
+                            {% endif %}
+                            <p class="text-center center" style="color: #63b90b;"><b>Stamp should be less than 500 KB</b></p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label class="text-center" style="display: block;">Digital Signature</label>
+                          <div class="input-file input-file-image">
+                            {% if merchant_general_setting.m_digital_signature %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="{{ merchant_general_setting.m_digital_signature.url }}" alt="preview" />
+                            {% else %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/Digital-Signature.png" alt="preview" />
+                            {% endif %}
+
+                            <input type="file" class="form-control form-control-file center" id="uploadImg4"
+                              name="digital_signature" accept="image/*" value="">
+
+                            {% if merchant_general_setting.m_digital_signature %}
+                              <div class="row">
+                              <div class="col-md-6">
+                                <label class="uploadsignature center btn btn-primary btn-round btn-sm text-center"
+                                data-id="{{ merchant_general_setting.id }}">
+                                  <i class="fas fa-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                              </div>
+                              <div class="col-md-6">
+                                <a href="{% url 'merchant-digital-signature-remove' %}">
+                                  <label class="center btn btn-primary btn-round btn-sm text-center">
+                                    <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                                  </label>
+                                </a>
+                              </div>
+                            </div>
+                            {% else %}
+                              <label class="uploadsignature center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto;
+                                              margin-right: auto; ">
+                                <i class="fas fa-image"></i> Select Digital Signature</label>
+                            {% endif %}
+                            <p class="text-center center" style="color: #63b90b;"><b>Signature should be less than 500 KB</b></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="text-center mt-3 mb-3">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                  </div>
+                </form>
+              </div>
+            {% else %}
+              {% for actions in merchnat_action_permissions_list %}
+                {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "Business Settings"|lower %}
+                  {% if actions.view_permission == "1" %}
+                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                      <div class="card-body">
+                        <form class="form-control" action="/merchant-general-setting/" method="POST" id="form" name="form"
+                          autocomplete="off" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <input type="hidden" name="merchant_setting_id" id="merchant_setting_id"
+                            value="{{ merchant_general_setting.id }}">
+                          <div class="row">
+                            <div class="col-md-8">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Company Name <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control mobile" name="business_name" id="business_name"
+                                        placeholder="Company Name" value="{{ merchant_general_setting.m_business_name }}"
+                                        required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Business Category</label>
+                                    <div class="input-group mb-3">
+                                      <select class="form-control" name="merchant_business_category" id="merchant_business_category"
+                                        required>
+                                        <option value="">Select Business Category</option>
+                                        {% for business_category in merchnat_business_category %}
+                                        <option value="{{ business_category.id }}" 
+                                        {% if business_category.id == merchant_general_setting.m_business_category_id %} 
+                                        selected 
+                                        {% endif %}>{{ business_category.business_category_name }}</option>
+                                        {% endfor %}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Pin Code <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="tel" class="form-control" name="pin_code" id="pin_code" placeholder="Pin Code"
+                                        value="{{ merchant_general_setting.m_pin_code }}" required maxlength="6" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>City <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="city" id="city" placeholder="City"
+                                        value="{{ merchant_general_setting.m_city }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Area <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <!-- <input type="text" class="form-control" name="area" id="area" placeholder="Area"
+                                        value="{{ merchant_general_setting.m_area }}" required /> -->
+                                        <textarea class="form-control" name="area" id="area" placeholder="Area" rows="1" required>{{ merchant_general_setting.m_area }}</textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>District <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="district" id="district" placeholder="District"
+                                        value="{{ merchant_general_setting.m_district }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>State <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="state" id="state" placeholder="State"
+                                        value="{{ merchant_general_setting.m_state }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Address <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <textarea class="form-control" name="address" id="address"
+                                        placeholder="Address">{{ merchant_general_setting.m_address }}</textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Landline Number</label>
+                                    <div class="input-group mb-3">
+                                      <input type="tel" class="form-control" name="landline_number" id="landline_number"
+                                        placeholder="Landline Number" value="{{ merchant_general_setting.m_landline_number }}" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Alternate Mobile Number <span style="color: red"> *</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="tel" class="form-control" name="alternate_mobile_number"
+                                        id="alternate_mobile_number" placeholder="Alternate Mobile Number"
+                                        value="{{ merchant_general_setting.m_alternate_mobile_number }}" maxlength="10" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Company Email <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="email" class="form-control" id="company_email" name="company_email"
+                                        value="{{ merchant_general_setting.m_company_email }}" placeholder="Company Email" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Alternate Email</label>
+                                    <div class="input-group mb-3">
+                                      <input type="email" class="form-control" id="alternate_email" name="alternate_email"
+                                        value="{{ merchant_general_setting.m_alternate_email }}" placeholder="Alternate Email" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>PAN Number <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" id="pan_number" name="pan_number"
+                                        value="{{ merchant_general_setting.m_pan_number }}" placeholder="PAN Number" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>GSTIN</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="gstin" id="gstin" placeholder="GSTIN"
+                                        value="{{ merchant_general_setting.m_gstin }}" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>GSTIN Certificate</label>
+                                    <div class="input-group mb-3">
+                                      <input type="file" class="form-control" name="GSTIN_certificate" id="GSTIN_certificate"
+                                        placeholder="GSTIN" value="" />
+                                      <input type="hidden" name="gstin_certificate_file" id="gstin_certificate_file" value="{{ merchant_general_setting.m_GSTIN_certificate }}">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>CIN</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="cin" id="cin" placeholder="CIN"
+                                        value="{{ merchant_general_setting.m_cin }}" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>CIN Certificate</label>
+                                    <div class="input-group mb-3">
+                                      <input type="file" class="form-control" name="CIN_certificate" id="CIN_certificate"
+                                        placeholder="CIN Certificate" value="" />
+                                      <input type="hidden" name="cin_certificate_file" id="cin_certificate_file" value="{{ merchant_general_setting.m_CIN_certificate }}">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Bank Account Number <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="tel" class="form-control" name="bank_account_number" id="bank_account_number"
+                                        placeholder="Bank Account Number"
+                                        value="{{ merchant_general_setting.m_bank_account_number }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Bank IFSC code <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="bank_IFSC_code" id="bank_IFSC_code"
+                                        placeholder="Bank IFSC code" value="{{ merchant_general_setting.m_bank_IFSC_code }}"
+                                        required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Bank Name <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="bank_name" id="bank_name"
+                                        placeholder="Bank Name" value="{{ merchant_general_setting.m_bank_name }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Bank Branch <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="bank_branch" id="bank_branch"
+                                        placeholder="Bank Branch" value="{{ merchant_general_setting.m_bank_branch }}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>TIN/VAT Number <span style="color: red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <input type="tel" maxlength="11" class="form-control" name="tin_vat_number" id="tin_vat_number"
+                                        placeholder="TIN/VAT Number" value="{{merchant_general_setting.m_vat_tin_number}}" required />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Canceled Bank Cheque Photo</label>
+                                    <div class="input-group mb-3">
+                                      <input type="file" class="form-control" name="cancel_bank_cheque_photo" id="cancel_bank_cheque_photo"
+                                        placeholder="Canceled Bank Cheque Photo" value="" />
+                                      <input type="hidden" name="cin_certificate_file" id="cin_certificate_file" value="">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Other Documents 1</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="other_document1" id="other_document1"
+                                        placeholder="Other Documents 1" value="{{merchant_general_setting.m_other_document1}}" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Other Documents Certificate 1</label>
+                                    <div class="input-group mb-3">
+                                      <input type="file" class="form-control" name="other_document_certificate1" id="other_document_certificate1"
+                                        placeholder="Other Documents Certificate 1" value="" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Other Documents 2</label>
+                                    <div class="input-group mb-3">
+                                      <input type="text" class="form-control" name="other_document2" id="other_document2"
+                                        placeholder="Other Documents 2" value="" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Other Documents Certificate 2</label>
+                                    <div class="input-group mb-3">
+                                      <input type="file" class="form-control" name="other_document_certificate2" id="other_document_certificate2"
+                                        placeholder="Other Documents Certificate 2" value="" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <!-- <div class="col-md-12">
+                                <div class="form-group">
+                                  <label class="text-center" style="display: block;">Profile Picture</label>
+                                  <div class="input-file input-file-image">
+                                    {% if ProfileImages %}
+                                    {% for ProfileImage in ProfileImages %}
+                                    {% if ProfileImage.m_profile_image %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="{{ ProfileImage.m_profile_image.url }}" alt="preview" />
+                                    {% else %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="/static/assets/img/user-profile-pic.png" alt="preview" />
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% else %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="/static/assets/img/user-profile-pic.png" alt="preview" />
+                                    {% endif %}
+
+                                    <input type="file" class="form-control form-control-file center" id="uploadImg1"
+                                      name="profile_image" accept="image/*" value="">
+
+                                    <label for="uploadImg1" class="center btn btn-primary btn-round btn-md text-center" style=" display:inherit; margin-left: auto;
+                                                        margin-right: auto; ">
+                                      <i class="fas fa-image"></i> Select Profile Image</label>
+                                  </div>
+                                </div>
+                              </div> -->
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <label class="text-center" style="display: block;">Business Logo</label>
+                                  <div class="input-file input-file-image">
+                                    {% if merchant_general_setting.m_business_logo %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="{{ merchant_general_setting.m_business_logo.url }}" alt="preview" />
+                                    {% else %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="/static/assets/img/Business-logo.png" alt="preview" />
+                                    {% endif %}
+
+                                    <input type="file" class="form-control form-control-file center" id="uploadImg2"
+                                      name="business_logo" accept="image/*" value="">
+                                    {% if merchant_general_setting.m_business_logo %}
+                                      <div class="row">
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <label class="uploadlogo center btn btn-primary btn-round btn-sm text-center"
+                                          data-id="{{ merchant_general_setting.id }}">
+                                            <i class="fas fa-image" style="color: white;"></i><span style="color: white;"> &nbsp Select</span></label>
+                                        {% endif %}
+                                      </div>
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <a href="{% url 'merchant-business-logo-remove' %}">
+                                            <label class="center btn btn-primary btn-round btn-sm text-center">
+                                              <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp Remove</span>
+                                            </label>
+                                          </a>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                    {% else %}
+                                      {% if actions.edit_permission == "1" %}
+                                        <label class="uploadlogo center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto;
+                                                        margin-right: auto; ">
+                                          <i class="fas fa-image"></i> Select Business Logo</label>
+                                      {% endif %}
+                                         
+                                    {% endif %}
+                                    <p class="text-center center" style="color: #63b90b;"><b>Logo should be less than 500 KB</b></p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <label class="text-center" style="display: block;">Business Stamp</label>
+                                  <div class="input-file input-file-image">
+                                    {% if merchant_general_setting.m_business_stamp %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="{{ merchant_general_setting.m_business_stamp.url }}" alt="preview" />
+                                    {% else %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="/static/assets/img/Business-stamp.png" alt="preview" />
+                                    {% endif %}
+
+                                    <input type="file" class="form-control form-control-file center" id="uploadImg3"
+                                      name="business_stamp" accept="image/*" value="">
+                                    {% if merchant_general_setting.m_business_stamp %}
+                                      <div class="row">
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <label  class="uploadstamp center btn btn-primary btn-round btn-sm text-center"
+                                          data-id="{{ merchant_general_setting.id }}">
+                                            <i class="fas fa-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                                        {% endif %}
+                                      </div>
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <a href="{% url 'merchant-business-stamp-remove' %}">
+                                            <label class="center btn btn-primary btn-round btn-sm text-center">
+                                              <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                                            </label>
+                                          </a>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                    {% else %}
+                                      {% if actions.edit_permission == "1" %}
+                                        <label class="uploadstamp center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto; margin-right: auto; ">
+                                          <i class="fas fa-image"></i> Select Business Stamp</label>
+                                      {% endif %}
+                                        
+                                    {% endif %}
+                                    <p class="text-center center" style="color: #63b90b;"><b>Stamp should be less than 500 KB</b></p>
+                                      }
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <label class="text-center" style="display: block;">Digital Signature</label>
+                                  <div class="input-file input-file-image">
+                                    {% if merchant_general_setting.m_digital_signature %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="{{ merchant_general_setting.m_digital_signature.url }}" alt="preview" />
+                                    {% else %}
+                                    <img class="img-upload-preview img-circle center" width="100" height="100"
+                                      src="/static/assets/img/Digital-Signature.png" alt="preview" />
+                                    {% endif %}
+
+                                    <input type="file" class="form-control form-control-file center" id="uploadImg4"
+                                      name="digital_signature" accept="image/*" value="">
+
+                                    {% if merchant_general_setting.m_digital_signature %}
+                                      <div class="row">
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <label class="uploadsignature center btn btn-primary btn-round btn-sm text-center"
+                                          data-id="{{ merchant_general_setting.id }}">
+                                            <i class="fas fa-image" style="color: white;"></i><span style="color: white;">&nbsp  Select</span></label>
+                                        {% endif %}
+                                      </div>
+                                      <div class="col-md-6">
+                                        {% if actions.edit_permission == "1" %}
+                                          <a href="{% url 'merchant-digital-signature-remove' %}">
+                                            <label class="center btn btn-primary btn-round btn-sm text-center">
+                                              <i class="fa fa-trash" style="color: white;"></i><span style="color: white;">&nbsp  Remove</span>
+                                            </label>
+                                          </a>
+                                        {% endif %}
+                                      </div>
+                                    </div>
+                                    {% else %}
+                                      {% if actions.edit_permission == "1" %}
+                                        <label class="uploadsignature center btn btn-primary btn-round btn-md text-center" data-id="{{ merchant_general_setting.id }}" style=" display:inherit; margin-left: auto;
+                                                        margin-right: auto; ">
+                                          <i class="fas fa-image"></i> Select Digital Signature</label>
+                                      {% endif %}
+                                    {% endif %}
+                                    <p class="text-center center" style="color: #63b90b;"><b>Signature should be less than 500 KB</b></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                          <div class="text-center mt-3 mb-3">
+                            {% if actions.edit_permission == "1" %}
+                              <button type="submit" class="btn btn-primary">Update</button>
+                            {% endif %}
+                          </div>
+                        </form>
+                      </div>
+                  {% endif %}
+              {% endif %}
+            {% endfor %}
+            <div class="card-body permission-denied" style="display:none">
+              <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cropping signature modal -->
+<div class="container" id="crop-avatar">
+
+  <div class="modal fade" id="avatar-modal" aria-hidden="false" aria-labelledby="avatar-modal-label" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="avatar-form" action="/merchant-cropped-signature-upload/" enctype="multipart/form-data"
+          method="post">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload text-center">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="merchantsignaturefile" id="" class="avatar-input">
+                <input type="hidden" name="merchant_setting_signature_modal_id" id="merchant_setting_signature_modal_id"
+                  value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+</div>
+
+<!-- end signature modal -->
+
+
+
+
+<!-- Cropping Stamp modal -->
+<div class="container" id="crop-avatar-stamp">
+
+  <div class="modal fade" id="avatar-stamp-modal" aria-hidden="false" aria-labelledby="avatar-modal-label"
+    role="dialog">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <form class="avatar-form" action="/merchant-cropped-stamp-upload/" enctype="multipart/form-data" method="post"
+          id="avatar-form-stamp-id">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload" id="avatar-upload-stamp-id">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="merchantstampfile" id="stamp-id" class="avatar-input">
+                <input type="hidden" name="merchant_setting_stamp_modal_id" id="merchant_setting_stamp_modal_id"
+                  value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper" id="avatar-wrapper-stamp-id"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" aria-label="Loading" role="img1" tabindex="-1" id="loading-stamp-id"></div>
+</div>
+
+<!-- end stamp modal -->
+
+
+
+<!-- Cropping logo modal -->
+<div class="container" id="crop-avatar-logo">
+
+  <div class="modal fade" id="avatar-logo-modal" aria-hidden="false" aria-labelledby="avatar-modal-label" role="dialog">
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <form class="avatar-form" action="/merchant-cropped-logo-upload/" enctype="multipart/form-data" method="post"
+          id="avatar-form-stamp-id">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload" id="avatar-upload-stamp-id">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="merchantlogofile" id="stamp-id" class="avatar-input">
+                <input type="hidden" name="merchant_setting_modal_id" id="merchant_setting_modal_id" value="">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper" id="avatar-wrapper-stamp-id"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" aria-label="Loading" role="img1" tabindex="-1" id="loading-stamp-id"></div>
+</div>
+
+<!-- end stamp modal -->
+
+<!-- SCRIPTS -->
+
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/cropper.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+
+
+ $(".uploadsignature").on("click", function () {
+    var merch_set_signature_id = $(this).data('id');
+
+
+    $('#merchant_setting_signature_modal_id').val(merch_set_signature_id);
+    $("#avatar-modal").modal();
+
+  });
+
+
+
+  $(".uploadstamp").on("click", function () {
+    var merch_set_stamp_id = $(this).data('id');
+
+
+    $('#merchant_setting_stamp_modal_id').val(merch_set_stamp_id);
+    $("#avatar-stamp-modal").modal();
+
+  });
+
+  $(".uploadlogo").on("click", function () {
+
+
+    var merch_set_logo_id = $(this).data('id');
+
+
+    $('#merchant_setting_modal_id').val(merch_set_logo_id);
+    $("#avatar-logo-modal").modal();
+
+  });
+
+
+
+   jQuery.validator.addMethod("lettersonly", function(value, element) {
+  return this.optional(element) || /^[a-z]+$/i.test(value);
+}, "Only characters required"); 
+
+jQuery.validator.addMethod("pan_val", function(value, element){
+if (/[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) {
+return true;   // PASS validation when REGEX matches
+} else {
+    return false;  // FAIL validation
+};
+}, "Please enter valid PAN number.");
+
+$.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+  $.validator.addMethod("validDate", function(value, element) {
+      var currDate = new Date();
+      return Date.parse(currDate) >= Date.parse(value) ||value == "";
+  }, "Please enter valid DOB");
+
+jQuery.validator.addMethod("mobile_number", function (value, element) {
+            if (/^[6-9][0-9]{9}$/.test(value)) {
+                return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid Mobile Number");
+
+$.validator.addMethod("indian_cin", function (value, element) {
+    if (/^([L|U]{1})([0-9]{5})([A-Za-z]{2})([0-9]{4})([A-Za-z]{3})([0-9]{6})$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid CIN number.");
+
+  $.validator.addMethod("indian_gstin", function (value, element) {
+    if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid GSTIN number.");
+
+  $.validator.addMethod("bank_ifsc", function (value, element) {
+    if (/^[A-Z]{4}0[A-Z0-9]{6}$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid IFSC Code.");
+
+  $("#form").validate({
+    rules: {
+      business_name: {
+        required: true,
+      },
+      merchant_business_category: {
+        required: true,
+      },
+      pin_code: {
+        required: true,
+        maxlength : 6,
+        minlength : 6,
+        digits: true,
+      },
+      city: {
+        required: true,
+        lettersonly: true,
+      },
+      area: {
+        required: true,
+      },
+      district: {
+        required: true,
+        lettersonly: true,
+      },
+      state: {
+        required: true,
+        lettersonly: true,
+      },
+      address: {
+        required: true,
+      },
+      company_email: {
+        email: true,
+        required: true,
+      },
+      alternate_email: {
+        email: true,
+      },
+      address: {
+        required: true,
+
+      },
+      tin_vat_number:{
+          digits: true,
+          maxlength:11,
+          minlength:11,
+      },
+      pan_number: {
+        required: true,
+        pan_val: true,
+      },
+      bank_branch:{
+        lettersonly : false
+      },
+      landline_number: {
+        digits: true,
+      },
+      alternate_mobile_number:{
+        mobile_number:true
+      },
+      bank_account_number:{
+        digits:true,
+      },
+      bank_IFSC_code:{
+        bank_ifsc:true,
+      },
+      cin:{
+         indian_cin:true,
+      },
+      gstin:{
+          indian_gstin:true,
+      },
+      GSTIN_certificate: {
+        required: function (element) {
+          return ($("#gstin").val() != "" && $("#gstin_certificate_file").val() == "");
+        }
+      },
+      CIN_certificate: {
+        required: function (element) {
+          return ($("#cin").val() != "" && $("#cin_certificate_file").val() == "");
+        }
+      },
+      profile_image:{
+        filesize: 500000
+      },
+      business_logo:{
+        filesize: 500000
+      },
+      business_stamp:{
+        extension: "png",
+        filesize: 500000
+      },
+      digital_signature:{
+        filesize: 500000
+      }
+
+
+    },
+
+    messages: {
+      business_stamp: {
+        extension: "Only png file is acceptable."
+      },
+      pin_code: {
+        maxlength: "Please enter valid Pincode",
+        minlength: "Please enter valid Pincode"
+      }
+    }
+    
+  });
+
+  $(document).ready(function () {
+    $("#pin_code").keyup(function () {
+      var pincode = $('#pin_code').val();
+      if (pincode.length == 6) {
+        $.ajax({
+          url: "https://api.postalpincode.in/pincode/" + pincode,
+          cache: false,
+          dataType: "json",
+          type: "GET",
+          success: function (data) {
+            state = data['0']['PostOffice'][0]['State']
+            city = data['0']['PostOffice'][0]['Region']
+            district = data['0']['PostOffice'][0]['District']
+            $('#state').val(state)
+            $('#city').val(city)
+            $('#district').val(district)
+          }
+        })
+      }
+      else {
+        $('#state').val("")
+        $('#city').val("")
+        $('#district').val("")
+      }
+    })
+  })
+
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

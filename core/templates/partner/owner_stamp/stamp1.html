@@ -1,0 +1,1301 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Owner Stamp {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .label_text {
+        margin-left: 7px;
+    }
+
+    .button_space {
+        margin-left: 30px;
+    }
+</style>
+<style>
+    .container1{
+        
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+    }
+    .rect-gray{
+        color: #555;
+        border: 0.5rem double #555;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;
+      }
+      .container2{
+       
+	    margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+        
+      }
+      .rect-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;  
+      }
+      .container3{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+        
+      }
+      .rect-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928;
+        transform: rotate(deg);
+        border-radius: 1rem;
+        font-size: 3rem;
+        border-radius: 0;
+      }
+      .container4{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+      }
+      .rect-blue{
+        color: #0000FF;
+        border: 1rem double #0000FF;
+        
+        font-size: 5rem;
+        font-family: "Open sans", Helvetica, Arial, sans-serif;
+        border-radius: 0;
+        padding: 0.5rem;
+      }
+      .container5{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .circle-black{
+        color: #555;
+        font-size: 3rem;
+        font-weight: 700;
+        border: 0.50rem solid #555;
+        display: inline-block;
+        padding: 0.5rem 2.9rem;
+        text-transform: uppercase;
+        border-radius: 50%;
+        font-family: 'Courier';
+      }
+      .container6{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .circle-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        
+        border-radius: 50%;
+        font-size: 3rem;  
+      }
+      .container7{                
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;   
+    }
+      .circle-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928;
+        
+        border-radius: 50%;
+        font-size: 3rem; 
+      }
+      .container8{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    
+        display: flex;
+      }
+      .circle-blue{
+        margin: 10px;
+        color: #0000FF;
+        border: 1rem double #0000FF;
+        font-size: 6rem;
+        font-family: "Open sans";
+        border-radius: 60%;
+        padding: 0.5rem;
+      }
+      .container9{
+        width: 100%;
+	    height: 100%;
+        margin: 30px;
+      }
+      .square-black{
+        color: #555;
+        border: 1rem double #555;  
+        font-size: 3rem;
+        font-family: "Open sans", Helvetica, Arial, sans-serif;
+        border-radius: 0;
+        padding: 0.5rem;
+      }
+      .container10{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .square-red{
+        color: #D23;
+        border: 0.5rem double #D23;
+        font-size: 3rem; 
+      }
+      .container11{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+
+      }
+      .square-blue{
+          width: 100%;
+	    height: 100%;
+        color: #0000FF;
+        border: 1rem double #0000FF;
+
+        
+        font-size: 3rem;
+        
+        border-radius: 0;
+        padding: 0.5rem;
+
+      }
+      .container12{
+        margin: 30px;
+	    width: 100%;
+	    height: 100%;
+	    overflow: hidden;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: row;
+      }
+      .square-green{
+        color: #0A9928;
+        border: 0.5rem double #0A9928;
+        
+        font-size: 3rem;
+      }
+      
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Design</h4>
+                            <ul class="breadcrumbs">
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <h4 class="card-title">Stamp</h4>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addMerchantModal">
+                                <i class="fa fa-plus"></i> Create </button>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <tr style="text-align: center;">
+                                            <th>Sr No</th>
+                                            <th>Name</th>
+                                            <th style="margin-left: 70px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+
+                                        {% for data in data %}
+                                          <tr style="text-align: center;">
+                                            {% if data.option_color == "Green" %}
+                                            {% if data.selection_design == "Square" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn"
+                                                        data-toggle="tooltip" data-target="#exampleModal"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}" 
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button> 
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Blue" %}
+                                            {% if data.selection_design == "Square" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn1"
+                                                        data-toggle="tooltip" data-target="#exampleModal1"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button> 
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Black" %}
+                                            {% if data.selection_design == "Square" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn2"
+                                                        data-toggle="tooltip" data-target="#exampleModal2"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Red" %}
+                                            {% if data.selection_design == "Square" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn3"
+                                                        data-toggle="tooltip" data-target="#exampleModal3"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"                                          
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>                    
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Green" %}
+                                            {% if data.selection_design == "circle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn4"
+                                                        data-toggle="tooltip" data-target="#exampleModal4"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"      
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>   
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Blue" %}
+                                            {% if data.selection_design == "circle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn5"
+                                                        data-toggle="tooltip" data-target="#exampleModal5"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"  
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Black" %}
+                                            {% if data.selection_design == "circle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn6"
+                                                        data-toggle="tooltip" data-target="#exampleModal6"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}" 
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>   
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Red" %}
+                                            {% if data.selection_design == "circle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn7"
+                                                        data-toggle="tooltip" data-target="#exampleModal7"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}" 
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Green" %}
+                                            {% if data.selection_design == "Rectangle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn8"
+                                                        data-toggle="tooltip" data-target="#exampleModal8"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Blue" %}
+                                            {% if data.selection_design == "Rectangle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn9"
+                                                        data-toggle="tooltip" data-target="#exampleModal9"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}"  
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Black" %}
+                                            {% if data.selection_design == "Rectangle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}}</td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn10"
+                                                        data-toggle="tooltip" data-target="#exampleModal10"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}" 
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+
+                                        <tr style="text-align: center;">
+                                            {% if data.option_color == "Red" %}
+                                            {% if data.selection_design == "Rectangle" %}
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{data.stamp_name}} </td>
+                                            <td>
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewBtn11"
+                                                        data-toggle="tooltip" data-target="#exampleModal11"
+                                                        id="view-modal-div" data-original-title="View Stamp"
+                                                        data-url="{{stamp.id}}" data-id="{{data.id}}"
+                                                        data-stamp_content="{{data.stamp_content}}"
+                                                        data-logo_url="{{data.stamp_logo.url}}" 
+                                                        data-merchant_business_name={{data.merchant_business_name}}>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- action edit buttoon -->
+                                                    <button type="button" data-toggle="tooltip"
+                                                        data-target="#myEditModal" title=""
+                                                        class="btn btn-link btn-primary btn-lg editBtn"
+                                                        id="edit-modal-div" data-original-title="Edit Stamp"
+                                                        data-id="{{data.id}}" data-stamp_name="{{ data.stamp_name }}"
+                                                        data-stamp_content="{{ data.stamp_content }}"
+                                                        data-stamp_logo="{{ data.stamp_logo }}">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <!-- action delete button -->
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                </div>
+                                            </td>
+                                            {% endif %}
+                                            {% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+             </form>
+           </div>
+        </div>
+    </div>
+ </div>
+</div>
+</div>
+
+
+<!-- action eye button -->
+<div class="stamp1">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="form-group">
+                <div class="container12" style="margin-left: 1px;">
+                <b class="square-green"  id="view_stamp_content"></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="stamp2">
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="form-group" >
+                <div class="container11" style="margin-left: 75px;">
+                  <b class="square-blue" id="view_stamp_content1"></b>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="stamp3">
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="form-group">
+                    <div class="container9" style="margin-left: 70px;">
+                    <b class="square-black" id="view_stamp_content2"></b>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="stamp4">
+        <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="form-group">
+                        <div class="container10" style="margin-left: 1px;">
+                        <b class="square-red" id="view_stamp_content3"></b>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="stamp5">
+            <div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container7" style="margin-left: 110px;">
+                                <b class="circle-green" id="view_stamp_content4"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp6">
+            <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container8" style="margin-left: 50px;">
+                                <b class="circle-blue" id="view_stamp_content5"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp7">
+            <div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container5" style="margin-left: 1px;">
+                            <b class="circle-black" id="view_stamp_content6"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp8">
+            <div class="modal fade" id="exampleModal7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container6" style="margin-left: 1px;">
+                            <b class="circle-red" id="view_stamp_content7"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp9">
+            <div class="modal fade" id="exampleModal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container3" style="margin-left: 0.1px;">
+                                <b class="rect-green"id="view_stamp_content8"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp10">
+            <div class="modal fade" id="exampleModal9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container4" style="margin-left: 70px;">
+                                <b class="rect-blue" id="view_stamp_content9"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp11">
+            <div class="modal fade" id="exampleModal10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container1" style="margin-right: 1px;">
+                                <b class="rect-gray" id="view_stamp_content10"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stamp12" > 
+            <div class="modal fade" id="exampleModal11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="form-group">
+                            <div class="container2" style="margin-left: 1px;">
+                            <b class="rect-red" id="view_stamp_content11"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+<!-- Edit Role Modal End -->
+<div class="modal fade" id="myEditModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <form method="POST" class="form" name="edit_role_form" action="/wstampview/">
+            {% csrf_token %}
+            <input type="hidden" name="stamp_id" id="edit_module_id">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Stamp Record </h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Stamp Name</label>
+                            <input type="text" name="stamp_name" class="form-control" value="" placeholder="Stamp Name"
+                                id="edit_stamp_name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Stamp Content</label>
+                            <input type="text" name="stamp_content" class="form-control" value=""
+                                placeholder="Stamp Content" id="edit_stamp_content">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Select Stamp Colour:</label>
+                            <input type="radio" name="option_color" id="stamp_colour_green" value="Green" ><span style="color: green; background-color: green;">123</span>
+                            <input type="radio" name="option_color" class="button_space"  id="stamp_colour_blue" value="Blue"><span style="color: blue; background-color: blue;">123</span>
+                            <input type="radio" name="option_color" class="button_space" id="stamp_colour_black" value="Black"><span style="color: black; background-color: black;">123</span>
+                            <input type="radio" name="option_color" class="button_space" id="stamp_colour_red" value="Red"><span style="color: red; background-color: red;">123</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group" >
+                            <label>Stamp Design:</label>
+                            <input type="radio" name="selection_design" id="stamp_design_square" value="Square"><span class="label_text">Square</span>
+                            <input type="radio" name="selection_design" class="button_space" CHECKED id="stamp_design_circle" value="circle"><span class="label_text">circle</span>
+                            <input type="radio" name="selection_design" class="button_space" CHECKED  id="stamp_design_rectangle" value="Rectangle"><span class="label_text">Rectangle</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Save" data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="addMerchantModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <form action="/wstampview/" method="POST" enctype="multipart/form-data" id="add_merchant_form" name="form" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" name="stamp_id">       
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center"><b>Create Stamp</b></h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1" class="form-label">Stamp Name</label>
+                    <input type="Text" class="form-control" id="stamp_name" name="stamp_name" placeholder="Stamp_Name">            
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1" class="form-label">Stamp Content</label>
+                    <input type="Text" class="form-control" id="stamp_content" name="stamp_content" placeholder="Stamp_Content">
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Select Stamp Colour:</label>
+                    <input type="radio" name="option_color" id="stamp_colour_green" value="Green"><span class="label_text" style="color: green; background-color: green;">123</span>
+                    <input type="radio" name="option_color" class="button_space"  id="stamp_colour_blue" value="Blue"><span class="label_text" style="color: blue; background-color: blue;">123</span>
+                    <input type="radio" name="option_color" class="button_space" id="stamp_colour_black" value="Black"><span class="label_text" style="color: black; background-color: black;">123</span>
+                    <input type="radio" name="option_color" class="button_space" id="stamp_colour_red" value="Red"><span class="label_text" style="color: red; background-color: red;">123</span>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Stamp Design:</label>
+                    <input type="radio" name="selection_design" id="stamp_design_square" value="Square"><span class="label_text" >Square</span>
+                    <input type="radio" name="selection_design" class="button_space" CHECKED id="stamp_design_circle" value="circle"> <span class="label_text">circle</span>
+                    <input type="radio" name="selection_design" class="button_space" CHECKED  id="stamp_design_rectangle" value="Rectangle"> <span class="label_text">Rectangle</span>
+                  </div>
+              </div>
+            </div> 
+          </div>
+          <div class="modal-footer">
+            <input id="add_merchant_form_submit" type="submit" class="btn btn-primary" value="Create Stamp">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+
+    }
+</script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    var editmodaldiv = $("#edit-modal-div");
+    $(".editBtn").on("click", function () {
+        var id_num = $(this).data('id')
+        var stamp_name = $(this).data('stamp_name');
+        var stamp_content = $(this).data('stamp_content');
+        var option_color = $(this).data('option_color');
+        var selection_design = $(this).data('selection_design');
+       
+        $("#edit_module_id").val(id_num)
+        $('#edit_stamp_name').val(stamp_name)
+        $('#edit_stamp_content').val(stamp_content)
+        $('#edit_option_color').val(option_color)
+        $('#edit_selection_design').val(selection_design)
+        $("#myEditModal").modal();
+    });
+</script>
+
+<!-- action delete button -->
+<script>
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-stamp/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Offer has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+</script>
+
+<!-- action eye button -->
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content').empty().append(stamp_content);
+        $("#exampleModal").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn1").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content1').empty().append(stamp_content); 
+        $("#exampleModal1").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn2").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+       
+        $('#view_stamp_content2').empty().append(stamp_content);
+        $("#exampleModal2").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn3").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content3').empty().append(stamp_content);
+        $("#exampleModal3").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn4").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content4').empty().append(stamp_content);
+        $("#exampleModal4").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn5").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content5').empty().append(stamp_content);
+        $("#exampleModal5").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn6").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content6').empty().append(stamp_content);
+        $("#exampleModal6").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn7").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content7').empty().append(stamp_content);
+        $("#exampleModal7").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn8").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content8').empty().append(stamp_content);
+        $("#exampleModal8").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn9").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+
+        $('#view_stamp_content9').empty().append(stamp_content);
+        $("#exampleModal9").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn10").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content10').empty().append(stamp_content);
+        $("#exampleModal10").modal();
+    });
+</script>
+
+<script>
+    var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn11").on("click", function () {
+        var stamp_content = $(this).data("stamp_content");
+        
+        $('#view_stamp_content11').empty().append(stamp_content);
+        $("#exampleModal11").modal();
+    });
+</script>
+<!-- cobination selection -->
+<script>
+    function admSelectCheck(nameSelect)
+    {
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal1").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal2").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal3").style.display = val == 'Square' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal4").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal5").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal6").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal7").style.display = val == 'circle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal8").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal9").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal10").style.display = val == 'Rectangle' ? "block" : 'none';
+        var val = nameSelect.options[nameSelect.selectedIndex].value;
+        document.getElementById("exampleModal11").style.display = val == 'Rectangle' ? "block" : 'none';    
+    }
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

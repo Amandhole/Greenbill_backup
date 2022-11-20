@@ -1,0 +1,1598 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} My Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+  .select2-container--default .select2-selection--multiple:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    border-color: #888 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    right: 6px;
+    margin-left: -4px;
+    margin-top: -2px;top: 50%;
+    width: 0;cursor: pointer
+}
+
+.select2-container--open .select2-selection--multiple:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    border-color: transparent transparent #888 transparent;
+    border-width: 0 4px 5px 4px;
+    height: 0;
+    right: 6px;
+    margin-left: -4px;
+    margin-top: -2px;top: 50%;
+   
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+        
+    }
+
+
+label {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+}
+
+input {
+    margin: .4rem 0;
+}
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .select2-container--open .select2-selection--multiple:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    border-color: transparent transparent #888 transparent;
+    border-width: 0 4px 5px 4px;
+    height: 0;
+    right: 6px;
+    margin-left: -4px;
+    margin-top: -2px;top: 50%;
+    width: 0;cursor: pointer
+}
+
+span.select2-selection.select2-selection--single {
+    height: 37px;
+}
+
+span#select2-customer_bill_category-container {
+    color: #999;
+}
+
+span#select2-business_name-container {
+    color: #999;
+}
+
+.select2-dropdown {
+  z-index: 9001;
+}
+
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: #63b90b;
+    }
+    .expirecoupon {
+        color: red;
+    }
+</style>
+    <div class="content">
+        <div class="panel-header bg-primary-gradient">
+            <div class="page-inner py-5">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                    <div>
+                        <h2 class="text-white pb-2 fw-bold">Customer Dashboard</h2>
+                        <!-- <h5 class="text-white op-7 mb-2">Welcome to Customer Dashboard</h5> -->
+                    </div>
+                    <div class="ml-md-auto py-2 py-md-0">
+                        <!-- <a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a> -->
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addBill">
+                                 Add Bill
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-inner mt--5">
+            <div class="row mt--2">
+                <div class=" col-md-12">
+                    <div class="card">
+                        <div class="card-header align-items-center d-flex justify-content-center">
+                            <div class="card-head-row">
+                                <div class="card-title">MY BILLS
+                                    </div>
+                                <div class="card-tools">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 3%">
+                            <div class="row border border-primary rounded">
+                                <div class="col-md-5" style="padding-left: 0px !important;">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                        {% for bill in customer_bill|slice:":5" %}
+                                            {% if forloop.counter == 1 %}
+                                                <a class="nav-link active" id="v-pills-{{forloop.counter}}-tab" data-toggle="pill" href="#v-pills-{{forloop.counter}}" role="tab" aria-controls="v-pills-{{forloop.counter}}" aria-selected="true">
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+                                                            <div class="row" style="text-align: left; padding-left: 5%">
+                                                                <div class="col-md-12">
+                                                                    {{ bill.business_name }}
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    {{ bill.bill_category_name}}
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    {{ bill.bill_date }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 text-center justify-content-center align-self-center" style="padding-right: 8%">
+                                                            <span class="align-middle" style="font-size: 15px">₹ {{ bill.bill_amount }}</span>
+                                                        </div>
+                                                    </div>   
+                                                </a>
+                                            {% else %}
+                                                <a class="nav-link" id="v-pills-{{forloop.counter}}-tab" data-toggle="pill" href="#v-pills-{{forloop.counter}}" role="tab" aria-controls="v-pills-{{forloop.counter}}" aria-selected="true">
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+                                                            <div class="row" style="text-align: left; padding-left: 5%">
+                                                                <div class="col-md-12">
+                                                                    {{ bill.business_name }}
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    {{ bill.bill_category_name }}
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    {{ bill.bill_date }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 text-center justify-content-center align-self-center" style="padding-right: 8%">
+                                                            <span class="align-middle" style="font-size: 15px">₹ {{ bill.bill_amount }}</span>
+                                                        </div>
+                                                    </div> 
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>  
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="tab-content" id="v-pills-tabContent">
+                                        {% for bill in customer_bill|slice:":5" %}
+                                            {% if forloop.counter == 1 %}
+                                                <div class="tab-pane fade show active" id="v-pills-{{forloop.counter}}" role="tabpanel" aria-labelledby="v-pills-{{forloop.counter}}-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            {% if bill.file_extension == "pdf" %}
+                                                                    <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill.bill_file.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe>
+                                                            {% else %}
+                                                                    <img src="{{bill.bill_file.url}}" class="img-fluid" style="height: 420px !important">
+                                                            {% endif %}
+                                                            <!-- <img src="{{bill.bill.url}}" class="img-fluid" style="height: 420px !important"> -->
+                                                             <!-- <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill.bill.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe> -->
+                                                           <!-- <iframe class="embed-responsive-item" src="{{bill.bill.url}}" height="415px" width="80%" frameBorder="0" scrolling="auto" allowfullscreen></iframe>  -->
+
+                                                           <!-- <embed src="{{bill.bill.url}}" type="application/jpg" frameBorder="0" scrolling="auto" height="400px" width="100%" ></embed> -->
+                                                        </div>
+                                                        <div class="col-md-2">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="tab-pane fade" id="v-pills-{{forloop.counter}}" role="tabpanel" aria-labelledby="v-pills-{{forloop.counter}}-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            {% if bill.file_extension == "pdf" %}
+                                                                <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill.bill_file.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe>
+                                                            {% else %}
+                                                                <img src="{{bill.bill_file.url}}" class="img-fluid" style="height: 420px !important">
+                                                            {% endif %}
+                                                             <!-- <iframe src="https://docs.google.com/viewer?url=http://157.230.228.250/{{bill.bill.url}}&embedded=true" height="400px" width="100%" frameBorder="0" scrolling="auto"></iframe> -->
+                                                           <!-- <iframe class="embed-responsive-item" src="{{bill.bill.url}}" height="415px" width="80%" frameBorder="0" scrolling="auto"></iframe>  -->
+                                                        </div>
+                                                        <div class="col-md-2">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                        {% endfor %}
+                                    </div>    
+                                </div>
+                            </div>
+                            <!-- <div class="col d-flex align-items-center justify-content-center">
+                                <a href="/customer-bill/"><button type="submit" class="btn btn-primary" style="align-content: center;">View all Bills</button></a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            <!-- <div class="card" style="width:100%">
+                <div class="card-header align-items-center d-flex justify-content-center">
+                    <div class="card-title">GREEN POINTS
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="align-content: center;">
+                        <div class="col align-items-center d-flex justify-content-center">
+
+                            <h2>My Green Points :  &nbsp;{{green_points }}</h2>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <form action="/customer-dashboard-green-point/" method="GET" class="form-control" name="green_pont_form">
+                                <button type="button" class="btn btn-primary">View & Use</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="container" style="align-content: center;">
+                        <h3 style="color: #63b90b; text-align: center;"> Thank you for contributing to our environment and becoming a Green Member !</h3>
+                    </div>
+                </div>
+            </div> -->
+            
+            
+               
+
+            <div class=" col-md-12" style="height:70%">
+                <div class="card " >
+                    <div class="card-header align-items-center d-flex justify-content-center">
+                        <div class="card-head-row">
+                            <div class="card-title">SHOPPING ANALYSIS </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form class="form-control" action="/customer-index/" method="POST" id="shopping-analysis-form"
+                                    name="shopping-analysis-form" autocomplete="off" style="border:0px;">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="date" class="form-control" name="from_date"
+                                                        id="from_date" max="{% now 'Y-m-d' %}" required value="{{from_date}}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="date" class="form-control" name="to_date"
+                                                        id="to_date" max="{% now 'Y-m-d' %}" required value="{{to_date}}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" style="padding-top: 3%">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary"><i class="fa fa-search">&nbsp; Search</i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-12 align-items-center d-flex justify-content-center">
+                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" style="">By Category </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">By Merchant</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="tab-content" id="pills-tabContent" >
+                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="pie-chart" style="width: 463px; height: 300px; display: block;" width="250" height="200" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="chartContainer" width="463" height=" 300" class="chartjs-render-monitor" style="display: block; width: 200px; height: 200px;"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="pie-chart-merchant" style="width: 463px; height: 300px; display: block;" width="250" height="200" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="chartContainerMerchant" width="463" height=" 300" class="chartjs-render-monitor" style="display: block; width: 200px; height: 200px;"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <!-- <div class="card" style="width:100%">
+                            <div class="card-header align-items-center d-flex justify-content-center">
+                                <div class="card-title">Coupons
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row" style="align-content: center;">
+                                    
+                                        {% for objects in coupon_list %}
+                                            {% if forloop.counter < 5 %}
+                                                <div class="col-md-6" style="margin-top: 20px; margin-bottom: 30px; ">
+                                                    <form class="form-control" action="/customer-coupons-redeem/" method="POST"
+                                                        id="bill_form" name="bill_form" autocomplete="off"
+                                                        enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="green_points" value="{{objects.green_point}}">
+                                                        <input type="hidden" name="promo_code" value="{{objects.coupon_code}}">
+                                                        <input type="hidden" name="coupon_id" value="{{objects.id}}">
+                                                        <div class="coupon" style="">
+                                                            <div class="container" style="padding-bottom: 10px; background-color: {{objects.coupon_background_color}}  ">
+
+
+                                                                {% if objects.coupon_logo %}
+                                                                <img src="{{objects.coupon_logo.url}}" alt="Avatar"
+                                                                    style="width:70%;" height="100px" width="100px">
+                                                                {% else %}
+                                                                <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                                                    style="width:70%;">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="container" style="padding-bottom: 20px; background-color: {{objects.coupon_background_color}} ">
+                                                                <h5 class="promo"><b>Promo Code: {{objects.coupon_code}}</b>
+                                                                </h5>
+                                                                {% if objects.coupon_value %}
+                                                                <h2><b>₹ {{objects.coupon_value}} Off</b></h2>
+                                                                {% else %}
+                                                                <h2><b>{{objects.coupon_caption}}</b></h2>
+                                                                {% endif %}
+                                                                <p class="expirecoupon">Expires On:
+                                                                    {{ objects.valid_through }}</p>
+                                                                 <h3><b>Reedem for {{objects.green_point}} Green Points</b></h3>
+
+                                                                <button type="submit" class="btn btn-primary btn-sm">REDEEM  </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                {% endif %}
+                                             {% endfor %}
+                                        
+                                    <div class="col d-flex align-items-center justify-content-center">
+                                       
+                                        <a href="/customer-coupons-redeem/"><button type="submit" class="btn btn-primary" style="align-content: center;">View all Coupons</button></a>
+                                        
+                                       
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div> -->
+                    <!-- <div class=" col-md-12" style="height:70%">
+                        <div class="card text-center" >
+                            <div class="card-header align-items-center d-flex justify-content-center">
+                                <div class="card-head-row">
+                                    <div class="card-title">Parking Lot Passes</div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                    <div class="row">
+                                        
+                                    {% for object in parking_lot_pass %}
+                                    {% if forloop.counter < 5 %}
+
+                                    <div class="col-md-6" style="margin-top: 20px;; margin-bottom: 30px;">
+                                        <form class="form-control" action="//" method="POST" id="bill_form"
+                                            name="bill_form" autocomplete="off" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="coupon">
+                                                <div class="container" style="padding-bottom: 10px;">
+                                                    {% if object.bussiness_logo %}
+                                                    <img src="{{object.bussiness_logo.url}}" alt="Avatar"
+                                                        style="width:70%;" width="100" height="100">
+                                                    {% else %}
+                                                    <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                                        style="width:70%;">
+                                                    {% endif %}
+                                                    <div class="container" style="padding-bottom: 0px;">
+                                                    </div>
+
+                                                    <h2><b>{{object.business_name}}</b></h2>
+
+                                                </div>
+                                                <div class="container" style="padding-bottom: 20px;">
+                                                    <p>Vehicle No.: <span class="promo">{{object.vehical_no}}</span>
+                                                    </p>
+
+                                                    <p class="expire">Expires:
+                                                        {{object.valid_to}}</p>
+                                                    <h2><b>Amount {{object.amount}}</b></h2>
+
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    <div class="col d-flex align-items-center justify-content-center">
+                                        
+                                        <a href="/customer-passes/"><button type="submit" class="btn btn-primary" style="align-content: center;">View all Passes</button></a>
+                                        
+                                    </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- End merchant-->
+
+
+
+<!--View Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="exampleModalLabel">My Bill Details</h2>
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="paraclear">
+                <div class="col-md-12" style="margin-top: 20px; margin-bottom: 30px;">
+                    <div class="coupon" >
+                        <div class="container" style="padding-bottom: 10px;">
+                            <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                style="width:70%;">
+                            <div class="container" style="padding-bottom: 0px;">
+                            </div>
+                        </div>
+                        <div class="container" style="padding-bottom: 20px;">
+                            <p><b><span class="expire" id="busi_name"></span></b></span></p>
+                            <p><b><span class="expire" id="cust_category"></span></b></span></p>
+                            <p><b><span id="amount" class="expire"></b></span></p>
+                            <p><b><span id="date_bill" class="expire"></span></b></p>
+                            <p><b><span id="remarks" class="expire"></span></b></p>
+                            <p><b><span id="bill_tag" class="expire"></span></b></p>
+                        </div>
+                    </div>
+                </div>
+                    <!-- <p id="busi_name" name="busi_name" style="font-size:1.5vw"></p>
+                    <p id="cust_category" name="cust_category" style="font-size:1.5vw"></p>
+                    <p id="amount" name="amount" style="font-size:1.5vw"></p>
+                    <p id="date_bill" name="date_bill" style="font-size:1.5vw"></p>
+                    <p id="remarks" name="remarks" style="font-size:1.5vw"></p>
+                    <p id="bill_tag" name="bill_tag" style="font-size:1.5vw"></p> -->
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- Add Bill Modal -->
+<div class="modal fade" id="addBill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="exampleModalLongTitle">Add Bill</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form class="form-control" action="/customer-index-add-bill/" method="POST" id="bill_form"
+                            name="bill_form" autocomplete="off" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill Amount<span style="color: red;"> *</span></label>
+                                            <div class="input-group mb-6">
+                                                <input type="number" class="form-control mobile" name="bill_amount"
+                                                id="bill_amount" placeholder="Bill Amount" value="" required min="1"/>
+                                            </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label> Bill Date<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control mobile" name="bill_date"
+                                            id="bill_date" placeholder="yyyy/mm/dd" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Notes/Remarks</label>
+                                        <input type="text" class="form-control" name="remarks">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Select Category <span style="color: red"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <select name="customer_bill_category" id="customer_bill_category"
+                                                class="form-control mobile js-example-basic-single">
+                                                <option value="">Select Category</option>
+                                                {% for object in bill_category %}
+                                                <option value="{{object.id}}">
+                                                    {{object.bill_category_name}}</option>
+                                                {% endfor %}
+                                            <select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Select Store</label>
+                                        <div class="input-group mb-6">
+                                            <select name="business_name" id="business_name"
+                                                class="form-control mobile js-example-basic-single">
+                                                <option value="">Select Store </option>
+                                                    {% for object in business_name %}
+                                                <option value="{{object.id}}">
+                                                    {{object.m_business_name}}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-10" style="margin-top: 5px; color: #63b90b"><span>If your store is not listed here, please select checkbox and add store name.</span>
+                                                </div>
+                                            <div class="col-md-2" style="margin-top: 10px"><input class="form-control" type="checkbox" name="business_check" value="1" onchange="valueChanged()" id="business_check">
+                                                </div>
+                                            <div class="input-group mb-6">
+                                                <input type="text" name="custom_business" id="custom_business" class="form-control" placeholder="Add Business Name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Select Bill Tags</label>
+                                            <div class="input-group mb-6">
+                                                <select class="form-control mobile js-example-basic-single" name="bill_tags" id="bill_tags" multiple="" style="width: 200px;">
+                                                    
+                                                    {% for bill_tag in bill_tags %}
+                                                    <option value="{{ bill_tag.id }}">
+                                                        {{ bill_tag.bill_tags_name }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                </div>
+                            <!-- </div> -->
+
+
+                                       <input type="hidden" name="bill_tags_value" id="bill_tags_value" value="">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cust_bill">Upload Bill <span style="color: red;"> *</span></label>
+                                                <input type="file" class=""
+                                                id="cust_bill" name="cust_bill" accept="image/*,application/pdf">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="text-center mt-3 mb-3">
+                                            <button type="submit" class="btn btn-primary">Add Bill</button>
+                                    <!-- <button type="reset" class="btn btn-success">Cancle</button> -->
+                                </div>
+                            </div></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script type="text/javascript">
+
+//Add bill model functions
+function valueChanged()
+{
+        if($('#business_check').is(":checked")){
+            $("#business_name").val('').trigger('change')
+            $("#custom_business").show();
+            $("#business_name").prop('disabled', true);
+        }
+        else{
+            $("#custom_business").hide();
+            $("#business_name").prop('disabled', false);
+        }
+}
+
+function valueChanged1()
+{
+    if($('#edit_business_check').is(":checked")){
+        $("#edit_business_name").val('').trigger('change')
+        $("#edit_custom_business").show();
+        $("#edit_business_name").prop('disabled', true);
+    }
+    else{
+        $("#edit_custom_business").hide();
+        $("#edit_business_name").prop('disabled', false);
+    }
+}
+
+
+$(document).ready(function() {
+    $("#bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_bill_tags.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        // business_category = $("#business_category_id option:selected").val()
+        $("#edit_bill_tags_value").val(opts2)
+    })
+
+    $("#bill_tags").on('change', function()
+    {
+        var opts1 = [],opt1;
+        var len = bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt1 = bill_tags.options[i];
+            if (opt1.selected) {
+            opts1.push(opt1.value);
+            }
+        }
+        $("#bill_tags_value").val(opts1)
+    })
+
+});
+
+</script>
+
+<script>
+
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+
+
+//add data validation
+
+$.validator.addMethod("validDate", function(value, element) {
+          var currDate = new Date();
+          return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+    $("#addbilleditform").validate({
+        rules: {
+            editfile:{
+                required: function(element){
+                    return $("#editfile_available").val() != 1;
+                }
+            },
+            edit_amount: {
+                required: true,
+            },
+            edit_date: {
+                required: true,
+                validDate: true
+            }
+        },
+        highlight: function (element) {
+            $(element).addClass("c1");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("c1");
+        },
+        messages: {
+            editfile: {
+                required: "Bill is Required",
+            },
+            edit_amount: {
+                required: "Bill Amount is Required",
+            },
+            edit_date: {
+                required: "Bill Date is Required",
+            },
+        }
+    });
+
+
+// add data validation
+$.validator.addMethod("validDate", function(value, element) {
+          var currDate = new Date();
+          return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+    $("#bill_form").validate({
+        rules: {
+            cust_bill: {
+                required: true,
+            },
+            bill_amount: {
+                required: true,
+            },
+            bill_date: {
+                required: true,
+                validDate: true
+            },
+        },
+        // highlight: function (element) {
+        //     $(element).addClass("c1");
+        // },
+        // unhighlight: function (element) {
+        //     $(element).removeClass("c1");
+        // },
+        messages: {
+            cust_bill: {
+                required: "Bill is Required",
+            },
+            bill_amount: {
+                required: "Bill Amount is Required",
+            },
+            bill_date: {
+                required: "Bill Date is Required",
+            },
+        }
+    });
+
+
+
+
+//views bill
+ var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var bill_file = $(this).data("bill_file");
+        var busi_name = $(this).data('busi_name');
+        var cust_category = $(this).data('cust_category');
+        var amount = $(this).data('amount');
+        var date_bill = $(this).data('date_bill');
+        var remarks= $(this).data('remarks');
+        var bill_tag= $(this).data('bill_tags_name');
+        //console.log(cname)
+
+
+
+        $('#bill_file ').empty().append("Bill File: " + bill_file );
+        $('#busi_name').empty().append("Business Name: " + busi_name);
+        $('#cust_category').empty().append("Customer Category: " + cust_category);
+        $('#amount').empty().append("Amount :" + amount);
+        $('#date_bill').empty().append("Bill Date:" + date_bill);
+        $('#remarks').empty().append("Remarks :" + remarks);
+        $('#bill_tag').empty().append("Bill Tag :" + bill_tag);
+
+        $("#exampleModal").modal();
+
+    });
+
+
+$(document).ready(function () {
+    $('#basic-datatables').DataTable({
+    });
+    $('#multi-filter-select').DataTable({
+            "pageLength": 10,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+    });
+
+
+
+        // $('#add-row').DataTable({
+        //     dom: 'lBfrtip',
+        //     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        //     buttons: [
+        //         'excel', 'pdf', 'print'
+        //     ]
+        // });
+
+    $(document).ready(function() {
+        $('#add-row').DataTable( {dom: 'tBfrtip',
+                    "bPaginate": true,
+                    "dom": '<"pull-left"f>',
+                    "ordering": false,
+                    buttons: [],
+                initComplete: function () {
+                    this.api().columns([1,]).every( function () {
+                        var column = this;
+                        var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                            // var id = "#test_" + column[0][0];
+
+                            .appendTo( $("#test_" + column[0][0]).empty() )
+                            // .appendTo( $(column.header()).empty() )
+                            .on( 'change', function () {
+
+                                // var val = $.fn.dataTable.util.escapeRegex(
+                                //     $(this).val()
+                                // );
+
+                                var val = $(':selected', select).map(function(index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(this).val());
+                                }).toArray().join('|');
+
+                                column
+                                    .search( val ? '^'+val+'$' : '', true, false )
+                                    .draw();
+                            } );
+
+                        column.data().unique().sort().each( function ( d, j ) {
+                            select.append( '<option value="'+d+'">'+d+'</option>' )
+                        } );
+                    } );
+
+
+                }
+
+
+        });
+
+            $("#column_id_1").select2({
+                placeholder:" Select Bill Category",
+                closeOnSelect: true,
+                width: '100%',
+                // allowClear: true
+            })
+            
+            // $("#column_id_2").select2({
+            //     placeholder:" Select Bill Category",
+            //     closeOnSelect: true,
+            //     width: '100%',
+            //     // allowClear: true
+            // })
+    });
+});
+
+</script>
+
+
+<script>
+
+$(document).ready(function() {
+  $('input[name=to_date]').change(function() {
+          var to_date = $('#to_date').val();
+          document.getElementById('from_date').setAttribute("max", to_date);
+  })
+
+  $('input[name=from_date]').change(function() {
+    var from_date = $('#from_date').val();
+      document.getElementById('to_date').setAttribute("min", from_date);
+  })
+})
+// $("#button").ready(function(){
+
+
+//  var bg_color = $(this).attr('data-color')
+//     alert(bg_color)
+//     alert("lokesh")
+
+
+//     $("#background_color1").css("background-color", bg_color);
+//     $("#background_color2").css("background-color", bg_color);
+// });
+//category wise
+$.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+    $("#shopping-analysis-form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+    var config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Total Bill Amount',
+          data: {{ data|safe }},
+          backgroundColor: [
+              '#7CDEDF', '#FFF7C6', '#EF9C5C', '#88D5D5', '#F7E37B', '#AFF1F1', '#959EE4', '#40CDCC', '#EFE6DE', '#92F294', '#ABCB9A', '#BDBB6E', '#FDE896', '#64E987', '#FCCCCC' , '#74AFAF', '#9AB795', '#F3A789', '#019288', '#8C5B4B', '#FE9F62', '#83916E', '#FFFD2F', '#AD7BF6', '#F7E6D5', '#FDEAAA'
+          ],
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: 'rgb(154, 154, 154)',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+            },
+        pieceLabel: {
+            render: function (args) {
+            return '₹' + args.value;
+            },
+            fontColor: 'black',
+            fontSize: 14,
+            position: 'outside',
+        },
+        // tooltips: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+    }
+};
+
+{% comment %} window.onload = function() {
+
+
+
+}; {% endcomment %}
+
+var config1 = {
+    type: 'bar',
+    data: {
+        labels: {{ labels|safe }},
+        datasets: [{
+            label: 'Total Bill Amount in ₹',
+            data: {{ data|safe }},
+            backgroundColor: [
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+            ],
+            borderColor: [
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+    }
+}
+
+</script>
+
+
+<script>
+//merchant shopping analysis
+
+
+$.validator.addMethod("validDate1", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+    $("#merchant-shopping-analysis-form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+
+var config4 = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Total Bill Amount',
+          data: {{ data1|safe }},
+          backgroundColor: [
+              '#7CDEDF', '#FFF7C6', '#EF9C5C', '#88D5D5', '#F7E37B', '#AFF1F1', '#959EE4', '#40CDCC', '#EFE6DE', '#92F294', '#ABCB9A', '#BDBB6E', '#FDE896', '#64E987', '#FCCCCC' , '#74AFAF', '#9AB795', '#F3A789', '#019288', '#8C5B4B', '#FE9F62', '#83916E', '#FFFD2F', '#AD7BF6', '#F7E6D5', '#FDEAAA'
+          ],
+        }],
+        labels: {{ labels1|safe }}
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: 'rgb(154, 154, 154)',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+        },
+        pieceLabel: {
+            render: function (args) {
+            return '₹' + args.value;
+            },
+            fontColor: 'black',
+            fontSize: 14,
+            position: 'outside',
+        },
+        // tooltips: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+
+      var ctx1 = document.getElementById('chartContainer').getContext('2d');
+      window.myChart = new Chart(ctx1, config1);
+
+      var ctx4 = document.getElementById('pie-chart-merchant').getContext('2d');
+      window.myPie = new Chart(ctx4, config4);
+
+      var ctx5 = document.getElementById('chartContainerMerchant').getContext('2d');
+      window.myChart = new Chart(ctx5, config5);
+
+    };
+
+
+var config5 = {
+    type: 'bar',
+    data: {
+        labels: {{ labels1|safe }},
+        datasets: [{
+            label: 'Total Bill Amount in ₹',
+            data: {{ data1|safe }},
+            backgroundColor: [
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+            ],
+            borderColor: [
+               'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+                'rgba(100, 233, 135, 0.8)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+    }
+}
+
+
+</script>
+
+{% endblock content %}

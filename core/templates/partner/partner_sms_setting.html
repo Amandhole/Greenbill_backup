@@ -1,0 +1,883 @@
+{% extends "layouts/partner-base.html" %} {% block title %} SMS Setting {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">SMS Settings</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-sms-setting/">SMS Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- <div class="row">
+
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="tab" href="#profile" role="tab" aria-selected="false">SMS</a>
+                                </li>
+                            </ul>
+                        </div> -->
+                    </div>
+                    <!-- <h3 style="color: red;">*Kindly note:- Template Id, SMS Header and SMS Templates matches with the DLT Portal.</h3> -->
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                            <form class="form-control" action="/partner-sms-setting/" method="POST" id="sms_form"
+                                name="sms_form" autocomplete="off">
+                                {% csrf_token %}
+                                <input type="hidden" name="template_header_id" value="0">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="ml-3" style="margin-right: 28px;">Sms Type <span style="color: red;">*</span> </label>
+                                            <div class="col-md-4">
+                                                <input type="radio" name="transactional" value="transactional" placeholder="Transactional">
+                                                <b>Transactional</b>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="radio" name="transactional" value="promotional" text="promotional">
+                                                <b>Promotional</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span id="radioerrr" style="margin-left: 28%;  color: red; font-size: 11px;"></span>
+
+                                    <div id="trans_header" class="form-group form-show-validation row">
+                                        <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">SMS Header
+                                            <span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="text" class="form-control" id="request_header_trans" name="request_header_trans" placeholder="SMS Header" value="" minlength="6" maxlength="6" required onkeydown="return alphaOnly(event);" />
+
+                                            <input style="display: none;" type="text" class="form-control" id="request_header_promo" name="request_header_promo" placeholder="SMS Header" value="" minlength="6" maxlength="6" required onkeydown="return digitsOnly(event);" />
+                                            <span id="transerr" style="margin-left: 5%; color: red; font-size: 11px;"></span>
+
+                                            <span id="promoerr" style=" margin-left: 5%;color: red; font-size: 11px;"></span>
+                                            
+                                            <div class="error_form" style="color: red; font-size: 11px;" id="sms_header_error"></div>
+
+                                        </div>
+                                    </div>
+                                    
+
+                                   <!--  <div class="form-group form-show-validation row">
+                                        <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">SMS Header
+                                            <span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="text" class="form-control" id="request_header" name="request_header" placeholder="SMS Header" value="" minlength="6" maxlength="6" required />
+                                            <div class="error_form" style="color: red; font-size: 11px;" id="sms_header_error"></div>
+                                        </div>
+                                    </div> -->
+                                    <div class="form-group form-show-validation row">
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="hidden" class="form-control" id="status" name="status" value="0"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-show-validation row">
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ request.user.id }}"/>
+                                        </div>
+                                    </div>
+                                    
+                                <div class="card-action">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                             <div class="text-center mb-3">
+                                                <input class="btn btn-primary" type="button" value="Submit" onClick="validationfunc()" id="submitBtn"/>
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <script type="text/javascript">
+                            function alphaOnly(event) {
+                              var key = event.keyCode;
+                              return ((key >= 65 && key <= 90) || key == 8);
+                            };
+                            function digitsOnly(evt) {
+                                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                                    return false;
+                                return true;
+                            };
+
+                            function validationfunc(){
+                                document.getElementById('transerr').innerHTML = "";
+                                document.getElementById('promoerr').innerHTML = "";
+
+                                var checkRadio = document.querySelector('input[name="transactional"]:checked');
+                                  
+                                if(checkRadio == null || checkRadio == "") 
+                                {
+                                    document.getElementById('radioerrr').innerHTML = "This Field is Required";
+                                }
+                                else
+                                {
+                                    var radio_value = document.querySelector('input[name="transactional"]:checked').value;
+                                    if (radio_value == 'transactional')
+                                    {   
+                                        var text_value = document.getElementById('request_header_trans').value;
+
+                                        if (text_value == null || text_value == "")
+                                        {
+                                            document.getElementById('transerr').innerHTML = "This Field is Required";
+                                        }
+                                        else
+                                        {
+                                            $(document).ready(function(){
+                                               $("#submitBtn").click(function(){
+                                                    $("#sms_form").submit();
+                                                });
+                                            });
+                                        }
+                                    }
+                                    else if (radio_value == 'promotional')
+                                    {
+                                        var text_value = document.getElementById('request_header_promo').value;
+
+                                        if (text_value == null || text_value == "")
+                                        {
+                                            document.getElementById('promoerr').innerHTML = "This Field is Required";
+                                        }
+                                        else
+                                        {
+                                            var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                            if (format.test(text_value))
+                                            {
+                                                document.getElementById('promoerr').innerHTML = "Special characters not allowed";
+                                            }
+                                            else
+                                            {
+                                                $(document).ready(function(){
+                                                   $("#submitBtn").click(function(){
+                                                        $("#sms_form").submit();
+                                                    });
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                           }
+                        </script>
+
+
+
+                        <div class="col-md-6">
+                                    <div class="table-responsive">
+                                        <h4 style="color: red;">Note: If you delete any SMS Header, all the templates linked with it will also be deleted.</h4>
+                                        <table class="display table table-hover">
+                                            <thead>
+                                                <tr style="text-align: center;">
+                                                    <!-- <th>Sr No.</th> -->
+                                                    <th>SMS HEADER</th>
+                                                    <!-- <th>Active Status</th> -->
+                                                    <th>Type</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for object in data %}
+                                                <tr style="text-align: center;">
+                                                    
+                                                    <!-- <td>{{ forloop.counter }}</td> -->
+                                                    <td>{{ object.header_content }}</td>
+                                                    <td>{{ object.header_type|capfirst}}</td>
+                                                    <!-- <td>{% if object.Active_status == True %}
+                                                        Active
+                                                        {% endif %} -->
+                                                    <td>
+                                                        <!-- {% if object.status == 'Approved' %}
+                                                            {% if object.Active_status == True %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link UserEnableBtn" id="enable_user_btn"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header" disabled>
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                            {% else %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link UserEnableBtn" id="enable_user_btn"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header">
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                            {% endif %}
+
+                                                        {% else %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link UserEnableBtn" id="enable_user_btn"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header" disabled>
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                        {% endif %} -->
+                                                    
+                                                        <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deleteBtn" id="delete_btn" data-id='{{object.id}}' data-original-title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <h4 style="color: red;">*Kindly note:- Template Id, SMS Header and SMS Templates Must matches with the DLT Portal.</h4>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form class="form-control" action="/partner-sms-setting/" method="POST" id="sms_header_form" autocomplete="off">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="template_header_id" value="1">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Template Id<small style="color: red;"> *</small></label>
+                                                        <input type="text" name="template_id" id="template_id" placeholder="Template Id" required class="form-control" maxlength="20">
+                                                    <small id="sms_header_error"></small>  
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>SMS Header<small style="color: red;"> *</small></label>
+                                                        <select class="js-example-basic-multiple" name="sms_header" id="sms_header" multiple="multiple" style="width: 300px;">
+                                                        {% for object in data %}
+                                                            <option value="{{ object.header_content }}">{{ object.header_content }}</option>
+                                                        {% endfor %}
+                                                        </select>
+                                                        <input type="hidden" name="sms_header_value" id="sms_header_value" value="">
+                                                        <small id="sms_header_error"></small>  
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                
+                                                <div class="form-group">
+                                                    <label>SMS Template<small style="color: red;"> *</small></label>
+                                                    <input type="text" class="form-control" id="template_content" name="template_content" placeholder="SMS Template" value="" maxlength="140" required />
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                        
+                                        <div class="card-action">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                     <div class="text-center mt-3 mb-3">
+                                                        <input class="btn btn-primary" type="submit" value="Submit" />
+                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        
+                                        <table class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr style="text-align: center;">
+                                                    <th>Template Id</th>
+                                                    <th>SMS Header</th>
+                                                    <th>SMS TEMPLATE</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for object in Template %}
+                                                <tr style="text-align: center;">
+                                                    
+                                                    <td>{{object.template_id}}</td>
+                                                    <td>{{ object.sms_header }}</td>
+                                                    <td>{{ object.template_content }}</td>
+                                                    <td>
+                                                        <!-- {% if object.status == 'Approved' %}
+                                                            {% if object.Active_status == True %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link TemplateActiveBtn" id="TemplateActive"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header" disabled>
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                            {% else %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link TemplateActiveBtn" id="TemplateActive"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header">
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                            {% endif %}
+
+                                                        {% else %}
+                                                            <button type="button" data-toggle="tooltip" title="Active"
+                                                                class="btn btn-link TemplateActiveBtn" id="TemplateActive"
+                                                                data-id='{{object.id}}' data-original-title="Enable SMS Header" disabled>
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </button>
+                                                        {% endif %} -->
+                                                    
+                                                        <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger deletetemplateBtn" id="delete_btn" data-id='{{object.id}}' data-original-title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+             
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+    var rad = document.sms_form.transactional;
+    var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function() {
+            (prev) ? console.log(prev.value): null;
+            if (this !== prev) {
+                prev = this;
+            }
+            document.getElementById('radioerrr').innerHTML = "";
+            document.getElementById('transerr').innerHTML = "";
+            document.getElementById('promoerr').innerHTML = "";
+            if(this.value == 'transactional')
+            {
+                document.getElementById('request_header_trans').style.display = 'block';
+                document.getElementById('request_header_promo').style.display = 'none';
+                document.getElementById('transerr').style.display = 'block';
+                document.getElementById('promoerr').style.display = 'none';
+            }
+            else if(this.value == 'promotional')
+            {
+                // alert('hello');
+                document.getElementById('request_header_promo').style.display = 'block';
+                document.getElementById('request_header_trans').style.display = 'none';
+                document.getElementById('transerr').style.display = 'none';
+                document.getElementById('promoerr').style.display = 'block';
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#sms_header").select2({
+            placeholder:"SMS Header",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+    $(document).ready(function () {
+
+        $("#sms_header").on('change', function()
+        {
+            var opts = [],opt;
+            var len = sms_header.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = sms_header.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#sms_header_value").val(opts);
+
+        })
+    })
+    
+    $("#sms_header_form").validate({
+        rules: {
+            template_content:{
+                required: true,
+
+            },
+            sms_header:{
+                required: true,
+                // alphanum: true
+            },
+            template_id:{
+                required: true,
+                digits: true,
+            }
+
+        },
+        messages: { 
+            template_content:{
+                maxlength:" Enter 6 characters only",
+                minlength:" Enter 6 characters only",
+                alphanum: "Speicial characters are not allowed"
+            },
+            sms_header:{
+                required: 'Please select SMS Header',
+            },
+            template_id:{
+                required: 'Template ID is required',
+                digits: 'Only digits please',
+            },
+        },
+
+    });
+</script>
+<script type="text/javascript">
+    $("#sms_form").validate({
+        rules: {
+            // request_header:{
+            //     required: true,
+            //     alphanum: true
+            // }
+
+        },
+        messages: { 
+            request_header:{
+                required: "Sms Header is required",
+            }
+        },
+
+    });
+    jQuery.validator.addMethod("alphanum", function(value, element) {
+  return this.optional(element) || /^[A-Za-z0-9 ]+$/i.test(value);
+}, "Special Characters are not allowed");
+    if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+</script>
+<script type="text/javascript">
+    
+    
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('.TemplateActiveBtn').on('click', function (e) {
+            
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to Active SMS Template!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, enable it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/active-sms-header-status/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Enabled!',
+                                    text: 'Header has been Activated',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+    $(function() {
+    $('.deletetemplateBtn').on('click', function(e) {
+      e.preventDefault();
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            console.log(id)
+            $.ajax({
+              type: "POST",
+              url: "/partner-delete-sms-template/"+id,
+              data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+              success: function(response) {
+                Swal.fire(
+                    
+                    {
+                   title: 'Deleted!',
+                                    text: 'template has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                  })
+                .then(function() {
+                  location.reload();
+                });
+              },
+              error: function() {
+                Swal.fire({
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                })
+                  .then(function() {
+                    location.reload();
+                  });       
+              }
+          });
+          }
+        })
+    });
+  });
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+  
+        $(document).on('click', '.chk', function () {
+            var checked = $(this).is(':checked');
+            var rowid = $(this).data('rowid');
+            var role = $(this).data('role');
+  
+            // console.log(checked);
+            // console.log(rowid);
+            // console.log(role);
+  
+            if (checked) {
+              if (!confirm('Are you sure you active sms header?')) {
+                  $(this).removeAttr('checked');
+                  $(this).prop("checked", false);
+              } else {
+                var status = "1";
+                changeStatus(rowid, status, role);
+              }
+            } else if (!confirm('Are you sure you deactive sms header?')) {
+                $(this).prop("checked", true);
+            } else {
+                var status = "0";
+                changeStatus(rowid, status, role);
+  
+            }
+        });
+    });
+  
+    function changeStatus(rowid, status, role) {
+        $.ajax({
+            type: "POST",
+            url: "/change-active-sms-header-status/",
+            data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'id': rowid, 'status': status, 'role': role},
+            dataType: "json",
+            success: function (data) {
+              
+              swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: data.msg,
+                type: "success",
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              })
+              .then(function () {
+                window.location.reload(true);
+              });
+            },
+            error: function (data) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: data.msg,
+                  confirmButtonClass: "btn-success",
+                  allowOutsideClick: false,
+                  allowEscapeKey: false
+                })
+                  .then(function () {
+                    location.reload();
+                  });
+              }
+        });
+    }
+
+
+$(function () {
+        $('.UserDisableBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to Disable SMS Header!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, disable it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    console.log(id)
+                    $.ajax({
+                        type: "POST",
+                        url: "/change-inactive-sms-header-status/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+                                
+                                
+                                {   title:'Disabled!',
+                                    text:'Header has been disabled.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    
+    $(function () {
+        $('.UserEnableBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to Active SMS Header!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, enable it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/active-partner-sms-header-status/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Enabled!',
+                                    text: 'SMS Header has been Activated',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+
+    $(function() {
+    $('.deleteBtn').on('click', function(e) {
+      e.preventDefault();
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var id = $(this).attr("data-id");
+            $.ajax({
+              type: "POST",
+              url: "/partner-delete-sms-header/"+id,
+              data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+              success: function(response) {
+                 Swal.fire(
+
+                        {
+                            title: 'Enabled!',
+                            text: 'SMS Header has been Activated',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                        })
+                .then(function() {
+                  location.reload();
+                });
+              },
+              error: function() {
+                Swal.fire({
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                })
+                  .then(function() {
+                    location.reload();
+                  });       
+              }
+          });
+          }
+        })
+    });
+  });
+  
+  </script>
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

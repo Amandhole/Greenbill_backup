@@ -1,0 +1,2815 @@
+{% extends "layouts/base.html" %} {% block title %} Offers {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+
+{{title}}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .radio_set{
+        margin-left: 7px;
+    }
+    #null_customer_data
+    {
+        display: none;
+    }
+    .add-row{
+        color: #666;
+    background: #f8f8f8;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+     padding: 8px 26px 8px 10px;
+        background-position: calc(100% - 8px) 9px;
+    }
+    
+
+
+</style>
+
+
+<style type="text/css">
+    #size {
+        width: 200px;
+        height: 30px;
+
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+
+ <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+.align{
+    width: 100px;
+}
+.width_set{
+    width: 430px;
+    height: 506px;
+
+    
+}
+.body1{
+    background: url('http://157.230.228.250/media/offers/imgbackg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 506px;
+}
+.content_name{
+    font-size: 15px;
+}
+.closebtn{
+    position: absolute;
+    left: 406px;
+    opacity: 0.3;
+}
+.overflow_scroll{
+    overflow: scroll;
+    height: 150px;
+    width: 170px;
+
+}
+#hide_cust_state{
+    display: none;
+}
+#hide_cust_city{
+    display: none;
+}
+#hide_cust_area{
+    display: none;
+}
+#hide_partner_state{
+    display: none;
+}
+#hide_partner_city{
+    display: none;
+}
+#hide_partner_area{
+    display: none;
+}
+
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Own Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Offers</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/owner-offer/">Own Offers</a>
+                                </li>
+                            </ul>
+                            <!-- <span class="card-title">&nbsp;&nbsp;Total Offers &nbsp;{{total_count}}</span> -->
+                            
+                                {% if is_superuser == True %}
+                                    <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addMerchantModal">
+                                    <i class="fa fa-plus"></i> Create Offer</button>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "My Offers"|lower %}
+                                            {% if actions.add_permission == "1" %}
+                                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addMerchantModal">
+                                                <i class="fa fa-plus"></i> Create Offer</button>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            
+                        </div>
+                    </div>
+                    <br>
+                    <!-- <div class="card float-right" style="padding-top: 12px; box-shadow: none;">
+                                <h6 class="card-title">&nbsp;&nbsp;&nbsp;&nbsp;Total Offers&nbsp; :&nbsp;{{total_offers}}</h6>
+                              </div> -->
+                    {% if is_superuser == True %}
+                        <div class="table-responsive">
+                            <div class="content">
+                        <div class="page-inner">
+                              <div class="row ">
+                                    <div class=" col-md-4">
+                                        <div class="row">
+                                         <div class="card card-stats card-round" style="margin-left: 80px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa-gift"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Offers</p>
+                                                    <h4 class="card-title">{{total_count}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div> 
+                                 <div class=" col-md-4">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 40px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fa fa-spinner"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Expired</p>
+                                                    <h4 class="card-title">{{total_expired}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-4">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa-thumbs-up"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Active</p>
+                                                    <h4 class="card-title">{{total_active}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+
+
+
+                            <!-- <div class="row">
+                                <div class=" col-md-3">
+                                  <div class="card card-stats card-round">
+                                    <div class="card-body">
+                                      <div class="row align-items-center">
+                                        <div class="col-icon">
+                                          <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                            <i class="fas fa fas fa-gift"></i>
+                                          </div>
+                                        </div>
+                                        <div class="col col-stats ml-3 ml-sm-0">
+                                          <div class="numbers">
+                                            <p class="card-category">Total Offers</p>
+                                            <h4 class="card-title">{{total_count}}</h4>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class=" col-md-3">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 40px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fa fa-spinner"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Expired</p>
+                                                    <h4 class="card-title">{{total_expired}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-3">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa-thumbs-up"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Active</p>
+                                                    <h4 class="card-title">{{total_active}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                            </div>
+      -->                     
+                           
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <tr align="center">
+                                            <th>Sr. No</th>
+                                            <th>Merchant Name</th>
+                                            <th>Audience</th>
+                                            <!-- <th>Offer Caption</th> -->
+                                            <!-- <th>Valid From</th> -->
+                                            <th>Valid To</th>
+                                            
+                                             <th>Active Status</th>
+                                             <th>Users</th>
+                                             <th>Total Cost</th>
+                                             <th>Clicks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                       <tfoot>
+                                    </tfoot>
+                                  <tbody>
+                                
+                                
+                                    
+                                  {% for data in data1 %}
+                                  {% if data.offer_panel == "owner" %}
+                                        <tr align="center">
+                                            <td>
+                                                {{ forloop.counter }}
+                                            </td>
+                                            
+                                            <td>{{data.add_merchant_name_by_owner}}</td>
+                                            <td>{{data.Offer_type}}</td>
+                                            <!-- <td>{{data.offer_caption}}</td> -->
+                                            <!-- <td width="20%">{{data.valid_from|date:'d-m-Y'}}</td> -->
+
+                                            <td width="20%">{{data.valid_through|date:'d-m-Y'}}</td>
+                                            
+                                        
+                                            <td width="7%"> 
+                                            {% if data.status == "1" %}
+                                            {% if data.expire_status == True %}
+                                            Expired
+
+                                            {% else %}
+                                            Active
+                                            {% endif %}
+                                            {% else %}
+                                            Pending
+                                            
+                                            {% endif %}
+                                            </td>
+                                            <td>{{data.customer_merchant_count}}</td>
+                                            <td>
+                                                ₹ {{ data.offer_amount|floatformat:2 }}
+                                                
+                                            </td>
+                                            <td width="11%">{{ data.cout }}</td>
+                                     
+                                           <td width="10%">
+                                                <div class="form-button-action">
+                                                    <button type="button" class="btn btn-link viewAdsBtn"
+                                                                data-target="#exampleModal" id="view-modal-div"
+                                                                data-original-title="View Offer" data-url="{{coup.id}}"
+                                                                data-id="{{data.id}}"
+                                                                data-offer_logo="{{data.offer_logo}}" 
+                                                                data-offer_name="{{data.offer_name}}" 
+                                                                data-offer_caption="{{data.offer_caption}}"
+                                                                data-offer_image="{{ data.offer_image.url }}"
+                                                                data-valid_through="{{data.valid_through|date:'d-m-Y'}}"
+                                                                data-o_business_name="{{data.o_business_name}}"  data-toggle="tooltip">                                                             
+                                                                <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- <span data-original-title="Amount" data-toggle="tooltip">
+                                                    {% if data.status == "0" %}
+                                                    
+                                                        <button type="submit" class="btn btn-link btn-primary AdsAmount" data-id="{{data.id}}" data-original-title="Add Amount" data-toggle="modal" data-target="#amountModal"><i class="fa fa-plus"></i></button>
+                                                    
+                                                    {% endif %}
+                                                    </span>
+ -->                                                {% if data.status == "0" %}
+                                                        <button type="submit" class="btn btn-link btn-primary AdsApproveBtn" data-id="{{data.id}}" data-original-title="Payment Status" data-toggle="tooltip"><i class="fas fa-money-bill-wave"></i></button>
+                                                    
+                                                    {% endif %}
+                                                    <button type="button" data-toggle="tooltip" data-target=""
+                                                        title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                        id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                        data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                            class="fas fa-trash"></i>
+                                                    </button>  
+                                                 </div>
+                                            </td>
+                                        </tr>
+                                   {% endif %}
+                                  {% endfor %}
+                              </tbody>    
+                          </table>
+                       </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "My Offers"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="table-responsive">
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-sm-6 col-md-3">
+                                              <div class="card card-stats card-round">
+                                                <div class="card-body">
+                                                  <div class="row align-items-center">
+                                                    <div class="col-icon">
+                                                      <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                        <i class="fas fa fas fa-gift"></i>
+                                                      </div>
+                                                    </div>
+                                                    <div class="col col-stats ml-3 ml-sm-0">
+                                                      <div class="numbers">
+                                                        <p class="card-category">Total Offers</p>
+                                                        <h4 class="card-title">{{total_count}}</h4>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                      
+                                       
+                                            <table id="add-row" class="display table table-hover">
+                                                <thead>
+                                                    <tr align="center">
+                                                        <th>Sr. No</th>
+                                                        <th>Merchant Name</th>
+                                                        <th>Audience</th>
+                                                        <!-- <th>Offer Caption</th> -->
+                                                        <!-- <th>Valid From</th> -->
+                                                        <th>Valid To</th>
+                                                        
+                                                         <th>Active Status</th>
+                                                         <th>Users</th>
+                                                         <th>Total Cost</th>
+                                                         <th>Clicks</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                   <tfoot>
+                                                </tfoot>
+                                              <tbody>
+                                                
+                                                
+                                              {% for data in data1 %}
+                                              {% if data.offer_panel == "owner" %}
+                                                    <tr align="center">
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{data.add_merchant_name_by_owner}}</td>
+                                                        <td>{{data.Offer_type}}</td>
+                                                        <!-- <td>{{data.offer_caption}}</td> -->
+                                                        <!-- <td width="20%">{{data.valid_from|date:'d-m-Y'}}</td> -->
+
+                                                        <td width="20%">{{data.valid_through|date:'d-m-Y'}}</td>
+                                                        
+                                                    
+                                                        <td width="7%"> 
+                                                        {% if data.status == "1" %}
+                                                        {% if data.expire_status == True %}
+                                                        Expired
+
+                                                        {% else %}
+                                                        Active
+                                                        {% endif %}
+                                                        {% else %}
+                                                        Pending
+                                                        
+                                                        {% endif %}
+                                                        </td>
+                                                        <td>{{data.customer_merchant_count}}</td>
+                                                        <td>
+                                                            {{ data.total_amount }}
+                                                            
+                                                        </td>
+                                                        <td width="11%">{{ data.cout }}</td>
+                                                 
+                                                       <td width="10%">
+                                                            <div class="form-button-action">
+
+                                                                <button type="button" class="btn btn-link viewAdsBtn"
+                                                                            data-toggle="tooltip" data-target="#exampleModal" id="view-modal-div"
+                                                                            data-original-title="View Offer" data-url="{{coup.id}}"
+                                                                            data-id="{{data.id}}"
+                                                                            data-offer_logo="{{data.offer_logo}}" 
+                                                                            data-offer_name="{{data.offer_name}}" 
+                                                                            data-offer_caption="{{data.offer_caption}}"
+                                                                            data-offer_image="{{ data.offer_image.url }}"
+                                                                            data-valid_through="{{data.valid_through|date:'d-m-Y'}}"
+                                                                            data-o_business_name="{{data.o_business_name}}"
+                                                                            >
+                                                                            <i class="fas fa-eye"></i>
+                                                                </button>
+                                                                <!-- <span data-original-title="Amount" data-toggle="tooltip">
+                                                                {% if data.status == "0" %}
+                                                                
+                                                                    <button type="submit" class="btn btn-link btn-primary AdsAmount" data-id="{{data.id}}" data-original-title="Add Amount" data-toggle="modal" data-target="#amountModal"><i class="fa fa-plus"></i></button>
+                                                                
+                                                                {% endif %}
+                                                                </span>
+             -->                                                    {% if data.status == "0" %}
+                                                                    <button type="submit" class="btn btn-link btn-primary AdsApproveBtn" data-id="{{data.id}}" data-original-title="Payment Status" data-toggle="tooltip"><i class="fas fa-money-bill-wave"></i></button>
+                                                                
+                                                                {% endif %}
+                                                                {% if actions.delete_permission == "1" %}
+                                                                <button type="button" data-toggle="tooltip" data-target=""
+                                                                    title="Delete " class="btn btn-link btn-danger deleteBtn"
+                                                                    id="deactivate-modal-div" data-original-title="Delete mystamp"
+                                                                    data-url="{{object.id}}" data-id="{{data.id}}"><i
+                                                                        class="fas fa-trash"></i>
+                                                                </button>
+                                                                {% endif %}  
+                                                             </div>
+                                                        </td>
+                                                    </tr>
+                                               {% endif %}
+                                              {% endfor %}
+                                          </tbody>    
+                                      </table>
+                                   </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Edit Role Modal End-->
+<div class="modal fade" id="myEditModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+
+        <form method="POST" class="form" name="edit_role_form" action="/merchant_offers/" >
+            {% csrf_token %}
+            <input type="hidden" name="offer_id" id="edit_module_id">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Offers Record </h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Offer Name</label>
+                            <input type="text" name="offer_name" class="form-control" value=""
+                                placeholder="Offer Name" id="edit_offer_name">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Offer Caption</label>
+                            <input type="text" name="offer_caption" class="form-control" value=""
+                                placeholder="Offer Caption" id="edit_offer_caption">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Valid from</label>
+                            <input type="date" class="form-control" name="valid_from" id="edit_valid_from" placeholder="Valid From" value="">                         
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Valid To</label>
+                            <input type="date" class="form-control" name="valid_through" id="edit_valid_through" placeholder="Valid Through" value="">                         
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Image</label>
+                            <input type="file" class="form-control" name="offer_image" id="edit_offer_image" placeholder="Offer Image" value="">                         
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Select Audience</label>
+                            <div class="form-inline">
+                                <input type="radio" name="user" id="edit_merchant" value="Merchant" autocomplete="off"><label  class="radio_set">Merchant</label>
+
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                
+                                <input type="radio" name="user" id="edit_customer" value="Customer" autocomplete="off"><label  class="radio_set">Customer</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-md-6" id="">
+                        <div class="form-group">
+                            <label>Business Category</label>
+                                <select class="form-control" name="offer_business_category" id="edit_offer_business_category">
+                                    <option>Select Business Category</option>
+                                    {% for data in merchnat_business_category %}
+                                    <option value="{{ data.business_category_name }}" 
+                                    >{{ data.business_category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                 
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Save" data-id="">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="addMerchantModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form action="/owner-offer/" method="POST" enctype="multipart/form-data" id="add_merchant_form" name="form" autocomplete="off">
+      {% csrf_token %}
+      <input type="hidden" name="offer_id">
+      <input type="hidden" name="status" value="1">
+      <input type="hidden" name="offer_panel" value="owner">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center"><b>Create Offer</b></h2>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Offer Name</label><small style="color: red;"> *</small>
+                    <input type="text" name="offer_name" class="form-control" value="" placeholder="Offer Name" id="offer_name" maxlength="20" required=""> 
+                    
+                    <small id="offer_name_error"></small>             
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Offer Caption</label><small style="color: red;"> *</small>
+                    <input type="text" name="offer_caption" class="form-control" value="" placeholder="Offer Caption" id="offer_caption" maxlength="20" required=""> 
+                    <small id="offer_caption_error"></small>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Valid From<small style="color: red;"> *</small></label>
+                        <div class="input-group mb-6">
+                            <input type="date" class="form-control mobile" name="valid_from"
+                                                        id="valid_from" placeholder="Valid From" value="" min="{% now 'Y-m-d' %}" required>
+                        </div>
+                        <small id="valid_from_error"></small>      
+                </div>   
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Valid To <small style="color: red;"> *</small></label>
+                        <div class="input-group mb-6">
+                            <input type="date" class="form-control mobile" name="valid_through" id="valid_through" placeholder="Valid Through" min="{% now 'Y-m-d' %}" onblur="ValidateEndDate()">            
+                        </div>
+                        <small id="valid_through_error"></small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Offer Image<small style="color: red;"> *</small></label>
+                    <input type="file" class="form-control" name="offer_image" id="offer_image" required="">
+                    <small id="offer_image_error"></small>
+                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                        <b>Image Dimension 1080 ✕ 1080</b>
+                    </p>    
+                                    
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Merchant Logo<small style="color: red;"> *</small></label>
+                    <input type="file" class="form-control" name="merchant_offer_logo" id="merchant_offer_logo" required="">
+                    <small id="merchant_offer_logo_error"></small>
+                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                        <b>Image Dimension 1080 ✕ 320</b>
+                    </p>    
+                                    
+                </div>
+            </div>
+            
+
+            <!-- <div class="col-md-12">
+                <div class="form-group">
+                    <label> Select Audience <small style="color: red;"> *</small></label>
+                        <div class="form-inline">
+                            <input type="radio" name="user" id="merchant_audience" value="Merchant" onclick="text(0)" checked="" autocomplete="off"><label  class="radio_set">Merchant</label>
+
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                
+                            <input type="radio" name="user" id="customer_audience" value="Customer" onclick="text(1)"><label  class="radio_set">Customer</label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                
+                            <input type="radio" name="user" id="partner_audience" value="Partner" onclick="text(2)"><label  class="radio_set">Partner</label>
+                        </div>
+                </div>
+            </div> -->
+            <div class="col-md-4" id="hide_merchant_name_field">
+                <div class="form-group">
+                    <label>Merchant Name<small style="color: red;"> *</small></label>
+                    <input type="text" class="form-control" maxlength="30" name="add_merchant_name" id="add_merchant_name" required="">
+                    <small id="add_merchant_name_error"></small>                    
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label> Select Audience <small style="color: red;"> *</small></label>
+                        <div class="form-inline">
+                            <input type="radio" name="user" id="merchant_audience" value="Merchant" onclick="text(0)" checked="" autocomplete="off"><label  class="radio_set">Merchant</label>
+
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                
+                            <input type="radio" name="user" id="customer_audience" value="Customer" onclick="text(1)"><label  class="radio_set">Customer</label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                
+                            <input type="radio" name="user" id="partner_audience" value="Partner" onclick="text(2)"><label  class="radio_set">Partner</label>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-4"  id="hide_cust_state">
+                <div class="form-group">
+                    <label>Customer State</label><small style="color: red;"> *</small></label>
+                    <select class="js-example-basic-multiple" name="customer_state" id="customer_state" multiple="multiple" style="width: 300px;">
+                    {% for cust_state in cust_data %}
+                        {% if cust_state.c_state != "" %}
+                        <option value="{{ cust_state.c_state }}">{{ cust_state.c_state }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <input type="hidden" name="customer_state_value" id="customer_state_value" value="">
+                    <input type="hidden" name="get_filter_by_customer_state" id="get_filter_by_customer_state" value="">
+                    <small id="customer_state_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4" id="hide_cust_city">
+                <div class="form-group">
+                    <label>Customer City</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="customer_city" id="customer_city" multiple="multiple" style="width: 300px;">
+                        
+                    </select>
+                    <input type="hidden" name="customer_city_value" id="customer_city_value" value="">
+                    <input type="hidden" name="get_filter_by_customer_city" id="get_filter_by_customer_city" value="">
+                    <small id="customer_city_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4" id="hide_cust_area">
+                <div class="form-group">
+                    <label>Customer Area</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="customer_area" id="customer_area" multiple="multiple" style="width: 300px;">
+                    </select>
+                    <input type="hidden" name="customer_area_value" id="customer_area_value" value="">
+                    <input type="hidden" name="get_filter_by_customer_area" id="get_filter_by_customer_area" value="">
+                    <small id="customer_area_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4"  id="hide_partner_state">
+                <div class="form-group">
+                    <label>Partner State</label><small style="color: red;"> *</small></label>
+                    <select class="js-example-basic-multiple" name="partner_state" id="partner_state" multiple="multiple" style="width: 300px;">
+                    {% for object in partner_records %}
+
+                        {% if object.p_state != "" %}
+                        <option value="{{ object.p_state }}">{{ object.p_state }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <input type="hidden" name="partner_state_value" id="partner_state_value" value="">
+                    <input type="hidden" name="get_filter_by_partner_state" id="get_filter_by_partner_state" value="">
+                    <small id="partner_state_error"></small>  
+                </div>
+            </div>
+
+             <div class="col-md-4" id="hide_partner_city">
+                <div class="form-group">
+                    <label>Partner City</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="partner_city" id="partner_city" multiple="multiple" style="width: 300px;">
+                        
+                    </select>
+                    <input type="hidden" name="partner_city_value" id="partner_city_value" value="">
+                    <input type="hidden" name="get_filter_by_partner_city" id="get_filter_by_partner_city" value="">
+                    <small id="partner_city_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4" id="hide_partner_area">
+                <div class="form-group">
+                    <label>Partner Area</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="partner_area" id="partner_area" multiple="multiple" style="width: 300px;">
+                    </select>
+                    <input type="hidden" name="partner_area_value" id="partner_area_value" value="">
+                    <input type="hidden" name="get_filter_by_partner_area" id="get_filter_by_partner_area" value="">
+                    <small id="partner_area_error"></small>  
+                </div>
+           </div>
+            <div class="col-md-4" id="hide_state">
+                <div class="form-group">
+                    <label>Merchant State</label><small style="color: red;"> *</small></label>
+                    <select class="js-example-basic-multiple" name="merchant_state" id="merchant_state" multiple="multiple" style="width: 300px;">
+                        {% for mer_state in merchant_state %}
+                            {% if mer_state.m_state != "" %}
+                                <option value="{{ mer_state.m_state }}">{{ mer_state.m_state }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="merchant_state_value" id="merchant_state_value" value="">
+                    <input type="hidden" name="get_filter_by_merchant_state" id="get_filter_by_merchant_state" value="">
+                    <small id="merchant_state_error"></small>  
+                </div>
+            </div>
+             <div class="col-md-4" id="null_merchant_data">
+                <div class="form-group">
+                    <label>Business Category</label><small style="color: red;"> *</small></label>
+                    <select class="js-example-basic-multiple" name="offer_business_category" id="offer_business_category" multiple="multiple" style="width: 300px;">
+                        <!-- {% for business_category in merchnat_business_category %}
+                            <option value="{{ business_category.id }}">{{ business_category.business_category_name }}</option>
+                        {% endfor %} -->
+                    </select>
+                    <input type="hidden" name="business_category_value" id="business_category_value" value="">
+                    <input type="hidden" name="get_filter_by_business_category" id="get_filter_by_business_category" value="">
+                    <small id="business_category_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4" id="hide_merchant_city">
+                <div class="form-group">
+                    <label>Merchant City</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="merchant_city" id="merchant_city" multiple="multiple" style="width: 300px;">
+                    </select>
+                    <input type="hidden" name="merchant_city_value" id="merchant_city_value" value="">
+                    <input type="hidden" name="get_filter_by_merchant_city" id="get_filter_by_merchant_city" value="">
+                    <small id="merchant_city_error"></small>  
+                </div>
+            </div>
+            <div class="col-md-4" id="hide_merchant_area">
+                <div class="form-group">
+                    <label>Merchant Area</label><!-- <small style="color: red;"> *</small> --></label>
+                    <select class="js-example-basic-multiple" name="merchant_area" id="merchant_area" multiple="multiple" style="width: 300px;">
+                    </select>
+                    <input type="hidden" name="merchant_area_value" id="merchant_area_value" value="">
+                    <input type="hidden" name="get_filter_by_merchant_area" id="get_filter_by_merchant_area" value="">
+                    <small id="merchant_area_error"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Total Users</label>
+                    <input type="text" class="form-control" name="customer_count" id="customer_count" value="" readonly="">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Total Cost</label>
+                    <input type="text" class="form-control" name="customer_total_cost" id="customer_total_cost" value="" readonly="">
+                </div>
+            </div>
+            
+            
+            {% for owner_business_name in owner_business_name %}
+            <input type="hidden" name="o_business_name" value="{{owner_business_name.business_name}}">
+            {% endfor %}
+            
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <input id="add_merchant_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+<!--view Modal -->
+<!-- <div class="modal fade" id="DisplayOfferModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content width_set" style="width: 430px; height: 440px; margin-top: 85px; margin-left: 100px;">
+                <div style="padding-left: 20px; margin-top: 15px;">
+                    <img width="390" height="300" src="" id="view_offer_img">
+                </div>    
+                
+                
+                    <p>
+                    <h3 style="padding-left: 20px; color: green;"><b style="" id="o_business_name_view"></b></h4>
+                    <h3 style="padding-left: 20px; color: black;"><span id="offer_caption_view"></span></h4>
+                    <h6 style="padding-left: 20px; color: darkgrey;">Expires On: <span id="offer_through_view"></span><h4></p>
+                
+        </div>
+    </div>
+</div> -->
+<!-- <div class="modal fade" id="DisplayOfferModal" role="dialog">
+   <div class="modal-dialog">  
+        <div class="col-sm-4">           
+            <div class="" >
+                <div class="modal-content width_set" style="width: 430px; height: 340px; margin-top: 85px; margin-left: 100px;">
+                    <div style="padding-left: 20px; margin-top: 15px;">
+                        <img width="390" height="300" src="" id="view_offer_img">
+                    </div><br><br>
+                    <div class="card " style="width: 430px;" >
+                        <div class="col-md-12"> 
+                        <div class="row" style="margin-top: 20px; margin-left: 14px;"> 
+                                <div id="offer_logo">
+                                </div>
+                            <h4 style="padding-left: 10px; color: green;"><b style="" id="o_business_name_view"></b></h4>
+                           </div>
+                                                                      
+                            <div style="margin-top: 10px;">
+                                <h4 style="padding-left: 14px; color: black;"><span id="offer_name_view"></span></h4></b>
+                                </h4>
+                                
+                                <h4 style="padding-left: 14px; color: black;"><span id="offer_caption_view"></span></h4></b>
+                                </h4>
+                                
+                                <h4 style="padding-left: 14px; color: darkgrey;">Expires On: <span id="offer_through_view"></span><h4></p>
+                            </div>    
+                        </div>  
+                    </div>                 
+                </div>
+            </div> 
+        </div>
+    </div>
+</div> -->
+<div class="modal fade" id="DisplayOfferModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-4">
+                                            <div class="product" >
+                                                <div style=" overflow: hidden;  box-shadow: 12px 12px 12px 12px rgb(221, 218, 218);  border-radius: 12px; padding-top: 35px; width:230px; height: 230px; background-repeat: no-repeat; background-size: 100% 100%; ">
+                                                    <div class="text-left">
+                                                       <h4 style="padding-left: 10px; color: black;">
+                                                            <span id="offer_caption_view"></span> on
+                                                       
+                                                    </div>
+                                                    <!-- <h4><span>at</span></h4> -->
+                                                    <div class="col-md-12" style="position: absolute; float: left; ">
+                                                        <h4 style="padding-left: 0px; color: black;"><b style="" id="merchant_business_name_view"></b></h4>
+                                                        <h4 style="padding-left: 0px; color: black;"><b style="" id="o_business_name_view"></b></h4>
+                                                    </div>
+
+                                                    <div class="">
+                                                        <div style="padding-left: 110px; transform: rotate(-20deg); padding-top:  0px; opacity: 0.4;">
+                                                            <img width="80" height="80" src="" id="view_offer_img">
+                                                        </div> 
+                                                    </div>
+                                                    <div class="form-group" style="padding-left:30px;  padding-bottom: 30px;">
+                                                        <div id="offer_logo">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div class="row text-center" style="padding-top: 2%">
+                                            <div class="col-md-2"></div>
+                                                <div class="col-md-7">
+                                                   
+                                                    <div class="row" style="margin-top: 5px; margin-left: px;"> 
+                                                        
+                                                    <h4 style="padding-left: 65px; color: black;"><span id="offer_name_view"></span></h4>
+                                                   </div>
+                                                    <h5 style="padding-left: px; color: darkgrey;">Expires On: <span id="offer_through_view"></span><h5></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+<div class="modal fade" id="amountModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_amount_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Add Amount</h2>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="offer_amount_id" name="offer_amount_id" value="" />
+            <input type="number" class="form-control" id="offer_amount" name="offer_amount" placeholder="Amount *"/>
+          </div>
+          <div class="modal-footer">
+            <input id="add_amount_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+<!-- <script type="text/javascript">
+    $("#add_amount_form").validate({
+        rules: {
+            offer_amount: {
+                required: true,
+            },           
+        },
+
+        messages: {
+            offer_amount: {
+                required: "Amount is required",
+            },
+        },
+        
+
+    });
+</script> -->
+
+<script>
+    $('.AdsAmount').on('click', function(e) {
+    var id = $(this).attr("data-id");
+
+    $('#offer_amount_id').val(id);
+});
+$('#add_amount_form').validate({
+    rules: {
+            offer_amount: {
+                required: true,
+                min: 1,
+            },           
+        },
+
+        messages: {
+            offer_amount: {
+                required: "Amount is required",
+                min: "Value must be greater than 0",
+            },
+        },
+    submitHandler: function () {
+      
+            $.ajax({
+            type: "POST",
+            url: "/add-offer-amount-by-id/",
+            data: $('#add_amount_form').serialize(),
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Added!',
+                    text:'Amount Added Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+      }
+    });
+
+
+
+</script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    function text(x){
+        if(x==0)
+        {
+
+        document.getElementById("null_merchant_data").style.display = "block";
+        document.getElementById("hide_state").style.display = "block";
+        document.getElementById("hide_cust_state").style.display = "none";
+        document.getElementById("hide_cust_city").style.display = "none";
+        document.getElementById("hide_cust_area").style.display = "none";
+        document.getElementById("hide_merchant_city").style.display = "block";
+        document.getElementById("hide_merchant_area").style.display = "block";
+        document.getElementById("hide_partner_state").style.display = "none";
+        document.getElementById("hide_partner_city").style.display = "none";
+        document.getElementById("hide_partner_area").style.display = "none"; 
+        
+        
+        
+    }
+        else if (x==1) {
+            
+             document.getElementById("null_merchant_data").style.display = "none";
+            document.getElementById("hide_state").style.display = "none";
+            document.getElementById("hide_cust_state").style.display = "block";
+            document.getElementById("hide_cust_city").style.display = "block";
+            document.getElementById("hide_cust_area").style.display = "block";
+            document.getElementById("hide_merchant_city").style.display = "none";
+            document.getElementById("hide_merchant_area").style.display = "none"; 
+            document.getElementById("hide_partner_state").style.display = "none";
+            document.getElementById("hide_partner_city").style.display = "none";
+            document.getElementById("hide_partner_area").style.display = "none"; 
+        }
+        else{
+            document.getElementById("null_merchant_data").style.display = "none";
+            document.getElementById("hide_state").style.display = "none";
+            document.getElementById("hide_cust_state").style.display = "none";
+            document.getElementById("hide_cust_city").style.display = "none";
+            document.getElementById("hide_cust_area").style.display = "none";
+            document.getElementById("hide_merchant_city").style.display = "none";
+            document.getElementById("hide_merchant_area").style.display = "none";
+            document.getElementById("hide_partner_state").style.display = "block";
+            document.getElementById("hide_partner_city").style.display = "block";
+            document.getElementById("hide_partner_area").style.display = "block";  
+        }
+        return;
+    }
+$('.AdsApproveBtn').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Payment Received!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        console.log("hi")
+        $.ajax({
+            type: "POST",
+            url: "/approve-offer-by-id/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Received!',
+                    text:'Payment Received !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+
+
+    $(".viewAdsBtn").on("click", function () {
+    var offer_image = $(this).data("offer_image");
+    var offer_name = $(this).data("offer_name");
+    var offer_caption = $(this).data("offer_caption");
+    var valid_through = $(this).data("valid_through");
+    var o_business_name = $(this).data("o_business_name");
+    var offer_logo = $(this).data('offer_logo');
+
+
+    $("#offer_logo").empty();
+
+
+    if(offer_logo != ""){
+        $("#offer_logo").append('<img src="'+ "http://157.230.228.250/media/" + offer_logo
+         + '" height="25" width="25" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">')   
+    }
+
+    
+
+    $('#view_offer_img').attr('src', offer_image);
+    $('#offer_name_view').val( offer_name);
+    $('#offer_name_view').empty().append(offer_name);
+    $('#offer_caption_view').empty().append(offer_caption);
+    $('#offer_through_view').empty().append(valid_through);
+    $('#o_business_name_view').empty().append(o_business_name);
+
+    $("#DisplayOfferModal").modal();
+});
+
+    $(function () {
+        $('.select-mode').click(function () {
+            if ($(this).val() == 'percentage') {
+
+                $('.percentage').prop({ readonly: false, });
+                $('.value').prop({ readonly: true });
+            }
+            else if ($(this).val() == 'fix') {
+
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: false });
+            }
+            else if ($(this).val() == '') {
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: true });
+            }
+        });
+    });
+
+    $(document).ready(function(){
+  
+    $('.percentage').prop({ readonly: true, });
+    $('.value').prop({ readonly: true });
+    
+});
+
+    $(function () {
+        $('.display').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+                $('#percentage_id').hide()
+                $('#value_id').hide()
+                $('#hide_percent').hide()
+                $('#hide_val').hide()
+                $('#coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#coupon_caption_id').hide()
+                $('#percentage_id').show()
+                $('#value_id').show()
+                $('#hide_percent').show()
+                $('#hide_val').show()
+            }
+        });
+    });
+
+    $(function () {
+        $('.editdisplay').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+
+                $('#edit_percentage_id').hide()
+                $('#edit_value_id').hide()
+                $('#edit_hide_percent').hide()
+                $('#edit_hide_val').hide()
+                $('#edit_coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#edit_coupon_caption_id').hide()
+                $('#edit_percentage_id').show()
+                $('#edit_value_id').show()
+                $('#edit_hide_percent').show()
+                $('#edit_hide_val').show()
+            }
+        });
+    });
+
+
+
+
+
+
+    var viewmodaldiv = $("#view-modal-div");
+    $(".editBtn").on("click", function () {
+        var id_num = $(this).data('id')
+        var offer_name = $(this).data("offer_name");
+        var offer_caption = $(this).data('offer_caption');
+        var valid_through = $(this).data('valid_through');
+        var valid_from = $(this).data('valid_from')
+        var offer_image = $(this).data('offer_image.url')
+        var Offer_type = $(this).data('user')
+        var offer_business_category = $(this).data('offer_business_category')
+        var couponname = $(this).data("coupon_name");
+
+
+        $("#edit_module_id").val(id_num)
+        $('#edit_offer_name').val( offer_name);
+        $('#edit_offer_caption').val( offer_caption);
+        $('#edit_valid_from').val( valid_from);
+        $('#edit_valid_through').val( valid_through);
+        $('#edit_offer_business_category').val( offer_business_category);
+        $('#edit_coupon_name').val( couponname);
+        
+
+        if (Offer_type == "Customer") {
+            
+            $('#edit_customer').prop('checked', true);
+        }
+        else if (Offer_type == "Merchant") {
+            $('#edit_merchant').prop('checked', true);
+        }
+        
+        
+
+        $("#myEditModal").modal();
+
+    });
+
+
+    //for table validation
+
+ 
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/Delete-owner-Offer/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Offer has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                    text: 'Offer has been deleted',
+                                    icon: 'success',
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+
+
+$(document).ready(function() {
+  $('input[name=valid_through]').change(function() {
+          var to_date = $('#valid_through').val();
+          document.getElementById('valid_from').setAttribute("max", to_date);
+  })
+
+  $('input[name=valid_from]').change(function() {
+    var from_date = $('#valid_from').val();
+      document.getElementById('valid_through').setAttribute("min", from_date);
+  })
+})
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+
+
+$(document).ready(function() {
+  $('input[name=edit_valid_through]').change(function() {
+          var to_date = $('#edit_valid_through').val();
+          document.getElementById('edit_valid_from').setAttribute("max", to_date);
+  })
+
+  $('input[name=edit_valid_from]').change(function() {
+    var from_date = $('#edit_valid_from').val();
+      document.getElementById('edit_valid_through').setAttribute("min", from_date);
+  })
+})
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+
+    function alphaOnly(event) {
+        var key = event.keyCode;
+        return ((key >= 65 && key <= 90) || key == 8);
+    };
+
+
+    $(document).ready(function () {
+        
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+    });
+
+        $.validator.addMethod("validDate", function (value, element) {
+        var currDate = new Date();
+        var dd = currDate.getDate();
+        var mm = currDate.getMonth()+1; 
+        var yyyy = currDate.getFullYear();
+        
+        var todayDate = yyyy+'-'+dd+'-'+mm;
+
+        
+        return Date.parse(todayDate) < Date.parse(value) || value == "";
+    }, "Please enter valid Date");
+
+
+    function ValidateEndDate() {
+       var startDate = document.getElementById("valid_from").value;
+       var endDate = document.getElementById("valid_through").value;
+       if (startDate != '' && endDate !='') {
+           if (Date.parse(startDate) > Date.parse(endDate)) {
+               // $("txttodate").val('');
+               Swal.fire({
+                
+                text: "Valid from date should not be greater than vali to date!",
+                icon: 'warning',
+                showCancelButton: false,
+                timer:2000,
+                
+            })
+           }
+       }
+       return false;
+   }
+
+
+   $.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+    $.validator.addMethod("lettersonly", function(value, element) 
+        {
+        return this.optional(element) || /^[a-z ]+$/i.test(value);
+        }, "Letters and spaces only please");
+
+$.validator.addMethod('dimention', function(value, element, param) {
+    if(element.files.length == 0){
+        return true; 
+    }
+    var width = $(element).data('imageWidth');
+    var height = $(element).data('imageHeight');
+    if(width == param[0] && height == param[1]){
+        return true;
+    }else{
+        return false;
+    }
+},'Image must be 1080 x 320 pixels dimension');
+
+$.validator.addMethod('dimention1', function(value, element, param) {
+    if(element.files.length == 0){
+        return true; 
+    }
+    var width = $(element).data('imageWidth');
+    var height = $(element).data('imageHeight');
+    if(width == param[0] && height == param[1]){
+        return true;
+    }else{
+        return false;
+    }
+},'Image must be 1080 x 1080 pixels dimension');
+
+$('#offer_image').change(function() {
+    $('#offer_image').removeData('imageWidth');
+    $('#offer_image').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#offer_image').data('imageWidth', width);
+        $('#offer_image').data('imageHeight', height);
+    }
+});
+$('#merchant_offer_logo').change(function() {
+    $('#merchant_offer_logo').removeData('imageWidth');
+    $('#merchant_offer_logo').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#merchant_offer_logo').data('imageWidth', width);
+        $('#merchant_offer_logo').data('imageHeight', height);
+    }
+});
+        
+    $("#add_merchant_form").validate({
+        rules: {
+            offer_name: {
+                required: true,
+                normalizer: function(value) {
+                    return $.trim(value);
+                  },
+            },
+            valid_from: {
+                required: true,
+            },
+            valid_through: {
+                required: true,
+            },
+            offer_caption: {
+                required: true,
+                normalizer: function(value) {
+                    return $.trim(value);
+                  },
+            },
+            
+            offer_image: {
+                extension: "png,jpg,jpeg",
+                required: true,
+                filesize: 500000,
+                dimention1:[1080,1080]
+            },
+            merchant_offer_logo: {
+                extension: "png,jpg,jpeg",
+                required: true,
+                filesize: 500000,
+                dimention:[1080,320]
+            },
+            add_merchant_name: {
+                required: true,
+                lettersonly: true,
+            },
+            add_merchant_name: {
+                required: true,
+                lettersonly: true,
+            },
+
+            offer_business_category: {
+                required: function(element){
+                    return $("#merchant_audience").is(':checked');
+                }
+            },
+
+            merchant_state: {
+                required: function(element){
+                    return $("#merchant_audience").is(':checked');
+                }
+            },
+            partner_state: {
+                required: function(element){
+                    return $("#partner_audience").is(':checked');
+                }
+            },
+
+            // merchant_city: {
+            //     required: function(element){
+            //         return $("#merchant_audience").is(':checked');
+            //     }
+            // },
+
+            // merchant_area: {
+            //     required: function(element){
+            //         return $("#merchant_audience").is(':checked');
+            //     }
+            // },
+            customer_state: {
+                required: function(element){
+                    return $("#customer_audience").is(':checked');
+                }
+            },
+
+            // customer_city: {
+            //     required: function(element){
+            //         return $("#customer_audience").is(':checked');
+            //     }
+            // },
+            // customer_area: {
+            //     required: function(element){
+            //         return $("#customer_audience").is(':checked');
+            //     }
+            // },
+        },
+
+        messages: {
+            offer_image: {
+                required: "Offer Image is Required",
+                extension: "Please select Proper Image",
+            },
+            offer_name: {
+                required: "Offer Name is Required",
+            },
+            valid_from: {
+                required: "From Date is Required",
+            },
+            valid_through: {
+                required: "To Date is Required",
+            },
+            
+            offer_caption: {
+                required: "Offer Caption is Required",
+            },
+            coupon_caption_name: {
+                required: "Coupon Caption is Required",
+            },
+            add_merchant_name: {
+                required: "Merchant Name is Required",
+            }
+
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "valid_from")
+                $("#valid_from_error").html(error);
+            if (element.attr("name") == "offer_caption")
+                $("#offer_caption_error").html(error);
+            if (element.attr("name") == "offer_name")
+                $("#offer_name_error").html(error);
+            if (element.attr("name") == "valid_through")
+                $("#valid_through_error").html(error);
+            if (element.attr("name") == "offer_image")
+                $("#offer_image_error").html(error);
+            if (element.attr("name") == "offer_business_category")
+                $("#business_category_error").html(error);
+            if (element.attr("name") == "merchant_state")
+                $("#merchant_state_error").html(error);
+            // if (element.attr("name") == "merchant_city")
+            //     $("#merchant_state_error").html(error);
+            // if (element.attr("name") == "merchant_area")
+            //     $("#merchant_area_error").html(error);
+            if (element.attr("name") == "customer_state")
+                $("#customer_state_error").html(error);
+            // if (element.attr("name") == "customer_city")
+            //     $("#customer_city_error").html(error);
+            // if (element.attr("name") == "customer_area")
+            //     $("#customer_area_error").html(error);
+            if (element.attr("name") == "add_merchant_name")
+                $("#add_merchant_name_error").html(error);
+            if (element.attr("name") == "partner_state")
+                $("#partner_state_error").html(error);
+            if (element.attr("name") == "merchant_offer_logo")
+                $("#merchant_offer_logo_error").html(error);
+        }
+
+    });
+
+    // Fiter Fetch 
+
+    $(document).ready(function () {
+         $("#merchant_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+
+        $("#offer_business_category").select2({
+            placeholder:" Select Business Category",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+        $("#partner_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+        $("#partner_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+        $("#partner_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+        $("#merchant_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+        $("#merchant_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+
+        $("#customer_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+         $("#customer_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+         $("#customer_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+        
+    });
+
+    $(document).ready(function () {
+
+        $("#offer_business_category").on('change', function()
+        {
+            var opts = [],opt;
+            var len = offer_business_category.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = offer_business_category.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#business_category_value").val(opts)
+
+            $.ajax({
+                type: "POST",
+                url: "/get-merchants-by-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#merchant_state_value').val(), 'get_filter_by_business_category': $('#business_category_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-merchant-in-offer/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#merchant_state_value').val(),'get_filter_by_business_category': $('#business_category_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+                
+            // var opts = [],opt;
+            // var len = offer_business_category.options.length;
+            // for (var i = 0; i < len; i++) {
+            //     opt = offer_business_category.options[i];
+            //     if (opt.selected) {
+            //         opts.push(opt.value);
+            //     }
+            // }
+
+            // $("#business_category_value").val(opts)
+
+            // // $("#merchant_state").empty();
+            // $("#merchant_area").empty();
+            // $("#merchant_city").empty();
+
+
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/get-state-by-business-ids/",
+            //     data: {
+            //         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            //         'business_category_value': $('#business_category_value').val()
+            //     },
+            //     success: function(result){
+            //         $("#merchant_state").empty();
+            //         $.each(result.data, function (key, value) {
+            //             $('#merchant_state').append("<option value='" + value + "'>" + value + "</option>");
+            //         });
+            //     }
+            // });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#merchant_state").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = merchant_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#merchant_state_value").val(opts)
+
+            $("#merchant_area").empty();
+            $("#merchant_city").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-city-by-state-names/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_state_value': $('#merchant_state_value').val()
+                },
+                success: function(result){
+                    $("#merchant_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#merchant_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+            // $("#merchant_state_value").val(opts)
+
+            $("#offer_business_category").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-business-by-state-ids/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_state_value': $('#merchant_state_value').val()
+                },
+                success: function(result){
+                    $("#offer_business_category").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#offer_business_category').append("<option value='" + value.b_id + "'>" + value.category + "</option>");
+                    });
+                }
+            });
+
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#merchant_state").on('change', function()
+        {
+            
+
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/get-merchants-by-area/",
+            //     data: {
+            //         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            //         'get_filter_by_merchant_state': $('#merchant_state_value').val(), 'get_filter_by_business_category': $('#business_category_value').val()
+            //     },
+            //     success: function(result){
+            //         console.log(result.data)
+            //         $('#customer_count').val(result.data);
+            //     }
+            // });
+
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/total-cost-by-merchant-in-offer/",
+            //     data: {
+            //         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+            //         'get_filter_by_merchant_state': $('#merchant_state_value').val(),'get_filter_by_business_category': $('#business_category_value').val()
+            //     },
+            //     success: function(result){
+            //         console.log(result.data)
+            //         $('#customer_total_cost').val(result.data);
+                
+            //     }
+            // });
+
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#merchant_city").on('change', function()
+        {
+            
+            var opts = [],opt;
+            var len = merchant_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#merchant_city_value").val(opts)
+
+            $.ajax({
+                type: "POST",
+                url: "/get-merchants-by-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#merchant_state_value').val(),'get_filter_by_merchant_city': $('#merchant_city_value').val(),'get_filter_by_merchant_area': $('#merchant_area_value').val(),'get_filter_by_business_category': $('#business_category_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-merchant-in-offer/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#merchant_state_value').val(),'get_filter_by_merchant_city': $('#merchant_city_value').val(),'get_filter_by_merchant_area': $('#merchant_area_value').val(),'get_filter_by_business_category': $('#business_category_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#merchant_city").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = merchant_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#merchant_city_value").val(opts)
+
+            $("#merchant_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-area-by-city-names/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_city_value': $('#merchant_city_value').val()
+                },
+                success: function(result){
+                    $("#merchant_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#merchant_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#merchant_area").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = merchant_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#merchant_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#partner_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = partner_state.options.length;
+
+            for (var i = 0; i < len; i++) {
+                opt = partner_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#partner_state_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#partner_city").on('change', function()
+        {
+            var opts = [],opt;
+            var len = partner_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = partner_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#partner_city_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#partner_area").on('change', function()
+        {
+            var opts = [],opt;
+            var len = partner_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = partner_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#partner_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#partner_state").on('change', function()
+        {
+
+            $("#partner_city").empty();
+            $("#partner_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-partner-city-by-state-names-in-offers/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'partner_state_value': $('#partner_state_value').val()
+                },
+                success: function(result){
+                    $("#partner_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#partner_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#partner_city").on('change', function()
+        {
+
+            $("#partner_area").empty();
+            $.ajax({
+                type: "POST",
+                url: "/get-partner-area-by-city-names-in-offers/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'partner_city_value': $('#partner_city_value').val()
+                },
+                success: function(result){
+                    $("#partner_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#partner_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+    $("#partner_state").on('change', function()
+    {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partners-count/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_state_value': $('#partner_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_count').val(result.data);
+            
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partner-cost/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_state_value': $('#partner_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_total_cost').val(result.data);
+            
+            }
+        });
+
+    })
+})
+
+    $(document).ready(function () {
+
+    $("#partner_city").on('change', function()
+    {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partners-count/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_city_value': $('#partner_city_value').val(), 'partner_state_value': $('#partner_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_count').val(result.data);
+            
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partner-cost/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_city_value': $('#partner_city_value').val(), 'partner_state_value': $('#partner_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_total_cost').val(result.data);
+            
+            }
+        });
+
+    })
+})
+
+    $(document).ready(function () {
+
+    $("#partner_area").on('change', function()
+    {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partners-count/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_city_value': $('#partner_city_value').val(), 'partner_state_value': $('#partner_state_value').val(), 'partner_area_value': $('#partner_area_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_count').val(result.data);
+            
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/get-partner-cost/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'partner_city_value': $('#partner_city_value').val(), 'partner_state_value': $('#partner_state_value').val(), 'partner_area_value': $('#partner_area_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_total_cost').val(result.data);
+            
+            }
+        });
+
+    })
+})
+
+    $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            
+                
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts)
+
+            $("#customer_city").empty();
+            $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-city-by-state-ids-in-owner-offers/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    $("#customer_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+    $("#customer_state").on('change', function()
+    {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/get-customers-by-area/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'get_filter_by_customer_state': $('#customer_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_count').val(result.data);
+            
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/total-cost-by-customer-in-offer/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'get_filter_by_customer_state': $('#customer_state_value').val()
+            },
+            success: function(result){
+                console.log(result.data)
+                $('#customer_total_cost').val(result.data);
+            
+            }
+        });
+
+    })
+})
+
+
+
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts)
+
+            $("#customer_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-area-by-city-names-in-owner-offers/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_city_value': $('#customer_city_value').val()
+                },
+                success: function(result){
+                    $("#customer_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+
+$(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            var opts1 = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts1.push(opt.value);
+                }
+            }
+
+
+            var opts2 = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts2.push(opt.value);
+                }
+            }
+
+            var opts3 = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts3.push(opt.value);
+                }
+            }
+
+            $("#customer_area").val(opts3)
+            $("#get_filter_by_customer_state").val(opts1)
+            $("#get_filter_by_customer_city").val(opts2)
+            $("#get_filter_by_customer_area").val(opts3)
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-customers-by-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-customer-in-offer/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+
+
+
+$(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            
+            var opts1 = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts1.push(opt.value);
+                }
+            }
+
+
+            var opts2 = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts2.push(opt.value);
+                }
+            }
+
+            var opts3 = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts3.push(opt.value);
+                }
+            }
+
+            $("#customer_area").val(opts3)
+            $("#get_filter_by_customer_state").val(opts1)
+            $("#get_filter_by_customer_city").val(opts2)
+            $("#get_filter_by_customer_area").val(opts3)
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-customers-by-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-customer-in-offer/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+
+
+
+
+
+$(document).ready(function () {
+
+        $("#merchant_area").on('change', function()
+        {
+            
+            var opts1 = [],opt;
+            var len = merchant_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_state.options[i];
+                if (opt.selected) {
+                    opts1.push(opt.value);
+                }
+            }
+
+
+            var opts2 = [],opt;
+            var len = merchant_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_city.options[i];
+                if (opt.selected) {
+                    opts2.push(opt.value);
+                }
+            }
+
+            var opts3 = [],opt;
+            var len = merchant_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = merchant_area.options[i];
+                if (opt.selected) {
+                    opts3.push(opt.value);
+                }
+            }
+
+            var opts4 = [],opt;
+            var len = offer_business_category.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = offer_business_category.options[i];
+                if (opt.selected) {
+                    opts4.push(opt.value);
+                }
+            }
+
+            $("#merchant_area").val(opts3)
+            $("#get_filter_by_merchant_state").val(opts1)
+            $("#get_filter_by_merchant_city").val(opts2)
+            $("#get_filter_by_merchant_area").val(opts3)
+            $("#get_filter_by_business_category").val(opts4)
+
+            $.ajax({
+                type: "POST",
+                url: "/get-merchants-by-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#get_filter_by_merchant_state').val(),'get_filter_by_merchant_city': $('#get_filter_by_merchant_city').val(),'get_filter_by_merchant_area': $('#get_filter_by_merchant_area').val(),'get_filter_by_business_category': $('#get_filter_by_business_category').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-merchant-in-offer/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_merchant_state': $('#get_filter_by_merchant_state').val(),'get_filter_by_merchant_city': $('#get_filter_by_merchant_city').val(),'get_filter_by_merchant_area': $('#get_filter_by_merchant_area').val(),'get_filter_by_business_category': $('#get_filter_by_business_category').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+</script>
+<style>
+    
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+
+</style>
+
+<script type="text/javascript">
+    // document.getElementById("offer_viewBtn").addEventListener("click", function(event){
+    //   event.preventDefault()
+    // });
+</script>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

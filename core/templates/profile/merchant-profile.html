@@ -1,0 +1,546 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Profile Edit {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'assets/css/cropper.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/cropper.min.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
+<style>
+  .center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="content">
+  <div class="page-inner">
+    <!-- <div class="page-header">
+      <h4 class="page-title">My Profile</h4>
+      <ul class="breadcrumbs">
+        <li class="nav-home">
+          <a href="/merchant-index/">
+            <i class="flaticon-home"></i>
+          </a>
+        </li>
+        <li class="separator">
+          <i class="flaticon-right-arrow"></i>
+        </li>
+        <li class="nav-item">
+          <a href="/merchant-profile/">My Profile</a>
+        </li>
+      </ul>
+    </div> -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+             <div class="d-flex align-items-center">
+              <h4 class="card-title">My Profile</h4>
+                <ul class="breadcrumbs">
+                  <li class="nav-home">
+                    <a href="/merchant-index/">
+                      <i class="flaticon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/merchant-profile/">My Profile</a>
+                  </li>
+                </ul>
+              </div>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{% url 'merchant profile' %}" autocomplete="off" name="edit_profile" enctype="multipart/form-data" id="profile_form">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Mobile No<span style="color: red;"> *</span></label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="icon-phone"></i>
+                              </span>
+                          </div>            
+                          <input type="text" class="form-control mobile" name="mobile_no" placeholder="Mobile No"
+                          value="{{ request.user.mobile_no }}" required disabled/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>First Name<span style="color: red;"> *</span></label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="icon-user"></i>
+                              </span>
+                          </div>            
+                          <input onblur="first_name_validate()" type="text" id="first_name" class="form-control mobile" name="first_name" placeholder="First Name"
+                          value="{{ request.user.first_name }}" maxlength="20" required />
+                      </div>
+                      <span id="firsterr" style="color: red; font-size: 11px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Last Name<span style="color: red;"> *</span></label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="icon-user"></i>
+                              </span>
+                          </div>            
+                          <input type="text" onblur="last_name_validate()" id="last_name" class="form-control mobile" name="last_name" placeholder="Last Name"
+                          value="{{ request.user.last_name }}" maxlength="20" required />
+                      </div>
+                      <span id="lasterr" style="color: red; font-size: 11px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Email<span style="color: red;"> *</span></label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="icon-envelope"></i>
+                              </span>
+                          </div>            
+                          <input type="email" onblur="validatefunction()" id="m_email" class="form-control" name="m_email" placeholder="Email"
+                        value="{{ request.user.m_email }}" maxlength="25" required />
+                      </div>
+                      <span id="eamilerr" style="color: red; font-size: 11px;"></span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Designation</label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="fas fa-user-tie"></i>
+                              </span>
+                          </div>            
+                          <input type="text" class="form-control" name="m_designation" placeholder="Designation"
+                        value="{{ request.user.m_designation }}" maxlength="15" onkeydown="return alphaOnly(event);"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Aadhaar Number</label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="fa fa-id-card"></i>
+                              </span>
+                          </div>            
+                          <input type="tel" class="form-control" name="m_adhaar_number" placeholder="Aadhaar Number"
+                        value="{{ request.user.m_adhaar_number }}" maxlength="12" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>PAN Number</label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="fa fa-id-card"></i>
+                              </span>
+                          </div>            
+                          <input type="text" class="form-control" name="m_pan_number" placeholder="PAN Number"
+                        value="{{ request.user.m_pan_number }}" maxlength="10" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>DOB</label>
+                      <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                  <i class="fa fa-birthday-cake"></i>
+                              </span>
+                          </div>            
+                          <input type="date" class="form-control" name="m_dob" placeholder="DOB"
+                        value="{{ request.user.m_dob|date:'Y-m-d' }}"  />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="text-center" style="display: block;">Business Logo</label>
+                      <div class="input-file input-file-image">
+                        {% if m_profile_pic %}
+                            <img class="img-upload-preview img-circle center" width="100" height="100"
+                                src="{{ m_profile_pic }}" alt="preview" />
+                          {% else %}
+                              <!-- <img src="/static/assets/img/user-profile-pic.png" alt="..." class="avatar-img rounded-circle"> -->
+                              <img class="img-upload-preview img-circle center" width="100" height="100"
+                              src="/static/assets/img/user-profile-pic.png" alt="preview" />
+                          {% endif %}
+                        <!-- {% if ProfileImages %}
+                          {% for ProfileImage in ProfileImages %}
+                            {% if ProfileImage.m_profile_image %} -->
+                             <!--  <img class="img-upload-preview img-circle center" width="100" height="100"
+                                src="{{ business_logo.url }}" alt="preview" /> -->
+                            <!-- {% else %} -->
+                              <!-- <img class="img-upload-preview img-circle center" width="100" height="100"
+                            src="/media/user-profile-pic-upload.png" alt="preview" /> -->
+                            <!-- {% endif %}
+                          {% endfor %}
+                        {% else %} -->
+                        <!--   <img class="img-upload-preview img-circle center" width="100" height="100"
+                            src="{{business_logo.url}}" alt="preview" /> -->
+                        <!-- {% endif %} -->
+  
+                        <input type="file" class="form-control form-control-file center" id="uploadImg" name="m_profile_image" accept="image/*" value="">
+  
+                        <!-- <label for="uploadImg" class="center btn btn-primary btn-round btn-md text-center" style=" display:inherit; margin-left: auto;
+                        margin-right: auto; ">
+                        <i class="fas fa-image"></i>  Select Profile Image</label> -->
+
+                          <!-- {% if ProfileImages %}
+                            {% for ProfileImage in ProfileImages %}
+                              {% if ProfileImage.m_profile_image %}
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <label  class="uploadprofile center btn btn-primary btn-round btn-sm text-center">
+                                   <span style="color: white;"><i class="fas fa-image"></i> &nbsp Select</span></label>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <a href="{% url 'merchant profile image remove' %}">
+                                      <label class="center btn btn-primary btn-round btn-sm text-center">
+                                       <span style="color: white;"><i class="fa fa-trash"></i>&nbsp  Remove</span>
+                                      </label>
+                                    </a>
+                                  </div>
+                                </div>    
+                              {% else %} -->
+                                <!-- <div class="row">
+                                  <div class="col-md-12">
+                                    <label  class="uploadprofile center btn btn-primary btn-round btn-sm text-center">
+                                    <i class="fas fa-image" style="color: white;"></i><span style="color: white;"> Upload</span></label>
+
+                                  </div>
+                                </div> -->
+                              <!-- {% endif %} -->
+                              <!-- <p class="text-center center" style="color: #63b90b;"><b>Profile image should be less than 500 KB</b></p> -->
+                            <!-- {% endfor %}
+                          {% else %} -->
+                            <!-- <div class="row">
+                              <div class="col-md-12">
+                                <label  class="uploadprofile center btn btn-primary btn-round btn-sm text-center">
+                                <i class="fas fa-image" style="color: white;"></i><span style="color: white;"> Upload</span></label>
+
+                              </div>
+                            </div>
+                            <p class="text-center center" style="color: #63b90b;"><b>Profile image should be less than 500 KB</b></p> -->
+                          <!-- {% endif %} -->
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>  
+              </div>
+              <div class="text-center mt-3 mb-3">
+                <button type="button" id="submitBtn" onclick="form_validate()" class="btn btn-primary">Update</button>
+              </div>
+            </form>
+            <!-- <script type="text/javascript">
+              jQuery.validator.addMethod("lettersonly", function(value, element) {
+                return this.optional(element) || /^[a-z]+$/i.test(value);
+              }, "Only characters required"); 
+
+              jQuery.validator.addMethod("pan_val", function(value, element){
+              if (/[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) {
+              return true;   // PASS validation when REGEX matches
+              } else {
+                  return true;  // FAIL validation
+              };
+              }, "Please enter valid PAN number.");
+
+              $.validator.addMethod('filesize', function (value, element, param) {
+                  return this.optional(element) || (element.files[0].size <= param)
+                }, 'File size must be less than 500 Kb');
+
+                $.validator.addMethod("validDate", function(value, element) {
+                    var currDate = new Date();
+                    return Date.parse(currDate) >= Date.parse(value) ||value == "";
+                }, "Please enter valid DOB");
+                 $.validator.addMethod("emailValidate", function(value, element) {
+                    return this.optional(element) || (mail.includes('.com')) || (mail.includes('.co.in')) || (mail.includes('.org')) || (mail.includes('.co')) || (mail.includes('.in'));
+                }, "Please enter valid email id");
+
+                  $("#profile_form").validate
+                  ({
+                      rules: 
+                      {
+                          first_name: 
+                          {
+                            required: true,
+                            lettersonly: true,
+                            minlength: 3,
+                          },
+                          last_name: 
+                          {
+                            required: true,
+                            lettersonly: true,
+                            minlength: 3,
+                          },
+                          m_email: 
+                          {
+                            email: true,
+                            required: true,
+                            emailValidate: true,
+                          },
+                          m_adhaar_number: {
+                            minlength: 12,
+                            maxlength: 12,
+                            digits: true,
+                            required:false,
+                          },
+                          m_dob: {
+                            validDate: true,
+                            required: false,
+                          },
+                          m_pan_number: {
+                            required: false,
+                            pan_val: true
+                          },
+                          m_profile_image: {
+                            filesize: 500000
+                          },
+                          
+                      },
+                      messages: 
+                      {
+                        first_name: {
+                          required: "First Name is required.",
+                          minlength: "Minimum 3 letters are required"
+                        },
+                        last_name: {
+                          required: "Last Name is required.",
+                          minlength: "Minimum 3 letters are required"
+                        },
+                        m_email: {
+                          required: "Email field is required.",
+                          email: "Please enter valid email id"
+                        },
+                        m_adhaar_number: {
+                          minlength: "Aadhaar Number should be 12 digits in length.",
+                          maxlength: "Aadhaar Number should be 12 digits in length.",
+                          digits: "Only numbers are allowed."
+                        }, 
+                          m_dob: {
+                          validDate: "Please enter valid DOB."
+                        }
+                      },
+                  });
+
+            </script> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cropping merchant profile modal -->
+<div class="container" id="crop-avatar">
+
+  <div class="modal fade" id="avatar-modal" aria-hidden="false" aria-labelledby="avatar-modal-label" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form class="avatar-form" action="/merchant-upload-croped-profile/" enctype="multipart/form-data" method="post">
+          {% csrf_token %}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="avatar-body">
+
+              <!-- Upload image and data -->
+              <div class="avatar-upload text-center">
+                <input type="hidden" class="avatar-src" name="avatar_src">
+                <input type="hidden" class="avatar-data" name="avatar_data">
+                <input type="file" name="merchantprofileimage" id="" class="avatar-input">
+              </div>
+
+              <!-- Crop and preview -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="avatar-wrapper"></div>
+                </div>
+              </div>
+
+              <div class="row avatar-btns">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary btn-block avatar-save">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div> -->
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+</div>
+
+<!-- end merchant profile modal -->
+
+
+
+<!-- SCRIPTS -->
+<script>
+  function alphaOnly(event) {
+                                      var key = event.keyCode;
+                                      return ((key >= 65 && key <= 90) || key == 8);
+                                    };
+</script>
+
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/cropper.min.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+  function validatefunction()
+  {
+    // alert('hello')
+    var mail = document.getElementById('m_email').value;
+
+    var s = document.getElementById('eamilerr');
+
+    // || if ((mail.includes('in')) || if ((mail.includes('co.in')) || if ((mail.includes('org')) || ((mail.includes('co'))
+
+    if ((mail.includes('.com')) || (mail.includes('.co.in')) || (mail.includes('.org')) || (mail.includes('.co')) || (mail.includes('.in')))
+    {
+
+      s.innerHTML = ""  
+    }
+    else if ((mail == "") || (mail == null))
+    {
+      s.innerHTML = "This field is required";
+    }
+    else
+    {
+      s.innerHTML = "Invalid email"
+    }
+  }
+  function first_name_validate()
+  {
+    var first_name = document.getElementById('first_name').value;
+
+    if ((first_name == "") || (first_name == null))
+    {
+      document.getElementById('firsterr').innerHTML = "This field is required";
+    }
+    else
+    {
+      document.getElementById('firsterr').innerHTML = "";
+    }
+  }
+  function last_name_validate()
+  {
+    var last_name = document.getElementById('last_name').value;
+
+    if ((last_name == "") || (last_name == null))
+    {
+      document.getElementById('lasterr').innerHTML = "This field is required";
+    }
+    else
+    {
+      document.getElementById('lasterr').innerHTML = "";
+    }
+  }
+
+  function form_validate()
+  {
+    var mail = document.getElementById('m_email').value;
+    var first_name = document.getElementById('first_name').value;
+    var last_name = document.getElementById('last_name').value;
+    var eamilerr = document.getElementById('eamilerr');
+    var firsterr = document.getElementById('firsterr');
+    var lasterr = document.getElementById('lasterr');
+
+    if (((first_name == "") || (first_name == null)) && ((last_name == "") || (last_name == null)) && ((mail == "") || (mail == null)))
+    {
+      eamilerr.innerHTML == "This field is required";
+      firsterr.innerHTML == "This field is required";
+      lasterr.innerHTML == "This field is required";
+    }
+    else if ((first_name == "") || (first_name == null))
+    {
+      firsterr.innerHTML = "This field is required";
+    }
+    else if ((last_name == "") || (last_name == null))
+    {
+      lasterr.innerHTML = "This field is required";
+    }
+    else if ((mail == "") || (mail == null))
+    {
+      eamilerr.innerHTML = "This field is required";
+    }
+    else if ((mail.includes('.com')) || (mail.includes('.co.in')) || (mail.includes('.org')) || (mail.includes('.co')) || (mail.includes('.in')))
+    {
+      $(document).ready(function(){
+        $("#submitBtn").click(function(){
+          $("#profile_form").submit();
+        });
+      });
+    }
+    else
+    {
+      eamilerr.innerHTML = "Invalid email";
+    }
+
+
+  }
+</script>
+<script>
+
+$(".uploadprofile").on("click", function () {
+
+    $("#avatar-modal").modal();
+
+  });
+
+
+</script>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

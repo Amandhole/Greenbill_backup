@@ -1,0 +1,207 @@
+{% extends "layouts/base.html" %} {% block title %} SMS Setting {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">SMS Setting</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/sms-setting/">SMS Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <form class="form-control" action="/sms-setting/" method="POST" id="sms_form"
+                                name="sms_form" autocomplete="off">
+                                {% csrf_token %}
+                                
+
+                                <div class="card-body">
+                                    <div class="form-group form-show-validation row">
+                                        <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Username
+                                            <span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username" value="{{ data.username }}" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-show-validation row">
+                                        <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Password<span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{ data.password }}" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-show-validation row">
+                                        <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Sender ID<span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <input type="text" class="form-control" id="sender_id"
+                                                name="sender_id" placeholder="Enter Sender ID"
+                                                value="{{ data.sender_id }}" required />
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-show-validation row">
+                                        <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Status<span class="required-label">*</span></label>
+                                        <div class="col-lg-6 col-md-11 col-sm-10">
+                                            <select name="status" id="status" class="form-control">
+                                                <option value="">Select</option>
+                                                <option value="1" {% if data.status == 1 %} selected {% endif %}>Enabled</option>
+                                                <option value="0" {% if data.status == 0 %} selected {% endif %}>Disabled</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="card-action">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <input class="btn btn-primary" type="submit" value="Submit" />
+                                            </div>
+                                            <!-- <input class="btn btn-danger float-right" type="reset" value="Reset" /> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "SMS Settings"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <form class="form-control" action="/sms-setting/" method="POST" id="sms_form"
+                                            name="sms_form" autocomplete="off">
+                                            {% csrf_token %}
+                                            <div class="card-body">
+                                                <div class="form-group form-show-validation row">
+                                                    <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Username
+                                                        <span class="required-label">*</span></label>
+                                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username" value="{{ data.username }}" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-show-validation row">
+                                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Password<span class="required-label">*</span></label>
+                                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="{{ data.password }}" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-show-validation row">
+                                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Sender ID<span class="required-label">*</span></label>
+                                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                                        <input type="text" class="form-control" id="sender_id"
+                                                            name="sender_id" placeholder="Enter Sender ID"
+                                                            value="{{ data.sender_id }}" required />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-show-validation row">
+                                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Status<span class="required-label">*</span></label>
+                                                    <div class="col-lg-6 col-md-11 col-sm-10">
+                                                        <select name="status" id="status" class="form-control">
+                                                            <option value="">Select</option>
+                                                            <option value="1" {% if data.status == 1 %} selected {% endif %}>Enabled</option>
+                                                            <option value="0" {% if data.status == 0 %} selected {% endif %}>Disabled</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                            <div class="card-action">
+                                                {% if actions.edit_permission == "1" %}
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="text-center mt-3 mb-3">
+                                                                <input class="btn btn-primary" type="submit" value="Submit" />
+                                                            </div>
+                                                            <!-- <input class="btn btn-danger float-right" type="reset" value="Reset" /> -->
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                      <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                      </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    $("#sms_form").validate({
+        rules: {
+            username: {
+                required: true,
+            },
+            password: {
+                required: true,
+            },
+            sender_id: {
+                required: true,
+            },
+        },
+        messages: {
+            username: {
+                required: "Username field is required",
+            },
+            password: {
+                required: "Password field is required",
+            },
+            sender_id: {
+                required: "sender_id field is required",
+            }, 
+        },
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

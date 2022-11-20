@@ -1,0 +1,478 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Coupons {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+
+        <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: 11px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    .set{
+        position: absolute;
+        margin-top: 10px;
+    }
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer-coupons-redeem/">Coupons</a>
+                                </li>
+                            </ul>
+                            
+                        </div>
+                    </div>
+
+<div class="modal fade" id="ViewPurchaseCoupanModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row ">
+                    <div class="col-md-12">
+                        <div class="row">
+                            {% for object in all_coupons %}
+                            <div class="col-md-12">
+                                
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4">
+                                        <div class="product" >
+                                            <div class="ribbon-wrapper">
+                                                <div class="ribbon">COUPON</div>
+                                                </div>
+                                                
+                                                <div style="border: #007dff 18px solid; overflow: hidden;  box-shadow: 12px 12px rgb(221, 218, 218);  border-radius: 12px; padding-bottom: 24px; width: 300px; height: 200px; ">
+                                                    <div class="coupon__title text-center">  
+                                                        {{objects.coupon_logo}}                                                 
+                                                    </div>
+                                                    <div class="coupon__title text-center">
+                                                        <h4><b style="text-transform: uppercase;">{{objects.merchant_business_name}}</b></h4>
+                                                    </div>
+                                                    <div clsss="title" style="text-align: center; font-size: 25px;  padding-left: 0px;">
+                                                        <b id="Purchase_coupan_text_id"></b>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                
+                                    </div>
+                                    
+                                    <div style="text-align: center;">
+                                        <div class="row" style="padding-top: 10%">
+                                            <div class="col-md-4 text-right" id="Purchase_merchant_logo"></div>
+                                                <div class="col-md-8 text-left" id="Purchase_business_name_para" style="padding-left:0px"></div>
+                                                </div>
+                                                <div class="row py-1 text-center" style="padding-top: 2%">
+                                                    <div class="col-md-12 text-center">
+                                                        <h5 class="fw-bold mb-1" id="Purchase_expires_on_id"></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center" style="padding-top: 2%">
+                                                    <div class="col-md-12 text-center">
+                                                        <h5 class="fw-bold mb-1" id="Purchase_redeem_for_id"></h5>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center" style="padding-top: 2%">
+                                                    <div class="col-md-12 text-center">
+                                                        <h5 class="fw-bold mb-1" id="Purchase_redeem_for_id">Copy Code Below</h5>
+                                                    </div>
+                                                    <div class="col-md-2"></div>
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <div class="input-group mb-3" >
+                                                                    <input type="text" class="form-control" placeholder="" aria-label="Promo Code" aria-describedby="basic-addon2" id="Purchase_promo_code_id" style="margin-top: 0px;" value="">
+                                                                    <div class="input-group-append">
+                                                                       <button onclick="myFunction()" class="btn btn-primary btn-sm">Copy</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                            
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+    
+   <h1 style="color:#0aff6d; text-align:left;"><b></b></h1>
+            <span style="font-size: 16px;">
+
+          <b>Offer From {{data_offer.offer_business_category}}</b>
+          <br>
+         <b>Offer Details</b>
+          <br>
+          {{data_offer.offer_name}}
+          <br>
+          {{data_offer.offer_caption}}
+          <br>
+          <b>Expire On {{data_offer.valid_through|date:'d-m-Y'}}</b>
+        </span>
+        <br>
+        <br> 
+    
+    
+    
+    
+    
+    
+     <div class="media d-flex">
+				<div class="align-self-center" style="margin-top: 10px;">
+					<img src="{{data_offer.offer_logo.url}}" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">
+				</div>
+				<div class="media-body text-center">
+					<p style="padding-left: 20px; text-align: left; padding-top: 20px;"> sddg{{data_offer.offer_name}}<br>fdrf {{data_offer.offer_caption}}
+						sfgff<br> {{data_offer.offer_business_category}}fdrr
+					</p>
+				</div>
+			</div> -->
+
+<!-- {% for data_offer in data_offer %}
+<section style="padding-left: 250px;"></section>
+				<section
+					style="background-color: #ffffff; border-radius: 10px; width: 375px;height: 542px;border: 1px solid #eeeee4; ">
+
+					<img src="{{data_offer.offer_image.url}}" width="235px" height="200px"
+						style="border-radius:10px; padding-left:50px; padding-top:10px;">
+					<div class="" style="margin-top: 10px;">
+						<img src="{{data_offer.offer_logo.url}}" height="35" width="35" alt="Logo"
+							style="border-radius:50%; border: 1px solid #00569D;">
+					</div>
+					<div class="media-body text-center">
+						<span>
+							<div class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+								style="padding-left: 20px; text-align: left;">
+								{{data_offer.offer_name}}</div>
+						</span>
+						<p style="padding-left: 20px; text-align: left;"> {{data_offer.offer_caption}}
+							<br> {{data_offer.offer_business_category}}
+						</p>
+					</div>
+
+				</section>
+				</section>
+                {% endfor %}
+             -->
+
+
+
+
+
+             <!-- <div class="card-body>
+                        <div class="row">
+                            {% for data_offer in data_offer %}
+                             
+                                <div class="col-xl-4 col-sm-6 col-12">
+                                    <div style="height: 800px;  ">
+                                    <section>
+                                    <div class="card">
+                                        
+                                         <img src="{{data_offer.offer_image.url}}" width="235px"
+                                                        height="200px" style="border-radius:10px; padding-left:150px; padding-top:10px;">
+                                            <div class="card-content">
+                                                <div class="card-body">
+                                                    <div class="media d-flex">
+                                                        <div class="" style="margin-top: 10px;">
+                                                            <img src="{{data_offer.offer_logo.url}}" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">
+                                                        </div>
+                                                        <div class="media-body text-center">
+                                                            <span>
+                                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="padding-left: 20px; text-align: left;">
+                                                                {{data_offer.offer_name}}</div>
+                                                            </span>
+                                                                <p style="padding-left: 20px; text-align: left;"> {{data_offer.offer_caption}}
+                                                                    <br> {{data_offer.offer_business_category}}
+                                                                </p>
+                                                        </div>
+                                                        </section>
+                                                    </div>
+                                                    <button type="button" class="btn btn-info btn-sm" data-toggle="collapse"
+                                                    data-target="#demo"><a href="/view_offer_status/{{data_offer.id}}" style="color: white; font-weight: bold;">View</a> </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            {% endfor %}
+                        </div>
+                    </div> -->
+
+                      
+              
+                    
+                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+
+ $('#add-row').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+        this.api().columns([1, 2]).every( function () {
+            var column = this;
+            
+            
+            var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                // var id = "#test_" + column[0][0];
+
+                .appendTo( $("#test_" + column[0][0]).empty() )
+                // .appendTo( $(column.header()).empty() )
+                .on( 'change', function () {
+
+                    // var val = $.fn.dataTable.util.escapeRegex(
+                    //     $(this).val()
+                    // );
+
+                    var val = $(':selected', select).map(function(index, element) {
+                    return $.fn.dataTable.util.escapeRegex($(this).val());
+                    }).toArray().join('|');
+                      
+                    column
+                        .search( val ? '^'+val+'$' : '', true, false )
+                        .draw();
+                } );
+
+            column.data().unique().sort().each( function ( d, j ) {
+                select.append( '<option value="'+d+'">'+d+'</option>' )
+            });
+        });        
+      }
+    });
+    $("#column_id_1").select2({
+        placeholder:" Select Partner Type",
+        closeOnSelect: true,
+        width: '60%',
+        // selectOnClose: true,
+        // allowClear: true
+    })
+    $("#column_id_2").select2({
+        placeholder:" Select Area",
+        closeOnSelect: true,
+        width: '50%',
+        // selectOnClose: true
+        // allowClear: true
+    })
+            
+  });
+</script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

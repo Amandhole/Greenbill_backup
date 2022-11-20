@@ -1,0 +1,496 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Feedback {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    
+  
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Feedback</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/get-feedback/">Feedback</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                      <div class="card-body">
+                        <div class="row align-items-center justify-content-center">
+                          <div class="col-sm-6 col-md-2">
+                            <div class="card card-stats card-round">
+                              <div class="card-body ">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:red">
+                                      <i class="flaticon-error"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Bugs</p>
+                                      <h4 class="card-title">{{total_bugs}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                      <i class="flaticon-chat-8"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Suggestions</p>
+                                      <h4 class="card-title">{{total_suggestions}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-2">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small" style="background:red">
+                                      <i class="flaticon-close"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Open</p>
+                                      <h4 class="card-title">{{total_open}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-3">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small" style="background:orange">
+                                      <i class="flaticon-next"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Assigned</p>
+                                      <h4 class="card-title">{{total_assigned}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-6 col-md-2">
+                            <div class="card card-stats card-round">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-icon">
+                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                      <i class="flaticon-interface-1"></i>
+                                    </div>
+                                  </div>
+                                  <div class="col-stats ml-3 ml-sm-0">
+                                    <div class="numbers">
+                                      <p class="card-category">Closed</p>
+                                      <h4 class="card-title">{{total_closed}}</h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="add-row" class="display table table-hover">
+                                <thead>
+                                  <tr>
+                                    <th id="type_filter_1" colspan="2"></th>
+                                    <th id="type_filter_3" colspan="2"></th>
+                                    <th colspan="5"></th>
+                                  </tr>
+                                  <tr style="text-align: center;">
+                                      <th>Sr. No.</th>
+                                      <th>Mobile Number</th>
+                                      <th>Type</th>
+                                      <th>Comments</th>
+                                      <th>Status</th>
+                                      <th>Feedback Date</th>
+                                      <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                                <tbody>
+                                    {% for feedback in Feedbacks %}
+                                    <tr style="text-align: center;">
+                                      <td width="8%">{{ forloop.counter }}</td>
+                                      <td width="16%">{{ feedback.mobile_no }}</td>
+                                      <td width="7%">
+                                        {% if feedback.bug == True %}
+                                          Bug
+                                        {% elif feedback.suggestion == True %}
+                                          Suggestion
+                                        {% endif %}
+                                      </td>
+                                      <td width="20%">{{ feedback.comments }}</td>
+                                      <td width="9%">{% if feedback.status != None %}
+                                          {{feedback.status}}
+                                          {% endif %}</td>
+                                      <td width="15%">{{ feedback.created_at|date:'d-m-Y' }}</td>
+                                      <td width="5%">
+
+                                        <button class="btn btn-link btn-primary updateBtn" data-toggle="tooltip" data-target="#myModal"
+                                                            data-id="{{feedback.id}}" data-original-title="Update Status">
+                                                                <i class="fa fa-plus-circle"></i>
+                                                               
+                                                            </button>
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                  {% else %}
+                    {% for actions in action_permissions_list %}
+                      {% if actions.module_id|lower == "Feedback"|lower and actions.feature_id|lower == "Feedback"|lower %}
+                        {% if actions.view_permission == "1" %}
+                          <input type="hidden" value="1" name="access_permission" id="access_permission">
+                          <div class="card-body">
+                            <div class="row align-items-center justify-content-center">
+	                          <div class="col-sm-6 col-md-2">
+	                            <div class="card card-stats card-round">
+	                              <div class="card-body ">
+	                                <div class="row align-items-center">
+	                                  <div class="col-icon">
+	                                    <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:red">
+	                                      <i class="flaticon-error"></i>
+	                                    </div>
+	                                  </div>
+	                                  <div class="col col-stats ml-3 ml-sm-0">
+	                                    <div class="numbers">
+	                                      <p class="card-category">Bugs</p>
+	                                      <h4 class="card-title">{{total_bugs}}</h4>
+	                                    </div>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div class="col-sm-6 col-md-3">
+	                            <div class="card card-stats card-round">
+	                              <div class="card-body">
+	                                <div class="row align-items-center">
+	                                  <div class="col-icon">
+	                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+	                                      <i class="flaticon-chat-8"></i>
+	                                    </div>
+	                                  </div>
+	                                  <div class="col col-stats ml-3 ml-sm-0">
+	                                    <div class="numbers">
+	                                      <p class="card-category">Suggestions</p>
+	                                      <h4 class="card-title">{{total_suggestions}}</h4>
+	                                    </div>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div class="col-sm-6 col-md-2">
+	                            <div class="card card-stats card-round">
+	                              <div class="card-body">
+	                                <div class="row align-items-center">
+	                                  <div class="col-icon">
+	                                    <div class="icon-big text-center icon-success bubble-shadow-small" style="background:red">
+	                                      <i class="flaticon-close"></i>
+	                                    </div>
+	                                  </div>
+	                                  <div class="col-stats ml-3 ml-sm-0">
+	                                    <div class="numbers">
+	                                      <p class="card-category">Open</p>
+	                                      <h4 class="card-title">{{total_open}}</h4>
+	                                    </div>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div class="col-sm-6 col-md-3">
+	                            <div class="card card-stats card-round">
+	                              <div class="card-body">
+	                                <div class="row align-items-center">
+	                                  <div class="col-icon">
+	                                    <div class="icon-big text-center icon-success bubble-shadow-small" style="background:orange">
+	                                      <i class="flaticon-next"></i>
+	                                    </div>
+	                                  </div>
+	                                  <div class="col col-stats ml-3 ml-sm-0">
+	                                    <div class="numbers">
+	                                      <p class="card-category">Assigned</p>
+	                                      <h4 class="card-title">{{total_assigned}}</h4>
+	                                    </div>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                          <div class="col-sm-6 col-md-2">
+	                            <div class="card card-stats card-round">
+	                              <div class="card-body">
+	                                <div class="row align-items-center">
+	                                  <div class="col-icon">
+	                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+	                                      <i class="flaticon-interface-1"></i>
+	                                    </div>
+	                                  </div>
+	                                  <div class="col-stats ml-3 ml-sm-0">
+	                                    <div class="numbers">
+	                                      <p class="card-category">Closed</p>
+	                                      <h4 class="card-title">{{total_closed}}</h4>
+	                                    </div>
+	                                  </div>
+	                                </div>
+	                              </div>
+	                            </div>
+	                          </div>
+	                        </div>
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th id="type_filter_1" colspan="2"></th>
+                                        <th id="type_filter_3" colspan="2"></th>
+                                        <th colspan="3"></th>
+                                      </tr>
+                                      <tr>
+                                          <th>Sr. No.</th>
+                                          <th>Mobile Number</th>
+                                          <th>Type</th>
+                                          <th>Comments</th>
+                                          <th>Status</th>
+                                          <th>Feedback Date</th>
+                                          <th>Action</th>
+                                      </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for feedback in Feedbacks %}
+                                        <tr>
+                                          <td>{{ forloop.counter }}</td>
+                                          <td>{{ feedback.mobile_no }}</td>
+                                          <td>
+                                            {% if feedback.bug == True %}
+                                              Bug
+                                            {% elif feedback.suggestion == True %}
+                                              Suggestion
+                                            {% endif %}
+                                          </td>
+                                          <td>{{ feedback.comments }}</td>
+                                          <td>{% if feedback.status != None %}
+                                          {{feedback.status}}
+                                          {% endif %}</td>
+                                          <td>{{ feedback.created_at|date:'d-m-Y' }}</td>
+                                          <td>
+                                            <button class="btn btn-link btn-primary updateBtn" data-toggle="tooltip" data-target="#myModal"
+                                                            data-id="{{feedback.id}}" data-original-title="Update Status">
+                                                                <i class="fa fa-plus-circle"></i>
+                                              </button>
+                                          </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                    <div class="card-body permission-denied" style="display:none">
+                        <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_role_form">
+        {% csrf_token %}
+        <div class="modal-content">
+          
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="name">Status<small style="color: red;"> *</small></label>
+              <select class="form-control mobile" name="status"
+                                        id="status" placeholder="Template Choice" 
+                                         value="">
+                                        <option value="0">Status</option>
+                                        <option value="Open">Open </option>
+                                        <!-- <option value="Discussion Ongoing">Assigned</option> -->
+                                        <option value="Assigned">Assigned</option>
+                                        <!-- <option value="4">Cash Memo Template 4</option> -->
+                                        <option value="Closed">Closed</option>
+
+              </select>
+              
+            </div>
+              
+            <input type="hidden" id="status_id" name="object_status_id">
+            <!-- <div>
+                
+                <p id="obj_id1" name="object_status_id">
+                </p>
+            </div> -->
+           
+          </div>
+          <div class="modal-footer">
+            <input id="statusSubmit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+  $('.updateBtn').on("click", function(){
+    var obj_id = $(this).data("id");
+    console.log('id',obj_id);
+    $('#status_id').empty().append(obj_id);
+    document.getElementById('status_id').value = obj_id;
+    $("#myModal").modal();
+})
+  </script>
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script>
+		$(document).ready(function() {
+      $('#add-row').DataTable({
+          dom: 'lBfrtip',
+          "ordering": false,
+          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          buttons: [
+             'excel', 'pdf', 'print'
+          ],
+          initComplete: function () {
+          this.api().columns([1,3]).every( function () {
+              var column = this;
+              var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+              
+              .appendTo( $("#type_filter_" + column[0][0]).empty())
+                  
+              .on( 'change', function () {
+
+              var val = $(':selected', select).map(function(index, element) {
+              return $.fn.dataTable.util.escapeRegex($(this).val());
+              }).toArray().join('|');
+                    
+              column
+                  .search( val ? '^'+val+'$' : '', true, false )
+                  .draw();
+              } );
+
+              column.data().unique().sort().each( function ( d, j ) {
+                  select.append( '<option value="'+d+'">'+d+'</option>' )
+              });
+          });        
+        }
+      });
+
+      $("#column_id_1").select2({
+        placeholder:" Select Type",
+        closeOnSelect: true,
+        width: '100%',
+      })
+
+      $("#column_id_3").select2({
+        placeholder:" Select Status",
+        closeOnSelect: true,
+        width: '60%',
+      })
+
+		});
+	</script>
+
+{% endblock javascripts %}

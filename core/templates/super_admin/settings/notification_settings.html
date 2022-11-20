@@ -1,0 +1,1552 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Notification Settings {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- {% load static %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script type="text/javascript" src='{% static "ckeditor/ckeditor-init.js" %}'></script>
+<script type="text/javascript" src='{% static "ckeditor/ckeditor/ckeditor.js" %}'></script> -->
+
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+    
+    .nav-pills.nav-primary .nav-link.active{
+            background: #00569D!important;
+    border-color: #00569D!important;
+    }
+</style>
+
+<!-- Edit Message Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="edit-notification-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <form method="POST" class="form" name="edit_notification_form" id="edit_notification_form">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Edit Notification</h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {{ NotificationSettingsForm.media }}
+                        {{ NotificationSettingsForm}}
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input id="edit_notification_form_submit_btn" type="submit" class="btn btn-primary" value="Save" data-id="">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Edit Message Modal End-->
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Notification Settings</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/notification-settings/">Notification Settings</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                                {% if is_superuser == True %}
+                                    <ul class="nav justify-content-end nav-pills nav-primary" id="pills-tab" role="tablist" style="">
+                                        <li class="nav-item submenu">
+                                            <a class="nav-link active show" id="pills-admin-tab" data-toggle="pill" href="#pills-admin" role="tab" aria-controls="pills-admin" aria-selected="true">Admin</a>
+                                        </li>
+                                        <li class="nav-item submenu">
+                                            <a class="nav-link" id="pills-merchant-tab" data-toggle="pill" href="#pills-merchant" role="tab" aria-controls="pills-merchant" aria-selected="false">Merchant</a>
+                                        </li>
+                                        <li class="nav-item submenu">
+                                            <a class="nav-link" id="pills-customer-tab" data-toggle="pill" href="#pills-customer" role="tab" aria-controls="pills-customer" aria-selected="false">Customer</a>
+                                        </li>
+                                        <li class="nav-item submenu">
+                                            <a class="nav-link" id="pills-partner-tab" data-toggle="pill" href="#pills-partner" role="tab" aria-controls="pills-partner" aria-selected="false">Partner</a>
+                                        </li>
+                                    </ul>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "Notifications Settings"|lower %}
+                                            {% if actions.view_permission == "1" %}
+                                                <ul class="nav justify-content-end nav-pills nav-primary" id="pills-tab" role="tablist" style="">
+                                                    <li class="nav-item submenu">
+                                                        <a class="nav-link active show" id="pills-admin-tab" data-toggle="pill" href="#pills-admin" role="tab" aria-controls="pills-admin" aria-selected="true">Admin</a>
+                                                    </li>
+                                                    <li class="nav-item submenu">
+                                                        <a class="nav-link" id="pills-merchant-tab" data-toggle="pill" href="#pills-merchant" role="tab" aria-controls="pills-merchant" aria-selected="false">Merchant</a>
+                                                    </li>
+                                                    <li class="nav-item submenu">
+                                                        <a class="nav-link" id="pills-customer-tab" data-toggle="pill" href="#pills-customer" role="tab" aria-controls="pills-customer" aria-selected="false">Customer</a>
+                                                    </li>
+                                                    <li class="nav-item submenu">
+                                                        <a class="nav-link" id="pills-partner-tab" data-toggle="pill" href="#pills-partner" role="tab" aria-controls="pills-partner" aria-selected="false">Partner</a>
+                                                    </li>
+                                                </ul>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                          </div>
+                        </div>
+                    </div>
+
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <form class="form-control" action="/notification-settings/" method="POST" id="notification_settings_form" name="notification_settings_form" autocomplete="off" style="border:none">
+                                {% csrf_token %}
+                                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                                    <div class="tab-pane fade active show" id="pills-admin" role="tabpanel" aria-labelledby="pills-admin-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ID and Password of users</td>
+                                                        <td>Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+
+                                                    <!-- {% for notification_settings in SuperAdminNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                    <!-- {% for notification_settings in MerchantNotificationSettings %}
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{ notification_settings.event }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check">
+                                                                                    {% if notification_settings.is_email == 1 %}
+                                                                                        {% if notification_settings.send_email == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">Email</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">Email</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">SMS</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">SMS</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">Notification</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">Notification</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ notification_settings.message|safe }}
+                                                                                
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-merchant" role="tabpanel" aria-labelledby="pills-merchant-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration OTP</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration</td>
+                                                        <td>Dear Merchant, 
+
+                                                            Your new GreenBill account has been created. Welcome to GreenBill!
+
+                                                            We’re glad that you have chosen GreenBill as your digital Billing Buddy. 
+
+                                                            From now on please log in to your account using ‘Registered mobile number’ and ‘password’.
+
+                                                            To sign in to your account, please visit www.greenbill.com or click here.
+                                                            If you have any questions regarding your account, Kindly email us on support@greenbill.in we will be more than happy to help you. 
+
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ID and Password of users</td>
+                                                        <td>Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 week before expiration of subscription</td>
+                                                        <td>Your GreenBill membership expires within a week. Renew now and get {#var#} off on your subscription. RENEW NOW!!! {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 week before expiration of subscription</td>
+                                                        <td>Hey GreenBill Merchants,
+
+                                                            Your subscription is about to expire within a week. Renew today before your benefits and
+                                                            services are suspended.
+
+                                                            RENEW NOW
+                                                            (Link)
+
+                                                            Renew now and get 5 % off on your yearly subscription plan offer valid for today only.
+                                                            If you have any questions regarding the renewal process or need help, please don’t hesitate to
+                                                            contact us at [email/ phone number].
+
+                                                            Cheers,
+                                                            Team GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 Month before expiration of subscription</td>
+                                                        <td>Hi GreenBill Merchants,
+
+                                                            Your membership at GreenBill is about to expire on [date]. We hope you are enjoying benefits of your membership. 
+
+                                                            Good news! There’s still time to renew, and it’s as easy as ever – just click the link below and follow the instructions. It takes just 5 minutes of your time.
+
+                                                            RENEW NOW!!!
+
+                                                            If you have any questions regarding your membership, benefits, or renewal, please don’t hesitate to reach out us at support@greenbill.in or at ((number)).
+
+                                                            Thanks,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Purchase or Payments</td>
+                                                        <td>Thank you for saving paper. Here is your digital bill https://bit.ly/3fwlvqt. To view all your bills, download Green Bill App.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Purchase or Payments</td>
+                                                        <td>Dear Merchant,
+
+                                                            Thank you for your Purchase!
+
+                                                            Your Green Bill for your recent purchase is attached with the e-mail. You can also view your invoice on your Green Bill Merchant App or Merchant Web Portal.   (This text written on an image)
+
+                                                            Best Regards,
+
+                                                            Green Bill Team
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Welcome Message on Registration</td>
+                                                        <td>Thank you for choosing GreenBill as your Digital Billing Buddy. Please visit our website or download GreenBill Merchant App to login.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Low Balance </td>
+                                                        <td>Hi GreenBill Merchant,
+
+                                                            I hope you’re doing well.
+
+                                                            This email is to tell you that your SMS balance is too low. Kindly recharge your account as soon
+                                                            as possible to keep delivering your invoices to your customers hassle-free. You can recharge for
+                                                            any amount according to your convenience. Below is the link for payment.
+
+                                                            ((Link))
+                                                            Thank you in advance. Have a nice day.
+
+                                                            Best regards,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>On Expiration of Services</td>
+                                                        <td>Hi GreenBill Merchants,
+
+                                                            This is a reminder that your membership with GreenBill expired on [date] and you are now within your membership grace period.
+
+                                                            If you’re still deciding whether or not to renew, or just haven’t gotten around to it yet, here’s a quick overview of what you’ll be missing out on if you don’t renew:
+
+                                                            [Overview of major membership benefits]
+
+                                                            We hope you will take the time to renew your membership and remain a part of our community. It couldn’t be easier – just click here to renew!
+
+                                                            – just click here to renew! (Link)
+
+                                                            Renew now and get 5% off on your subscription. Offer valid within grace period only.
+
+                                                            If you have any questions regarding the renewal process or need help, please don’t hesitate to
+                                                            contact us at [email/ phone number].
+
+                                                            Thanks,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>On Expiration of Services</td>
+                                                        <td>Dear Merchant, your membership has expired. We hope you will take the time to renew your membership & remain part of GreenBill. Click here {#var#} to renew.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bill Delivery SMS</td>
+                                                        <td>Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>OTP message</td>
+                                                        <td>Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Merchant Registration SMS</td>
+                                                        <td>Thank you for choosing GreenBill as your digital billing buddy. Your registration is complete please
+                                                            visit website or download GB Merchant App to login
+                                                        </td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in MerchantNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-customer" role="tabpanel" aria-labelledby="pills-customer-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration OTP</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration</td>
+                                                        <td>Dear Customer, 
+
+                                                            Your new GreenBill account has been created. Welcome to GreenBill!
+
+                                                            We’re glad that you have chosen GreenBill as your digital Billing Buddy. 
+
+                                                            From now on please log in to your account using ‘Registered mobile number’ and ‘password’.
+
+                                                            To sign in to your account, please visit www.greenbill.com or click here.
+                                                            If you have any questions regarding your account, Kindly email us on support@greenbill.in we will be more than happy to help you. 
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cash Receipt</td>
+                                                        <td>Hey Green Bill user to view or download your receipt click on link {#var#}.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cash Memo</td>
+                                                        <td>Hey Green Bill user to view or download your cash memo click on link {#var#}.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Customer, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bill Delivery SMS</td>
+                                                        <td>Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>OTP message</td>
+                                                        <td>Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in CustomerNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-partner" role="tabpanel" aria-labelledby="pills-partner-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Partner, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Registration</td>
+                                                        <td>Dear Valued Partner,
+                                                            Warm Greetings from Green Bill Team!!!
+                                                            We are glad to see you chose Green Bill as Electricals and below are your login credentials for the same
+                                                            URL: {#var#}
+                                                            Username: {#var#}
+                                                            Password: {#var#}
+                                                            You are advised to login and complete your profile and business details for better coordination.
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in PartnerNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+ -->                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "Notifications Settings"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                        <div class="card-body">
+                            <form class="form-control" action="/notification-settings/" method="POST" id="notification_settings_form" name="notification_settings_form" autocomplete="off" style="border:none">
+                                {% csrf_token %}
+                                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                                    <div class="tab-pane fade active show" id="pills-admin" role="tabpanel" aria-labelledby="pills-admin-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ID and Password of users</td>
+                                                        <td>Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+
+                                                    <!-- {% for notification_settings in SuperAdminNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                    <!-- {% for notification_settings in MerchantNotificationSettings %}
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{ notification_settings.event }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="form-check">
+                                                                                    {% if notification_settings.is_email == 1 %}
+                                                                                        {% if notification_settings.send_email == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">Email</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">Email</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">SMS</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">SMS</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                                <span class="form-check-sign">Notification</span>
+                                                                                            </label>
+                                                                                        {% else %}
+                                                                                            <label class="form-check-label">
+                                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                                <span class="form-check-sign">Notification</span>
+                                                                                            </label>
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                {{ notification_settings.message|safe }}
+                                                                                
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-merchant" role="tabpanel" aria-labelledby="pills-merchant-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration OTP</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration</td>
+                                                        <td>Dear Customer, 
+
+                                                            Your new GreenBill account has been created. Welcome to GreenBill!
+
+                                                            We’re glad that you have chosen GreenBill as your digital Billing Buddy. 
+
+                                                            From now on please log in to your account using ‘Registered mobile number’ and ‘password’.
+
+                                                            To sign in to your account, please visit www.greenbill.com or click here.
+                                                            If you have any questions regarding your account, Kindly email us on support@greenbill.in we will be more than happy to help you. 
+
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ID and Password of users</td>
+                                                        <td>Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 week before expiration of subscription</td>
+                                                        <td>Your GreenBill membership expires within a week. Renew now and get {#var#} off on your subscription. RENEW NOW!!! {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 week before expiration of subscription</td>
+                                                        <td>Hey GreenBill Merchants,
+
+                                                            Your subscription is about to expire within a week. Renew today before your benefits and
+                                                            services are suspended.
+
+                                                            RENEW NOW
+                                                            (Link)
+
+                                                            Renew now and get 5 % off on your yearly subscription plan offer valid for today only.
+                                                            If you have any questions regarding the renewal process or need help, please don’t hesitate to
+                                                            contact us at [email/ phone number].
+
+                                                            Cheers,
+                                                            Team GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>1 Month before expiration of subscription</td>
+                                                        <td>Hi GreenBill Merchants,
+
+                                                            Your membership at GreenBill is about to expire on [date]. We hope you are enjoying benefits of your membership. 
+
+                                                            Good news! There’s still time to renew, and it’s as easy as ever – just click the link below and follow the instructions. It takes just 5 minutes of your time.
+
+                                                            RENEW NOW!!!
+
+                                                            If you have any questions regarding your membership, benefits, or renewal, please don’t hesitate to reach out us at support@greenbill.in or at ((number)).
+
+                                                            Thanks,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Purchase or Payments</td>
+                                                        <td>Thank you for saving paper. Here is your digital bill https://bit.ly/3fwlvqt. To view all your bills, download Green Bill App.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Purchase or Payments</td>
+                                                        <td>Dear Merchant,
+
+                                                            Thank you for your Purchase!
+
+                                                            Your Green Bill for your recent purchase is attached with the e-mail. You can also view your invoice on your Green Bill Merchant App or Merchant Web Portal.   (This text written on an image)
+
+                                                            Best Regards,
+
+                                                            Green Bill Team
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Welcome Message on Registration</td>
+                                                        <td>Thank you for choosing GreenBill as your Digital Billing Buddy. Please visit our website or download GreenBill Merchant App to login.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Low Balance </td>
+                                                        <td>Hi GreenBill Merchant,
+
+                                                            I hope you’re doing well.
+
+                                                            This email is to tell you that your SMS balance is too low. Kindly recharge your account as soon
+                                                            as possible to keep delivering your invoices to your customers hassle-free. You can recharge for
+                                                            any amount according to your convenience. Below is the link for payment.
+
+                                                            ((Link))
+                                                            Thank you in advance. Have a nice day.
+
+                                                            Best regards,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>On Expiration of Services</td>
+                                                        <td>Hi GreenBill Merchants,
+
+                                                            This is a reminder that your membership with GreenBill expired on [date] and you are now within your membership grace period.
+
+                                                            If you’re still deciding whether or not to renew, or just haven’t gotten around to it yet, here’s a quick overview of what you’ll be missing out on if you don’t renew:
+
+                                                            [Overview of major membership benefits]
+
+                                                            We hope you will take the time to renew your membership and remain a part of our community. It couldn’t be easier – just click here to renew!
+
+                                                            – just click here to renew! (Link)
+
+                                                            Renew now and get 5% off on your subscription. Offer valid within grace period only.
+
+                                                            If you have any questions regarding the renewal process or need help, please don’t hesitate to
+                                                            contact us at [email/ phone number].
+
+                                                            Thanks,
+                                                            GreenBill
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>On Expiration of Services</td>
+                                                        <td>Dear Merchant, your membership has expired. We hope you will take the time to renew your membership & remain part of GreenBill. Click here {#var#} to renew.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bill Delivery SMS</td>
+                                                        <td>Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>OTP message</td>
+                                                        <td>Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Merchant Registration SMS</td>
+                                                        <td>Thank you for choosing GreenBill as your digital billing buddy. Your registration is complete please
+                                                            visit website or download GB Merchant App to login
+                                                        </td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in MerchantNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-customer" role="tabpanel" aria-labelledby="pills-customer-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration OTP</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Registration</td>
+                                                        <td>Dear Customer, 
+
+                                                            Your new GreenBill account has been created. Welcome to GreenBill!
+
+                                                            We’re glad that you have chosen GreenBill as your digital Billing Buddy. 
+
+                                                            From now on please log in to your account using ‘Registered mobile number’ and ‘password’.
+
+                                                            To sign in to your account, please visit www.greenbill.com or click here.
+                                                            If you have any questions regarding your account, Kindly email us on support@greenbill.in we will be more than happy to help you. 
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cash Receipt</td>
+                                                        <td>Hey Green Bill user to view or download your receipt click on link {#var#}.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Cash Memo</td>
+                                                        <td>Hey Green Bill user to view or download your cash memo click on link {#var#}.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Bill Delivery SMS</td>
+                                                        <td>Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>OTP message</td>
+                                                        <td>Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in CustomerNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %} -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="pills-partner" role="tabpanel" aria-labelledby="pills-partner-tab">
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover" >
+                                                <thead>
+                                                    <tr>
+                                                        <th>Particulars</th>
+                                                        <th>Content</th>
+                                                        <th>Type</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Payment Link</td>
+                                                        <td>Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now.</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password Change</td>
+                                                        <td>{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Forgot Password</td>
+                                                        <td># Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>New Update</td>
+                                                        <td>Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</td>
+                                                        <td>SMS</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Registration</td>
+                                                        <td>Dear Valued Merchant,
+                                                            Warm Greetings from Green Bill Team!!!
+                                                            We are glad to see you chose Green Bill as Electricals and below are your login credentials for the same
+                                                            URL: {#var#}
+                                                            Username: {#var#}
+                                                            Password: {#var#}
+                                                            You are advised to login and complete your profile and business details for better coordination.
+                                                        </td>
+                                                        <td>Email</td>
+                                                    </tr>
+                                                    <!-- {% for notification_settings in PartnerNotificationSettings %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ notification_settings.event }}
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-check">
+                                                                    {% if notification_settings.is_email == 1 %}
+                                                                        {% if notification_settings.send_email == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="email[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Email</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_sms == 1 %}
+                                                                        {% if notification_settings.send_sms == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="sms[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">SMS</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                    {% if notification_settings.is_app_notification == 1 %}
+                                                                        {% if notification_settings.send_app_notification == 1 %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]" checked>
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% else %}
+                                                                            <label class="form-check-label">
+                                                                                <input class="form-check-input" type="checkbox" value="1" name="app_notification[{{ notification_settings.id }}]">
+                                                                                <span class="form-check-sign">Notification</span>
+                                                                            </label>
+                                                                        {% endif %}
+                                                                    {% endif %}
+
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {{ notification_settings.message|safe }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+ -->                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                      <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                      </div>
+                    {% endif %}
+
+                    <!-- {% if is_superuser == True %}
+                        <div class="card-footer">
+                            <div class="text-center mt-3 mb-3">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "Notifications Settings"|lower %}
+                                {% if actions.edit_permission == "1" %}
+                                     <div class="card-footer">
+                                        <div class="text-center mt-3 mb-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %} -->
+
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script>
+    $( "form[name='edit_notification_form']" ).validate({
+      rules: {
+        edit_role_name: {
+          required: true
+        }
+      },
+      messages: {
+        edit_role_name: "Role field is required.",
+      },
+      submitHandler: function() {
+        var id = $("#edit_notification_form_submit_btn").attr("data-id");
+        var message = CKEDITOR.instances['id_message'].getData();
+        $.ajax({
+            type: "POST",
+            url: "message-update/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'message': message},
+            success: function(response) {
+              $('#edit-notification-modal').modal('hide');
+              swal.fire({
+                icon:"success",
+                title: "Success!",
+                text: "Message Updated.",
+                type: "success",
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              })
+              .then(function() {
+                location.reload();
+              });
+            },
+            error: function() {
+              $('#edit-notification-modal').modal('hide');
+              swal.fire({ 
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+            .then(function() {
+              location.reload();
+            });       
+            }
+        });
+      }
+    });
+
+    var editmodaldiv = $("#edit-modal-div");
+      $(".editBtn").on("click", function() {
+        $.ajax({
+          url: $(this).attr("data-url")+'/',
+          success: function(data) {
+            CKEDITOR.instances['id_message'].setData(data['notification_message']);
+            $('#edit_notification_form_submit_btn').attr('data-id' , data['notification_settings_id']);
+            $("#edit-notification-modal").modal();
+          }
+        });
+    });
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

@@ -1,0 +1,202 @@
+<div class="sidebar sidebar-style-2">
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            {% if request.user.is_authenticated %}
+						<div class="user">
+							<div class="avatar-sm float-left mr-2">
+								{% if ProfileImages %}
+									{% for ProfileImage in ProfileImages %}
+										<img src="{{ ProfileImage.m_profile_image.url }}" alt="..." class="avatar-img rounded-circle">
+									{% endfor %}
+								{% else %}
+									<img class="avatar-img rounded-circle" width="120" height="120" src="/media/user-profile-pic.png" alt="preview" />
+								{% endif %}
+							</div>
+							<div class="info">
+								<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+									<span>
+										<span class="user-level">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+										{{ request.user.mobile_no }}
+										<span class="user-level">{{ request.user.m_email }} </span>
+										<span class="caret"></span>
+									</span>
+								</a>
+								<div class="clearfix"></div>
+
+								<div class="collapse in" id="collapseExample">
+									<ul class="nav">
+										<li>
+											<a href="{%url 'merchant profile' %}">
+												<span class="link-collapse">My Profile</span>
+											</a>
+										</li>
+										<li>
+											<a href="" >
+												<span class="link-collapse" id="logout-sidebar">Logout</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+            <ul class="nav nav-primary">
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Components</h4>
+                </li>
+                
+                    <li class="nav-section">
+                        <span class="sidebar-mini-icon">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </span>
+                        <h4 class="text-section">Businesss</h4>
+                    </li>
+                    <div class="nav-item">
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-industry"></i>
+                                </span>
+                            </div>
+                            <form method="POST" action="{% url 'chanage merchnat business' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="m_business_previous_id" value=" {{ m_business_previous_id }}">
+                                {{ ChangeMerchnatBusinessForm.m_business_change }}
+                            </form>
+                        </div>
+                    </div>
+                    <li class="nav-section">
+                        <span class="sidebar-mini-icon">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </span>
+                        <h4 class="text-section">Other Components</h4>
+                    </li>							
+                    {% if is_merchant == True %}
+                        <li class="nav-item active submenu {{SettingNavclass}}">
+                            <a data-toggle="collapse" href="#submenu">
+                                <i class="icon-settings"></i>
+                                <p>Settings</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="submenu">
+                                <ul class="nav nav-collapse">
+                                    
+                                    <li>
+                                        <a href="/merchant-general-setting/">
+                                            <span class="sub-item">General Setting</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/create-merchant-panel-user/">
+                                            <span class="sub-item">Users</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/merchant-role/">
+                                            <span class="sub-item">Roles & Permission</span>
+                                        </a>
+                                    </li>
+                                        
+                                   
+                                </ul>
+                            </div>
+                        </li>
+                    {% else %}
+                        {% for modules in merchnat_module_permissions_list %}
+                            {% if modules.module_name|lower == "Merchant Settings"|lower and modules.permission == True %}
+                                <li class="nav-item {{SettingNavclass}}">
+                                    <a data-toggle="collapse" href="#submenu">
+                                        <i class="icon-settings"></i>
+                                        <p>Settings</p>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse" id="submenu">
+                                        <ul class="nav nav-collapse">
+                                            
+                                                <li>
+                                                    <a href="/merchant-general-setting/">
+                                                        <span class="sub-item">General Setting</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/create-merchant-panel-user/">
+                                                        <span class="sub-item">Users</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/merchant-role/">
+                                                        <span class="sub-item">Roles & Permission</span>
+                                                    </a>
+                                                </li>	
+                                            
+                                        </ul>
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}	
+
+                    <li class="nav-item {{SettingNavclass}}">
+                        <a data-toggle="collapse" href="#submenu">
+                            <i class="icon-settings"></i>
+                            <p>Settings</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="submenu">
+                            <ul class="nav nav-collapse">
+                                
+                                    <li>
+                                        <a href="/merchant-general-setting/">
+                                            <span class="sub-item">General Setting</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/create-merchant-panel-user/">
+                                            <span class="sub-item">Users</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/merchant-role/">
+                                            <span class="sub-item">Roles & Permission</span>
+                                        </a>
+                                    </li>	
+                            </ul>
+                        </div>
+                    </li>
+                </ul>		
+                {% endif %}
+        </div>
+    </div>
+    </div>
+
+
+<!-- <li class="nav-item {{SettingNavclass}} submenu">
+    <a data-toggle="collapse" href="#submenu">
+        <i class="icon-settings"></i>
+        <p>Settings</p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse show" id="submenu">
+        <ul class="nav nav-collapse">
+            <li>
+                <li class="active">
+                    <a href="/merchant-general-setting/">
+                        <span class="sub-item">General Setting</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/create-merchant-panel-user/">
+                        <span class="sub-item">Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/merchant-role/">
+                        <span class="sub-item">Roles & Permission</span>
+                    </a>
+                </li>	
+            </li>
+        </ul>
+    </div>
+</li> -->

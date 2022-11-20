@@ -1,0 +1,2110 @@
+{% extends "layouts/base.html" %} {% block title %} Marketing Partners {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+  <style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Datatable's style */
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+    /* Datatable's style ends here*/
+
+    /* swal validation */
+    .my-validation-message::before {
+      display: none;
+    }
+
+    .my-validation-message i {
+      margin: 0 .4em;
+      color: #f27474;
+      font-size: 1.4em;
+    }
+
+    .my-validation-message{
+      display: inline !important;
+    }
+
+    /* swal validation */
+</style>
+<div class="content">
+  <div class="page-inner">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+              </div>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="d-flex align-items-center">
+              <h4 class="card-title">Software Partners</h4>
+
+              <ul class="breadcrumbs">
+                  <li class="nav-home">
+                    <a href="/">
+                      <i class="flaticon-home"></i>
+                    </a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a>Partner Info</a>
+                  </li>
+                  <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/software-partner-info/">Software Partners</a>
+                  </li>
+                </ul>
+
+                
+                
+                {% if is_superuser == True %}
+                  <button class="btn btn-primary btn-round ml-auto" id="add_partner" data-toggle="modal" data-target="#myPartnerModal">
+                    <i class="fa fa-plus"></i> Add New Partner</button> 
+                {% else %}
+                  {% for actions in action_permissions_list %}
+                    {% if actions.module_id|lower == "Partner Info"|lower and actions.feature_id|lower == "Marketing Partner"|lower %}
+                      {% if actions.add_permission == "1" %}
+                         <button class="btn btn-primary btn-round ml-auto" id="add_partner" data-toggle="modal" data-target="#myPartnerModal">
+                        <i class="fa fa-plus"></i> Add New Partner</button>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+
+
+            <!-- <div class=" card float-right" style="padding-top:12px; box-shadow: none;">
+                  {% if is_superuser == True %}
+                    <h6 class="card-title">&nbsp;&nbsp;&nbsp;&nbsp;Total Partners&nbsp; :&nbsp;{{partnerListcount}}
+                    &nbsp;&nbsp;|&nbsp;&nbsp;Marketing Partners&nbsp; :&nbsp;{{marketing_count}}
+                    &nbsp;&nbsp;|&nbsp;&nbsp;Software Partners&nbsp; :&nbsp;{{software_count}}
+                  </h6>
+                    
+                      
+                   
+                </div>
+                <div class="card float-right" style="padding-top:12px; box-shadow: none;">
+                  {% else %}
+                    {% for actions in action_permissions_list %}
+                      {% if actions.module_id|lower == "Partner Info"|lower and actions.feature_id|lower == "Partners List"|lower %}
+                        {% if actions.view_permission == "1" %}
+                        <h6 class="card-title">&nbsp;&nbsp;&nbsp;&nbsp;Total Partners &nbsp;{{partnerListcount}}
+                          &nbsp;&nbsp;|&nbsp;&nbsp;Marketing Partners &nbsp;{{marketing_count}}
+                          &nbsp;&nbsp;|&nbsp;&nbsp;Software Partners &nbsp;{{software_count}}
+                        </h6>
+                          <h6 class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Total Partners &nbsp;{{partnerListcount}}</h6>
+                          
+                          <h4 class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Marketing Partners &nbsp;{{marketing_count}}</h4>
+                            <h4  class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Software Partners &nbsp;{{software_count}}</h4> -->
+                          
+                        <!-- {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                </div>
+            </div> --> 
+            <div class="content">
+        <div class="page-inner">
+              <div class="row ">
+                <div class="col-md-2"></div>
+                    <!-- <div class=" col-md-4">
+                        <div class="row">
+                         <div class="card card-stats card-round" style="margin-left: 80px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Total Partners</p>
+                                    <h4 class="card-title">{{partnerListcount}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>  -->
+                 <div class=" col-md-4" style="margin-left:130px">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 80px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Software Partners</p>
+                                    <h4 class="card-title">{{marketing_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <!-- <div class=" col-md-4">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Software Partners</p>
+                                    <h4 class="card-title">{{software_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+            {% if is_superuser == True %}
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table id="add-row" class="display table table-hover">
+                    <thead>
+                      <tr>
+                        <th id="test_1" colspan="2"></th>
+                        <th id="test_2" colspan="2"></th>
+                      </tr>
+                      <tr>
+                        <th>Sr No. </th>
+                        <th>Business Name</th>
+                        <th>Mobile Number</th>
+                        <!-- <th>Partner Type</th> -->
+                        <!-- <th>City</th> -->
+                        <th>State</th>
+                        <th>SMS Bill Commission</th>
+                        <th>Digital Bill Commission</th>
+                        <th>Subscription Commission</th>
+                        <th>Other Services Commission</th>
+
+                        <th style="width: 10%; text-align: center;">Action</th>
+                      </tr> 
+                    </thead>
+                    <tfoot>
+
+                      <!-- <tr>
+                        <th>Partner Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr> -->
+                    </tfoot>
+                    <tbody>
+                      {% for partner in partner_list %}
+                      <tr align="center">
+                        <td>{{forloop.counter}} </td>
+                        <td> {{partner.p_business_name}} </td>
+                        <td>{{ partner.p_user.mobile_no }}</td>
+                        <!-- <td>{{ partner.p_category }} </td> -->
+                        <!-- <td>{{ partner.p_city }}</td> -->
+                        <td>{{partner.p_state}}</td>
+                        <td>
+                          ₹  {{ partner.p_commission_per_sms_bill|floatformat:3 }}
+                          
+                        </td>
+                        <td>
+                          ₹  {{ partner.p_commission_per_digital_bill|floatformat:3 }}
+                          
+                        </td>
+                        <td>
+                          {{ partner.merchant_commission }} %</td>
+                        <td>
+                          {{ partner.p_commission_per_other_services }} %</td>
+
+                        <td style="width:25%;">
+                        
+                          <div class="form-button-action">
+                            <a href="/view-partner-info-record/{{partner.p_user_id}}/" class="btn btn-link btn-primary btn-lg" style="padding-right:0px;">
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" title="View" style="padding-right: 4px;" ><i class="fa fa-eye" ></i></button></a>
+                            <a href="/partner-info-edit-record/{{partner.id}}/" class="btn btn-link btn-primary btn-lg" style="padding-right:0px; padding-left: 2px;" >
+                              <button type="button" class="btn btn-link" data-toggle="tooltip" title="Edit" style="padding-right: 4px;"><i class="fa fa-edit"></i></button></a>
+                              {% if partner.p_disabled_account %}
+                            <button type="button" data-toggle="tooltip" title="Enable User" class="btn btn-link UserEnableBtn" id="enable_user_btn" data-id='{{partner.id}}' data-original-title="Enable User">
+                              <i class="far fa-check-circle"></i>
+                            </button>
+                            {% else %}
+                            <span data-original-title="Disable User" data-toggle="tooltip" style="padding-top: 2px; padding-top:12px;" >
+                              <button type="button" title="Disable User" class="btn btn-link btn-danger UserDisableBtn" data-toggle="modal" data-target="#reasonModal" id="disable_user_btn" data-id='{{partner.id}}' data-mobile_no='{{partner.p_user.mobile_no}}' data-original-title="Disable User">
+                                <i class="far fa-check-circle"></i>
+                              </button>
+                              </span>
+                            {% endif %}
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            {% else %}
+              {% for actions in action_permissions_list %}
+                {% if actions.module_id|lower == "Partner Info"|lower and actions.feature_id|lower == "Software Partner"|lower %}
+                  {% if actions.view_permission == "1" %}
+                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table id="add-row" class="display table table-hover">
+                          <thead>
+                            <tr>
+                              <th id="test_1" colspan="2"></th>
+                              <th id="test_2" colspan="2"></th>
+                            </tr>
+                            <tr>
+                              <th>Sr No. </th>
+                              <th>Business Name</th>
+                              <th>Mobile Number</th>
+                              <!-- <th>Partner Type</th> -->
+                              <!-- <th>City</th> -->
+                              <th>State</th>
+                              <th>SMS Bill Commission</th>
+                              <th>Digital Bill Commission</th>
+                              <th>Merchant Commission</th>
+                              <th>Other Services Commission</th>
+                              <th style="width: 10%; text-align: center;">Action</th>
+                            </tr> 
+                          </thead>
+                          <tfoot>
+
+                            <!-- <tr>
+                              <th>Partner Name</th>
+                              <th>Status</th>
+                              <th>Action</th>
+                            </tr> -->
+                          </tfoot>
+                          <tbody>
+                            {% for partner in partner_list %}
+                            <tr align="center">
+                              <td>{{forloop.counter}} </td>
+                              <td> {{partner.p_business_name}} </td>
+                              <td>{{ partner.p_user.mobile_no }}</td>
+                              <!-- <td>{{ partner.p_category }} </td> -->
+                              <!-- <td>{{ partner.p_city }}</td> -->
+                              <td>{{partner.p_state}}</td>
+                              <td>
+                                ₹  {{ partner.p_commission_per_sms_bill|floatformat:2 }}
+                                
+                              </td>
+                              <td>
+                                ₹  {{ partner.p_commission_per_digital_bill|floatformat:2 }}
+                                
+                              </td>
+                              <td>
+                               {{ partner.merchant_commission }} % </td>
+                              <td>
+                                 {{ partner.p_commission_per_other_services }}  %</td>
+                              <td style="width:25%;">
+                              
+                                <div class="form-button-action">
+                                  <a href="/view-partner-info-record/{{partner.p_user_id}}/" class="btn btn-link btn-primary btn-lg" style="padding-right:0px;">
+                                  <button type="button" class="btn btn-link" data-toggle="tooltip" title="View" style="padding-right: 4px;" ><i class="fa fa-eye" ></i></button></a>
+                                  {% if actions.edit_permission == "1" %}
+                                  <a href="/partner-info-edit-record/{{partner.id}}/" class="btn btn-link btn-primary btn-lg" style="padding-right:0px; padding-left: 2px;" >
+                                    <button type="button" class="btn btn-link" data-toggle="tooltip" title="Edit" style="padding-right: 4px;"><i class="fa fa-edit"></i></button></a>
+                                  {% endif %}
+                                    {% if partner.p_disabled_account %}
+                                  <button type="button" data-toggle="tooltip" title="Enable User" class="btn btn-link UserEnableBtn" id="enable_user_btn" data-id='{{partner.id}}' data-original-title="Enable User">
+                                    <i class="far fa-check-circle"></i>
+                                  </button>
+                                  {% else %}
+                                  <span data-original-title="Disable User" data-toggle="tooltip" style="padding-top: 2px; padding-top:12px;" >
+                                    <button type="button" title="Disable User" class="btn btn-link btn-danger UserDisableBtn" data-toggle="modal" data-target="#reasonModal" id="disable_user_btn" data-id='{{partner.id}}' data-mobile_no='{{partner.p_user.mobile_no}}' data-original-title="Disable User">
+                                      <i class="far fa-check-circle"></i>
+                                    </button>
+                                    </span>
+                                  {% endif %}
+                                </div>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              <div class="card-body permission-denied" style="display:none">
+                  <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="reasonModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <form method="POST" class="form" id="add_reason_form" autocomplete="off">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Add Reason</h2>
+        </div>
+         <div class="modal-body">
+          <div class="form-group">
+          <input type="hidden" id="partner_id" name="partner_id" value="" />
+          <input type="hidden" id="disable_partner_mobile_no" name="disable_partner_mobile_no">
+          <input list="reasons" type="text" class="form-control" id="reason" name="reason" placeholder="Reason *"/>
+          <datalist id="reasons" >
+          {% for temp in temp %}
+             <option value="{{ temp.partner_reason }}">{{ temp.partner_reason }}  </option>
+          {% endfor %}   
+          </datalist>
+          </div>
+        </div>
+        <!-- <div class ="col-md-12">
+          <label><b>Select Option</b></label>
+         
+           <input type="radio" name="disable_subscription" value="1">
+           Disable Subscription<br>
+          
+           <input type="radio" name="disable_subscription" value="2">
+            Disable Login<br>
+         
+           <input type="radio" name="disable_subscription" value="3">
+           Delete Partner<br>
+          
+        </div> -->
+        <!-- <div class="modal-body">
+          <input type="hidden" id="partner_id" name="partner_id" value="" />
+          <input type="text" class="form-control" id="reason" name="reason" placeholder="Reason *"/>
+        </div> -->
+        <div class="modal-footer">
+          <input id="add_reason_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- Send  Modal -->
+<div class="modal fade" id="sendNotice" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form class="form-control" id="form" action="/send-partner-notice/"  method="POST" enctype="multipart/form-data"
+    id="scheduled-bulk-mail-sms-form" name="scheduled-bulk-mail-sms-form" autocomplete="off" enctype="multipart/form-data">
+    <!-- send-sms-mail-notice-customer -->
+    {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Send E-Mail/SMS</h2>
+        </div>
+        <div class="modal-body">
+         
+              <!-- <input type="hidden" id="mobile_number" name="mobile_number" >
+              <input type="hidden" id="email_id" name="email_id"> -->
+                <input type="hidden" id="id" name="id"/>
+          <div class="row">
+              <div class="col-md-12" style="padding-left: 34px;">
+                  <div class="form-group">
+                      <div class="row">
+                          <label>Send Through</label>
+                          <!-- <div class="col-md-3">
+                              <input type="checkbox" name="sentnotice" id="notice" value="notification"  >
+                              <b>Notice</b>
+                          </div> -->
+                          <div class="col-md-3">
+                              <input type="checkbox" name="sentnotice" id="sms" value="sms"  >
+                              <b>SMS</b>
+                          </div>
+                          <div class="col-md-3">
+                              <input type="checkbox" name="sentnotice" id="mail" value="sent_mail">
+                              <b>Email</b>
+                          </div>
+                         
+                      </div>
+                      <div id="checkboxError"></div>
+                  </div>
+              </div>
+              <div class="col-md-6" style="display: none;" id="smsheader">
+                  <div class="form-group">
+                      <label>SMS Header<span style="color: red;">*</span></label>
+                      <div class="input-group mb-6">
+                          <input type="text" class="form-control mobile" name="smsheader" id="idsmsheader"
+                              placeholder="SMS Header" value="" />
+                      </div>
+                      <div id="noticetitleError"></div>
+                  </div>
+              </div>
+              <div class="col-md-6" style="display: none;" id="template">
+                  <div class="form-group">
+                      <label>Template Id<span style="color: red;">*</span></label>
+                      <div class="input-group mb-6">
+                          <input type="text" class="form-control mobile" name="template" id="idtemplate"
+                              placeholder="Template Id" value="" />
+                      </div>
+                      <div id="noticetitleError"></div>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label>Title<span style="color: red;">*</span></label>
+                      <div class="input-group mb-6">
+                          <input type="text" class="form-control mobile" name="title" id="title"
+                              placeholder="Title" value="" />
+                      </div>
+                      <div id="noticetitleError"></div>
+                  </div>
+              </div>
+             
+              
+              <div class="col-md-12">
+                  <div class="form-group">
+                    
+                     
+                      {{ bulkMailSmsPartnerForm.media }}
+                      {{ bulkMailSmsPartnerForm }}
+
+                      <div id="messageError"></div>
+                  </div>
+              </div>
+          </div>
+      
+        </div>
+        <div class="modal-footer">
+          <input id="add_merchant_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Send  Modal End -->
+
+
+
+
+<!-- Add Partner Modal --> 
+<div class="modal fade" id="myPartnerModal"  role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form method="POST" class="form" action="/add-partner-by-admin/" id="add_partner_form" autocomplete="off" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Add Partner</h2>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <!-- <div class="form-group">
+                      <label>Title<span style="color: red;">*</span></label>
+                      <div class="input-group mb-6">
+                          <input type="text" class="form-control mobile" name="title" id="title"
+                              placeholder="Title" value=" {{ form.mobile_no }}  " />
+                      </div>
+                  
+                </div> -->
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-phone"></i>
+                      </span>
+                  </div>
+                  {{ form.mobile_no }}                
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-envelope"></i>
+                      </span>
+                  </div>
+                  {{ form.p_email }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-user"></i>
+                      </span>
+                  </div>
+                  <input type="text" name="p_category" id="p_category" readonly="" value="Merketing Partner">
+
+                </div>
+              </div>
+            </div> -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-link"></i>
+                      </span>
+                  </div>
+                  {{ form4.p_commission_per_sms_bill }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-link"></i>
+                      </span>
+                  </div>
+                  {{ form4.p_commission_per_digital_bill }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-link"></i>
+                      </span>
+                  </div>
+                  {{ form3.merchant_commission }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-link"></i>
+                      </span>
+                  </div>
+                  {{ form4.p_commission_per_other_services }}
+                </div>
+              </div>
+            </div>
+
+          <!-- </div> -->
+          <!-- <div class="row"> -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-user"></i>
+                      </span>
+                  </div>
+                  {{ form1.p_business_name }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-menu"></i>
+                      </span>
+                  </div>
+                  {{ form1.p_business_description }}
+                </div>
+              </div>
+            </div>
+
+          <!-- </div>
+          <div class="row"> -->
+            <!-- <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="icon-list"></i>
+                        </span>
+                    </div>
+                    {{ form1.p_business_category }}
+                </div>
+              </div>
+            </div> -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="icon-location-pin"></i>
+                        </span>
+                    </div>
+                    <select name="p_state" class="form-control" id="id_p_state">
+                      <option disabled selected value>Select State *</option>
+                      {% for object in States %}
+                      <option value="{{object.state}}">{{object.state}}</option>
+                      {% endfor %}
+                      
+                    </select>
+                      
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-location-pin"></i>
+                      </span>
+                  </div>
+                  <select name="p_city" placeholder="City *" class="form-control" required="" id="id_p_city" aria-required="true">
+                    <option disabled selected value>Select City *</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-location-pin"></i>
+                      </span>
+                  </div>
+                  {{ form1.p_district }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-location-pin"></i>
+                      </span>
+                  </div>
+                  {{ form1.p_pin_code }}
+                </div>
+              </div>
+            </div>
+
+            
+
+          <!-- </div>
+          <div class="row"> -->
+            
+            
+            
+          <!-- </div>
+          <div class="row"> -->
+            
+          </div>
+          <!-- {{ form.password1 }}
+          {{ form.password2 }} -->
+        </div>
+        <div class="modal-footer">
+          <input id="add_partner_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Add Partner Modal End -->
+
+
+<!-- Edit Partner Profile Modal -->
+<div class="modal fade" id="partnerProfileEditModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form method="POST" action="/edit-partner-by-admin/" class="form edit_partner_form" id="edit_partner_form" autocomplete="off" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Edit Partner Profile</h2>
+          <button type="button" class="close closeModalBtn"  data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="user_id" name="user_id" id="user_id" value="">
+          <input type="hidden" class="partner_setting_id" name="partner_setting_id" id="partner_setting_id" value="">
+          
+
+           <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-phone"></i>
+                      </span>
+                  </div> 
+                 <input type="text" name="p_landline_number" placeholder="Mobile Number" class="form-control" maxlength="10" 
+                  id="p_landline_number" value="">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-envelope"></i>
+                      </span>
+                  </div>
+                   <input type="text" name="p_company_email" placeholder="Company Email" class="form-control"
+                  id="p_company_email" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-user"></i>
+                      </span>
+                  </div>
+                 <select name="p_category" class="form-control valid" id="p_category" aria-invalid="false">
+                  <option value="Software Partner">Software Partner</option>
+                  <option value="Marketing Partner">Marketing Partner</option>
+                </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-link"></i>
+                      </span>
+                  </div>
+                 
+                   <input type="text" name="p_commission_per_bill" placeholder="commission per bill " class="form-control"
+                  id="p_commission_per_bill" value="">
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-user"></i>
+                      </span>
+                  </div>
+                  <input type="text" name="p_business_name" placeholder="Business Name " class="form-control"
+                  id="p_business_name" value="">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-menu"></i>
+                      </span>
+                  </div>
+                 
+                    <input type="text" name="p_business_description" placeholder="Description" class="form-control" id="p_business_description" value="">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+           
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-location-pin"></i>
+                      </span>
+                  </div>
+                   <input type="text" name="p_pin_code" placeholder="Pin Code" class="form-control" minlength="6" maxlength="6" id="p_pin_code" value="">
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text">
+                          <i class="icon-location-pin"></i>
+                      </span>
+                  </div>
+                   <input type="text" name="p_district" placeholder="District" class="form-control" id="p_district" value="">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          
+
+
+          <!-- OLD -->
+        <!--   <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Partner Type <span class="text-danger">*</span> :</label>
+                <select name="p_category" class="form-control valid" id="p_category" aria-invalid="false">
+                  <option value="Software Partner">Software Partner</option>
+                  <option value="Marketing Partner">Marketing Partner</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Business Name <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_business_name" placeholder="Business Name " class="form-control"
+                  id="p_business_name" value="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Business Description <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_business_description" placeholder="Business Description " class="form-control"
+                  id="p_business_description" value="">
+              </div>
+            </div>
+          </div>
+          <div class="row"> -->
+            <!-- <div class="col-md-6">
+              <div class="form-group">
+                <label>Business Category:</label>
+                <select class="form-control" name="p_business_category" id="p_business_category">
+                  <option value="">Select Business Category</option>
+                  {% for business_category in business_category_list %}
+                  <option value="{{ business_category.id }}">{{ business_category.business_category_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div> -->
+           <!--  <div class="col-md-4">
+              <div class="form-group">
+                <label>Mobile Number:</label>
+                <input type="text" name="p_landline_number" placeholder="Mobile Number" class="form-control"
+                  id="p_landline_number" value="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Pin Code <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_pin_code" placeholder="Pin Code" class="form-control" id="p_pin_code" value="">
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>State <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_state" placeholder="State" class="form-control" id="p_state" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>District <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_district" placeholder="District" class="form-control" id="p_district" value="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>City <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_city" placeholder="City" class="form-control" id="p_city" value="">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Address <span class="text-danger">*</span> :</label>
+                <textarea name="p_address" cols="40" rows="1" placeholder="Address" class="form-control"
+                  id="p_address" value=""></textarea>
+              </div>
+            </div>
+          </div> -->
+
+        
+          <!--   <div class="col-md-6">
+              <div class="form-group">
+                <label>Alternate Mobile No:</label>
+                <input type="text" name="p_alternate_mobile_number" placeholder="Alternate Mobile Number"
+                  class="form-control" id="p_alternate_mobile_number" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Company Email <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_company_email" placeholder="Company Email" class="form-control"
+                  id="p_company_email" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Alternate Email:</label>
+                <input type="text" name="p_alternate_email" placeholder="Alternate Email" class="form-control"
+                  id="p_alternate_email" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Pan Number <span class="text-danger">*</span> :</label>
+                <input type="text" name="p_pan_number" placeholder="Pan Number" class="form-control"
+                  id="p_pan_number" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>GSTIN:</label>
+                <input type="text" name="p_gstin" placeholder="GSTIN" class="form-control" id="p_gstin" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>GSTIN Certificate:</label>
+                <input type="file" name="p_GSTIN_certificate" id="p_GSTIN_certificate" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>CIN:</label>
+                <input type="text" name="p_cin" placeholder="CIN" class="form-control" id="p_cin" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>CIN Certificate:</label>
+                <input type="file" name="p_CIN_certificate" id="p_CIN_certificate" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Bank Account No:</label>
+                <input type="text" name="p_bank_account_number" placeholder="Bank Account Number" class="form-control"
+                  id="p_bank_account_number" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Bank IFSC Code:</label>
+                <input type="text" name="p_bank_IFSC_code" placeholder="Bank IFSC Code" class="form-control"
+                  id="p_bank_IFSC_code" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Bank Name:</label>
+                <input type="text" name="p_bank_name" placeholder="Bank Name" class="form-control" id="p_bank_name" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Bank Branch:</label>
+                <input type="text" name="p_bank_branch" placeholder="Bank Branch" class="form-control"
+                  id="p_bank_branch" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Business Logo:</label>
+                <input type="file" name="p_business_logo" accept="image/*" id="p_business_logo" value="">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Business Stamp:</label>
+                <input type="file" name="p_business_stamp" accept="image/*" id="p_business_stamp" value="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Digital Signature:</label>
+                <input type="file" name="p_digital_signature" accept="image/*" id="p_digital_signature" value="">
+              </div>
+            </div>
+          </div> -->
+
+        </div>
+        <div class="modal-footer">
+          <input id="edit_partner_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary closeModalBtn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Add Edit Partner Profile Modal End -->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<!-- <script>
+  $('#add_partner').click(function(){
+    var p_category = $('#id_p_category').val();
+    console.log(p_category);
+
+    if(p_category == "Marketing Partner"){
+      $('#id_p_commission_per_bill').removeAttr('readonly');
+    }else{
+      $('#id_p_commission_per_bill').attr('readonly', 'readonly');
+      $('#id_p_commission_per_bill').val("0");
+    }
+  });
+
+  $(document).on("change", "#id_p_category", function(){
+    var p_category = $('#id_p_category').val();
+    console.log(p_category);
+
+    if(p_category == "Marketing Partner"){
+      $('#id_p_commission_per_bill').removeAttr('readonly');
+    }else{
+      $('#id_p_commission_per_bill').attr('readonly', 'readonly');
+      $('#id_p_commission_per_bill').val("0");
+    }
+  });
+</script> -->
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#id_p_commission_per_sms_bill").keyup(function(){
+      var num = parseFloat($(this).val());
+      if ( num >= 9999999999999999999999999999999999999999999999999.999)
+      {
+        $(this).val("9999999999999999999999999999999999999999999999999.999");
+      }  
+      
+       var number = ($(this).val().split('.'));
+       if (number[1] && number[1].length > 3)
+       {
+        var salary = parseFloat($("#id_p_commission_per_sms_bill").val());
+        $("#id_p_commission_per_sms_bill").val( salary.toFixed(3));
+       }
+    });
+  });
+  $(document).ready(function () {
+    $("#id_p_commission_per_digital_bill").keyup(function(){
+      var num = parseFloat($(this).val());
+      if ( num >= 9999999999999999999999999999999999999999999999999.999)
+      {
+        $(this).val("9999999999999999999999999999999999999999999999999.999");
+      }  
+      
+       var number = ($(this).val().split('.'));
+       if (number[1] && number[1].length > 3)
+       {
+        var salary = parseFloat($("#id_p_commission_per_digital_bill").val());
+        $("#id_p_commission_per_digital_bill").val( salary.toFixed(3));
+       }
+    });
+  });
+  $(document).ready(function () {
+    $("#id_merchant_commission").keyup(function(){
+      var num = parseFloat($(this).val());
+      if ( num >= 9999999999999999999999999999999999999999999999999.999)
+      {
+        $(this).val("9999999999999999999999999999999999999999999999999.999");
+      }  
+      
+       var number = ($(this).val().split('.'));
+       if (number[1] && number[1].length > 3)
+       {
+        var salary = parseFloat($("#id_merchant_commission").val());
+        $("#id_merchant_commission").val( salary.toFixed(3));
+       }
+    });
+  });
+  $(document).ready(function () {
+    $("#id_p_commission_per_other_services").keyup(function(){
+      var num = parseFloat($(this).val());
+      if ( num >= 9999999999999999999999999999999999999999999999999.999)
+      {
+        $(this).val("9999999999999999999999999999999999999999999999999.999");
+      }  
+      
+       var number = ($(this).val().split('.'));
+       if (number[1] && number[1].length > 3)
+       {
+        var salary = parseFloat($("#id_p_commission_per_other_services").val());
+        $("#id_p_commission_per_other_services").val( salary.toFixed(3));
+       }
+    });
+  });
+</script>
+
+<script>
+  $("input[name='sentnotice']").click(function () {
+ $('#smsheader').css('display', ($(this).val() === 'sms') ? 'block':'none');
+ $('#template').css('display', ($(this).val() === 'sms') ? 'block':'none');
+});
+
+
+var sendmodaldiv = $("#send-modal-div");
+    $(".sendBtn").on("click", function () {
+       
+        // var cust_email = $(this).data('email');
+        var id = $(this).data('id');
+        console.log(id);
+        var cm=  $('#id').val(id);
+        console.log('cm',cm)
+
+
+    });
+</script>
+
+<script>
+  $('.UserDisableBtn').on('click', function(e) {
+    var id = $(this).attr("data-id");
+    var mobile_no = $(this).attr("data-mobile_no");
+    $('#partner_id').val(id);
+    $('#disable_partner_mobile_no').val(mobile_no)
+  });
+
+  $('#add_reason_form').validate({
+    rules:{
+      reason:{
+        required: true
+      }
+    },
+    submitHandler: function () {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You really want to Disable this Partner!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Disable it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "POST",
+            url: "/disable-partner-from-admin/",
+            data: $('#add_reason_form').serialize(),
+            success: function(response) {
+             Swal.fire({
+                  title:'Disabled!',
+                    text:'Partner has been disabled.',
+                    icon:'success',
+                    timer:1500,
+                          showConfirmButton:false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                  })
+              .then(function() {
+                location.reload();
+              });
+            },
+            error: function() {
+              Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                 timer:1500,
+                          showConfirmButton:false,
+                // confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              })
+                .then(function() {
+                  location.reload();
+                });       
+            }
+        });
+      }
+    });
+    }
+  });
+  
+
+
+  $(function() {
+        $('.UserEnableBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You really want to Enable this Partner!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, enable it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                $.ajax({
+                  type: "POST",
+                  url: "/enable-partner-from-admin/"+id,
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                     Swal.fire({
+                        title:'Enabled!',
+                          text:'Merchant has been enabled.',
+                           icon:'success',
+                           timer:1500,
+                          showConfirmButton:false,
+                          allowOutsideClick: false,
+                          allowEscapeKey: false,
+                        })
+                    .then(function() {
+                      location.reload();
+                    });
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                       timer:1500,
+                          showConfirmButton:false,
+                      // confirmButtonClass: "btn-success",
+                      allowOutsideClick: false,
+                      allowEscapeKey: false
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+</script>
+
+<script>
+  $('#add_partner').click(function(){
+    var p_category = $('#id_p_category').val();
+    console.log(p_category);
+
+    // if(p_category == "Software Partner"){
+    //   $('#id_p_commission_per_bill').removeAttr('readonly');
+    // }else{
+    //   $('#id_p_commission_per_bill').attr('readonly', 'readonly');
+    //   $('#id_p_commission_per_bill').val("0");
+    // }
+  });
+
+  $(document).on("change", "#id_p_category", function(){
+    var p_category = $('#id_p_category').val();
+    console.log(p_category);
+
+    // if(p_category == "Software Partner"){
+    //   $('#id_p_commission_per_bill').removeAttr('readonly');
+    // }else{
+    //   $('#id_p_commission_per_bill').attr('readonly', 'readonly');
+    //   $('#id_p_commission_per_bill').val("0");
+    // }
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+        $("#id_p_state").on('change', function()
+        {
+
+            var state = $("#id_p_state").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/get-user-city-by-state/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'state': state
+                },
+                success: function(result){
+                    $("#id_p_city").empty();
+                    var empty = ""
+                    $('#id_p_city').append("<option value='" + empty + "' disabled selected value>" + "Select City *" + "</option>");
+                    $.each(result.data, function (key, value) {
+                        $('#id_p_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+</script>
+<script>
+  $(".closeModalBtn").click(function() {
+    location.reload();
+  });
+  
+  // $(document).ready(function () {
+  //   $("#id_p_pin_code").keyup(function () {
+  //     var pincode = $('#id_p_pin_code').val();
+  //     if (pincode.length == 6) {
+  //       $.ajax({
+  //         url: "https://api.postalpincode.in/pincode/" + pincode,
+  //         cache: false,
+  //         dataType: "json",
+  //         type: "GET",
+  //         success: function (data) {
+  //           state = data['0']['PostOffice'][0]['State']
+  //           city = data['0']['PostOffice'][0]['Region']
+  //           district = data['0']['PostOffice'][0]['District']
+  //           $('#id_p_state').val(state)
+  //           $('#id_p_city').val(city)
+  //           $('#id_p_district').val(district)
+  //         }
+  //       })
+  //     }
+  //     else {
+  //       $('#id_p_state').val("")
+  //       $('#id_p_city').val("")
+  //       $('#id_p_district').val("")
+  //     }
+  //   })
+  // });
+
+  // $( document ).ready(function() {
+  //     $("#id_p_state").prop("readonly", true);
+  //     $("#id_p_city").prop("readonly", true);
+  //     $("#id_p_district").prop("readonly", true);
+  // });
+
+  // $(document).ready(function () {
+  //   $("#id_p_pin_code").keyup(function () {
+  //     var pincode = $('#id_p_pin_code').val();
+  //     if (pincode.length == 6) {
+
+  //       $.ajax({
+  //         url: "https://api.postalpincode.in/pincode/" + pincode,
+  //         cache: false,
+  //         dataType: "json",
+  //         type: "GET",
+  //         success: function (data) {
+  //           $("#id_p_state").prop("readonly", false);
+  //           $("#id_p_city").prop("readonly", false);
+  //           $("#id_p_district").prop("readonly", false);
+  //           state = data['0']['PostOffice'][0]['State']
+  //           city = data['0']['PostOffice'][0]['Region']
+  //           district = data['0']['PostOffice'][0]['District']
+  //           $('#id_p_state').val(state)
+  //           $('#id_p_city').val(city)
+  //           $('#id_p_district').val(district)
+  //         }
+  //       })
+  //     }
+  //     else {
+  //       $("#id_p_state").prop("readonly", true);
+  //       $("#id_p_city").prop("readonly", true);
+  //       $("#id_p_district").prop("readonly", true);
+  //       $('#p_state').val("")
+  //       $('#p_city').val("")
+  //       $('#p_district').val("")
+  //     }
+  //   })
+  // });
+
+  // $(document).ready(function () {
+  //     $("#id_password1").attr("hidden", true);
+  //     $("#id_password2").attr("hidden", true);
+
+  //     function randomPassword(length) {
+  //       var chars = "abcdefghjkmnpqrstuvwxyz01234567889";
+  //       var pass = "";
+  //       for (var x = 0; x < length; x++) {
+  //           var i = Math.floor(Math.random() * chars.length);
+  //           pass += chars.charAt(i);
+  //       }
+  //       return pass;
+  //     }
+
+  //     var random_password = randomPassword(8);
+      
+  //     $("#id_password1").val(random_password);
+  //     $("#id_password2").val(random_password);
+  // });
+</script>
+
+<script type="text/javascript">
+  jQuery.validator.addMethod("mobileno", function (value, element) {
+    if (/^([0]|\+91)?[6789]\d{9}$/.test(value)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid mobile number.");
+
+  jQuery.validator.addMethod("lettersonly", function(value, element) 
+    {
+    return this.optional(element) || /^[a-z ]+$/i.test(value);
+    }, "Letters and spaces only please");
+
+
+  $.validator.addMethod("emailValidate", function(value, element) {
+      var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return this.optional(element) || emailReg.test(value);
+  }, "Please enter valid email id");
+
+  $.validator.addMethod("percentageValidate", function(value, element) {
+      var percentReg = /^(100(\.0{1,2})?|[1-9]?\d(\.\d{1,2})?)$/;
+      return this.optional(element) || percentReg.test(value);
+  }, 
+
+  $("#add_partner_form").validate({
+    rules: {
+      mobile_no: {
+        required: true,
+        mobileno: true,
+        maxlength:10,
+      },
+      p_commission_per_bill: {
+        required: true,
+        number: true
+      },
+      merchant_commission: {
+        required: true,
+        number: true,
+        percentageValidate:true,
+        maxlength: 2,
+        minlength:1,
+      },
+      p_email: {
+        email: true,
+        required: true,
+        emailValidate: true,
+      },
+      p_business_name: {
+        required: true,
+        lettersonly: true,
+        maxlength:20,
+      },
+      p_business_description: {
+        required: true,
+        lettersonly: true,
+        maxlength:45,
+      },
+      // p_commission_per_bill: {
+      //   maxlength: 100,
+      //   minlength:0,
+      // },
+      /* p_business_category: {
+        required: true
+      }, */
+      p_city: {
+        required: true,
+        lettersonly: true
+      },
+      p_district: {
+        required: true,
+        lettersonly: true
+      },
+      p_state: {
+        required: true,
+        lettersonly: true
+      },
+      p_pin_code: {
+        required: true,
+        digits: true,
+        minlength: 6,
+        maxlength: 6,
+      },
+      password1: {
+        required: true,
+        minlength: 8,
+      },
+      password2: {
+        required: true,
+        equalTo: "#id_password1"
+      }
+    },
+    messages: {
+      mobile_no: {
+        required: "Mobile Number field is required.",
+        mobileno: "Please enter valid mobile number."
+      },
+      p_email: {
+        required: "Email field is required.",
+        email: "Please enter valid email id"
+      },
+      merchant_commission : {
+        maxlength: "please enter less than 100 %",
+        minlength:"please enter positive %"
+      },
+      p_business_name: {
+        required: "Business Name field is required.",
+        maxlength: "please enter less than 20 characters",
+      },
+      p_business_description: {
+        required: "Business Description is required.",
+        maxlength: "please enter less than 45 characters",
+      },
+      // p_business_name: "Business Name field is required.",
+      // p_business_description: "Business Description is required.",
+      // p_business_category: "Business Category field is required.",
+      p_gstin: "GSTIN field is required.",
+      p_district: "District field is required.",
+      p_city: "City field is required.",
+      p_state: "State field is required.",
+      p_pin_code: {
+          required: "Pin Code field is required.",
+          minlength: "Invalid Pin Code",
+          maxlength: "Invalid Pin Code",
+      },
+      password1: {
+        required: "Password field is required.",
+        minlength: "This password is too short. It must contain at least {0} characters."
+      },
+      password2: {
+        required: "Confirm Password field is required",
+        equalTo: "Password and Confirm Password must be the same.",
+      }
+    },
+    submitHandler: function () {
+         
+        $.ajax({
+        type: "POST",
+        url: "/add-partner-by-admin/",
+        data: $('#add_partner_form').serialize(),
+        success: function (response) {
+          
+          $('#myPartnerModal').modal('hide');
+          if (response.status == "success") {
+            swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: response.msg,
+              type: "success",
+              timer:1500,
+              showConfirmButton:false,
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            })
+              .then(function () {
+                location.reload();
+              });
+          } else {
+            swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: response.msg,
+              timer:1500,
+              showConfirmButton:false,
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            })
+              .then(function () {
+                $('#myPartnerModal').modal('show');
+              });
+          }
+
+        },
+        error: function () {
+          $('#myPartnerModal').modal('hide');
+          swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            confirmButtonClass: "btn-success",
+            allowOutsideClick: false,
+            allowEscapeKey: false
+          })
+            .then(function () {
+              location.reload();
+            });
+        }
+          
+      });
+    }
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+
+      $(document).on('click', '.chk', function () {
+          var checked = $(this).is(':checked');
+          var rowid = $(this).data('rowid');
+          var role = $(this).data('role');
+
+          if (checked) {
+            if (!confirm('Are you sure you active partner?')) {
+                $(this).removeAttr('checked');
+                $(this).prop("checked", false);
+            } else {
+              var status = "1";
+              changeStatus(rowid, status, role);
+            }
+          } else if (!confirm('Are you sure you deactive partner?')) {
+              $(this).prop("checked", true);
+          } else {
+              var status = "0";
+              changeStatus(rowid, status, role);
+
+          }
+      });
+  });
+
+  function changeStatus(rowid, status, role) {
+      $.ajax({
+          type: "POST",
+          url: "/change-active-partner-status/",
+          data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'id': rowid, 'status': status, 'role': role},
+          dataType: "json",
+          success: function (data) {
+            
+            swal.fire({
+              icon: "success",
+              title: "Success!",
+              text: data.msg,
+              type: "success",
+              confirmButtonClass: "btn-success",
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            })
+            .then(function () {
+              window.location.reload(true);
+            });
+          },
+          error: function (data) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: data.msg,
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+              })
+                .then(function () {
+                  location.reload();
+                });
+            }
+      });
+  }
+
+</script>
+
+<script>
+  $(".editBtn").click(function(e) {
+    var user_id = $(this).attr("data-user_id")
+    console.log(user_id)
+    var partner_setting_id = $(this).attr("data-partner_setting_id")
+    console.log(partner_setting_id)
+    $.ajax({
+      url: "/get-partner-business-details/",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        'user_id': user_id,
+        'partner_setting_id': partner_setting_id
+      },
+      success: function (data) {
+        var newData = data.business_data
+        
+        if(newData.p_category == ""){
+          newData.p_category = 1;
+        }
+        
+        $("#user_id").val(newData.user_id);
+        $("#partner_setting_id").val(newData.partner_setting_id);
+        $("#p_category").val(newData.p_category);
+        $('#p_business_name').val(newData.p_business_name);
+        $('#p_business_description').val(newData.p_business_description);
+        $('#p_business_category').val(newData.p_business_category);
+        $('#p_pin_code').val(newData.p_pin_code);
+        $('#p_state').val(newData.p_state);
+        $('#p_district').val(newData.p_district);
+        $('#p_city').val(newData.p_city);
+        $('#p_address').val(newData.p_address);
+        $('#p_landline_number').val(newData.p_landline_number);
+        $('#p_alternate_mobile_number').val(newData.p_alternate_mobile_number);
+        $('#p_company_email').val(newData.p_company_email);
+        $('#p_alternate_email').val(newData.p_alternate_email);
+        $('#p_pan_number').val(newData.p_pan_number);
+        $('#p_gstin').val(newData.p_gstin);
+        $('#p_cin').val(newData.p_cin);
+        $('#p_bank_account_number').val(newData.p_bank_account_number);
+        $('#p_bank_IFSC_code').val(newData.p_bank_IFSC_code);
+        $('#p_bank_name').val(newData.p_bank_name);
+        $('#p_bank_branch').val(newData.p_bank_branch);
+      }
+    });
+
+  });
+</script>
+<script>
+  $.validator.addMethod("pan_val", function (value, element) {
+    if (/[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid PAN number.");
+
+  $.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+  $.validator.addMethod("indian_cin", function (value, element) {
+    if (/^([L|U]{1})([0-9]{5})([A-Za-z]{2})([0-9]{4})([A-Za-z]{3})([0-9]{6})$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid CIN number.");
+
+  $.validator.addMethod("indian_gstin", function (value, element) {
+    if (/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid GSTIN number.");
+
+  $.validator.addMethod("bank_ifsc", function (value, element) {
+    if (/^[A-Z]{4}0[A-Z0-9]{6}$/.test(value) || this.optional(element)) {
+      return true;   // PASS validation when REGEX matches
+    } else {
+      return false;  // FAIL validation
+    };
+  }, "Please enter valid IFSC Code.");
+
+  $('#edit_partner_form').validate({
+    rules: {
+      p_business_name: {
+        required: true,
+      },
+      p_business_description: {
+        required: true
+      },
+      /* p_business_category: {
+        required: true,
+      }, */
+      p_pin_code: {
+        required: true,
+        digits: true,
+        minlength: 6,
+        maxlength: 6,
+      },
+      p_city: {
+        required: true,
+      },
+      p_district: {
+        required: true,
+      },
+      p_state: {
+        required: true,
+      },
+      p_address: {
+        required: true,
+      },
+      p_company_email: {
+        email: true,
+        required: true,
+      },
+      p_alternate_email: {
+        email: true,
+      },
+      p_pan_number: {
+        required: true,
+        pan_val: true
+      },
+      p_gstin: {
+        indian_gstin: true
+      },
+      p_cin: {
+        indian_cin: true
+      },
+      p_bank_IFSC_code:{ 
+        bank_ifsc: true
+      },
+      p_bank_account_number: {
+        digits: true
+      },
+
+      // p_GSTIN_certificate: {
+      //   required: function (element) {
+      //     return $("#gstin").val() != "";
+      //   }
+      // },
+      // p_CIN_certificate: {
+      //   required: function (element) {
+      //     return $("#cin").val() != "";
+      //   }
+      // },
+      p_business_logo: {
+        filesize: 500000
+      },
+      p_business_stamp: {
+        extension: "png",
+        filesize: 500000
+      },
+      p_digital_signature: {
+        filesize: 500000
+      }
+    },
+    messages: {
+      p_business_stamp: {
+        extension: "Only png file is acceptable."
+      },
+      p_pin_code: {
+        required: "Pin code is required.",
+        digits: "Only digits are acceptable.",
+        minlength: "Invalid pin code",
+        maxlength: "Invalid pin code"
+      }
+    },
+  });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    // Add Row
+    // $("#add-row").DataTable({
+    //   pageLength: 10,
+    // });
+
+    $('#add-row').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+        this.api().columns([1, 2, 3, 4]).every( function () {
+            var column = this;
+            
+            
+            var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                // var id = "#test_" + column[0][0];
+
+                .appendTo( $("#test_" + column[0][0]).empty() )
+                // .appendTo( $(column.header()).empty() )
+                .on( 'change', function () {
+
+                    // var val = $.fn.dataTable.util.escapeRegex(
+                    //     $(this).val()
+                    // );
+
+                    var val = $(':selected', select).map(function(index, element) {
+                    return $.fn.dataTable.util.escapeRegex($(this).val());
+                    }).toArray().join('|');
+                      
+                    column
+                        .search( val ? '^'+val+'$' : '', true, false )
+                        .draw();
+                } );
+
+            column.data().unique().sort().each( function ( d, j ) {
+                select.append( '<option value="'+d+'">'+d+'</option>' )
+            });
+        });        
+      }
+    });
+    $("#column_id_1").select2({
+        placeholder:" Select Mobile Number",
+        closeOnSelect: true,
+        width: '80%',
+        // selectOnClose: true,
+        // allowClear: true
+    })
+    $("#column_id_2").select2({
+        placeholder:" Select State",
+        closeOnSelect: true,
+        width: '100%',
+        // selectOnClose: true,
+        // allowClear: true
+    })
+    
+            
+  });
+
+  var action =
+    '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+  $("#addRowButton").click(function () {
+    $("#add-row")
+      .dataTable()
+      .fnAddData([
+        $("#addName").val(),
+        $("#addPosition").val(),
+        $("#addOffice").val(),
+        action,
+      ]);
+    $("#addRowModal").modal("hide");
+  });
+</script>
+
+{% endblock javascripts %}

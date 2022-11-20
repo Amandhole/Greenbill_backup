@@ -1,0 +1,903 @@
+{% extends "layouts/partner-base.html" %}
+{% load custom_tags %}
+{% block title %} Bulk Mail{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+#hide_customer_state{
+    display: none;
+}
+#hide_customer_city{
+    display: none;
+}
+#hide_customer_area{
+    display: none;
+}
+</style>
+
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Send Notifications</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Notifications</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/bulk-mail-sms/">Send Notifications</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <div class="d-flex align-items-center" >
+                            <h4 class="card-title">Bulk Email</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Promotion</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bulk-mail-partner/">Bulk Email</a>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#myModal">
+                                <i class="fa fa-plus"></i>
+                                Send Email
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                            <br><br>
+                            <div class="row">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <tr style="text-align:center;">
+                                             <th>Sr. No.</th>
+                                                <th>Date</th>
+                                                <th>Sent To</th>
+                                                <th style="width:25%;">Email Title</th>
+                                                <th>Total Count</th>
+                                                <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for object in data %}
+                                       {% if object.o_sent_mail %}
+                                            
+                                            <tr align="center">
+                                                <td>{{forloop.counter}} </td>
+                                                <td>{{object.created_at|date:'d-m-Y'}} </td>
+                                                <td>
+                                                    {% if object.receiver != None %}
+                                                    {{object.receiver}}
+                                                    {% endif %} 
+                                                </td>
+                                                <td>{{object.title}}</td>
+                                                <td>{% if object.receiver != None and object.receiver != 'customer' and object.receiver != 'merchant' %}
+                                                    {{object.receiver|split|length}}
+                                                    
+                                                     {% endif %}
+                                                </td>
+                                                <!-- <td>{{object.message| safe}}</td> -->
+                                                <td>
+                                                    <button type="button" data-toggle="tooltip"
+                                                    data-target="#ViewCashMemoModal" title=""
+                                                    class="btn btn-link btn-primary btn-lg viewBtn"
+                                                    data-name="{{ object.name }}" data-date=" {{object.date|date:'d-m-Y'}}"
+                                                    data-message = "{{object.message}}"
+                                                    data-url="{{object.id}}" data-original-title="View Email">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>                                        
+                                                    <button type="button" data-toggle="tooltip" data-target="" 
+                                                    title="Delete Email"
+                                                    class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                    data-original-title="Delete Email" data-url="{{object.id}}"
+                                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ViewCashMemoModal" role="dialog">
+    <div class="modal-dialog">
+        
+       <div class="modal-content">
+        <div class="modal-header">
+            <h2>Notice</h2>
+           </div>
+           <div class="row" style="padding:20px;">
+               <div class="col-md-12">
+                   <h3>Message:</h3>
+        <p id="message_id">
+        </p>
+        </div>
+        </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+       </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog modal-lg" >
+      <!-- Modal content-->
+       <div class="col-md-12 " >
+           <div class="row" >
+           <div class="modal-content" >
+               <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Send Email</h2>
+               </div>
+               <div class="row">
+                    <div class=""></div>
+                    <div class="col-md-9" style="margin-top:10px;margin-left: 43px;">
+                        <div class="row">
+                            <span style="margin-left: 16px; font-weight: bold;">Available Emails: - 0</span>
+                            </b>
+                        </div>
+                    </div>
+                    <div class="col-md-2" style="margin-top:10px;margin-bottom: 10px;">
+                        <button type="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white;align-items:right;"><a href="/partner-recharge/" style="color: white;text-decoration: none;">Recharge</a></button>
+                    </div> 
+               </div>
+               <!-- <div class="row "> -->
+                 <form class="form-control" action="/bulk-mail-partner/" method="POST" enctype="multipart/form-data"
+                                    id="bulk-mail-sms-form" name="bulk-mail-sms-form" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                        <input type="hidden" name="sentnotice" value="sent_mail">
+                                                       
+                                                    </div>
+                                                <label>Title<span style="color: red;">*</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile" maxlength="35" name="title" id="title"
+                                                        placeholder="Title" value="" />
+                                                </div>
+                                                <div id="noticetitleError"></div>
+                                            </div>
+                                        </div>
+                                           <div class="col-md-12" style="padding-left: 32px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                    <label>Select <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <!-- <input type="radio" id="group" name="selection" value="customer"> -->
+                                        {% if partnercategory == 'Software Partner' %}
+                                        <input type="radio" name="selection" id="checksc"
+                                        value="customer" onclick="text(1)">
+                                        <!-- checksc -->
+                                        <b>Customer</b>
+                                        {% else %}
+                                        <input type="radio" name="selection" id="checksm"
+                                        value="merchant">
+                                        <b>Merchant</b>
+                                        <!-- checksm -->
+                                        {% endif %}
+                                    </div>
+                                    <!-- <div class="col-md-3">
+                                        <input type="radio" id="category" name="selection" value="">
+                                        <b>Category</b>
+                                    </div> -->
+                                    <div class="col-md-3">
+                                        <input type="radio" id="custom" name="selection" value="" onclick="text(0)">
+                                        <b>Custom</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding-left: 32px;border: 1px;">
+                                <div class="form-group" id="custom-options" style="display: none;">
+                                    <div class="row">
+                                    <label>Select Custom Options <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="checksc1" id="upload-file"
+                                        value="">
+                                        <b>Upload File</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="emails" name="checksc1" value="">
+                                        <b>Copy-Paste</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" id="upload-file-options" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card-body" id="choose-file">
+                                                <input type="file" id="myfile" name="myfile">
+                                            </div>
+                                            <div id="choose-file-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                               Note: Please Choose Valid CSV File.
+                                            </div>
+                                            <div id="groupcheckError" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                                        </div>
+                                        <div class="col-md-4" style="margin-top: 22px;">
+                                            <!-- <button class="form-control" style="padding:10px;background: white;border: 1px solid #ccc;margin-top: 10px;"> --><a href="/download-sample-email-file/" style="color: #495057;"><i class="fa fa-download" aria-hidden="true"> <span style="font-weight: 600;font-family: Lato,sans-serif;">Download Sample File</span></i></a><!-- </button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                               
+                                <div class="card-body" id="email-list" style="display: none;" >
+                                    <textarea type="text" name="custom-no" class="md-textarea form-control mobile" placeholder="Custom List" 
+                                  id="custom_list_number"   style="width: 90%; height:200px;"></textarea>
+                                </div>
+                                <div id="email-list-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                   Note: Please Enter every email id should be comma separated.
+                                </div>
+                                <div id="groupcheckError" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                            </div>
+                            <div class="col-md-4" id="hide_customer_state">
+                            <div class="form-group">
+                                <label>State<small style="color: red;"> *</small></label>
+                                    <select class="js-example-basic-multiple" name="customer_state" id="customer_state" multiple="multiple" style="width: 300px;">
+                                    {% for cust_state in cust_data %}
+                                        {% if cust_state.c_area != "" %}
+                                        <option value="{{ cust_state.c_state }}">{{ cust_state.c_state }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="customer_state_value" id="customer_state_value" value="">
+                                    <small id="customer_state_error"></small>  
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="hide_customer_city">
+                            <div class="form-group">
+                                <label>City<small style="color: red;"> *</small></label>
+                                <select class="js-example-basic-multiple" name="customer_city" id="customer_city" multiple="multiple" style="width: 300px;">
+                                </select>
+                                <input type="hidden" name="customer_city_value" id="customer_city_value" value="">
+                                <small id="customer_city_error"></small>  
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="hide_customer_area">
+                            <div class="form-group">
+                                <label>Area<small style="color: red;"> *</small></label>
+                                <select class="js-example-basic-multiple" name="customer_area" id="customer_area" multiple="multiple" style="width: 300px;">
+                                </select>
+                                <input type="hidden" name="customer_area_value" id="customer_area_value" value="">
+                                <small id="customer_area_error"></small>  
+                            </div>
+                        </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                  
+                                   
+                                    {{ bulkMailSmsPartnerForm.media }}
+                                    {{ bulkMailSmsPartnerForm }}
+
+                                    <div id="messageError"></div>
+                                </div>
+                            </div>
+                            
+                           
+                            <div class="col-md-12">
+                                <div class="text-center mt-3 mb-3">
+                                    <button type="submit" class="btn btn-primary" id="bulk-mail-sms-form-btn">Send</button>
+                                </div>
+                            </div>
+                       
+                   
+                   
+                </div>
+            </form>
+       </div>
+        </div>
+        </div>
+ </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+
+function text(x){
+        if(x==0)
+        {
+        document.getElementById("hide_customer_state").style.display = "none";
+        document.getElementById("hide_customer_city").style.display = "none";
+        document.getElementById("hide_customer_area").style.display = "none";
+        
+    }
+        else {
+            document.getElementById("hide_customer_state").style.display = "block";
+            document.getElementById("hide_customer_city").style.display = "block";
+            document.getElementById("hide_customer_area").style.display = "block";
+        }
+        return;
+    }
+$(document).ready(function () {
+
+
+        $("#customer_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+        
+    });
+    $(document).ready(function () {
+    $("#customer_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+    $(document).ready(function () {
+    $("#customer_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+     $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts)
+
+            $("#customer_city").empty();
+            $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-city-by-state-in-partner/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    $("#customer_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts)
+
+            $("#customer_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-area-by-city-in-partner/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_city_value': $('#customer_city_value').val()
+                },
+                success: function(result){
+                    $("#customer_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+
+   
+</script>
+
+<script>
+    $(".viewBtn").on("click", function () {
+
+        var message = $(this).data('message');
+
+         $('#message_id').empty().append(message);
+
+        $("#ViewCashMemoModal").modal();
+    });
+
+
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-partner-sms-email/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr1').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Sms has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+</script>
+
+
+<script type="text/javascript">
+
+
+$("input[name='sentnotice']").click(function () {
+    $('#smsheader').css('display', ($(this).val() === 'sms') ? 'block':'none');
+    $('#template').css('display', ($(this).val() === 'sms') ? 'block':'none');
+});
+
+
+   $(document).ready(function() {
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'group') {
+            $('#group-list').show();           
+       }
+
+       else {
+            $('#group-list').hide();   
+       }
+   });
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'category') {
+            $('#category-list').show();           
+       }
+
+       else {
+            $('#category-list').hide();   
+       }
+   });
+
+   // $('input[type="radio"]').click(function() {
+   //     if($(this).attr('id') == 'custom') {
+   //          $('#custom-list').show();     
+   //          $('#custom-warning').show();      
+   //     }
+
+   //     else {
+   //          $('#custom-list').hide();  
+   //          $('#custom-warning').hide();   
+   //     }
+   // });
+
+
+$('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'custom') {
+            $('#custom-options').show();     
+            // $('#custom-warning').show();      
+       }
+       else {
+            $('#custom-options').hide();  
+            // $('#custom-warning').hide();   
+       }
+   });
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'upload-file') {
+            $('#custom-options').show();
+            $('#upload-file-options').show();     
+            $('#choose-file-warning').show();      
+       }
+
+       else {
+            $('#upload-file-options').hide();  
+            $('#choose-file-warning').hide();   
+       }
+   });
+
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'emails') {
+            $('#custom-options').show();
+            $('#email-list').show();     
+            $('#email-list-warning').show();      
+       }
+
+       else {
+            $('#email-list').hide();  
+            $('#email-list-warning').hide();   
+       }
+   });
+
+
+
+
+
+});
+
+
+    </script>
+
+<script>
+
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(document).mousemove(function(event){
+        if( ($("input[name*='individual']:checked").length) > 0 || ($("input[id*='custom']:checked").length) > 0 || ($("input[id*='checksc']:checked").length) > 0 || ($("input[id*='checksm']:checked").length) > 0)
+        // || ($("input[name*='group_merchant']:checked").length) > 0 || ($("input[name*='group_customer']:checked").length) > 0 || ($("input[name*='group_partner']:checked").length) > 0 
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', false);
+            $('#groupcheckError').empty();
+
+            // $("#groupcheckError").html("Please select Group or Individual.");  
+        }
+        else
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', true);
+            $('#groupcheckError').empty().append("<b>Note: Please select from merchant list to send the notice to respective user.<b>");
+        }
+
+      
+        // if(($("input[name*='checks']:checked").length) > 0)
+        //     {
+                
+        //         $("input[name='individual']:radio").prop('checked',false);
+        //     } 
+
+
+          // else(($("input[name*='individual']:checked").length) > 0)
+          //   {
+                
+          //       $("input[name='checks']:radio").prop('checked',false);
+          //   } 
+
+    });
+   
+
+ 
+
+  $(document).change(function(event){ 
+  if(($("input[name*='checks']:checked").length) > 0)
+    {
+        
+        $("input[name='individual']:radio").prop('checked',false);
+    }   
+ });
+
+
+
+$(document).mousemove(function(event){
+    if(($("input[name*='checks']:checked").length) > 0)
+    {
+        console.log("ll")
+        $("input[name='individual']:radio").prop('checked',false);
+    } 
+});
+
+    // $.validator.addMethod("radio_check", function (value, element) {
+    //     console.log('hhjhj')
+    //     if (true) {
+    //       return true;   // PASS validation 
+    //     } else {
+    //       return false;  // FAIL validation
+    //     };
+    // }, "Please enter valid IFSC Code.");
+
+
+
+    $("#bulk-mail-sms-form").validate({
+
+        rules: {
+            notice_title: {
+                required: true,
+            },
+            message: {
+                required: true,
+            },
+            "individual": {
+               required: true, 
+               minlength: 1 
+            },
+            "sentnotice": { 
+                required: true, 
+                minlength: 1,
+            },
+            
+        },
+        messages: {
+            notice_title: {
+                required: "Title is Required",
+            },
+            message: {
+                required: "Message is Required",
+            },
+            // "checks": "Please select at least one radio."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "sentnotice")
+                $("#radioError").html(error);
+            if (element.attr("name") == "message")
+                $("#messageError").html(error);
+            if (element.attr("name") == "notice_title")
+                $("#noticetitleError").html(error);
+            // if (element.attr("name") == "individual")
+            //     $("#groupcheckError").html(error);      
+        }
+    });
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+</script>
+<style>
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

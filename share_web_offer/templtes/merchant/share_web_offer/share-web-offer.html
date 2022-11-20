@@ -1,0 +1,182 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Offers {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Web Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant_offers/">Web Offers</a>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addMerchantModal">
+                            <i class="fa fa-plus"></i> Add Offer Image</button>
+                        </div>
+                    </div>   
+                    <div class="card-body">
+                        <div class="row">
+                        {% for object in data %}
+                        
+                        
+                                                        
+                      
+                        <div class="col-sm-3">           
+                            <div class="card" style="height: 360px;">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="media d-flex">
+                                            <div class="media-body text-center" style="padding-left: auto;">
+                                                <img src="{{object.share_offer_image.url}}" width="250px" height="250px">
+                                                <p>
+                                                    <div class="input-group mb-3" >
+                                                        <input type="text" class="form-control select" placeholder="" aria-label="Promo Code" aria-describedby="basic-addon2" id="{{ forloop.counter }}" style="margin-top: 0px;" value="http://157.230.228.250/view-web-offer-url/{{object.offer_url}}/">
+                                                        <div class="input-group-append">
+                                                           <button onclick="myFunction('{{ forloop.counter }}')" class="btn btn-primary btn-sm">Copy</button>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                </p>
+                                                
+                                            </div>
+                                        </div>                
+                                    </div>
+                                </div>
+                            </div>           
+                        </div>
+                        
+                        
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addMerchantModal" role="dialog">
+  <div class="modal-dialog modal-lg" style="width:600px;">
+    <!-- Modal content-->
+    <form action="/share-web-offer/" method="POST" enctype="multipart/form-data" id="add_merchant_form" name="form" autocomplete="off">
+      {% csrf_token %}
+      <input type="hidden" name="offer_id">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center"><b>Web Offer</b></h2>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Web Offer Image</label><small style="color: red;"> *</small>
+                    <input type="file" name="share_offer_image" class="form-control" value="" placeholder="Offer Image" id="share_offer_image" required=""> 
+                    <small id="share_offer_image_error"></small>             
+                </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <input id="add_merchant_form_submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="DisplayOfferModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content width_set" style="width: 430px; height: 440px; margin-top: 85px; margin-left: 100px;">
+                
+                <div style="padding-left: 20px; margin-top: 15px;">
+					<img width="390" height="300" src="" id="view_share_offer_image">
+                    <span id="view_offer_url"></span>
+                </div>
+                <div class="input-group mb-2" >
+                    <input type="text" class="form-control select" placeholder="" aria-label="Promo Code" aria-describedby="basic-addon2" id="" style="margin-top: 0px;" value="http://157.230.228.250/view-web-offer-url/{{object.offer_url}}/">
+                    
+                    <div class="input-group-append">
+                        <button onclick="myFunction()" class="btn btn-primary btn-sm">Copy</button>
+                    </div>
+                    
+                </div>
+					
+			    
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+<script>
+function myFunction(offer_counter) {
+  var copyText = document.getElementById(offer_counter);
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+}
+</script>
+<script>
+$(".viewAdsBtn").on("click", function () {
+    var share_offer_image = $(this).data("share_offer_image");
+    var offer_url = $(this).data("offer_url");
+    
+
+    
+
+    $('#view_share_offer_image').attr('src', share_offer_image);
+    $('#view_offer_url').empty().append(offer_url);
+    $("#DisplayOfferModal").modal();
+});
+</script>
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

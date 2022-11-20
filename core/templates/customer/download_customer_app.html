@@ -1,0 +1,136 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Download App {% endblock %}
+
+
+{% block stylesheets %}
+<style>
+.card-stats .icon-big.icon-primary{
+    background: white;
+}
+.card-stats .icon-big.icon-success{
+    background: white;
+}
+.fa-google-play {
+  background: conic-gradient(from 
+-45deg
+, #34a853 
+110deg
+, #fbbc05
+90deg
+ 
+180deg
+, #ea4335 
+180deg
+ 
+270deg
+, #4285f4 
+270deg
+) 22% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.fa-app-store {
+  background: #4285f4;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                         <div class="d-flex align-items-center">
+                            <h4 class="card-title">Download App</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Download App</a>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                    </div>
+                    
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <div class="row align-items-center justify-content-center">
+                                          <div class="col-sm-6 col-md-3">
+                                            <div class="card card-stats card-round">
+                                              <div class="card-body ">
+                                                <div class="row align-items-center">
+                                                  <div class="col-icon">
+                                                    <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                      <!-- <i class="fab fa-google-play" style="font-size: 50px;"></i> -->
+                                                      <img src="https://img.icons8.com/color/48/000000/google-play.png"/ style="width: 100%;">
+                                                    </div>
+                                                  </div>
+                                                  <div class="col col-stats ml-3 ml-sm-0">
+                                                    <div class="numbers">
+                                                      <p class="card-category">Play Store</p>
+                                                     
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="col-sm-6 col-md-3">
+                                            <div class="card card-stats card-round">
+                                              <div class="card-body">
+                                                <div class="row align-items-center">
+                                                  <div class="col-icon">
+                                                    <div class="icon-big text-center icon-success bubble-shadow-small">
+                                                      <i class="fab fa-app-store" style="font-size: 50px;"></i>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col col-stats ml-3 ml-sm-0">
+                                                    <div class="numbers">
+                                                      <p class="card-category">App Store</p>
+                                                      
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    
+                                </div>                   
+                            </div>
+                        </div>
+                    </div>
+                
+                  
+                   
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

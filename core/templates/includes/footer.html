@@ -1,0 +1,102 @@
+<style>
+	div.dataTables_wrapper div.dataTables_length select {
+    width: 75px;
+    display: inline-block;
+     /* padding-left: 2px !important;  */
+    margin-left: 18px;
+}
+/*.nav-item a:hover{
+	background-color: #008cff !important;
+}
+.nav-item .active a{
+	background: #008cff !important;
+
+}
+.sidebar.sidebar-style-2 .nav .nav-item a:focus, .sidebar.sidebar-style-2 .nav .nav-item a:hover, .sidebar.sidebar-style-2 .nav .nav-item a[data-toggle=collapse][aria-expanded=true]{
+	background: #008cff !important;
+}
+*/
+
+
+</style>
+
+
+			<!-- <footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+                                <a class="nav-link" 
+                                   target="_blank" 
+                                   href="#">
+									
+								</a>
+								Green Bill
+							</li>
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+                        &copy; Hind Softwares Private Limited 
+                        - coded by <a target="_blank" href="#">Hind Softwares</a>
+					</div>				
+				</div>
+            </footer> -->
+            
+            <!-- <script type="text/javascript">
+
+            	/*var sidebar = document.querySelector(".scroll-bar");
+
+            	alert(sidebar)
+
+    				        	var top = null
+
+				top = localStorage.getItem("sidebar-scroll");
+
+				if (top !== null) {
+				  sidebar.scrollTop = parseInt(top, 10);
+				}
+
+				window.addEventListener("beforeunload", () => {
+				  localStorage.setItem("sidebar-scroll", sidebar.scrollTop);
+				});
+   				      */   
+			</script> -->
+
+			<script type="text/javascript">
+				$('[data-toggle="tooltip"]').on('click', function () {
+				    $(this).tooltip('hide')
+				})
+			</script>
+
+			<script>
+			    $(document).ready(function() {
+			        var access_permission = $('#access_permission').val();
+			        if(access_permission == 1)
+			        {
+			        $(".permission-denied").hide();
+			        }
+			        else
+			        {
+			        $(".permission-denied").show();
+			        }
+			    });
+			</script>
+
+			<!-- Store sidebar position in local storage -->
+			<!-- Start -->
+			<script>
+
+				var sidebar = document.getElementById("sidebar-scrollbar-id");
+
+				let top_scroll = localStorage.getItem("sidebar-scroll");
+
+				if (top_scroll !== null) {
+				  sidebar.scrollTop = top_scroll;
+				}
+
+				window.addEventListener("beforeunload", () => {
+				  localStorage.setItem("sidebar-scroll", sidebar.scrollTop);
+				});
+
+			</script>
+			<!-- End -->

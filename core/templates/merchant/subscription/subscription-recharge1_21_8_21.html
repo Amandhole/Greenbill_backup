@@ -1,0 +1,2205 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Recharge {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .ribbon {
+    position: absolute;
+    left: var(--right, 5px);
+    top: var(--top, -3px);
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .ribbon.down > .content {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 50% 100%, 0 calc(100% - 8px));
+    }
+
+    .ribbon > .content {
+        color: white;
+        text-align: center;
+        font-weight: 400;
+        background: var(--color, #2ca7d8) linear-gradient(
+        45deg
+        , rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.25) 100%);
+        padding: 5px 2px 4px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 0 100%);
+        width: var(--width, 22px);
+        min-height: var(--height, 36px);
+        transition: clip-path 1s, padding 1s, background 1s;
+    }
+ 
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+
+                        <a style="font-size: 20px;"><b>Recharge</b></a>
+                        <ul class="breadcrumbs">
+                            <li class="nav-home">
+                                <a href="/merchant-index/">
+                                    <i class="flaticon-home"></i>
+                                </a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a>My Subscriptions</a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/recharge/">Recharge</a>
+                            </li>
+                        </ul>
+
+                        <!-- <ul class="nav nav-pills nav-secondary justify-content-center" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Subscription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Addons</a>
+                            </li>
+                        </ul> -->
+                    </div>
+
+                    {% if is_merchant == True %}
+                        <div class="card-body">
+                            <div class="row">
+                               <div class="card-body">
+                                    <div class="row">     
+                                        <div class="col-md-12 form-control">
+                                            <ul class="nav nav-pills mb-5" id="v-pills-tab"
+                                                        role="tablist" style="display: flex;justify-content: center;">
+
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                      {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                      <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                                      {% endif %}
+                                                </li>
+                                                <li class="nav-item">
+                                             {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                              <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                              {% endif %}
+                                                </li>  
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                                </li>    
+                                            </ul>
+                                        </div>
+                                    </div>
+                               </div>
+                                <!-- <div class="col-md-3">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                      <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                      {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                      <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                      {% endif %}
+                                      {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                      <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                      {% endif %}
+                                      <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                    </div>
+                                </div> -->
+                                <div class="col-md-12">
+                                    <div class="tab-content" id="v-pills-tabContent">
+                                        <div class="tab-pane fade show active" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
+                                            {% for object in subscriptions_list %}
+                                                <div class="card">
+                                                    {% if object.is_offer == True %}
+                                                        <div class="ribbon down" style="--color: #fd9c2e;">
+                                                          <div class="content">
+                                                            <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="vertical-align:none;">
+                                                              <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
+                                                            </svg>
+                                                          </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Subscription Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Users Up To</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b> {{object.number_of_users}}.Nos</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Monthly Sub-Charges</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.cost_for_users}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <!-- <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Validity</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.valid_for_month }} Month</b></h1>
+                                                                </section>
+                                                            </div> -->
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Min.SMS Recharge</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b> {{object.including_gst}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <!-- <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.subscription_plan_cost}}</b></h1>
+                                                                </section>
+                                                            </div> -->
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewdetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" ype="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}"
+                                                                data-number_of_users="{{ object.number_of_users }}"
+                                                                data-cost_for_users="{{object.cost_for_users}}"
+                                                                data-gst_amount="{{object.gst_amount}}" data-recharge_amount="{{ object.subscription_plan_cost }}">Buy</button>
+                                                                <!-- <button type="button" type="button" class="btn btn-sm" style="background-color: #06529e; color:white">Buy</button> -->
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal fade" id="viewdetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.subscription_plan_cost}}</b></span>
+                                                                                <br>
+                                                                                <!-- <span style="color: white;">
+                                                                                    <b>Plan For - 
+                                                                                    {% if object.valid_for_month == 1%}
+                                                                                        {{object.valid_for_month}} Month
+                                                                                    {% else %}
+                                                                                        {{object.valid_for_month}} Months
+                                                                                    {% endif %}
+                                                                                    </b>
+                                                                                </span> -->
+                                                                            </p><br>
+
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Recharge Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.recharge_amount }}</b>
+                                                                            </span>
+                                                                        </p>
+
+                                                                        {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                            </p>
+                                                                        {% else %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                            </p>
+                                                                            <!-- <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                Per Receipt Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Receipt Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b> ₹ {{object.per_receipt_cost}}</b>
+                                                                                <span
+                                                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    <b> ₹ {{object.per_digital_receipt_cost}}</b></span>
+                                                                            </p>
+                                                                            <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                Per Cash Memo Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Cash Memo Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b> ₹ {{object.per_cash_memo_cost}}</b>
+                                                                                <span
+                                                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    <b> ₹ {{object.per_digital_cash_memo_cost}}</b></span>
+                                                                            </p> -->
+                                                                        {% endif %}
+                                                                        <p align="center" style="color: red">
+                                                                            (Number Of Users: {{object.number_of_users}})
+                                                                            (Cost Per User: ₹ {{object.cost_for_users}})
+                                                                        </p>
+                                                                        <p align="center" style="color: red">
+                                                                            {% if sgst_value == 1 %}
+                                                                            (CGST: 0) (SGST: 0)<br>
+                                                                            (include IGST: 18%)
+                                                                            {% endif %}
+                                                                            {% if igst_value == 1 %}
+                                                                            (CGST: 9%) (SGST: 9%)
+                                                                            (IGST: 0)
+                                                                            {% endif %}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <!-- <button type="button" class="btn"
+                                                                            style="background-color: #06529e; color:white">
+                                                                            Buy
+                                                                        </button> -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="card text-center">
+                                                <div class="card-header">
+                                                     Note
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">We Know your requirement are different. Kindly contact with us for customised package</h5>
+                                                    <br>
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#addMerchantModal1">
+                                                    Contact Us</button>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-promotional-sms" role="tabpanel" aria-labelledby="v-pills-promotional-sms-tab">
+                                            {% for object in promotional_sms_plans_list %}
+
+
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Plan Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>No.of SMS</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Price Per SMS </b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.per_sms_cost }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_amount_with_gst}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewPromotionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" ype="button" class="btn btn-sm buypromotionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-total_sms_cost="{{ object.total_sms_cost }}" data-gst_amount="{{ object.gst_amount }}" data-actual_total_amount="{{ object.actual_total_amount }}">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewPromotionalPlandetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.total_sms_cost}}</b></span>
+                                                                            </p><br>
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Total Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.total_sms_cost }}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Total SMS
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Per SMS Cost
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.total_sms }}</b>
+                                                                            <span
+                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                <b>₹ {{object.per_sms_cost}}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p align="center" style="color: red">
+                                                                            {% if sgst_value == 1 %}
+                                                                            (CGST: 0) (SGST: 0)<br>
+                                                                            (Including IGST: 18%)
+                                                                            {% endif %}
+                                                                            {% if igst_value == 1 %}
+                                                                            (CGST: 9%) (SGST: 9%)
+                                                                            (IGST: 0)
+                                                                            {% endif %}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="row">
+                                                <h3 style="color:red;">* Kindly Note: You will need a DLT Certificate to send Bulk SMS. Continue if are already registered. If not, connect with us.</h3>
+                                            </div>
+                                            <div class="card text-center">
+                                                <div class="card-header">
+                                                     Note
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Contact Sales team for higher SMS requirement</h5>
+                                                    <br>
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#addMerchantModal1">
+                                                    Contact Us</button>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-transactional-sms" role="tabpanel" aria-labelledby="v-pills-transactional-sms-tab">
+                                            {% for object in transactional_sms_plans_list %}
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Plan Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>No.of SMS</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Price Per SMS </b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.per_sms_cost }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_cost_with_gst}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewTransactionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" type="button" class="btn btn-sm buyTransactionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-actual_transactional_amount="{{ object.actual_total_amount }}" data-transactional_gst_amount="{{ object.gst_amount }}"
+                                                                            data-transactional_amount_with_gst="{{ object.total_sms_cost }}">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewTransactionalPlandetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.total_sms_cost}}</b></span>
+                                                                            </p><br>
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Total Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.total_sms_cost }}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Total SMS
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Per SMS Cost
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.total_sms }}</b>
+                                                                            <span
+                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                <b>₹ {{object.per_sms_cost}}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p align="center" style="color: red">
+                                                                            {% if sgst_value == 1 %}
+                                                                            (CGST: 0) (SGST: 0)<br>
+                                                                            (Including IGST: 18%)
+                                                                            {% endif %}
+                                                                            {% if igst_value == 1 %}
+                                                                            (CGST: 9%) (SGST: 9%)<br>
+                                                                            ( IGST: 0)
+                                                                            {% endif %}
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            <div class="row">
+                                                <h3 style="color:red;">* Kindly Note: You will need a DLT Certificate to send Bulk SMS. Continue if are already registered. If not, connect with us.</h3>
+                                            </div>
+                                            <div class="card text-center">
+                                                <div class="card-header">
+                                                     Note
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Contact Sales team for higher SMS requirement</h5>
+                                                    <br>
+                                                    <button class="btn btn-primary" data-toggle="modal" data-target="#addMerchantModal1">
+                                                    Contact Us</button>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-add-on" role="tabpanel" aria-labelledby="v-pills-add-on-tab">
+                                            {% for object in addons_plans %}
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Add On's Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.add_on_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3">
+                                                                <section>
+                                                                    <span><b>Recharge Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#00569d"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_adon_cost_with_gst}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                {% if active_subscription_object.id %}
+                                                                    <form method="POST" action="{{ action }}">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                                                                        <input type="hidden" name="hash_string" value="{{ object.hash_string }}" />
+                                                                        <input type="hidden" name="hash" value="{{ object.hashh }}"/>
+                                                                        <input type="hidden" name="posted" value="{{ object.posted }}"/>
+                                                                        <input type="hidden" name="txnid" value="{{ object.txnid }}" />
+                                                                        <input type="hidden" name="amount" value="{{ object.recharge_amount }}" />
+                                                                        <input type="hidden" name="firstname" id="firstname" value="{{ firstname }}" />
+                                                                        <input type="hidden" name="productinfo" value="{{ object.productinfo }}">
+                                                                        <input type="hidden" name="email" value="{{email}}">
+                                                                        <input type="hidden" name="phone" value="{{phone}}">
+                                                                        <input type="hidden" name="surl" value="{{add_on_surl}}">
+                                                                        <input type="hidden" name="furl" value="{{add_on_furl}}">
+                                                                        <input type="hidden" name="udf1" value="{{ object.udf1 }}">
+                                                                        <input type="hidden" name="udf2" value="{{ object.udf2 }}">
+                                                                        <input type="hidden" name="udf3" value="{{ object.udf3 }}">
+                                                                        <input type="hidden" name="udf4" value="{{ object.udf4 }}">
+                                                                        <input type="hidden" name="udf5" value="{{ object.udf5 }}">
+                                                                        <input type="hidden" name="udf6" value="{{ object.udf6 }}">
+                                                                        <input type="hidden" name="subscription_id" value="{{ object.id }}">
+                                                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                        <button type="submit" class="btn btn-sm" style="background-color: #06529e; color:white">Buy</button>
+                                                                    </form>
+                                                                {% else %}
+                                                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                    <button type="button" data-toggle="modal" data-target="#NoActiveGreenBillSubscriptionModal" style="background-color: #06529e; color:white" class="btn btn-sm">Buy</button>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewAddOndetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.add_on_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.recharge_amount}}</b></span>
+                                                                                <br>
+                                                                            </p><br>
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                Add On's Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Recharge Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.add_on_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.recharge_amount }}</b>
+                                                                            </span>
+                                                                        </p>
+
+                                                                        {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                            </p>
+                                                                        {% else %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                            </p>
+                                                                            <p align="center" style="color: red">
+                                                                            {% if sgst_value == 1 %}
+                                                                            (CGST: 0) (SGST: 0)<br>
+                                                                            (Including IGST: 18%)
+                                                                            {% endif %}
+                                                                            {% if igst_value == 1 %}
+                                                                            (CGST: 9%) (SGST: 9%)
+                                                                            ( IGST: 0)
+                                                                            {% endif %}
+                                                                            </p>
+                                                                            <!-- <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                Per Receipt Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Receipt Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b> ₹ {{object.per_receipt_cost}}</b>
+                                                                                <span
+                                                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    <b> ₹ {{object.per_digital_receipt_cost}}</b></span>
+                                                                            </p>
+                                                                            <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                Per Cash Memo Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Cash Memo Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b> ₹ {{object.per_cash_memo_cost}}</b>
+                                                                                <span
+                                                                                    style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    <b> ₹ {{object.per_digital_cash_memo_cost}}</b></span>
+                                                                            </p> -->
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchnat_action_permissions_list %}
+                            {% if actions.module_id|lower == "Settings"|lower and actions.feature_id|lower == "My Subscriptions"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="card-body">
+                                                <div class="row">     
+                                                    <div class="col-md-12 form-control">
+                                                        <ul class="nav nav-pills mb-5" id="v-pills-tab"
+                                                                    role="tablist" style="display: flex;justify-content: center;">
+
+                                                            <li class="nav-item">
+                                                                <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                  {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                                  <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                                                  {% endif %}
+                                                            </li>
+                                                            <li class="nav-item">
+                                                         {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                          <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                                          {% endif %}
+                                                            </li>  
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                                            </li>    
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <!--  <div class="col-md-3">
+                                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                  <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                                  {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                  <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                                  {% endif %}
+                                                  {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                  <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                                  {% endif %}
+                                                  <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                                </div>
+                                            </div> -->
+                                            <div class="col-md-12">
+                                                <div class="tab-content" id="v-pills-tabContent">
+                                                    <div class="tab-pane fade show active" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
+                                                        {% for object in subscriptions_list %}
+                                                            <div class="card">
+                                                                {% if object.is_offer == True %}
+                                                                    <div class="ribbon down" style="--color: #fd9c2e;">
+                                                                      <div class="content">
+                                                                        <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="vertical-align:none;">
+                                                                          <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
+                                                                        </svg>
+                                                                      </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3">
+                                                                            <section>
+                                                                                <span><b>Validity</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.valid_for_month }} Month</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.subscription_plan_cost}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewdetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+
+                                                                            {% if actions.add_permission == "1" %}
+                                                                                <button type="button" ype="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-recharge_amount="{{ object.subscription_plan_cost }}"
+                                                                                data-gst_amount="{{object.gst_amount}}"
+                                                                                data-cost_for_users="{{object.cost_for_users}}" data-number_of_users="{{ object.number_of_users}}">Buy</button>
+                                                                            {% endif %}
+
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewdetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.subscription_plan_cost}}</b></span>
+                                                                                            <br>
+                                                                                            <span style="color: white;">
+                                                                                                <b>Plan For - 
+                                                                                                {% if object.valid_for_month == 1%}
+                                                                                                    {{object.valid_for_month}} Month
+                                                                                                {% else %}
+                                                                                                    {{object.valid_for_month}} Months
+                                                                                                {% endif %}
+                                                                                                </b>
+                                                                                            </span>
+                                                                                        </p><br>
+
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                            Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Recharge Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.recharge_amount }}</b>
+                                                                                        </span>
+                                                                                    </p>
+
+                                                                                    {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                                        </p>
+                                                                                    {% else %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                                        </p>
+                                                                                        <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                            Per Receipt Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Receipt Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b> ₹ {{object.per_receipt_cost}}</b>
+                                                                                            <span
+                                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                <b> ₹ {{object.per_digital_receipt_cost}}</b></span>
+                                                                                        </p>
+                                                                                        <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                            Per Cash Memo Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Cash Memo Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b> ₹ {{object.per_cash_memo_cost}}</b>
+                                                                                            <span
+                                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                <b> ₹ {{object.per_digital_cash_memo_cost}}</b></span>
+                                                                                        </p>
+                                                                                    {% endif %}
+                                                                                    <p align="center" style="color: red">
+                                                                                        (Software Maintainance Cost: ₹ {{object.software_maintainace_cost}})
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <!-- <button type="button" class="btn"
+                                                                                        style="background-color: #06529e; color:white">
+                                                                                        Buy
+                                                                                    </button> -->
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+
+                                                    <div class="tab-pane fade" id="v-pills-promotional-sms" role="tabpanel" aria-labelledby="v-pills-promotional-sms-tab">
+                                                        {% for object in promotional_sms_plans_list %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Total SMS</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Per SMS Cost</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.per_sms_cost }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewPromotionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+
+                                                                            {% if actions.add_permission == "1" %}
+                                                                                <button type="button" ype="button" class="btn btn-sm buyPromotionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-total_sms_cost="{{ object.total_sms_cost }}" data-gst_amount="{{ object.gst_amount }}" data-actual_total_amount="{{ object.actual_total_amount }}">Buy</button>
+                                                                            {% endif %}
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewPromotionalPlandetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.total_sms_cost}}</b></span>
+                                                                                        </p><br>
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Total Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.total_sms_cost }}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Total SMS
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Per SMS Cost
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.total_sms }}</b>
+                                                                                        <span
+                                                                                            style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                            <b>₹ {{object.per_sms_cost}}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-transactional-sms" role="tabpanel" aria-labelledby="v-pills-transactional-sms-tab">
+                                                        {% for object in transactional_sms_plans_list %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Total SMS</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Per SMS Cost</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.per_sms_cost }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewTransactionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                            <button type="button" type="button" class="btn btn-sm buyTransactionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}"
+                                                                            data-actual_transactional_amount="{{ object.actual_total_amount }}" data-transactional_gst_amount="{{ object.gst_amount }}"
+                                                                            data-transactional_amount_with_gst="{{ object.total_sms_cost }}">Buy</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewTransactionalPlandetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.total_sms_cost}}</b></span>
+                                                                                        </p><br>
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Total Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.total_sms_cost }}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Total SMS
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Per SMS Cost
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.total_sms }}</b>
+                                                                                        <span
+                                                                                            style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                            <b>₹ {{object.per_sms_cost}}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-add-on" role="tabpanel" aria-labelledby="v-pills-add-on-tab">
+                                                        {% for object in addons_plans %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-4">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Add On's Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.add_on_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3">
+                                                                            <section>
+                                                                                <span><b>Recharge Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#00569d"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            {% if active_subscription_object.id %}
+                                                                                <form method="POST" action="{{ action }}">
+                                                                                    {% csrf_token %}
+                                                                                    <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                                                                                    <input type="hidden" name="hash_string" value="{{ object.hash_string }}" />
+                                                                                    <input type="hidden" name="hash" value="{{ object.hashh }}"/>
+                                                                                    <input type="hidden" name="posted" value="{{ object.posted }}"/>
+                                                                                    <input type="hidden" name="txnid" value="{{ object.txnid }}" />
+                                                                                    <input type="hidden" name="amount" value="{{ object.recharge_amount }}" />
+                                                                                    <input type="hidden" name="firstname" id="firstname" value="{{ firstname }}" />
+                                                                                    <input type="hidden" name="productinfo" value="{{ object.productinfo }}">
+                                                                                    <input type="hidden" name="email" value="{{email}}">
+                                                                                    <input type="hidden" name="phone" value="{{phone}}">
+                                                                                    <input type="hidden" name="surl" value="{{add_on_surl}}">
+                                                                                    <input type="hidden" name="furl" value="{{add_on_furl}}">
+                                                                                    <input type="hidden" name="udf1" value="{{ object.udf1 }}">
+                                                                                    <input type="hidden" name="udf2" value="{{ object.udf2 }}">
+                                                                                    <input type="hidden" name="udf3" value="{{ object.udf3 }}">
+                                                                                    <input type="hidden" name="udf4" value="{{ object.udf4 }}">
+                                                                                    <input type="hidden" name="udf5" value="{{ object.udf5 }}">
+                                                                                    <input type="hidden" name="udf6" value="{{ object.udf6 }}">
+                                                                                    <input type="hidden" name="subscription_id" value="{{ object.id }}">
+                                                                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                                    <button type="submit" class="btn btn-sm" style="background-color: #06529e; color:white">Buy</button>
+                                                                                </form>
+                                                                            {% else %}
+                                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                                <button type="button" data-toggle="modal" data-target="#NoActiveGreenBillSubscriptionModal" style="background-color: #06529e; color:white" class="btn btn-sm">Buy</button>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewAddOndetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.add_on_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.recharge_amount}}</b></span>
+                                                                                            <br>
+                                                                                        </p><br>
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                            Add On's Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Recharge Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.add_on_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.recharge_amount }}</b>
+                                                                                        </span>
+                                                                                    </p>
+
+                                                                                    {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                                        </p>
+                                                                                    {% else %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost }}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost}}</b></span>
+                                                                                        </p>
+                                                                                        <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                            Per Receipt Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Receipt Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b> ₹ {{object.per_receipt_cost}}</b>
+                                                                                            <span
+                                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                <b> ₹ {{object.per_digital_receipt_cost}}</b></span>
+                                                                                        </p>
+                                                                                        <p style="text-align: left; color: black;font-size: 15px;  padding-left: 5px;">
+                                                                                            Per Cash Memo Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Cash Memo Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b> ₹ {{object.per_cash_memo_cost}}</b>
+                                                                                            <span
+                                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                <b> ₹ {{object.per_digital_cash_memo_cost}}</b></span>
+                                                                                        </p>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                       {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addMerchantModal1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <form action="/add-contact-us-form/" method="POST" enctype="multipart/form-data" id="add_merchant_form" name="form" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" name="stamp_id">       
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center"><b>Contact Us</b></h2>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput3" class="form-label">Name:</label>
+                    <input type="text" class="form-control" maxlength="25" id="contact_name" value="{{merchant_first_name}} {{merchant_last_name}}" name="contact_name" placeholder="Name">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput2" class="form-label">Contact No.</label>
+                    <input type="tel" class="form-control" maxlength="10" id="contact_no" name="contact_no" value="{{merchant_mobile_no}}" placeholder="Contact_No" >            
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput2" class="form-label">Email Id:</label>
+                    <input type="email" class="form-control" maxlength="25" id="contact_email_id" value="{{merchant_email}}" name="contact_email_id" placeholder="Email_Id">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlInput4" class="form-label">Requirement:</label>
+                    <input type="text" class="form-control" maxlength="50" id="contact_requirements" name="contact_requirements" placeholder="Requirement">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                        <select class="form-control" id="subscription_name" name="subscription_name">
+                            <!-- <option value="">Select Subscriptions</option> -->
+                            <option value="Green Bill Subscription Plan">Green Bill Subscription Plan</option>
+                            <option value="Promotional SMS Plan">Promotional SMS Plan</option>
+                            <option value="Transactional SMS Plan">Transactional SMS Plan</option>
+                        </select>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input id="add_merchant_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>    
+
+<div class="modal fade" id="buymodal">
+    <form method="POST" action="{{ action }}" id="subscription-buy-form">
+        {% csrf_token %}
+
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="form-check">
+                        <div class="card col-md-12" style="width: 31rem;">
+                         <div class="card-body">
+
+                            <h7 class="form-check-label" style="color:red;">*Note: Kindly select No. of User and Plan Validity</h7>
+                        <div class="row" id="hide_two_users">
+                            <div class="col-md-12" style="text-align:center;">
+                            
+                                <label class="form-check-label">Select Number Of Users</label>
+                                   <select name="validate_number_of_users" id="validate_number_of_users" class="form-control" required="">
+                                        <option value="">Select</option>
+                                       {% for i in "12" %}
+                                            <option value={{i}}> {{i}}</option>
+                                        {% endfor %}
+                                   </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row" id="hide_five_users">
+                            <div class="col-md-12" style="text-align:center;">
+                                <label class="form-check-label">Select Number Of Users</label>
+                                   <select name="validate_number_of_users" id="validate_number_of_users" class="form-control" required="">
+                                        <option value="">Select</option>
+                                       {% for i in "12345" %}
+                                            <option value={{i}}> {{i}}</option>
+                                        {% endfor %}
+                                   </select>
+                            </div>
+                        </div>
+                        <div class="row" id="hide_ten_users">
+                            <div class="col-md-12" style="text-align:center;">
+                                <label class="form-check-label">Select Number Of Users</label>
+                                   <select name="validate_number_of_users" id="validate_number_of_users" class="form-control" required="">
+                                        <option value="">Select</option>
+                                       {% for i in "1234567891" %}
+                                            <option value={{forloop.counter}}> {{forloop.counter}}</option>
+                                        {% endfor %}
+                                   </select>
+                       
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align:center;">
+                                <label class="form-check-label">Select Plan</label>
+                                   <select name="valid_for_month" id="valid_for_month" class="form-control" required="">
+                                        <option value="">Select</option>
+                                       <option value="6">6 Months</option>
+                                       <option value="12">12 Months</option>
+                                   </select>
+
+                                </label>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+
+                        <div class="card col-md-12" style="width: 31rem;">
+                         <div class="card-body">
+                             <h7 class="form-check-label" style="color:red;">*Note: Mark the businesses you want to buy this plan for</h7>
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-md-12" style="text-align:center;">
+                                <b>Business Name</b>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <b>Subscription Status</b>
+                            </div> -->
+                        </div>
+                        <!-- {% for business in all_business %}
+                        {% if business.business_category_name %}
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="business_check" class="form-check-input business-checkbox" value="{{business.id}}">
+                                            <span class="form-check-sign"></span>{{business.business_category_name}}
+                                    </label>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    {% if business.active_subscription == True %}
+                                        <span style="color: #00569d">Available</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% endfor %} -->
+
+                        {% for business in all_business %}
+                        {% if business.merchant_id %}
+                            <div class="row">
+                                <div class="col-md-8" style="text-align:left; padding-left: 70px;">
+                                    
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="business_check" class="form-check-input business-checkbox" value="{{business.merchant_id}}">
+                                            <span class="form-check-sign"></span> {{business.business_name}} ({{business.business_area}})
+                                    </label>
+                                </div>
+                                <!-- <div class="col-md-4 text-center">
+                                    {% if business.active_subscription == True %}
+                                        <span style="color: #00569d">Available</span>
+                                    {% endif %}
+                                </div> -->
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                    
+                        <div class="card col-md-12" style="width: 31rem;">
+                         <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8" style="text-align:left; padding-left: 10  0px;">
+                                <h3>Total Amount</h3>
+                                <label>Subscription Cost: ₹<span id="total_cost_per_user"></span></label>
+                                <label>Min Recharge: ₹<span id="plan_recharge_amount"></span></label>
+                                {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <label>SGST (9%) CGST (9%): ₹<span id="gst1"></span></label>
+                                <!-- <label>CGST (9%): <span id="gst2"></span></label> -->
+                                {% else %}
+                                <label>IGST (18%): ₹<span id="gst3"></span></label>
+                                {% endif %}
+                                <label>Total Cost: ₹<span id="final_total_cost"></span></label>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                        <input type="hidden" name="cost_per_users" value="" id="cost_per_user" />
+                        <input type="hidden" name="recharge_amount1" value="" id="recharge_amount1" />
+                        <input type="hidden" name="users_data" value="" id="users_data" />
+                        <input type="hidden" name="merchant_gst" value="" id="gst4" />
+<!--                         <input type="hidden" name="months_data" value="" id="months_data" />
+ -->
+
+                        <div id="business_check_error"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    
+                    <input type="hidden" name="months_data" value="" id="months_data" />
+                    <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                    <input type="hidden" name="hash_string" value="" id="hash_string"/>
+                    <input type="hidden" name="hash" value="" id="hashh"/>
+                    <input type="hidden" name="posted" value="" id="posted" />
+                    <input type="hidden" name="txnid" value="" id="txnid"/>
+                    <input type="hidden" name="amount" value="" id="amount"/>
+                    <input type="hidden" name="firstname" id="firstname" value="{{ firstname }}" />
+                    <input type="hidden" name="productinfo" value="" id="productinfo">
+                    <input type="hidden" name="email" value="{{email}}">
+                    <input type="hidden" name="phone" value="{{phone}}">
+                    <input type="hidden" name="surl" value="{{surl}}">
+                    <input type="hidden" name="furl" value="{{furl}}">
+                    <input type="hidden" name="udf1" value="" id="udf1">
+                    <input type="hidden" name="udf2" value="" id="udf2">
+                    <input type="hidden" name="udf3" value="" id="udf3">
+                    <input type="hidden" name="udf4" value="" id="udf4">
+                    <input type="hidden" name="udf5" value="" id="udf5">
+                    <input type="hidden" name="udf6" value="" id="udf6">
+                    <input type="hidden" name="subscription_id" value="" id="subscription_id">
+                    <input type="submit" class="btn btn-primary" value="Buy">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onClick="refreshPage()">Close</button>
+                </div>
+            </div>
+        </div>
+    </form> 
+</div>
+<script>
+function refreshPage(){
+    window.location.reload();
+} 
+</script>
+<script type="text/javascript">
+    jQuery.validator.addMethod("lettersonly", function(value, element) {
+  return this.optional(element) || /^[a-z]+$/i.test(value);
+}, "Letters only please"); 
+    $("#add_merchant_form").validate({
+        rules: {
+            contact_name: {
+                required: true,
+                
+            },
+            contact_no: {
+                required: true,
+                number:true,
+            }, 
+            contact_email_id: {
+                required: true,
+            },   
+            contact_requirements: {
+                required: true,
+            },   
+            
+        },
+
+        messages: {
+            contact_name: {
+                required: "Contact Name is required",
+            },
+            contact_no: {
+                required: "Contact Number is required",
+                number: "Please enter numbers Only",
+            },
+            contact_email_id: {
+                required: "Email address is required"
+            },
+            contact_requirements: {
+                required: "Contact requirement is required"
+            },
+        },
+        
+
+    });
+</script>
+
+<script type="text/javascript">
+    if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+    
+    $(".buymodalBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+        
+        var plan_number_of_users1 = $(this).attr("data-cost_for_users")
+        
+        var recharge_amount1 = $(this).attr("data-recharge_amount");
+
+
+        var number_of_users = $(this).data("number_of_users");
+        var recharge_amount = $(this).data("recharge_amount");
+        var gst_amount = $(this).data("gst_amount");
+        var cost_for_users = $(this).data("cost_for_users");
+
+
+
+
+        if (number_of_users == '2'){
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "block";
+        }
+        else if(number_of_users == 5){
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "block";
+        }
+        else{
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "block";
+        }
+
+        $('input[name="business_check"]').each(function() {
+            this.checked = false;
+        });
+
+        $("#udf5").val("");
+        $("#subscription_id").val(plan_id);
+        
+        $("#cost_per_user").val(plan_number_of_users1);
+        $("#recharge_amount1").val(recharge_amount1);
+        $('#plan_recharge_amount').empty().append(recharge_amount);
+        $('#add_recharge_amount').empty().append(recharge_amount);
+
+        $('#plan_gst_amount1').empty().append(gst_amount);
+        $('#plan_gst_amount2').empty().append(gst_amount);
+        $('#plan_gst_amount3').empty().append(gst_amount);
+        $('#plan_cost_for_users').empty().append(cost_for_users);
+
+        $("#buymodal").modal();
+    });
+
+    $("#validate_number_of_users").on("change", function(){
+        var users = $('#validate_number_of_users').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = (18*parseFloat(gst_amount))/100
+
+        var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        
+
+        $('#gst1').empty().append(gst_percentage.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost);
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(2));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    })
+
+    $("#valid_for_month").on("change", function(){
+        var month_validity = $('#valid_for_month').val();
+        var users = $('#validate_number_of_users').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+        if (month_validity == ''){
+            month_validity = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(month_validity)
+        
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = (18*parseFloat(gst_amount))/100
+
+        var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        
+        $('#gst1').empty().append(gst_percentage.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost);
+        $('#total_cost_per_user').empty().append(total_cost);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(2));
+        $('#month_validity').empty().append(month_validity);
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(month_validity);
+        $("#users_data").val(users);
+        $("#months_data").val(month_validity);
+    })
+    
+
+    $(document).ready(function() {
+        $('.business-checkbox').change(function() {
+
+            var ids = [];
+            $('input[type=checkbox]:checked').each(function () {
+                var id = $(this).val();
+                ids.push(id);
+            });
+            $("#udf5").val(ids);
+            // alert(ids)
+
+            var business_ids = String($("#udf5").val())
+            // alert(business_ids)
+
+            var plan_id = $("#subscription_id").val();
+            // alert(plan_id)
+
+            var no_of_users = $("#users_data").val();
+            var month_validity = $("#months_data").val();
+            var merchant_gst = $("#gst4").val();
+            // alert(merchant_gst);
+
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                url: "/get-subscription-plan-by-id/" + plan_id + "/",
+                type: 'POST',
+                data: { csrfmiddlewaretoken: csrftoken, business_ids : business_ids,no_of_users :no_of_users, month_validity:month_validity, merchant_gst : merchant_gst},
+                success: function(data) {
+
+                    $("#hashh").val(data['hashh']);
+                    $("#posted").val(data['posted']);
+                    $("#txnid").val(data['txnid']);
+                    $("#hash_string").val(data['hash_string']);
+                    $("#amount").val(data['amount']);
+                    $("#productinfo").val(data['productinfo']);
+
+                    $("#udf1").val(data['udf1']);
+                    $("#udf2").val(data['udf2']);
+                    $("#udf3").val(data['udf3']);
+                    $("#udf4").val(data['udf4']);
+                    $("#udf5").val(data['udf5']);
+                    $("#udf6").val(data['udf6']);
+
+
+                    $("#subscription_id").val(data['subscription_id']);
+
+                    $("#buymodal").modal();
+                    
+                }
+            });
+
+        });
+    });
+
+    $("#subscription-buy-form").validate({
+        rules: {
+            "business_check": { 
+                required: true, 
+                minlength: 1
+            }
+        },
+        messages: {
+            "business_check": "Please select at least one Business."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "business_check")
+               $("#business_check_error").html(error);
+        },
+    })
+
+</script>
+
+
+<div class="modal fade" id="buyPromotionalSMSmodal">
+    <form method="POST" action="{{ action }}" id="promotional-sms-subscription-buy-form">
+        {% csrf_token %}
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <div class="card col-md-12" style="width: 31rem;">
+                          <div class="card-body">
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-md-8">
+                                <b>Business Name</b>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <b>Subscription Status</b>
+                            </div> -->
+                        </div>
+                        {% for business in all_business %}
+                        {% if business.merchant_id %}
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="business_check" class="form-check-input sms-promotion-checkbox1" value="{{business.merchant_id}}">
+                                            <span class="form-check-sign"></span> {{business.business_name}} ({{business.business_area}})
+                                    </label>
+                                </div>
+                                <!-- <div class="col-md-4 text-center">
+                                    {% if business.active_subscription == True %}
+                                        <span style="color: #00569d">Available</span>
+                                    {% endif %}
+                                </div> -->
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                        </div>
+                        <div class="card col-md-12" style="width: 31rem;">
+                          <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Total Amount</h3>
+                                <label>Min Recharge: ₹<span id="promotionaL_total_cost"></span></label>
+                                {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <label>SGST (9%) CGST (9%): ₹<span id="total_promotionaL_gst_cost1"></span></label>
+                                {% else %}
+                                <label>IGST (18%): ₹<span id="total_promotionaL_gst_cost1"></span></label>
+                                {% endif %}
+                                <label>Total Cost: ₹<span id="total_promotionaL_sms_cost"></span></label>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+
+                        <div id="promotional_sms_business_check_error"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                    <input type="hidden" name="hash_string" value="" id="promotional_sms_hash_string"/>
+                    <input type="hidden" name="hash" value="" id="promotional_sms_hashh"/>
+                    <input type="hidden" name="posted" value="" id="promotional_sms_posted" />
+                    <input type="hidden" name="txnid" value="" id="promotional_sms_txnid"/>
+                    <input type="hidden" name="amount" value="" id="promotional_sms_amount"/>
+                    <input type="hidden" name="firstname" id="promotional_sms_firstname" value="{{ firstname }}" />
+                    <input type="hidden" name="productinfo" value="" id="promotional_sms_productinfo">
+                    <input type="hidden" name="email" value="{{email}}">
+                    <input type="hidden" name="phone" value="{{phone}}">
+                    <input type="hidden" name="surl" value="{{promotional_sms_surl}}">
+                    <input type="hidden" name="furl" value="{{promotional_sms_furl}}">
+                    <input type="hidden" name="udf1" value="" id="promotional_sms_udf1">
+                    <input type="hidden" name="udf2" value="" id="promotional_sms_udf2">
+                    <input type="hidden" name="udf3" value="" id="promotional_sms_udf3">
+                    <input type="hidden" name="udf4" value="" id="promotional_sms_udf4">
+                    <input type="hidden" name="udf5" value="" id="promotional_sms_udf5">
+                    <input type="hidden" name="udf6" value="" id="promotional_sms_udf6">
+                    <input type="hidden" name="subscription_id" value="" id="promotional_sms_subscription_id">
+                    <input type="submit" class="btn btn-primary" value="Buy">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form> 
+</div>
+
+
+<script type="text/javascript">
+
+    // promotional sms plan
+
+    $(".buypromotionalSMSmodalBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+        var total_promotionaL_sms_cost = $(this).data("total_sms_cost");
+        var total_promotionaL_gst_cost = $(this).data("gst_amount");
+        var promotionaL_total_cost = $(this).data("actual_total_amount");
+        
+
+
+        
+
+        $('input[name="business_check"]').each(function() {
+            this.checked = false;
+        });
+        $('#total_promotionaL_sms_cost').empty().append(total_promotionaL_sms_cost);
+        $('#total_promotionaL_gst_cost1').empty().append(total_promotionaL_gst_cost);
+        $('#total_promotionaL_gst_cost2').empty().append(total_promotionaL_gst_cost);
+        $('#total_promotionaL_gst_cost3').empty().append(total_promotionaL_gst_cost);
+        $('#promotionaL_total_cost').empty().append(promotionaL_total_cost);
+        $("#promotional_sms_udf5").val("");
+        $("#promotional_sms_subscription_id").val(plan_id);
+        $("#buyPromotionalSMSmodal").modal();
+    });
+
+    $(document).ready(function() {
+        $('.sms-promotion-checkbox1').change(function() {
+
+            var ids = [];
+            $('input[type=checkbox]:checked').each(function () {
+                var id = $(this).val();
+                ids.push(id);
+            });
+
+            $("#promotional_sms_udf5").val(ids);
+
+            var business_ids = String($("#promotional_sms_udf5").val())
+
+            var plan_id = $("#promotional_sms_subscription_id").val();
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                url: "/get-promotional-sms-plan-by-id/" + plan_id + "/",
+                type: 'POST',
+                data: { csrfmiddlewaretoken: csrftoken, business_ids : business_ids},
+                success: function(data) {
+
+                    $("#promotional_sms_hashh").val(data['hashh']);
+                    $("#promotional_sms_posted").val(data['posted']);
+                    $("#promotional_sms_txnid").val(data['txnid']);
+                    $("#promotional_sms_hash_string").val(data['hash_string']);
+                    $("#promotional_sms_amount").val(data['amount']);
+                    $("#promotional_sms_productinfo").val(data['productinfo']);
+
+                    $("#promotional_sms_udf1").val(data['udf1']);
+                    $("#promotional_sms_udf2").val(data['udf2']);
+                    $("#promotional_sms_udf3").val(data['udf3']);
+                    $("#promotional_sms_udf4").val(data['udf4']);
+                    $("#promotional_sms_udf5").val(data['udf5']);
+                    $("#promotional_sms_udf6").val(data['udf6']);
+
+                    $("#promotional_sms_subscription_id").val(data['subscription_id']);
+
+                    // $("#buyPromotionalSMSmodal").modal();
+
+                }
+            });
+
+        });
+    });
+
+    $("#promotional-sms-subscription-buy-form").validate({
+        rules: {
+            "promotional_sms_business_check": { 
+                required: true, 
+                minlength: 1
+            }
+        },
+        messages: {
+            "promotional_sms_business_check": "Please select at least one Business."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "promotional_sms_business_check")
+               $("#promotional_sms_business_check_error").html(error);
+        },
+    })
+
+
+   
+</script>
+
+
+<div class="modal fade" id="buyTransactionalSMSmodal">
+    <form method="POST" action="{{ action }}" id="transactional-sms-subscription-buy-form">
+        {% csrf_token %}
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <div class="card col-md-12" style="width: 31rem;">
+                          <div class="card-body">
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-md-8">
+                                <b>Business Name</b>
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <b>Subscription Status</b>
+                            </div> -->
+                        </div>
+                        {% for business in all_business %}
+                        {% if business.merchant_id %}
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="business_check" class="form-check-input sms-business-checkbox" value="{{business.merchant_id}}">
+                                            <span class="form-check-sign"></span> {{business.business_name}} ({{business.business_area}})
+                                    </label>
+                                </div>
+                                <!-- <div class="col-md-4 text-center">
+                                    {% if business.active_subscription == True %}
+                                        <span style="color: #00569d">Available</span>
+                                    {% endif %}
+                                </div> -->
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                        </div>
+                        </div>
+
+                        <div class="card col-md-12" style="width: 31rem;">
+                          <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Total Amount</h3>
+                                <label>Min Recharge: ₹<span id="transactional_recharge_amout"></span></label>
+                                {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <label>SGST (9%) CGST (9%) ₹<span id="transactional_recharge_amout_with_gst1"></span></label>
+                                <!-- <label>CGST (9%) <span id="transactional_recharge_amout_with_gst2"></span></label> -->
+                                {% else %}
+                                <label>IGST (18%): ₹<span id="transactional_recharge_amout_with_gst3"></span></label>
+                                {% endif %}
+                                <label>Total Cost: ₹<span id="total_transactional_amount"></span></label>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                        <div id="transactional_sms_business_check_error"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="key" value="{{ MERCHANT_KEY }}" />
+                    <input type="hidden" name="hash_string" value="" id="transactional_sms_hash_string"/>
+                    <input type="hidden" name="hash" value="" id="transactional_sms_hashh"/>
+                    <input type="hidden" name="posted" value="" id="transactional_sms_posted" />
+                    <input type="hidden" name="txnid" value="" id="transactional_sms_txnid"/>
+                    <input type="hidden" name="amount" value="" id="transactional_sms_amount"/>
+                    <input type="hidden" name="firstname" id="transactional_sms_firstname" value="{{ firstname }}" />
+                    <input type="hidden" name="productinfo" value="" id="transactional_sms_productinfo">
+                    <input type="hidden" name="email" value="{{email}}">
+                    <input type="hidden" name="phone" value="{{phone}}">
+                    <input type="hidden" name="surl" value="{{transactional_sms_surl}}">
+                    <input type="hidden" name="furl" value="{{transactional_sms_furl}}">
+                    <input type="hidden" name="udf1" value="" id="transactional_sms_udf1">
+                    <input type="hidden" name="udf2" value="" id="transactional_sms_udf2">
+                    <input type="hidden" name="udf3" value="" id="transactional_sms_udf3">
+                    <input type="hidden" name="udf4" value="" id="transactional_sms_udf4">
+                    <input type="hidden" name="udf5" value="" id="transactional_sms_udf5">
+                    <input type="hidden" name="udf6" value="" id="transactional_sms_udf6">
+                    <input type="hidden" name="subscription_id" value="" id="transactional_sms_subscription_id">
+                    <input type="submit" class="btn btn-primary" value="Buy">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form> 
+</div>
+
+
+<script type="text/javascript">
+
+    // transactional sms plan
+
+    $(".buyTransactionalSMSmodalBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+        var simple_amount = $(this).data("actual_transactional_amount");
+        var simple_amount_with_gst = $(this).data("transactional_gst_amount");
+        var final_total_amount = $(this).data("transactional_amount_with_gst");
+
+
+
+        $('input[name="business_check"]').each(function() {
+            this.checked = false;
+        });
+
+        $("#transactional_sms_udf5").val("");
+        $("#transactional_sms_subscription_id").val(plan_id);
+        $('#transactional_recharge_amout').empty().append(simple_amount);
+        $('#transactional_recharge_amout_with_gst1').empty().append(simple_amount_with_gst);
+        $('#transactional_recharge_amout_with_gst2').empty().append(simple_amount_with_gst);
+        $('#transactional_recharge_amout_with_gst3').empty().append(simple_amount_with_gst);
+        $('#total_transactional_amount').empty().append(final_total_amount);
+        $("#buyTransactionalSMSmodal").modal();
+    });
+
+    $(document).ready(function() {
+        $('.sms-business-checkbox').change(function() {
+
+            var ids = [];
+            $('input[type=checkbox]:checked').each(function () {
+                var id = $(this).val();
+                ids.push(id);
+            });
+
+            $("#transactional_sms_udf5").val(ids);
+
+            var business_ids = String($("#transactional_sms_udf5").val())
+
+            var plan_id = $("#transactional_sms_subscription_id").val();
+
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                url: "/get-transactional-sms-plan-by-id/" + plan_id + "/",
+                type: 'POST',
+                data: { csrfmiddlewaretoken: csrftoken, business_ids : business_ids},
+                success: function(data) {
+
+                    $("#transactional_sms_hashh").val(data['hashh']);
+                    $("#transactional_sms_posted").val(data['posted']);
+                    $("#transactional_sms_txnid").val(data['txnid']);
+                    $("#transactional_sms_hash_string").val(data['hash_string']);
+                    $("#transactional_sms_amount").val(data['amount']);
+                    $("#transactional_sms_productinfo").val(data['productinfo']);
+
+                    $("#transactional_sms_udf1").val(data['udf1']);
+                    $("#transactional_sms_udf2").val(data['udf2']);
+                    $("#transactional_sms_udf3").val(data['udf3']);
+                    $("#transactional_sms_udf4").val(data['udf4']);
+                    $("#transactional_sms_udf5").val(data['udf5']);
+                    $("#transactional_sms_udf6").val(data['udf6']);
+
+                    $("#transactional_sms_subscription_id").val(data['subscription_id']);
+
+                    $("#buyTransactionalSMSmodal").modal();
+
+                }
+            });
+
+        });
+    });
+
+    $("#transactional-sms-subscription-buy-form").validate({
+        rules: {
+            "transactional_sms_business_check": { 
+                required: true, 
+                minlength: 1
+            }
+        },
+        messages: {
+            "transactional_sms_business_check": "Please select at least one Business."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "transactional_sms_business_check")
+               $("#transactional_sms_business_check_error").html(error);
+        },
+    })
+
+
+   
+</script>
+
+<!-- NoActiveGreenBillSubscriptionModal -->
+
+<div class="modal fade" id="NoActiveGreenBillSubscriptionModal">
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center" style="color: red;">No Active Subscription</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>You don't have active Green Bill Subscription. Please purchase one and try again.</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form> 
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+
+{% block javascripts %}
+
+{% endblock javascripts %}

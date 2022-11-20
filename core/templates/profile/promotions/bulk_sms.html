@@ -1,0 +1,1099 @@
+{% extends "layouts/base.html" %}
+{% load custom_tags %}
+{% block title %} Bulk SMS {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+.table th, .table td{
+    padding: 5px !important;
+}
+</style>
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <div class="d-flex align-items-center" >
+                            <h4 class="card-title">Bulk SMS</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Promotions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bulk-sms/">Bulk SMS</a>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-round ml-auto smsBtn" data-toggle="modal" data-target="#myModal"
+                            data-owner_count="{{owner_count}}" 
+                            data-merchant_count="{{merchant_count}}" 
+                            data-customer_count="{{customer_count}}" 
+                            data-partner_count="{{partner_count}}"
+                            data-merchant_category_count_list_id = '{{merchant_category_count_list}}'>
+                                <i class="fa fa-plus"></i>
+                                Send SMS
+                            </button>
+                        </div>
+                    </div>
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                           
+                                <br><br>
+                                <div class="row">
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-hover">
+                                        <thead>
+                                            <tr>
+                                               <!-- <th>Sr. No.</th> -->
+                                                <th style="width:20%;">Date</th>
+                                                <th style="width:30% !important;">Sent To</th>
+                                                <th>Sms Type</th>
+                                                <th style="width:20%;">Sms Header</th>
+                                                <th style="width:25%">Action</th>
+                                              
+                                              
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for object in data %}
+                                            {% if object.o_sent_sms %}
+                                            <tr>
+                                               <!-- <td>{{forloop.counter}}</td> -->
+                                                <td>{{object.created_at|date:'d-m-Y'}} </td>
+                                                <td>
+                                                    {% if object.receiver_name != None %}
+                                                {{object.receiver_name}}
+                                                    {% endif %} </td>
+                                                     <td>{% if object.transactional %}
+                                                            {{object.transactional}}
+                                                        {% endif %}
+                                                    </td>
+                                                <td>
+                                                   
+                                                    {% if object.smsheader != None  %}
+                                                        {{object.smsheader}}
+                                                    {% endif %}
+                                               </td>
+                                                <!-- <td>{{object.message| safe}}</td> -->
+                                                <td>
+                                                                <button type="button" data-toggle="tooltip"
+                                                                data-target="#ViewCashMemoModal" title=""
+                                                                class="btn btn-link btn-primary btn-lg viewBtn"
+                                                                data-name="{{ object.name }}" data-date=" {{object.date|date:'d-m-Y'}}"
+                                                                data-message = "{{object.message}}"
+                                                                data-url="{{object.id}}" data-original-title="View SMS" style="padding-right: 18px;">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </button>                                        
+                                                                <button type="button" data-toggle="tooltip" data-target="" 
+                                                                title="Delete SMS"
+                                                                class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                                data-original-title="Delete Sms" data-url="{{object.id}}"
+                                                                data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                                                </button>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "Bulk SMS"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                       
+                                            <br><br>
+                                            <div class="row">
+                                            <div class="table-responsive">
+                                                <table id="add-row" class="display table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                           <!-- <th>Sr. No.</th> -->
+                                                            <th style="width:20%;">Date</th>
+                                                            <th>Sent To</th>
+                                                            <th style="width:20%;">Sms Header</th>
+                                                            <th style="width:20%">Action</th>
+                                                          
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        {% for object in data %}
+                                                        {% if object.o_sent_sms %}
+                                                        <tr>
+                                                            <!-- <td>{{forloop.counter}}</td> -->
+                                                            <td>{{object.created_at|date:'d-m-Y'}} </td>
+                                                            <td>
+                                                                {% if object.receiver_name != None %}
+                                                            {{object.receiver_name}}
+                                                                {% endif %} </td>
+                                                            <td>{{object.smsheader}}</td>
+                                                            <!-- <td>{{object.message| safe}}</td> -->
+                                                            <td>
+                                                                <button type="button" data-toggle="tooltip"
+                                                                data-target="#ViewCashMemoModal" title=""
+                                                                class="btn btn-link btn-primary btn-lg viewBtn"
+                                                                data-name="{{ object.name }}" data-date=" {{object.date|date:'d-m-Y'}}"
+                                                                data-message = "{{object.template}}"
+                                                                data-url="{{object.id}}" data-original-title="View Sms" style="padding-right: 18px;">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </button>                                        
+                                                                <button type="button" data-toggle="tooltip" data-target="" 
+                                                                title="Delete SMS"
+                                                                class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                                data-original-title="Delete Sms" data-url="{{object.id}}"
+                                                                data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ViewCashMemoModal" role="dialog">
+    <div class="modal-dialog">
+        
+       <div class="modal-content">
+        <div class="modal-header">
+            <h2>Notice</h2>
+           </div>
+           <div class="row" style="padding:20px;">
+               <div class="col-md-12">
+                   <h3>Message:</h3>
+        <p id="message_id">
+        </p>
+        </div>
+        </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+       </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog modal-lg" >
+      <!-- Modal content-->
+       <div class="col-md-12 " >
+           <div class="row" >
+           <div class="modal-content" >
+               <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Send SMS</h2>
+               </div>
+               <div class="row ">
+                <div class="col-md-1"></div>
+                <div class="col-md-10" style="border: none;">
+                    <form class="form-control" action="/bulk-sms/" method="POST" enctype="multipart/form-data" style="border: none;"
+                        id="bulk-mail-sms-form" name="bulk-mail-sms-form" autocomplete="off" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12" style="padding-left: 34px; display: none;">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Send Through</label>
+                                        <div class="col-md-3">
+                                            <input type="hidden" name="sentnotice" id="sms" value="sms"  >
+                                            <b>SMS</b>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="sentnotice" value="sent_mail">
+                                            <b>Email</b>
+                                        </div>
+                                       
+                                    </div>
+                                    <div id="radioError"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding-left: 32px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                    <label>Sms Type <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="transactional" value="transactional">
+                                        <b>Transactional</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="transactional" value="promotional">
+                                        <b>Promotional</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding-left: 32px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                    <label>Select <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="group" name="selection" value="">
+                                        <b>Group</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="category" name="selection" value="">
+                                        <b>Category</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="custom" name="selection" value="">
+                                        <b>Custom</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card-body " id="group-list" style="display: none;">
+                                    <input type="checkbox" name="checkso" id="checkso"
+                                        value="owner">
+                                        <b>Owner Staff</b><br>
+                                        <input type="checkbox" name="checksm" id="checksm"
+                                        value="merchant">
+                                        <b>Merchant</b><br>
+                                        <input type="checkbox" name="checksc" id="checksc"
+                                        value="customer">
+                                        <b>Customer</b><br>
+                                        <input type="checkbox" name="checksp" id="checksp"
+                                        value="partner">
+                                        <b>Partner</b><br>
+                                    
+                                   
+                                </div>
+                                <div class="card-body " id="category-list" style="display: none;">
+                                    {% for object in category|dictsort:"business_category_name" %}
+                                    <input type="checkbox" name="categorychecks" 
+                                        value="{{object.id}}">
+                                    <b>&nbsp;{{object}}</b><br>
+                                    {% endfor %}
+                                   
+                                </div>
+                                <div class="col-md-12" style="padding-left: 32px;border: 1px;">
+                                    <div class="form-group" id="custom-options" style="display: none;">
+                                        <div class="row">
+                                        <label>Select Custom Options <span style="color: red;">*</span> </label>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="checksc1" id="upload-file"
+                                            value="">
+                                            <b>Upload File</b>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" id="contact" name="checksc1" value="">
+                                            <b>Copy-Paste</b>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group" id="upload-file-options" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body" id="choose-file">
+                                                    <input type="file" id="myfile" name="myfile">
+                                                </div>
+                                                <div id="choose-file-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                                   Note: Please Choose Valid CSV File.
+                                                </div>
+                                                <div id="groupcheckError" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                                            </div>
+                                            <div class="col-md-4" style="margin-top: 22px;">
+                                                <!-- <button class="form-control" style="padding:10px;background: white;border: 1px solid #ccc;margin-top: 10px;"> --><a href="/download-sample-contact-file/" style="color: #495057;"><i class="fa fa-download" aria-hidden="true"> <span style="font-weight: 600;font-family: Lato,sans-serif;">Download Sample File</span></i></a><!-- </button> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" id="custom-list" style="display: none;" >
+                                    <textarea type="text" name="custom-no" class="md-textarea form-control mobile" placeholder="Custom List" 
+                                  id="custom_list_number" name="custom_list_number"  style="width: 90%; height:200px;"></textarea>
+                                </div>
+                                <div id="custom-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                   Note: Please Enter every number comma seperated.
+                                </div>
+                                <div id="groupcheckError" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                            </div>
+                            <div class="col-md-12"  id="smsheader">
+                                <div class="form-group">
+                                    <label>SMS Header<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-12">
+                                       
+                                                    <select class="form-control mobile" name="smsheader"
+                                                        id="smsheader" placeholder="Template Choice" 
+                                                         value="">
+                                                        <option value="0">Sms Header</option>
+                                                        <option value="GBBILL">GBBILL </option>
+                                                        <option value="GBILLZ">GBILLZ</option>
+                                                        <option value="GBPUMP">GBPUMP</option>
+                                                        <option value="GBPARK">GBPARK</option>
+                                                        <option value="GRBILL">GRBILL</option>
+                                                        <option value="GNBILL">GNBILL</option>
+                
+                                                    </select>
+                                
+                                    </div>
+                                    <div id="noticetitleError"></div>
+                                </div>
+                                <!-- <div style="padding-left: 12px;">
+                                    <a  data-toggle="modal" data-target="#headerModal" style="text-decoration: underline;">
+                                        Request a header
+                                    </a>
+                                    
+                                </div> -->
+                            </div>
+                            <div class="col-md-12"  id="template">
+                                <div class="form-group">
+                                    <label>Template<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-6">
+                                        <select class="form-control mobile" name="template_id"
+                                        id="template_id" placeholder="Template Choice" 
+                                         value="">
+                                        <option value="0">Template</option>
+                                        <option value="1">1. Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now. </option>
+                                        <option value="2">2. {#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</option>
+                                        <option value="3">3. {#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</option>
+                                        <option value="4">4. # Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</option>
+                                        <option value="5">5. # Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</option>
+                                        <option value="6">6. Hey Green Bill user to view or download your receipt click on link {#var#}.</option>
+                                        <option value="7">7. Hey Green Bill user to view or download your cash memo click on link {#var#}.</option>
+                                        <option value="8">8. # Dear Green Bill user, Use {#var#} as OTP to reset your password.</option>
+                                        <option value="9">9. Dear Green Bill user, Use {#var#} as OTP to reset your password.</option>
+                                        <option value="10">10. # Dear Green Bill user, use {#var#} as OTP for your registration.</option>
+                                        <option value="11">11. Dear Green Bill user, use {#var#} as OTP for your registration.</option>
+                                        <option value="12">12. Dear Merchant, your membership has expired. We hope you will take the time to renew your membership & remain part of GreenBill. Click here {#var#} to renew.</option>
+                                        <option value="13">13. Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</option>
+                                        <option value="14">14. Your GreenBill membership expires within a week. Renew now and get {#var#} off on your subscription. RENEW NOW!!! {#var#}</option>
+                                        <option value="15">15. Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</option>
+                                        <option value="16">16. Thank you for saving paper. Here is your digital bill https://bit.ly/3fwlvqt. To view all your bills, download Green Bill App.</option>
+                                        <option value="17">17. Thank you for choosing GreenBill as your Digital Billing Buddy. Please visit our website or download GreenBill Merchant App to login.</option>
+                                        <option value="18">18. Thank you for contacting Green Bill, tap the below link for your digital bill https://bit.ly/3fwlvqt</option>
+                                        <option value="19">19. Thank you for registering on Green Bill. Welcome to the Green Bill Community. Feel free to get in touch with us at www.greenbill.in</option>
+                                        <option value="20">20. Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</option>
+                                        <option value="21">21. Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</option>
+                                        <option value="22">22. Thank you for choosing GreenBill as your digital billing buddy. Your registration is complete please
+                                            visit website or download GB Merchant App to login</option>
+
+                                    </select>
+                                    </div>
+                                    <div id="noticetitleError"></div>
+                                </div>
+                                <!-- <div style="padding-left: 12px;">
+                                    <a  data-toggle="modal" data-target="#templateModal" style="text-decoration: underline;">
+                                        Request a Template
+                                    </a>
+                                </div> -->
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Message<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-6">
+                                        <textarea type="text" class="md-textarea form-control mobile" name="message" id="message"
+                                            placeholder="Message" value="" ></textarea>
+                                    </div>
+                                    <div id="noticetitleError"></div>
+                                </div>
+                            </div>
+                            <div class="row" style="padding-left: 20px; padding-top: 12px;">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                <label>Total Word Count</label>
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control mobile" name="word_count" id="word_count"
+                                   placeholder="00" value="" />
+                                </div>
+                                <div class="col-md-1"></div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                <label>Total number of Recipient</label>
+                               
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <input type="text" class="form-control mobile" name="receipent_count" id="receipent_count"
+                                  style="background-color:transparent; font-size:medium; box-shadow: none; font-weight: bold;" placeholder="00" value="" readonly /> 
+                                  
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <div class="text-center mt-3 mb-3">
+                                    <button type="submit" class="btn btn-primary" id="bulk-mail-sms-form-btn">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-1"></div>
+        </form>
+            </div>
+       </div>
+       </div>
+        </div>
+        </div>
+ </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+<script>
+$(document).ready(function(){
+    $('input[name="categorychecks"]').on('change',function(){
+        // var category_value = $('input[name="categorychecks"]').val();
+        var category_value = document.getElementsByName('categorychecks').value;
+        console.log('category values')
+        console.log(category_value)
+
+        checkedCheckboxes = []
+        $('input[name="categorychecks"]').each(function(){
+            if ($(this).is(':checked')) {
+                checkedCheckboxes.push($(this).val())  
+                console.log('values of')
+                console.log(checkedCheckboxes)
+            }
+        }) 
+        console.log(checkedCheckboxes)
+        $.ajax({
+            url :"/category-count/",
+            type: "POST",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'category_count':String(checkedCheckboxes) },
+            success: function(data){
+                console.log('checkedCheckboxes');
+                console.log(data.total_category_count);
+                $('#receipent_count').val(data.total_category_count);
+            }
+        })
+    })
+
+})
+</script>
+
+
+<script>
+    $(document).ready(function() {
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'group') {
+            $('#group-list').show();           
+       }
+
+       else {
+            $('#group-list').hide();   
+       }
+   });
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'category') {
+            $('#category-list').show();           
+       }
+
+       else {
+            $('#category-list').hide();   
+       }
+   });
+
+   // $('input[type="radio"]').click(function() {
+   //     if($(this).attr('id') == 'custom') {
+   //          $('#custom-list').show();     
+   //          $('#custom-warning').show();      
+   //     }
+
+   //     else {
+   //          $('#custom-list').hide();  
+   //          $('#custom-warning').hide();   
+   //     }
+   // });
+
+
+$('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'custom') {
+            $('#custom-options').show();     
+            // $('#custom-warning').show();      
+       }
+       
+       else {
+            $('#custom-options').hide();  
+            // $('#custom-warning').hide();  
+
+       }
+   });
+
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'upload-file') {
+            $('#custom-options').show();
+            $('#upload-file-options').show();     
+            $('#choose-file-warning').show();      
+       }
+
+       else {
+            $('#upload-file-options').hide();  
+            $('#choose-file-warning').hide();   
+       }
+   });
+
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'contact') {
+            $('#custom-options').show();
+            $('#custom-list').show();     
+            $('#custom-warning').show();      
+       }
+
+       else {
+            $('#custom-list').hide();  
+            $('#custom-warning').hide();   
+       }
+   });
+
+
+
+
+
+});
+
+ 
+$('#template_id').change(function(){
+  var source = $('#template_id').val();
+  if(source == 1){
+    $('#message').val( 'Hey Green Bill user, {var} has shared payment link for #var#. Click link #var# to pay now.');
+  }
+  if(source == 2){
+    $('#message').val( '{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}');
+  }
+  if(source == 3){
+    $('#message').val( '{#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#} ');
+  }
+  if(source == 4){
+    $('#message').val( '# Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}');
+  }
+  if(source == 5){
+    $('#message').val( '# Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}');
+  }
+  if(source == 6){
+    $('#message').val( 'Hey Green Bill user to view or download your receipt click on link {#var#}.');
+  }
+  if(source == 7){
+    $('#message').val( 'Hey Green Bill user to view or download your cash memo click on link {#var#}.');
+  }
+  if(source == 8){
+    $('#message').val( '# Dear Green Bill user, Use {#var#} as OTP to reset your password.');
+  }
+  if(source == 9){
+    $('#message').val( 'Dear Green Bill user, Use {#var#} as OTP to reset your password.');
+  }
+  if(source == 10){
+    $('#message').val( ' # Dear Green Bill user, use {#var#} as OTP for your registration.');
+  }
+  if(source == 11){
+    $('#message').val( 'Dear Green Bill user, use {#var#} as OTP for your registration.');
+  }
+  if(source == 12){
+    $('#message').val( 'Dear Merchant, your membership has expired. We hope you will take the time to renew your membership & remain part of GreenBill. Click here {#var#} to renew.');
+  }
+  if(source == 13){
+    $('#message').val( 'Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</option>');
+  }
+  if(source == 14){
+    $('#message').val( 'Your GreenBill membership expires within a week. Renew now and get {#var#} off on your subscription. RENEW NOW!!! {#var#}');
+  }
+  if(source == 15){
+    $('#message').val( 'Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill');
+  }
+  if(source == 16){
+    $('#message').val( 'Thank you for saving paper. Here is your digital bill https://bit.ly/3fwlvqt. To view all your bills, download Green Bill App.');
+  }
+  if(source == 17){
+    $('#message').val( 'Thank you for choosing GreenBill as your Digital Billing Buddy. Please visit our website or download GreenBill Merchant App to login.');
+  }
+  if(source == 18){
+    $('#message').val( 'Thank you for contacting Green Bill, tap the below link for your digital bill https://bit.ly/3fwlvqt');
+  }
+  if(source == 19){
+    $('#message').val( 'Thank you for registering on Green Bill. Welcome to the Green Bill Community. Feel free to get in touch with us at www.greenbill.in');
+  }
+  if(source == 20){
+    $('#message').val( 'Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App');
+  }
+  if(source == 21){
+    $('#message').val( 'Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.');
+  }
+  if(source == 22){
+    $('#message').val( 'Thank you for choosing GreenBill as your digital billing buddy. Your registration is complete please visit website or download GB Merchant App to login');
+  }
+
+//   $('#message').val( source);
+});
+
+$("#template_id").change(function(){
+        var words = $.trim($("#message").val());
+        $('#word_count').val(words.length)
+    });
+    $('#message').keyup(updateCount);
+    $('#message').keydown(updateCount);
+
+    function updateCount() {
+    var cs = $(this).val().length;
+    console.log('cs',cs)
+    $('#word_count').val(cs);
+    }
+
+    $(".smsBtn").on("click", function () {
+        var owner_count = $(this).data("owner_count");
+        var merchant_count = $(this).data('merchant_count');
+        var customer_count = $(this).data('customer_count');
+        var partner_count = $(this).data('partner_count');
+        var merchant_category_count_list = $(this).data('merchant_category_count_list_id');
+        console.log(owner_count);
+        console.log(merchant_count);
+        console.log(customer_count);
+        console.log(partner_count)
+        console.log(merchant_category_count_list);
+        
+        // if ($('input[name="checkso"]').is(":checked")){
+        //     console.log('inside checko')
+        // }
+        var sms_count = 0
+        $('#checkso').change(function(){
+            if ($(this).is(':checked')){
+                console.log('checkso');
+                sms_count = sms_count + owner_count;
+                console.log('sms_count',sms_count);
+            }else{
+                sms_count = sms_count - owner_count;
+                console.log('sms_count4',sms_count)
+            }
+            $('#receipent_count').val(sms_count);
+            console.log('sms count',sms_count)
+        })
+
+        $('#checksm').change(function(){
+            if ($(this).is(':checked')){
+                console.log('checksm')
+                sms_count = sms_count + merchant_count;
+                console.log('sms_count2',sms_count);
+            }else{
+                sms_count = sms_count - merchant_count;
+                console.log('sms_count3',sms_count);
+            }
+            
+            $('#receipent_count').empty().val(sms_count);
+        })
+
+        $('#checksc').change(function(){
+            if ($(this).is(':checked')){
+                console.log('checksc');
+                sms_count = sms_count + customer_count;
+                console.log('sms_count2',sms_count);
+            }else{
+                sms_count = sms_count - customer_count;
+                console.log('sms_count3',sms_count);
+            }
+            
+            $('#receipent_count').val(sms_count);
+        })
+
+        $('#checksp').change(function(){
+            if ($(this).is(':checked')){
+                console.log('checksp');
+                sms_count = sms_count + partner_count;
+                console.log('sms_count2',sms_count);
+            }else{
+                sms_count = sms_count - partner_count;
+                console.log('sms_count3',sms_count);
+            }
+            
+            $('#receipent_count').val(sms_count);
+        })
+        
+        // custom_list_number
+
+        
+        $('#custom_list_number').keyup(function(e){
+        var count = $(this).val().split(',').length;
+        $('#count').html(count);
+        console.log('console',count)
+
+            $('#receipent_count').val(count);
+        if(count > 4)
+            e.preventDefault();
+});
+
+        $("#myModal").modal();
+       
+    })
+   
+   
+//     owner_count
+// merchant_count
+// customer_count
+// partner_count
+
+
+</script>
+
+
+
+<script>
+    $(".viewBtn").on("click", function () {
+
+        var message = $(this).data('message');
+
+         $('#message_id').empty().append(message);
+
+        $("#ViewCashMemoModal").modal();
+    });
+
+
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-bulk-mail/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr1').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Sms has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+</script>
+
+
+
+<script type="text/javascript">
+
+
+$("input[name='sentnotice']").click(function () {
+    $('#smsheader').css('display', ($(this).val() === 'sms') ? 'block':'none');
+    $('#template').css('display', ($(this).val() === 'sms') ? 'block':'none');
+});
+
+    </script>
+
+<script>
+
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(document).mousemove(function(event){
+        if(($("input[name*='checkso']:checked").length) > 0 || ($("input[name*='checksm']:checked").length) > 0 || ($("input[name*='checksc']:checked").length) > 0 || ($("input[name*='checksp']:checked").length) > 0  || ($("input[name*='categorychecks']:checked").length) > 0 || ($("input[name*='individual']:checked").length) > 0 || ($("input[id*='custom']:checked").length) > 0)
+        // || ($("input[name*='group_merchant']:checked").length) > 0 || ($("input[name*='group_customer']:checked").length) > 0 || ($("input[name*='group_partner']:checked").length) > 0 
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', false);
+            $('#groupcheckError').empty();
+
+            // $("#groupcheckError").html("Please select Group or Individual.");  
+        }
+        else
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', true);
+            $('#groupcheckError').empty().append("<b>Note: Please select from either the group or category to send the notice to respective user.<b>");
+        }
+
+      
+        // if(($("input[name*='checks']:checked").length) > 0)
+        //     {
+                
+        //         $("input[name='individual']:checkbox").prop('checked',false);
+        //     } 
+
+
+          // else(($("input[name*='individual']:checked").length) > 0)
+          //   {
+                
+          //       $("input[name='checks']:checkbox").prop('checked',false);
+          //   } 
+
+    });
+   
+
+ 
+
+  $(document).change(function(event){ 
+  if(($("input[name*='checks']:checked").length) > 0)
+    {
+        
+        $("input[name='individual']:checkbox").prop('checked',false);
+    }   
+ });
+
+
+
+$(document).mousemove(function(event){
+    if(($("input[name*='checks']:checked").length) > 0)
+    {
+        console.log("ll")
+        $("input[name='individual']:checkbox").prop('checked',false);
+    } 
+});
+
+    // $.validator.addMethod("checkbox_check", function (value, element) {
+    //     console.log('hhjhj')
+    //     if (true) {
+    //       return true;   // PASS validation 
+    //     } else {
+    //       return false;  // FAIL validation
+    //     };
+    // }, "Please enter valid IFSC Code.");
+
+
+
+    $("#bulk-mail-sms-form").validate({
+
+        rules: {
+            notice_title: {
+                required: true,
+            },
+            message: {
+                required: true,
+            },
+            "individual": {
+               required: true, 
+               minlength: 1 
+            },
+            "sentnotice": { 
+                required: true, 
+                minlength: 1,
+            },
+            
+        },
+        messages: {
+            notice_title: {
+                required: "Title is Required",
+            },
+            message: {
+                required: "Message is Required",
+            },
+            // "checks": "Please select at least one checkbox."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "sentnotice")
+                $("#checkboxError").html(error);
+            if (element.attr("name") == "message")
+                $("#messageError").html(error);
+            if (element.attr("name") == "notice_title")
+                $("#noticetitleError").html(error);
+            // if (element.attr("name") == "individual")
+            //     $("#groupcheckError").html(error);      
+        }
+    });
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+<style>
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

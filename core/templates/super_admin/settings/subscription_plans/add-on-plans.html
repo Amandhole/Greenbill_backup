@@ -1,0 +1,2309 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Add On's Plans {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+<div class="modal fade" id="create-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form method="POST" action="/get-add-on-plan/" class="form-control" name="subscription_form">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Create Add On's</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="add_on_id" value="">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Add On's Name<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" maxlength="30" name="add_on_name"
+                                        placeholder="Add On's Name" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <hr style="margin: 0px"> -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per SMS Cost</label>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="row">
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_bill_cost" placeholder="Cost" id="per_bill_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_receipt_cost" placeholder="Cost" id="per_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_cash_memo_cost" placeholder="Cost" id="per_cash_memo_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-6">
+                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per Digital Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_bill_cost" placeholder="Cost" id="per_digital_bill_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_receipt_cost" placeholder="Cost" id="per_digital_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_cash_memo_cost" placeholder="Cost" id="per_digital_cash_memo_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Recharge Amount<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount1" id="recharge_amount1" 
+                                        placeholder="Recharge Amount 1" value="" required min="1" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <br>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount2" id="recharge_amount2" 
+                                        placeholder="Recharge Amount 2" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <br>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount3" id="recharge_amount3" 
+                                        placeholder="Recharge Amount 3" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount4" id="recharge_amount4" 
+                                        placeholder="Recharge Amount 4" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount5" id="recharge_amount5" 
+                                        placeholder="Recharge Amount 5" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount6" id="recharge_amount6" 
+                                        placeholder="Recharge Amount 6" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount7" id="recharge_amount7" 
+                                        placeholder="Recharge Amount 7" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount8" id="recharge_amount8" 
+                                        placeholder="Recharge Amount 8" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount9" id="recharge_amount9" 
+                                        placeholder="Recharge Amount 9" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount10" id="recharge_amount10" 
+                                        placeholder="Recharge Amount 10" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount11" id="recharge_amount11" 
+                                        placeholder="Recharge Amount 11" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount12" id="recharge_amount12" 
+                                        placeholder="Recharge Amount 12" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount13" id="recharge_amount13" 
+                                        placeholder="Recharge Amount 13" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount14" id="recharge_amount14" 
+                                        placeholder="Recharge Amount 14" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount15" id="recharge_amount15" 
+                                        placeholder="Recharge Amount 15" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount16" id="recharge_amount16" 
+                                        placeholder="Recharge Amount 16" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount17" id="recharge_amount17" 
+                                        placeholder="Recharge Amount 17" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount18" id="recharge_amount18" 
+                                        placeholder="Recharge Amount 18" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount19" id="recharge_amount19" 
+                                        placeholder="Recharge Amount 19" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="recharge_amount20" id="recharge_amount20" 
+                                        placeholder="Recharge Amount 20" value="" min="1"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Create">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Add On's&nbsp;</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Subscription Plans</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/get-add-on-plan/">Add On's</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+
+                                {% if is_superuser == True %}
+                                    <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-subscription-modal">
+                                        <i class="fa fa-plus"></i>
+                                        &nbsp;Create Add On's
+                                    </button>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.module_id|lower == "Subscription Plans"|lower and actions.feature_id|lower == "Add On's"|lower %}
+                                            {% if actions.add_permission == "1" %}
+                                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#create-subscription-modal">
+                                                    <i class="fa fa-plus"></i>
+                                                    &nbsp;Create Add On's
+                                                </button>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-6 col-md-3">
+                          <div class="card card-stats card-round">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue
+                                  ">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Add On's Plan</p>
+                                    <h4 class="card-title">{{count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                   <!-- <div class="col-md-4">
+                    <h2>Total Subscription Plan :- {{count}} </h2>
+                   </div>
+ -->                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="SMSsubscription" class="display table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Add On's Name</th>
+                                                    <!-- <th>Per Bill Cost</th>
+                                                    <th>Per Receipt Cost</th>      
+                                                    <th>Per Cash Memo Cost</th>
+                                                    <th>Per Digital Bill Cost</th>
+                                                    <th>Per Digital Bill Cost</th>
+                                                    <th>Per Digital Cash Memo Cost</th> -->
+                                                    <!-- <th>Recharge Amount</th> -->
+                                                    <th align="center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for add_on_plan in all_add_on %}
+                                                <tr>
+                                                    <td>
+                                                        {{ forloop.counter }}
+                                                    </td>
+                                                    <td>
+                                                        {{add_on_plan.add_on_name}}
+                                                    </td>
+                                                    <!-- <td>
+                                                        {{ add_on_plan.per_bill_cost }}
+                                                    </td>
+                                                    <td>
+                                                        {{ add_on_plan.per_receipt_cost }}
+                                                    </td>
+                                                    <td>
+                                                        {{ add_on_plan.per_cash_memo_cost }}
+                                                    </td>
+                                                    <td>
+                                                        {{ add_on_plan.per_digital_bill_cost }}
+                                                    </td>
+                                                    <td>
+                                                        {{ add_on_plan.per_digital_receipt_cost }}
+                                                    </td>
+                                                    <td>
+                                                        {{ add_on_plan.per_digital_cash_memo_cost }}
+                                                    </td> -->
+                                                    <!-- <td>
+                                                        ₹ {{ add_on_plan.recharge_amount|floatformat:2 }}
+                                                    </td> -->
+                                                    <td>
+                                                        <div class="form-button-action">
+
+                                                            <button type="button" data-toggle="tooltip" title=""
+                                                            class="btn btn-link btn-primary btn-lg ViewAddOnBtn"
+                                                            data-original-title="View Subscription"
+                                                            data-id="{{add_on_plan.id}}"
+                                                            id="view_sms_subscription">
+                                                            <i class="fa fa-eye"></i>
+                                                            </button>
+
+                                                            <!-- <button type="button" data-toggle="tooltip" title=""
+                                                                class="btn btn-link btn-primary btn-lg EditSubscriptionBtn"
+                                                                data-original-title="Edit Subscription"
+                                                                data-id="{{add_on_plan.id}}"
+                                                                id="edit_sms_subscription">
+                                                                <i class="fa fa-edit"></i>
+                                                            </button> -->
+
+                                                             {% if add_on_plan.is_active == True %}
+                                                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DisablePromotionSubscriptionBtn" id="delete_role_btn" data-id='{{add_on_plan.id}}' data-original-title="Disable Subscription" id="delete_sms_subscription">
+                                                                        <i class="fas fa-times-circle"></i>
+                                                                    </button>
+                                                                {% endif %}
+
+                                                                {% if add_on_plan.is_active == False %}
+                                                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary EnablePromotionSubscriptionBtn" id="delete_role_btn" data-id='{{add_on_plan.id}}' data-original-title="Enable Subscription" id="delete_sms_subscription">
+                                                                            <i class="far fa-check-circle"></i>
+                                                                    </button>
+                                                                {% endif %}
+
+                                                            <!-- <button type="button" data-toggle="tooltip" title=""
+                                                                class="btn btn-link btn-danger DeleteSmsSubscriptionBtn"
+                                                                id="delete_role_btn" data-id='{{add_on_plan.id}}'
+                                                                data-original-title="Delete Subscription"
+                                                                id="delete_sms_subscription">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button> -->
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Subscription Plans"|lower and actions.feature_id|lower == "Add On's"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="table-responsive">
+                                                    <table id="SMSsubscription" class="display table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No.</th>
+                                                                <th>Add On's Name</th>
+                                                                <!-- <th>Per Bill Cost</th>
+                                                                <th>Per Receipt Cost</th>      
+                                                                <th>Per Cash Memo Cost</th>
+                                                                <th>Per Digital Bill Cost</th>
+                                                                <th>Per Digital Bill Cost</th>
+                                                                <th>Per Digital Cash Memo Cost</th> -->
+                                                                <!-- <th>Recharge Amount</th> -->
+                                                                <th align="center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            {% for add_on_plan in all_add_on %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ forloop.counter }}
+                                                                </td>
+                                                                <td>
+                                                                    {{add_on_plan.add_on_name}}
+                                                                </td>
+                                                                <!-- <td>
+                                                                    {{ add_on_plan.per_bill_cost }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ add_on_plan.per_receipt_cost }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ add_on_plan.per_cash_memo_cost }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ add_on_plan.per_digital_bill_cost }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ add_on_plan.per_digital_receipt_cost }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ add_on_plan.per_digital_cash_memo_cost }}
+                                                                </td> -->
+                                                                <!-- <td>
+                                                                    ₹ {{ add_on_plan.recharge_amount|floatformat:2 }}
+                                                                </td> -->
+                                                                <td>
+                                                                    <div class="form-button-action">
+
+                                                                        <button type="button" data-toggle="tooltip" title=""
+                                                                        class="btn btn-link btn-primary btn-lg ViewAddOnBtn"
+                                                                        data-original-title="View Subscription"
+                                                                        data-id="{{add_on_plan.id}}"
+                                                                        id="view_sms_subscription">
+                                                                        <i class="fa fa-eye"></i>
+                                                                        </button>
+
+                                                                        <!-- <button type="button" data-toggle="tooltip" title=""
+                                                                            class="btn btn-link btn-primary btn-lg EditSubscriptionBtn"
+                                                                            data-original-title="Edit Subscription"
+                                                                            data-id="{{add_on_plan.id}}"
+                                                                            id="edit_sms_subscription">
+                                                                            <i class="fa fa-edit"></i>
+                                                                        </button> -->
+
+                                                                         {% if add_on_plan.is_active == True %}
+                                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger DisablePromotionSubscriptionBtn" id="delete_role_btn" data-id='{{add_on_plan.id}}' data-original-title="Disable Subscription" id="delete_sms_subscription">
+                                                                                    <i class="fas fa-times-circle"></i>
+                                                                                </button>
+                                                                            {% endif %}
+
+                                                                            {% if add_on_plan.is_active == False %}
+                                                                                <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary EnablePromotionSubscriptionBtn" id="delete_role_btn" data-id='{{add_on_plan.id}}' data-original-title="Enable Subscription" id="delete_sms_subscription">
+                                                                                        <i class="far fa-check-circle"></i>
+                                                                                </button>
+                                                                            {% endif %}
+
+                                                                        <!-- <button type="button" data-toggle="tooltip" title=""
+                                                                            class="btn btn-link btn-danger DeleteSmsSubscriptionBtn"
+                                                                            id="delete_role_btn" data-id='{{add_on_plan.id}}'
+                                                                            data-original-title="Delete Subscription"
+                                                                            id="delete_sms_subscription">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button> -->
+
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit SMS subscription plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="edit-subscription-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form method="POST" class="form" name="edit_subscription_form" id="edit_subscription_form">
+            {% csrf_token %}
+            <input type="hidden" name="add_on_id" id="edit_add_on_id" value="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Subscription</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Add On's Name<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="add_on_name"
+                                        placeholder="Add On's Name" value="" id="edit_add_on_name" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per SMS Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_bill_cost" placeholder="Cost" id="edit_per_bill_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_receipt_cost" placeholder="Cost" id="edit_per_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_cash_memo_cost" placeholder="Cost" id="edit_per_cash_memo_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                             <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Per Digital Cost</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Bill<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_bill_cost" placeholder="Cost" id="edit_per_digital_bill_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Receipt<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_receipt_cost" placeholder="Cost" id="edit_per_digital_receipt_cost" value="" required min="0"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Cash Memo<span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" class="form-control" name="per_digital_cash_memo_cost" placeholder="Cost" id="edit_per_digital_cash_memo_cost" value=""
+                                                required min="0"/>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin: 0px">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Recharge Amount<span style="color: red;"> *</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" name="recharge_amount"
+                                        placeholder="Recharge Amount" id="edit_recharge_amount" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="edit_sms_subscription_form_submit_btn" type="submit" class="btn btn-primary" value="Save"
+                        data-id="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $("#recharge_amount2").prop("readonly", true);
+        $("#recharge_amount3").prop("readonly", true);
+        $("#recharge_amount4").prop("readonly", true);
+        $("#recharge_amount5").prop("readonly", true);
+        $("#recharge_amount6").prop("readonly", true);
+        $("#recharge_amount7").prop("readonly", true);
+        $("#recharge_amount8").prop("readonly", true);
+        $("#recharge_amount9").prop("readonly", true);
+        $("#recharge_amount10").prop("readonly", true);
+        $("#recharge_amount11").prop("readonly", true);
+        $("#recharge_amount12").prop("readonly", true);
+        $("#recharge_amount13").prop("readonly", true);
+        $("#recharge_amount14").prop("readonly", true);
+        $("#recharge_amount15").prop("readonly", true);
+        $("#recharge_amount16").prop("readonly", true);
+        $("#recharge_amount17").prop("readonly", true);
+        $("#recharge_amount18").prop("readonly", true);
+        $("#recharge_amount19").prop("readonly", true);
+        $("#recharge_amount20").prop("readonly", true);
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount1").keyup(function () {
+            var amount1 = $('#recharge_amount1').val();
+            if (amount1.length == 0) {
+                $("#recharge_amount2").prop("readonly", true);
+                $('#recharge_amount2').val("")
+
+                $("#recharge_amount3").prop("readonly", true);
+                $('#recharge_amount3').val("")
+
+                $("#recharge_amount4").prop("readonly", true);
+                $('#recharge_amount4').val("")
+
+                $("#recharge_amount5").prop("readonly", true);
+                $('#recharge_amount5').val("")
+
+                $("#recharge_amount6").prop("readonly", true);
+                $('#recharge_amount6').val("")
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount2").prop("readonly", false);
+                $("#recharge_amount3").prop("readonly", true);
+                $("#recharge_amount4").prop("readonly", true);
+                $("#recharge_amount5").prop("readonly", true);
+                $("#recharge_amount6").prop("readonly", true);
+                $("#recharge_amount7").prop("readonly", true);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount2").keyup(function () {
+            var amount2 = $('#recharge_amount2').val();
+            if (amount2.length == 0) {
+
+                $("#recharge_amount3").prop("readonly", true);
+                $('#recharge_amount3').val("")
+
+                $("#recharge_amount4").prop("readonly", true);
+                $('#recharge_amount4').val("")
+
+                $("#recharge_amount5").prop("readonly", true);
+                $('#recharge_amount5').val("")
+
+                $("#recharge_amount6").prop("readonly", true);
+                $('#recharge_amount6').val("")
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount3").prop("readonly", false);
+                $("#recharge_amount4").prop("readonly", true);
+                $("#recharge_amount5").prop("readonly", true);
+                $("#recharge_amount6").prop("readonly", true);
+                $("#recharge_amount7").prop("readonly", true);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount3").keyup(function () {
+            var amount3 = $('#recharge_amount3').val();
+            if (amount3.length == 0) {
+
+                $("#recharge_amount4").prop("readonly", true);
+                $('#recharge_amount4').val("")
+
+                $("#recharge_amount5").prop("readonly", true);
+                $('#recharge_amount5').val("")
+
+                $("#recharge_amount6").prop("readonly", true);
+                $('#recharge_amount6').val("")
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount4").prop("readonly", false);
+                $("#recharge_amount5").prop("readonly", true);
+                $("#recharge_amount6").prop("readonly", true);
+                $("#recharge_amount7").prop("readonly", true);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount4").keyup(function () {
+            var amount4 = $('#recharge_amount4').val();
+            if (amount4.length == 0) {
+
+                $("#recharge_amount5").prop("readonly", true);
+                $('#recharge_amount5').val("")
+
+                $("#recharge_amount6").prop("readonly", true);
+                $('#recharge_amount6').val("")
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount5").prop("readonly", false);
+                $("#recharge_amount6").prop("readonly", true);
+                $("#recharge_amount7").prop("readonly", true);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount5").keyup(function () {
+            var amount5 = $('#recharge_amount5').val();
+            if (amount5.length == 0) {
+
+                $("#recharge_amount6").prop("readonly", true);
+                $('#recharge_amount6').val("")
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount6").prop("readonly", false);
+                $("#recharge_amount7").prop("readonly", true);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount6").keyup(function () {
+            var amount6 = $('#recharge_amount6').val();
+            if (amount6.length == 0) {
+
+                $("#recharge_amount7").prop("readonly", true);
+                $('#recharge_amount7').val("")
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount7").prop("readonly", false);
+                $("#recharge_amount8").prop("readonly", true);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount7").keyup(function () {
+            var amount7 = $('#recharge_amount7').val();
+            if (amount7.length == 0) {
+
+                $("#recharge_amount8").prop("readonly", true);
+                $('#recharge_amount8').val("")
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount8").prop("readonly", false);
+                $("#recharge_amount9").prop("readonly", true);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount8").keyup(function () {
+            var amount8 = $('#recharge_amount8').val();
+            if (amount8.length == 0) {
+
+                $("#recharge_amount9").prop("readonly", true);
+                $('#recharge_amount9').val("")
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount9").prop("readonly", false);
+                $("#recharge_amount10").prop("readonly", true);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount9").keyup(function () {
+            var amount9 = $('#recharge_amount9').val();
+            if (amount9.length == 0) {
+
+                $("#recharge_amount10").prop("readonly", true);
+                $('#recharge_amount10').val("")
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount10").prop("readonly", false);
+                $("#recharge_amount11").prop("readonly", true);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount10").keyup(function () {
+            var amount10 = $('#recharge_amount10').val();
+            if (amount10.length == 0) {
+
+                $("#recharge_amount11").prop("readonly", true);
+                $('#recharge_amount11').val("")
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount11").prop("readonly", false);
+                $("#recharge_amount12").prop("readonly", true);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount11").keyup(function () {
+            var amount11 = $('#recharge_amount11').val();
+            if (amount11.length == 0) {
+
+                $("#recharge_amount12").prop("readonly", true);
+                $('#recharge_amount12').val("")
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount12").prop("readonly", false);
+                $("#recharge_amount13").prop("readonly", true);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount12").keyup(function () {
+            var amount12 = $('#recharge_amount12').val();
+            if (amount12.length == 0) {
+
+                $("#recharge_amount13").prop("readonly", true);
+                $('#recharge_amount13').val("")
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount13").prop("readonly", false);
+                $("#recharge_amount14").prop("readonly", true);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount13").keyup(function () {
+            var amount13 = $('#recharge_amount13').val();
+            if (amount13.length == 0) {
+
+                $("#recharge_amount14").prop("readonly", true);
+                $('#recharge_amount14').val("")
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount14").prop("readonly", false);
+                $("#recharge_amount15").prop("readonly", true);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount14").keyup(function () {
+            var amount14 = $('#recharge_amount14').val();
+            if (amount14.length == 0) {
+
+                $("#recharge_amount15").prop("readonly", true);
+                $('#recharge_amount15').val("")
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount15").prop("readonly", false);
+                $("#recharge_amount16").prop("readonly", true);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount15").keyup(function () {
+            var amount15 = $('#recharge_amount15').val();
+            if (amount15.length == 0) {
+
+                $("#recharge_amount16").prop("readonly", true);
+                $('#recharge_amount16').val("")
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount16").prop("readonly", false);
+                $("#recharge_amount17").prop("readonly", true);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount16").keyup(function () {
+            var amount16 = $('#recharge_amount16').val();
+            if (amount16.length == 0) {
+
+                $("#recharge_amount17").prop("readonly", true);
+                $('#recharge_amount17').val("")
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount17").prop("readonly", false);
+                $("#recharge_amount18").prop("readonly", true);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount17").keyup(function () {
+            var amount17 = $('#recharge_amount17').val();
+            if (amount17.length == 0) {
+
+                $("#recharge_amount18").prop("readonly", true);
+                $('#recharge_amount18').val("")
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount18").prop("readonly", false);
+                $("#recharge_amount19").prop("readonly", true);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount18").keyup(function () {
+            var amount18 = $('#recharge_amount18').val();
+            if (amount18.length == 0) {
+
+                $("#recharge_amount19").prop("readonly", true);
+                $('#recharge_amount19').val("")
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount19").prop("readonly", false);
+                $("#recharge_amount20").prop("readonly", true);
+            }
+        });
+    });
+
+    $( document ).ready(function() {
+        $("#recharge_amount19").keyup(function () {
+            var amount19 = $('#recharge_amount19').val();
+            if (amount19.length == 0) {
+
+                $("#recharge_amount20").prop("readonly", true);
+                $('#recharge_amount20').val("")
+            }
+            else {
+                $("#recharge_amount20").prop("readonly", false);
+            }
+        });
+    });
+</script>
+<script>
+    jQuery.validator.addMethod("notEqualTo",
+        function(value, element, param) {
+            var notEqual = true;
+            value = $.trim(value);
+            for (i = 0; i < param.length; i++) {
+                if (value == $.trim($(param[i]).val())) { notEqual = false; }
+            }
+            return this.optional(element) || notEqual;
+        },
+        "Please enter a diferent Amount."
+        );
+
+
+    jQuery.validator.addMethod("dollarsscents", function(value, element) {
+        return this.optional(element) || /^\d{0,10}(\.\d{0,2})?$/i.test(value);
+    }, "You must include two decimal places");
+
+$("form[name='subscription_form']").validate({
+    rules: {
+        recharge_amount1: {
+            required: true,
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount2', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount2: {
+            maxlength: 10,
+            dollarsscents: true,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount3: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount2', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount4: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount2', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount5: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount2', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount6: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount2', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount7: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount2', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount8: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount2', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount9: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount2', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount10: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount2', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount11: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount2', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount12: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount2', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount13: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount2', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount14: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount2', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount15: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount2', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount16: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount2', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount17: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount2', '#recharge_amount18', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount18: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount2', '#recharge_amount19', '#recharge_amount20'],
+        },
+        recharge_amount19: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount2', '#recharge_amount20'],
+        },
+        recharge_amount20: {
+            dollarsscents: true,
+            maxlength: 10,
+            notEqualTo: ['#recharge_amount1', '#recharge_amount3', '#recharge_amount4', '#recharge_amount5', '#recharge_amount6', '#recharge_amount7', '#recharge_amount8', '#recharge_amount9', '#recharge_amount10', '#recharge_amount11', '#recharge_amount12', '#recharge_amount13', '#recharge_amount14', '#recharge_amount15', '#recharge_amount16', '#recharge_amount17', '#recharge_amount18', '#recharge_amount19', '#recharge_amount2'],
+        },
+        subscription_name: {
+            required: true
+        },
+        per_bill_cost: {
+            required: true,
+            min: 0
+        },
+        digital_bill: {
+            required: true,
+            min: 0
+        },
+        discount_percentage: {
+            required: function(element){
+                return $("#discount_in_percentage").is(':checked');
+            }
+        },
+        discount_amount: {
+            required: function(element){
+                return $("#discount_in_amount").is(':checked');
+            }
+        },
+    },
+});
+
+$("form[name='edit_subscription_form']").validate({
+    rules: {
+        subscription_name: {
+            required: true
+        },
+        per_bill_cost: {
+            required: true,
+            min: 0
+        },
+        digital_bill: {
+            required: true,
+            min: 0
+           
+        },
+        discount_percentage: {
+            required: function(element){
+                return $("#edit_discount_in_percentage").is(':checked');
+            }
+        },
+        discount_amount: {
+            required: function(element){
+                return $("#edit_discount_in_amount").is(':checked');
+            }
+        },
+    },
+});
+
+
+$(function() {
+        $('.DisablePromotionSubscriptionBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+            //   text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, Disable it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                
+                $.ajax({
+                  type: "POST",
+                  url: "/disable-add-on-plan/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                            title:'Disable!',
+                            text: 'Subscription has been Disable.',
+                            icon: 'success',
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Disable!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                            Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Something went wrong!", 
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      timer:1500,
+                      showConfirmButton:false,
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+
+    $(function() {
+        $('.EnablePromotionSubscriptionBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+            //   text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, Enable it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                
+                $.ajax({
+                  type: "POST",
+                  url: "/enable-add-on-plan/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                            title:'Enable!',
+                            text: 'Subscription has been Enable.',
+                            icon: 'success',
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Enable!", 
+                        timer:1500,
+                        showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                            Swal.fire({
+                            icon:"error",
+                            title: "Oops...", 
+                            text: "Something went wrong!", 
+                            timer:1500,
+                            showConfirmButton:false,
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      timer:1500,
+                      showConfirmButton:false,
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+
+
+
+    $(function () {
+        $('.DeleteSmsSubscriptionBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                //   text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-add-on-plan/" + id + "/",
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            if (response["status"] == "success") {
+                                Swal.fire({
+                                    title: 'Deleted!',
+                                    text: 'Subscription has been deleted.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                            else if (response["status"] == "error") {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Fail to Delete!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                    .then(function () {
+                                        location.reload();
+                                    });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                timer: 1500,
+                                showConfirmButton: false,
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(".EditSubscriptionBtn").on("click", function () {
+        $.ajax({
+            url: "/get-add-on-plan/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+                
+                $("#edit_add_on_name").val(data["plan"]["add_on_name"]);
+
+                $("#edit_per_bill_cost").val(data["plan"]["per_bill_cost"]);
+                $("#edit_per_receipt_cost").val(data["plan"]["per_receipt_cost"]);
+                $("#edit_per_cash_memo_cost").val(data["plan"]["per_cash_memo_cost"]);
+
+                $("#edit_per_digital_bill_cost").val(data["plan"]["per_digital_bill_cost"]);
+                $("#edit_per_digital_receipt_cost").val(data["plan"]["per_digital_receipt_cost"]);
+                $("#edit_per_digital_cash_memo_cost").val(data["plan"]["per_digital_cash_memo_cost"]);
+
+                $("#edit_recharge_amount").val(data["plan"]["recharge_amount"]);
+
+                $('#edit_add_on_id').val(data['plan']["plan_id"]);
+
+                $("#edit-subscription-modal").modal();
+            }
+        });
+    });
+
+    $(".ViewAddOnBtn").on("click", function () {
+        $.ajax({
+            url: "/get-add-on-plan/" + $(this).attr("data-id") + "/",
+            success: function (data) {
+
+                $("#view_subscription_name").empty().append(data["plan"]["add_on_name"]);
+                $("#view_subscription_name_body").empty().append(data["plan"]["add_on_name"]);  
+
+                $("#view_per_bill_cost").empty().append(data["plan"]["per_bill_cost"]);
+                $("#view_per_receipt_cost").empty().append(data["plan"]["per_receipt_cost"]);
+                $("#view_per_cash_memo_cost").empty().append(data["plan"]["per_cash_memo_cost"]);
+                $("#view_per_digital_bill_cost").empty().append(data["plan"]["per_digital_bill_cost"]);
+                $("#view_per_digital_receipt_cost").empty().append(data["plan"]["per_digital_receipt_cost"]);
+                $("#view_per_digital_cash_memo_cost").empty().append(data["plan"]["per_digital_cash_memo_cost"]);
+
+                $("#view_recharge_amount").empty().append(data["plan"]["recharge_amount"]);
+
+                $('#view_subscription_plan_cost').empty().append(data['plan']["subscription_plan_cost"]);
+
+                $("#view_recharge_amount1").empty().append(data["plan"]["recharge_amount_one"]);
+                $("#view_recharge_amount2").empty().append(data["plan"]["recharge_amount_two"]);
+                $("#view_recharge_amount3").empty().append(data["plan"]["recharge_amount_three"]);
+                $("#view_recharge_amount4").empty().append(data["plan"]["recharge_amount_four"]);
+                $("#view_recharge_amount5").empty().append(data["plan"]["recharge_amount_five"]);
+                $("#view_recharge_amount6").empty().append(data["plan"]["recharge_amount_six"]);
+                $("#view_recharge_amount7").empty().append(data["plan"]["recharge_amount_seven"]);
+                $("#view_recharge_amount8").empty().append(data["plan"]["recharge_amount_eight"]);
+                $("#view_recharge_amount9").empty().append(data["plan"]["recharge_amount_nine"]);
+                $("#view_recharge_amount10").empty().append(data["plan"]["recharge_amount_ten"]);
+                $("#view_recharge_amount11").empty().append(data["plan"]["recharge_amount_eleven"]);
+                $("#view_recharge_amount12").empty().append(data["plan"]["recharge_amount_twelve"]);
+                $("#view_recharge_amount13").empty().append(data["plan"]["recharge_amount_thirteen"]);
+                $("#view_recharge_amount14").empty().append(data["plan"]["recharge_amount_fourteen"]);
+                $("#view_recharge_amount15").empty().append(data["plan"]["recharge_amount_fifteen"]);
+
+                // alert('aaaaa')
+
+
+                $("#view-add-on-modal").modal();
+            }
+        })
+    });
+
+</script>
+
+<!-- View add-on plan Modal Start -->
+<div class="modal fade bd-example-modal-lg" id="view-add-on-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="view_subscription_name"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h4>Add On's Name: <span id="view_subscription_name_body"></span></h4>
+                    </div>
+                </div>
+                <hr>
+                <!-- <div class="row">
+                    <div class="col-md-6">
+                        <h4>Per SMS Cost</h4>
+                        <ul> -->
+                           <!--  <li>Per Bill Cost: ₹ <span id="view_per_bill_cost"></span></li> -->
+                            <!-- <li>Per Receipt Cost: ₹ <span id="view_per_receipt_cost"></span></li>
+                            <li>Per Cash Memo Cost: ₹ <span id="view_per_cash_memo_cost"></span></li> -->
+                        <!-- </ul>
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Per Digital Cost</h4>
+                        <ul>
+                            <li>Per Digital Bill Cost: ₹ <span id="view_per_digital_bill_cost"></span></li> -->
+                            <!-- <li>Per Digital Receipt Cost: ₹ <span id="view_per_digital_receipt_cost"></span></li>
+                            <li>Per Digital Cash Memo Cost: ₹ <span id="view_per_digital_cash_memo_cost"></span></li> -->
+                        <!-- </ul>
+                    </div>
+                </div>
+                <hr> -->
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 1: ₹ <span id="view_recharge_amount1"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 2: ₹ <span id="view_recharge_amount2"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 3: ₹ <span id="view_recharge_amount3"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 4: ₹ <span id="view_recharge_amount4"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 5: ₹ <span id="view_recharge_amount5"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 6: ₹ <span id="view_recharge_amount6"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 7: ₹ <span id="view_recharge_amount7"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 8: ₹ <span id="view_recharge_amount8"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 9: ₹ <span id="view_recharge_amount9"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 10: ₹ <span id="view_recharge_amount10"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 11: ₹ <span id="view_recharge_amount11"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 12: ₹ <span id="view_recharge_amount12"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 13: ₹ <span id="view_recharge_amount13"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 14: ₹ <span id="view_recharge_amount14"></span></h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Recharge Amount 15: ₹ <span id="view_recharge_amount15"></span></h4>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+        $('#SMSsubscription').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+    });
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+</script>
+
+
+{% endblock javascripts %}

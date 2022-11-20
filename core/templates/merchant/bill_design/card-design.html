@@ -1,0 +1,1082 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Card Design {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style type="text/css">
+
+.imagecheck-image {
+    opacity: .80 !important;
+}
+
+
+#bill-design .fa-id {
+  padding: 10px;
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  text-decoration: none;
+  margin: 4px 4px;
+  border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.8;
+    color: white;
+    text-decoration-line: none;
+}
+.fa-apple {
+  background: #D3D3D3;
+  color: white !important;
+}
+.fa-android {
+  background: #a4c639;
+  color: white !important;
+}
+.fa-snapchat-ghost {
+  background: #fffc00;
+  color: white !important;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+.fa-pinterest {
+  background: #cb2027;
+  color: white!important;
+}
+.fa-google {
+  background: #dd4b39;
+  color: white !important;
+}
+.fa-skype {
+  background: #00aff0;
+  color: white!important;
+}
+
+.fa-linkedin {
+  background: #007bb5;
+  color: white !important;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white !important;
+}
+
+.fa-youtube {
+  background: #bb0000;
+  color: white !important;
+}
+
+/*.fa-instagram {
+  background: #F77737;
+  color: white !important;
+}*/
+.fa-instagram {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
+    color: white !important;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white !important;
+}
+
+.fa-pinterest {
+  background: #cb2027;
+  color: white !important;
+}
+
+.fa-phone{
+  background: #3B5998;
+  color: white !important;
+}
+
+.fa-globe{
+  background: #3B5998;
+  color: white !important;
+}
+
+.fa-map{
+  background: #3B5998;
+  color: white !important;
+}
+
+
+
+.fa-justdail{
+  background: #3B5998;
+  color: white;
+}
+
+
+.fa-indiamart{
+  background: #3B5998;
+  color: white;
+}
+
+.fa-envelope {
+  background: #3B5998;
+  color: white !important;
+}
+
+.fa-whatsapp {
+  background: forestgreen;
+  color: white !important;
+}
+
+
+.fa-comment {
+  background: #3B5998;
+  color: white !important;
+}
+
+.fa-address-book {
+  background: #3B5998;
+  color: white !important;
+}
+
+#demo-design .fa{
+    padding: 9px;
+    font-size: 18px;
+    width: 34px;
+    height: 34px;
+    text-align: center;
+    text-decoration: none;
+    /*margin: 17px 0px;*/
+    border-radius: 50%;
+}
+
+.download-btn{
+    color: rgb(255, 255, 255);
+    background: #63b90b;
+    font-family: Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 1em;
+    border: 0px;
+    outline: none;
+    cursor: pointer;
+    padding: 1px 5px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.powered-by{
+    text-align: center;
+    padding: 10px 0px;
+    background-color: rgb(242, 245, 248);
+    /*margin-bottom: 80px;*/
+}
+.header-logo{
+      margin-right: 32px;
+      width: auto;
+      height: auto;
+      max-width: 150px;
+      max-height: 80px;
+    }
+
+
+</style>
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row" id="bill-design">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center"> 
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Card Design</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Design</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/bill-design/">Card Design</a>
+                                </li>
+                            </ul>
+                              <button class="btn btn-primary btn-round ml-auto" style="margin-right: -560px;">
+                                <a href="{% url 'card-analysis' %}"
+                                  style="text-decoration: none; color:white;"><i class="fa fa-eye" style="margin-right: 10%;"></i>
+                                  Analysis</a>
+                              </button>
+                            <button class="btn btn-primary btn-round ml-auto" >
+                                <a href="http://157.230.228.250/card-design-view/{{request.user.mobile_no}}" style="text-decoration: none; color:white; text-align: center;" ><i class="fa fa-eye"style="margin-right: 10%;"></i> Preview</a>
+                            </button>
+                            
+                        </div>
+                    </div>
+
+                    <!-- block -->
+                    <form class="form-control" method="POST" enctype="multipart/form-data" action="/card-design/" style="margin:2%; padding: 2%; width: auto;">
+                      {% csrf_token %} 
+                      <div class="row">
+                          <div class="row">
+                            <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Template Choice<span style="color:red;">*</span></h2></div>
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-3">
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.temp_choice == "template1" %}
+                                            <input name="template_check" type="radio" value="template1" class="imagecheck-input template_check" id="template1_id" checked>
+                                          {% else %}
+                                              <input name="template_check" type="radio" value="template1" class="imagecheck-input social_media_check" id="template1_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                              <img src="http://157.230.228.250/media/c1.png" height="150" width="200">
+                                               <!-- <div style="color:red"><a class="fa fa-youtube-play fa-id" id="fa-id"></a></div> -->
+                                            </figure>
+                                      </label>
+                                      
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.temp_choice == "template2" %}
+                                            <input name="template_check" type="radio" value="template2" class="imagecheck-input template_check" id="youtube_id" checked>
+                                          {% else %}
+                                              <input name="template_check" type="radio" value="template2" class="imagecheck-input template_check" id="youtube_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                              <img src="http://157.230.228.250/media/c2.png" height="150" width="200">
+                                               <!-- <div style="color:red"><a class="fa fa-youtube-play fa-id" id="fa-id"></a></div> -->
+                                            </figure>
+                                      </label>
+                                      
+                                  </div>
+                              </div>
+
+                              <div class="col-md-3">
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.temp_choice == "template3" %}
+                                            <input name="template_check" type="radio" value="template3" class="imagecheck-input template_check" id="youtube_id" checked>
+                                          {% else %}
+                                              <input name="template_check" type="radio" value="template3" class="imagecheck-input template_check" id="youtube_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                              <img src="http://157.230.228.250/media/c3.jpg" height="150" width="200">
+                                               <!-- <div style="color:red"><a class="fa fa-youtube-play fa-id" id="fa-id"></a></div> -->
+                                            </figure>
+                                      </label>
+                                      
+                                  </div>
+                              </div>
+
+                              <div class="col-md-3">
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.temp_choice == "template4" %}
+                                            <input name="template_check" type="radio" value="template4" class="imagecheck-input template_check" id="youtube_id" checked>
+                                          {% else %}
+                                              <input name="template_check" type="radio" value="template4" class="imagecheck-input template_check" id="youtube_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                              <img src="http://157.230.228.250/media/c4.png" height="150" width="200">
+                                               <!-- <div style="color:red"><a class="fa fa-youtube-play fa-id" id="fa-id"></a></div> -->
+                                            </figure>
+                                      </label>
+                                      
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <!-- <div class="col-md-12"> -->
+                               <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Background Image<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="background_pic" name="background_pic">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+
+                                 <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Cover Image<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="cover_pic" name="cover_pic">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+
+
+                                <!-- <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>QRCODE Image<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="qrcode_pic" name="qrcode_pic">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div> -->
+                              
+                            </div>
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Basic Details </h2></div>
+
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Mobile No<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-phone"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="for
+                                      -control mobile" id="mobile_no_card" name="mobile_no_card" placeholder="Mobile No"
+                                        value="{{ request.user.mobile_no }}" maxlength="10" required disabled style="padding: 1%;" />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Email<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-envelope"></i>
+                                        </span>
+                                      </div>
+                                      <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                                        value="{{ card_design_data.card_email }}" maxlength="100"  />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Name<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="first_name" name="first_name"
+                                        value="{{ card_design_data.card_name }}" maxlength="100" placeholder=" Name"  />
+                                    </div>
+                                  </div>
+                                </div>
+                                
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>City<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="city" name="city"
+                                        value="{{ card_design_data.card_city }}" maxlength="50" placeholder="City Name" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Country<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="country" name="country"
+                                        value="{{card_design_data.card_country }}" maxlength="50" placeholder="Country Name" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Description<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="description" name="description"
+                                        value="{{ card_design_data.card_desc }}" maxlength="300" placeholder="Description" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>About Us - Brief about bussiness <span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="about_us" name="about_us"
+                                        value="{{ card_design_data.about_us }}" maxlength="500" placeholder="About Us" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Alternate Mobile No: <!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="alternate_mobile" name="alternate_mobile"
+                                        value="{{ card_design_data.alternate_mobile }}" minlength="10" maxlength="10" placeholder="Alternate Mobile" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Bussiness Timings  <span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+                                      </div>
+                                      <input type="text" class="form-control" id="buss_time" name="buss_time"
+                                        value="{{ card_design_data.bussiness_time }}" maxlength="100" placeholder="Bussiness Time" />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Profile Image<span style="color:red;">*</span></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="profile_pic" name="profile_pic">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+
+
+            
+
+
+
+                          </div>
+                          <div class="row" style="margin-bottom: 20px;">
+                            <hr width="100%">
+                          </div>
+                          <div class="row" style="margin-bottom: 20px;">
+                            <hr width="100%">
+                          </div>
+                          <div class="col-md-12 d-flex align-items-center justify-content-center">
+                            <h2>Bank Details </h2>
+                          </div>
+                          
+                          <div class="col-md-12">
+                            <div class="row">
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Account Holdder Name<span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-phone"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="for-control mobile"  name="account_holder_name" placeholder="Account Holdder Name" value="{{ card_design_data.acco_holder_name }}" maxlength="100"  style="padding: 1%;" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Account Number
+                                    <!-- <span style="color:red;">*</span> -->
+                                  </label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-envelope"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control"  name="account_no" placeholder="Account Number"
+                                      value="{{ card_design_data.acc_no }}" maxlength="20" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>IFSC Code<span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" name="ifsc_Code"
+                                      value="{{ card_design_data.ifsc_code }}" maxlength="100" placeholder=" IFSC Code" />
+                                  </div>
+                                </div>
+                              </div>
+                          
+                          
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Bank Name
+                                    <!-- <span style="color:red;">*</span> -->
+                                  </label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" id="city" name="bank_name" value="{{ card_design_data.bank_name }}"
+                                      maxlength="50" placeholder="Bank Name" />
+                                  </div>
+                                </div>
+                              </div>
+                          
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Pan Card
+                                    <!-- <span style="color:red;">*</span> -->
+                                  </label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" id="country" name="pan_card" value="{{card_design_data.pan_card }}"
+                                      maxlength="50" placeholder=" Pan Card" />
+                                  </div>
+                                </div>
+                              </div>
+                          
+                          
+                          
+                              <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Description<span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" id="description" name="description"
+                                      value="{{ card_design_data.card_desc }}" maxlength="300" placeholder="Description" />
+                                  </div>
+                                </div>
+                              </div> -->
+                          
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>GSTIN Number <span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control"  name="gstin_number" value="{{ card_design_data.gstin_no }}"
+                                      maxlength="500" placeholder="GSTIN Number" />
+                                  </div>
+                                </div>
+                              </div>
+                          
+                              <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Alternate Mobile No:
+                                   <span style="color:red;">*</span> 
+                                  </label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" id="alternate_mobile" name="alternate_mobile"
+                                      value="{{ card_design_data.alternate_mobile }}" minlength="10" maxlength="10"
+                                      placeholder="Alternate Mobile" />
+                                  </div>
+                                </div>
+                              </div> -->
+                          
+                              <!-- <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Bussiness Timings <span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                                    </div>
+                                    <input type="text" class="form-control" id="buss_time" name="buss_time"
+                                      value="{{ card_design_data.buss_time }}" maxlength="100" placeholder="Bussiness Time" />
+                                  </div>
+                                </div>
+                              </div> -->
+                         <!--         
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <label>Profile Image<span style="color:red;">*</span></label>
+                                  <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">
+                                        <i class="icon-user"></i>
+                                      </span>
+                          
+                                    </div>
+                                    <input type="file" class="form-control" id="profile_pic" name="profile_pic">
+                                  </div>
+                                  <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                    <b>Image Dimension 1080 ✕ 1080</b>
+                                  </p>
+                                </div>
+                              </div> -->
+                            </div>
+                          </div>
+
+
+
+
+
+
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Social Media </h2></div>
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="col-md-2" id="bill-design">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.facebook == True %}
+                                              <input name="social_media_check" type="checkbox" value="card_desc = models.CharField(max_length=25,null=True)" class="imagecheck-input social_media_check" id="facebook_id" checked>
+                                          {% else %}
+                                              <input name="social_media_check" type="checkbox" value="facebook" class="imagecheck-input social_media_check" id="facebook_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                              <a class="fa fa-facebook fa-id"></a>
+                                          </figure>
+                                      </label>
+                                      <input class="form-control" type="url" name="facebook_url" style="width: 100%;" placeholder="URL" value="{{card_design_data.facebook_url}}">
+                                  </div>
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.youtube == True %}
+                                            <input name="social_media_check" type="checkbox" value="youtube" class="imagecheck-input social_media_check" id="youtube_id" checked>
+                                          {% else %}
+                                              <input name="social_media_check" type="checkbox" value="youtube" class="imagecheck-input social_media_check" id="youtube_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                               <div style="color:red"><a class="fa fa-youtube-play fa-id" id="fa-id"></a></div>
+                                            </figure>
+                                      </label>
+                                      <input class="form-control" type="url" name="youtube_url" value="{{card_design_data.youtube_url}}" style="width: 100%;" placeholder="URL">
+                                  </div>
+
+                                  <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          {% if card_design_data.email == True %}
+                                            <input name="social_media_check" type="checkbox" value="email" class="imagecheck-input social_media_check" id="email_id" checked>
+                                          {% else %}
+                                              <input name="social_media_check" type="checkbox" value="email" class="imagecheck-input social_media_check" id="email_id">
+                                          {% endif %}
+                                            <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                               <div style="color:red"><a class="fa fa-envelope fa-id" id="fa-id"></a></div>
+                                            </figure>
+                                      </label>
+                                      <input class="form-control" type="url" name="email_url" value="{{card_design_data.email_url}}" style="width: 100%;" placeholder="URL">
+                                  </div>
+                                                                  
+                                </div>
+
+
+                                <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                                                      <div class="row">
+                                                          <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Contact Links</h2></div>
+                                                          <div class="col-md-12">
+                                                              <div class="row">
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4">
+                                                                          {% if card_design_data.phone == True %}
+                                                                              <input name="contact_check" type="checkbox" value="phone" class="imagecheck-input" id="phone_id" checked maxlength="10">
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="phone" class="imagecheck-input" id="phone_id" maxlength="10">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-phone fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="tel" name="phone" id="phone" value="{{card_design_data.phone_number}}" style="width: 100%;" placeholder="Phone" maxlength="10">
+                                                                  </div>
+
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4">
+                                                                          {% if card_design_data.msg == True %}
+                                                                              <input name="contact_check" type="checkbox" value="msg" class="imagecheck-input" id="msg_id" checked maxlength="10">
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="msg" class="imagecheck-input" id="msg_id" maxlength="10">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-comment fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="tel" name="msg_url" id="msg_url" value="{{card_design_data.msg_number}}" style="width: 100%;" placeholder="Phone" maxlength="10">
+                                                                  </div>
+
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4">
+                                                                          {% if card_design_data.whatsapp == True %}
+                                                                              <input name="contact_check" type="checkbox" value="whatsapp" class="imagecheck-input" id="whatsapp_id" checked maxlength="10">
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="whatsapp" class="imagecheck-input" id="whatsapp_id" maxlength="10">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-whatsapp fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="tel" name="whatsapp_url" id="whatsapp_url" value="{{card_design_data.whatsapp_number}}" style="width: 100%;" placeholder="whatsapp" maxlength="10">
+                                                                  </div>
+
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4">
+                                                                          {% if card_design_data.address_book == True %}
+                                                                              <input name="contact_check" type="checkbox" value="addtobook" class="imagecheck-input" id="address_id" checked>
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="addtobook" class="imagecheck-input" id="address_id">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-address-book fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="tel" name="address_book_number" id="address_book_number" value="{{card_design_data.address_book_number}}" style="width: 100%;" placeholder="address-book">
+                                                                  </div>
+
+
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4">
+                                                                          {% if card_design_data.website == True %}
+                                                                              <input name="contact_check" type="checkbox" value="website" class="imagecheck-input" id="website_id" checked>
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="website" class="imagecheck-input" id="website_id">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-globe fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="url" name="website" id="website" value="{{card_design_data.website_url}}" style="width: 100%;" placeholder="Website URL">
+                                                                  </div>
+                                                                  <div class="col-md-4 my-2">
+                                                                      <label class="imagecheck mb-4 justify-content-center">
+                                                                          {% if card_design_data.map == True %}
+                                                                              <input name="contact_check" type="checkbox" value="addtobook" class="imagecheck-input" id="map_id" checked>
+                                                                          {% else %}
+                                                                              <input name="contact_check" type="checkbox" value="addtobook  " class="imagecheck-input" id="map_id">
+                                                                          {% endif %}
+                                                                          <figure class="imagecheck-figure" style="border-radius: 50%;"> 
+                                                                              <a class="fa fa-map fa-id"></a>
+                                                                          </figure>
+                                                                      </label>
+                                                                      <input class="form-control" type="url" name="map_link" id="map_link" value="{{card_design_data.map_link}}" style="width: 100%;" placeholder="Map Link">
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+
+
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Photo Gallery </h2></div>
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Gallery Image 1<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="Gallery1" name="Gallery1">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Gallery Image 2<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="Gallery2" name="Gallery2">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label>Gallery Image 3<!-- <span style="color:red;">*</span> --></label>
+                                    <div class="input-group mb-3">
+                                      <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                          <i class="icon-user"></i>
+                                        </span>
+
+                                      </div>
+                                      <input type="file" class="form-control" id="Gallery3" name="Gallery3">
+                                    </div>
+                                    <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                          <b>Image Dimension 1080 ✕ 1080</b>
+                                      </p>  
+                                  </div>
+                                </div>
+
+                                <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="row" style="margin-bottom: 20px;"><hr width="100%"></div>
+                            <div class="col-md-12 d-flex align-items-center justify-content-center"><h2>Video Gallery </h2></div>
+                              <div class="col-md-2">
+                                      <label class="imagecheck mb-4">
+                                          Youtube Video Url
+                                      </label>
+                                      <input class="form-control" type="url" name="youtube_video_url" value="{{card_design_data.youtube_video_url}}" style="width: 100%;" placeholder="URL">
+                                  </div>
+                                </div>
+                                <div class="col-md-12">
+
+                                
+                                  
+                                
+
+                                  <div class="row" style="margin-bottom: 20px;">
+                                    <hr width="100%">
+                                  </div>
+                                  <div class="row" style="margin-bottom: 20px;">
+                                    <hr width="100%">
+                                  </div>
+                                  <div class="col-md-12 d-flex align-items-center justify-content-center">
+                                    <h2>Our Clients </h2>
+                                  </div>
+                                  <div class="col-md-12">
+                                    <div class="row">
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 1
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                  
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery1" name="client1">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+                                  
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 2
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                  
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery2" name="client2">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+                                  
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 3
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                  
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery3" name="client3">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+
+
+
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 4
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                      
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery3" name="client4">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+
+
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 5
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                      
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery3" name="client5">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+
+
+
+                                      <div class="col-md-4">
+                                        <div class="form-group">
+                                          <label> Image 6
+                                            <!-- <span style="color:red;">*</span> -->
+                                          </label>
+                                          <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text">
+                                                <i class="icon-user"></i>
+                                              </span>
+                                      
+                                            </div>
+                                            <input type="file" class="form-control" id="Gallery3" name="client6">
+                                          </div>
+                                          <p class="center" style="color: #63b90b;"><b>Image should be less than 500 KB</b><br>
+                                            <b>Image Dimension 1080 ✕ 1080</b>
+                                          </p>
+                                        </div>
+                                      </div>
+
+
+
+
+
+
+                                <div class="text-center mt-3 mb-3">
+                                  <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                              </div>  
+
+                            
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

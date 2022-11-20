@@ -1,0 +1,548 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} View Cash Memo {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+
+        color: red;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Bill Design Request</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                  <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Design</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/cashmemo-design/">Bill Design Request</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% if is_merchant == True %}
+                        <div class="card-body center">
+                            <div class="row ">
+                                <div class="col-md-12">
+                                    <form class="form-control" action="/cashmemo-design/" method="POST" id="form"
+                                        name="form" autocomplete="off" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="row">
+
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Bill design File<small style="color: red;">
+                                                            *</small></label>
+                                                    <div class="input-group mb-6">
+
+                                                        <input type="file" class="form-control mobile" name="cash_memo_file"
+                                                            id="cash_memo_file" placeholder="Coupon Name" value=""
+                                                            required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <!--  <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Paper Size<small style="color: red;"> *</small></label>
+                                                    <div class="input-group mb-6">
+                                                        
+                                                        <select class="form-control mobile" name="paper_size"
+                                                            id="paper_size" placeholder="Paper Size" value="" >
+                                                          <option>A4</option>
+                                                          <option>A5</option>
+                                                          <option>A6</option>
+                                                          <option>A7</option>
+                                                          
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Comments</label>
+                                                    <div class="input-group mb-6">
+                                                        <input type="text" class="form-control mobile" name="comments"
+                                                            id="comments" placeholder="Comments" value="" maxlength="45" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="text-center mt-3 mb-3">
+                                                    <button type="submit" class="btn btn-primary">Apply For Design</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="add-row" class="display table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Merchant Name</th>
+                                                   <!--  <th>Design Image</th>
+                                                    <th>Paper Size</th> -->
+                                                    <th>Date</th>
+                                                    <th>Comments</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>
+                                                {% for object in all_design %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ object.merchant_user.first_name }}
+                                                        {{object.merchant_user.last_name }}</td>
+                                                  <!--   <td><img src="{{object.memo_design_image.url}}" width="100px"
+                                                            height="100px"> </td>
+                                                    <td>{{ object.paper_size }}</td> -->
+                                                     <td>{{object.created_at|date:'d-m-Y'}} </td>
+                                                    <td>{{ object.comments }}</td>
+
+
+                                                    <td>
+                                                        <!-- <button type="button" data-toggle="tooltip" title="Edit Memo Design"
+                                                            class="btn btn-link btn-lg editBtn"
+                                                            data-original-title="Delete Memo Design"
+                                                            data-url="{{object.id}}" data-id="{{object.id}}">
+                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                        </button> -->
+                                                        {% if object.memo_design_image %}
+                                                        <button type="button" class="btn btn-link btn-primary" data-toggle="tooltip" title="Download"
+                                                        data-toggle="tooltip" data-original-title="Download">
+                                                            <a href="{{ object.memo_design_image.url }}" download target="_blank" ><i class="fas fa-download"></i></a>
+                                                        </button>
+                                                            
+                                                        {% endif %}
+                                                        <button type="button" data-toggle="tooltip"
+                                                            title="Delete  Design"
+                                                            class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                            data-original-title="Delete  Design"
+                                                            data-url="{{object.id}}" data-id="{{object.id}}">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchant_action_permissions_list %}
+                            {% if actions.module_id|lower == "Design"|lower and actions.feature_id|lower == "Bill Design Request"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body center">
+                                        <div class="row ">
+                                            <div class="col-md-12">
+                                                <form class="form-control" action="/cashmemo-design/" method="POST" id="form"
+                                                    name="form" autocomplete="off" enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Sample Cash Memo File<small style="color: red;">
+                                                                        *</small></label>
+                                                                <div class="input-group mb-6">
+
+                                                                    <input type="file" class="form-control mobile" name="cash_memo_file"
+                                                                        id="cash_memo_file" placeholder="Coupon Name" value=""
+                                                                        required />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Paper Size<small style="color: red;"> *</small></label>
+                                                                <div class="input-group mb-6">
+                                                                    <select class="form-control mobile" name="paper_size"
+                                                                        id="paper_size" placeholder="Paper Size" value="" >
+                                                                      <option>A4</option>
+                                                                      <option>A5</option>
+                                                                      <option>A6</option>
+                                                                      <option>A7</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label>Comments</label>
+                                                                <div class="input-group mb-6">
+                                                                    <input type="text" class="form-control mobile" name="comments"
+                                                                        id="comments" placeholder="Comments" value="" required />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% if actions.add_permission == "1" %}
+                                                            <div class="col-md-12">
+                                                                <div class="text-center mt-3 mb-3">
+                                                                    <button type="submit" class="btn btn-primary">Apply For Design</button>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="add-row" class="display table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr. No.</th>
+                                                                <th>Merchant Name</th>
+                                                                <th>Design Image</th>
+                                                                <th>Paper Size</th>
+                                                                <th>Comments</th>
+                                                                <th>Action</th>
+
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            {% for object in all_design %}
+                                                            <tr>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td>{{ object.merchant_user.first_name }}
+                                                                    {{object.merchant_user.last_name }}</td>
+                                                                <td><img src="{{object.memo_design_image.url}}" width="100px"
+                                                                        height="100px"> </td>
+                                                                <td>{{ object.paper_size }}</td>
+                                                                <td>{{ object.comments }}</td>
+
+                                                                <td>
+                                                                    {% if actions.delete_permission == "1" %}
+                                                                        <button type="button" data-toggle="tooltip"
+                                                                            title="Delete  Design"
+                                                                            class="btn btn-link btn-danger btn-lg deleteBtn"
+                                                                            data-original-title="Delete  Design"
+                                                                            data-url="{{object.id}}" data-id="{{object.id}}">
+                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                        </button>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    jQuery.validator.addMethod("lettersonly", function(value, element) 
+    {
+    return this.optional(element) || /^[a-z," "]+$/i.test(value);
+    }, "Letters and spaces only please"); 
+
+$.validator.addMethod('dimention', function(value, element, param) {
+    if(element.files.length == 0){
+        return true; 
+    }
+    var width = $(element).data('imageWidth');
+    var height = $(element).data('imageHeight');
+    if(width == param[0] && height == param[1]){
+        return true;
+    }else{
+        return false;
+    }
+},'Image must be 1080 x 1080 pixels dimension');
+
+  $.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+  $('#cash_memo_file').change(function() {
+    $('#cash_memo_file').removeData('imageWidth');
+    $('#cash_memo_file').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#cash_memo_file').data('imageWidth', width);
+        $('#cash_memo_file').data('imageHeight', height);
+    }
+});
+
+    $("#form").validate({
+        rules: {
+            cash_memo_file: {
+                required: true,
+                filesize: 500000,
+                dimention:[1080,1080]
+
+            },
+            paper_size: {
+                required: true,
+
+            },
+            comments: {
+                required: true,
+                lettersonly: true,
+            },
+
+
+        },
+
+        messages: {
+            cash_memo_file: {
+                required: "Sample Invoice Image is Required",
+
+            },
+            paper_size: {
+                required: "Paper Size Is Required",
+            },
+            comments: {
+                required: "This field is required.",
+            },
+
+
+        },
+
+    });
+
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-memo-design/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Memo Design has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: "Something went wrong!",
+                                confirmButtonClass: "btn-success",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

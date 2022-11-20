@@ -1,0 +1,314 @@
+ {% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Green Points {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    .table td{
+        padding: 0px !important;
+    }
+</style>
+ 
+<link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"> 
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Green Points</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/green-points/">Green Points</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">   
+                            <div class="col-md-12 d-flex flex-wrap justify-content-around pb-4 pt-4">
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-1"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Earned Points</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-2"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Used Points</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <div id="circles-3"></div>
+                                    <h6 class="fw-bold mt-3 mb-0">Available Points</h6>
+                                </div>
+                                <div class="px-2 pb-2 pb-md-0 text-center">
+                                    <img src="http://157.230.228.250/media/treeeeewithcoin.png" alt="treeeeewithcoin" style="max-width: 200px; max-height: 200px" justify="center">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" style=" padding-right: 0px;">
+                                <div class="card" style="  padding: 15px; border-radius: 24px;">    
+                                    <div class="card-header" style=" font-size: 20px; font-weight: bolder;  ">
+                                        <div class="row" style="background-color: #63b90b; border-radius: 2pc; padding-top: 6px; padding-bottom: 6px; padding-top: 6px; padding-bottom: 6px;"> 
+                                            <div class="col-sm-4"></div>
+                                            <div class="col-sm" style="color: white">Earned Points</div>  
+                                            <div class="col-sm-3"></div>
+                                        </div>
+                                        <div class="row" style="padding-top: 20px;">
+                                            <div class="col d-flex align-items-center justify-content-center">
+                                                <div class="badge-pill" style="border-radius: 80%; border: #63b90b 2px; background-color: #63b90b; padding: 10px; color: white; padding-top: 10px; " >
+                                                    &nbsp; {{total_earned_green_points}} &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" style="padding: 0px; " >
+                                        <div class="tab-pane  table-responsive" id="earned_points" role="tabpanel" 
+                                            aria-labelledby="er" style="padding: 0px;">  
+                                            <div class="table-responsive">
+                                                <table id="add-row1" class="display table table-hover"  > 
+                                                    <thead>
+                                                       <tr style="text-align: center;" >
+                                                            <th>Merchant Name</th>
+                                                            <th>Amount</th>
+                                                            <th>Date</th>
+                                                            <th>Points Earned</th>
+                                                        </tr>
+                                                    </thead>       
+                                                    <tbody>
+                                                       {% for points in earned_points %}
+                                                            <tr style="text-align: center;">
+                                                                {% if points.db_table == "GreenPointsEarnedHistory" %}
+                                                                    <td  align="center">Earned for Referral</td>
+                                                                    <td></td>
+                                                                {% else %}
+                                                                    <td>
+                                                                        {% if points.business_name %}
+                                                                            {{points.business_name}}
+                                                                        {% else %}
+                                                                            Green Bill
+                                                                        {% endif %}
+                                                                    </td>
+                                                                <td>
+                                                                       ₹ {{points.bill_amount|floatformat:2}}
+                                                                    </td>
+                                                                 {% endif %}
+                                                                <td>
+                                                                    {{points.bill_date}}
+                                                                </td>
+                                                                <td>
+                                                                    {{points.green_points_earned}}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                    <tfoot></tfoot>
+                                                </table>
+                                               <!--   <table id="row1" class="display table table-hover"  > 
+                                                    <thead>
+                                                        <tr style="text-align: center;" >
+                                                            <th>Merchant Name</th>
+                                                            <th>Amount</th>
+                                                            <th>Date</th>
+                                                            <th>Points Earned</th>
+                                                        </tr>
+                                                    </thead>       
+                                                    <tbody>
+                                                       {% for points in earned_points %}
+                                                            <tr style="text-align: center;">
+
+                                                                {% if points.db_table == "GreenPointsEarnedHistory" %}
+                                                                    <td colspan="2" align="center">Earned for Referral</td>
+                                                                {% else %}
+                                                                    <td>
+                                                                        {% if points.business_name %}
+                                                                            {{points.business_name}}
+                                                                        {% else %}
+                                                                            Green Bill
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                       ₹ {{points.bill_amount}}
+                                                                    </td>
+                                                                {% endif %}
+                                                                <td>
+                                                                    {{points.bill_date}}
+                                                                </td>
+                                                                <td>
+                                                                    {{points.green_points_earned}}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                    <tfoot></tfoot>
+                                                </table> -->
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>                        
+                            <div class="col-md-6">
+                                <div class="card" style="padding: 15px; border-radius: 24px;">    
+                                    <div class="card-header" style=" font-size: 20px; font-weight: bolder;">
+                                        <div class="row"  style="background-color: #63b90b; border-radius: 2pc; padding-top: 6px; padding-bottom: 6px;"> 
+                                            <div class="col-sm-4"></div>
+                                            <div class="col-sm" style="color: white">Used Points</div>  
+                                            <div class="col-sm-3"></div>
+                                        </div>
+                                        <div class="row" style="padding-top: 20px;">
+                                            <div class="col d-flex align-items-center justify-content-center">
+                                                <div class="badge-pill" style="border-radius: 80%; border: #63b90b  2px; background-color: #63b90b; padding: 10px; color: white; padding-top: 10px; " >
+                                                    &nbsp; {{total_green_points_used}} &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" style="padding: 0px;">
+                                        <div class="tab-pane  table-responsive" id="earned_points" role="tabpanel" aria-labelledby="er" style="padding: 0px;">  
+                                            <div class="table-responsive">
+                                                <table id="add-row2" class="display table table-hover"  > 
+                                                    <thead>
+                                                        <tr style="text-align: center;" >
+                                                            <th>Merchant Name</th>
+                                                            <th>Coupon</th>
+                                                            <th>Date</th>
+                                                            <th>Points Used</th>
+                                                        </tr>
+                                                    </thead>       
+                                                    <tbody>
+                                                        {% for redeem in redeem_history %}
+                                                            <tr style="text-align: center;">
+                                                                <td>
+                                                                    {% if redeem.merchant_business_name %}
+                                                                    {{redeem.merchant_business_name}}
+                                                                    {% else %}
+                                                                    Green Bill
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                   {{redeem.coupon_name}}
+                                                                </td>
+                                                                <td>
+                                                                    {{redeem.coupon_redeem_date}}
+                                                                </td>
+                                                                <td>
+                                                                    {{redeem.green_point}}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                    <tfoot></tfoot>
+                                                </table>
+
+                                                
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    
+    
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script src="/static/assets/js/setting-demo.js"></script>
+<script src="/static/assets/js/demo.js"></script>
+
+    <script>
+        Circles.create({
+            id:'circles-1',
+            radius:70,
+            value:100,
+            maxValue:100,
+            width:7,
+            text: {{total_earned_green_points}},
+            colors:['#f1f1f1', '#FF9E27'],
+            duration:600,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+
+        Circles.create({
+            id:'circles-2',
+            radius:70,
+            value:100,
+            maxValue:100,
+            width:7,
+            text: {{total_green_points_used}},
+            colors:['#f1f1f1', '#2BB930'],
+            duration:600,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+
+        Circles.create({
+            id:'circles-3',
+            radius:70,
+            value:{{total_green_points_available_percentage}},
+            maxValue:100,
+            width:7,
+            text: {{total_green_points_available}},
+            colors:['#f1f1f1', '#F25961'],
+            duration:600,
+            wrpClass:'circles-wrp',
+            textClass:'circles-text',
+            styleWrapper:true,
+            styleText:true
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        $('#add-row2').DataTable( {
+            dom: 'tBfrtip',
+            "ordering": false,
+            'searching': false,
+            buttons: [    
+            ],
+        });
+});
+
+        $(document).ready(function () {
+        $('#add-row1').DataTable( {
+            dom: 'tBfrtip',
+            "ordering": false,
+            'searching': false,
+            buttons: [    
+            ],
+        });
+});
+    </script>
+
+{% endblock javascripts %}

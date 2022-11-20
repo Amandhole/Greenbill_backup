@@ -1,0 +1,1709 @@
+{% extends "layouts/merchant-base.html" %}
+{% load custom_tags %}
+{% block title %} Bulk SMS {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+.tablt th, .table td{
+    padding: 5px !important;
+}
+#hide_cust_state{
+    display: none;
+}
+#hide_cust_city{
+    display: none;
+}
+#hide_cust_area{
+    display: none;
+}
+</style>
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <div class="d-flex align-items-center" >
+                            <h4 class="card-title">Bulk SMS</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Promotions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/bulk-sms-customer/">Bulk SMS</a>
+                                </li>
+                            </ul>
+                            {% if is_merchant == True %}
+                            <button class="btn btn-primary btn-round ml-auto smsBtn" data-toggle="modal" data-target="#myModal"
+                                data-owner_count="{{owner_count}}" 
+                                data-merchant_added_customer_count="{{merchant_added_customer_count}}">
+                                <i class="fa fa-plus"></i>
+                                Send SMS
+                            </button>
+                            {% else %}
+                                {% for actions in merchant_action_permissions_list %}
+                                    {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "Bulk SMS"|lower %}
+                                        {% if actions.add_permission == "1" %}
+                                            <button class="btn btn-primary btn-round ml-auto smsBtn" data-toggle="modal" data-target="#myModal"
+                                                data-owner_count="{{owner_count}}" 
+                                                data-merchant_added_customer_count="{{merchant_added_customer_count}}">
+                                                <i class="fa fa-plus"></i>
+                                                Send SMS
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+
+                    {% if is_merchant == True %}
+                        <div class="card-body">
+                            <br><br>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-hover">
+                                        <thead>
+                                            <tr style="text-align: center;">
+                                                <th>Sr. No.</th>
+                                                <th style="width:15%;">Date</th>
+                                                <th>Campaign Name</th>
+                                                <th >Sent To</th>
+                                                <th style="width:20%;">SMS Header</th>
+                                                <th>SMS Type</th>
+                                                <th>Total Count</th>
+                                                <th>Status</th>
+                                                <th  style="width:20%;">Action</th>
+                                                <!-- <th>Sent SMS </th> -->
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for object in data %}
+                                            <tr style="text-align: center;">
+                                                <td>{{forloop.counter}}</td>
+                                                <td style="width:15%;">{{object.created_at|date:'d-m-Y'}}</td>
+                                                 <td>{{object.campaign_name}}</td>
+                                                <td>
+                                                    {% if object.receiver_name != None %}
+                                                        {{object.receiver_name}}
+
+                                                    {% endif %}
+                                                </td>
+                                                <td>{% if object.smsheader != None  %}
+                                                        {{object.smsheader}}
+                                                    {% endif %}</td>
+                                                    <td>
+                                                    {% if object.transactional %}
+                                                        {{object.transactional|capfirst}}
+                                                    {% endif %}
+                                                    </td>
+                                                <td style="text-align:center;">{% if object.receiver_name != None and object.receiver_name != 'customer' %}
+                                                    {{object.receiver_name|split|length}}
+                                                {% endif %}
+                                                
+                                                {% if object.receiver_name == 'customer' %}
+                                                        {{object.sms_count}}
+                                                {% endif %}
+                                                    
+                                                </td>
+                                                <td >
+                                                    {% if object.sent_status != None  %}
+                                                    {{object.sent_status}}
+                                                    {% endif %}
+                                                </td>
+
+                                                <td style="width:20%">
+                                                    <button type="button" data-toggle="tooltip"
+                                                    data-target="#ViewCashMemoModal" title=""
+                                                    class="btn btn-link btn-primary btn-lg viewBtn"
+                                                    data-name="{{ object.name }}" data-date=" {{object.date|date:'d-m-Y'}}"
+                                                    data-message = "{{object.message}}"
+                                                    data-url="{{object.id}}" data-original-title="View SMS" style="padding-right: 18px;">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>                                        
+                                                    <button type="button" data-toggle="tooltip" data-target="" 
+                                                    title="Delete SMS"
+                                                    class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                    data-original-title="Delete Sms" data-url="{{object.id}}"
+                                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchant_action_permissions_list %}
+                            {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "Bulk SMS"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <div class="card-body">
+                                        <br><br>
+                                        <div class="row">
+                                            <div class="table-responsive">
+                                                <table id="add-row" class="display table table-hover">
+                                                    <thead>
+                                                        <tr style="text-align: center;">
+                                                            <th>Sr. No.</th>
+                                                            <th style="width:15%;">Date</th>
+                                                            <th >Sent To</th>
+                                                            <th style="width:20%;">SMS Header</th>
+                                                            <th>SMS Type</th>
+                                                            <th>Total Count</th>
+                                                            <th>Status</th>
+                                                            <th  style="width:20%;">Action</th>
+                                                            <!-- <th>Sent SMS </th> -->
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        {% for object in data %}
+                                                        <tr style="text-align: center;">
+                                                            <td>{{forloop.counter}}</td>
+                                                            <td style="width:15%;">{{object.created_at|date:'d-m-Y'}}</td>
+                                                            <td>
+                                                                {% if object.receiver_name != None %}
+                                                                    {{object.receiver_name}}
+
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>{% if object.smsheader != None  %}
+                                                                    {{object.smsheader}}
+                                                                {% endif %}</td>
+                                                                <td>{% if object.transactional %}
+                                                                {{object.transactional|capfirst}}
+                                                                {% endif %}
+                                                                </td>
+                                                            <td style="text-align:center;">{% if object.receiver_name != None and object.receiver_name != 'customer' %}
+                                                                {{object.receiver_name|split|length}}
+                                                            {% endif %}
+                                                            
+                                                            {% if object.receiver_name == 'customer' %}
+                                                                    {{object.sms_count}}
+                                                            {% endif %}
+                                                                
+                                                            </td>
+                                                            <td >
+                                                                {% if object.sent_status != None  %}
+                                                                {{object.sent_status}}
+                                                                {% endif %}
+                                                            </td>
+
+                                                            <td style="width:20%">
+                                                                <button type="button" data-toggle="tooltip"
+                                                                data-target="#ViewCashMemoModal" title=""
+                                                                class="btn btn-link btn-primary btn-lg viewBtn"
+                                                                data-name="{{ object.name }}" data-date=" {{object.date|date:'d-m-Y'}}"
+                                                                data-message = "{{object.message}}"
+                                                                data-url="{{object.id}}" data-original-title="View SMS" style="padding-right: 18px;">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                                </button>  
+                                                                {% if actions.delete_permission == "1" %}                                      
+                                                                <button type="button" data-toggle="tooltip" data-target="" 
+                                                                title="Delete SMS"
+                                                                class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                                data-original-title="Delete Sms" data-url="{{object.id}}"
+                                                                data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                                                </button>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ViewCashMemoModal" role="dialog">
+    <div class="modal-dialog">
+        
+       <div class="modal-content">
+        <div class="modal-header">
+            <h2>Bulk SMS</h2>
+           </div>
+           <div class="row" style="padding:20px;">
+               <div class="col-md-12">
+                   <h3>Message:</h3>
+        <p id="message_id">
+        </p>
+        </div>
+        </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+       </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog modal-lg" style="margin-left: 16pc;">
+      <!-- Modal content-->
+       <div class="col-md-12 " >
+           <div class="row" style="width: 65pc;">
+           <div class="modal-content" >
+               <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Send SMS</h2>
+               </div>
+               <div class="modal-header">
+                    <div class="col-md-1" ></div>
+                    <div class="col-md-9" >
+                        <div class="row" style="margin-left: 3px;">
+                            <b> <!-- Used Transactional SMS: {% if transactional_used_sms %}{{transactional_used_sms}}{% else %} 0 {% endif %}
+                            <span style="margin-left: 16px;"> -->Available Transactional SMS: {% if transactional_remaining_sms %}{{transactional_remaining_sms}}{% else %} 0 {% endif %}</span>
+                            </b>
+                        </div>
+                        <div class="row" style="margin-left: 3px;">
+                            <b><!-- Used Promotional SMS: {% if promotional_used_sms %}{{promotional_used_sms}}{% else %} 0 {% endif %}
+                            <span style="margin-left: 31px;">  -->Available Promotional  SMS: {% if promotional_remaining_sms %}{{promotional_remaining_sms}}{% else %} 0 {% endif %}</span></b>
+                        </div>
+
+                        <!-- <div class="col-md-2">
+                            <button type="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white;align-items:right;"><a href="/recharge/" style="color: white;text-decoration: none;">Recharge</a></button>
+                        </div> -->
+                        
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white;align-items:right;"><a href="/recharge/" style="color: white;text-decoration: none;">Recharge</a></button>
+                    </div> 
+                    <hr>
+               </div>
+               
+               <div class="row ">
+                <div class="col-md-1"></div>
+                <div class="col-md-10" style="border: none;">
+                    <form class="form-control" action="/bulk-sms-customer/" method="POST" enctype="multipart/form-data" style="border: none;"
+                        id="bulk-mail-sms-form" name="bulk_mail_sms_form" autocomplete="off" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12" style="padding-left: 34px; display: none;">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label>Send Through</label>
+                                        <div class="col-md-3">
+                                            <input type="hidden" name="sentnotice" id="sms" value="sms"  >
+                                            <b>SMS</b>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="sentnotice" value="sent_mail">
+                                            <b>Email</b>
+                                        </div>
+                                       
+                                    </div>
+                                    <div id="radioError"></div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Select Date<span style="color: red;"> *</span></label>
+                                                <input type="date" class="form-control" name="sms_date"
+                                                    id="sms_date" required min="{% now 'Y-m-d' %}" value="{{sms_date}}"/>
+                                                <small id="sms_date_error"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-md-12" style="padding-left: 32px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                    <label>SMS Type <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="transactional" value="transactional">
+                                        <b>Transactional</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="transactional" value="promotional">
+                                        <b>Promotional</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding-left: 32px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                    <label>Select <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="checksc" id="checksc"
+                                        value="customer" onclick="text(1)">
+                                        <b>Customer</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="custom" name="checksc" value="" onclick="text(0)">
+                                        <b>Custom</b>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding-left: 32px;border: 1px;">
+                                <div class="form-group" id="custom-options" style="display: none;">
+                                    <div class="row">
+                                    <label>Select Custom Options <span style="color: red;">*</span> </label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="checksc1" id="upload-file"
+                                        value="" onclick="text(3)">
+                                        <b>Upload File</b>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="radio" id="contact" name="checksc1" value="">
+                                        <b>Copy-Paste</b>
+                                        
+                                    </div>
+                                    </div>
+                                    <div id="checksc1Error"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" id="upload-file-options" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card-body" id="choose-file">
+                                                <input type="file" id="myfile" name="myfile">
+                                            </div>
+                                            <div id="choose-file-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                               Note: Please Choose Valid CSV File.
+                                            </div>
+                                            <div id="groupcheckError" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                                        </div>
+                                        <div class="col-md-4" style="margin-top: 22px;">
+                                            <!-- <button class="form-control" style="padding:10px;background: white;border: 1px solid #ccc;margin-top: 10px;"> --><a href="/download-sample-contact-file/" style="color: #495057;"><i class="fa fa-download" aria-hidden="true"><span style="font-weight: 600;font-family: Lato,sans-serif;"> Download Sample File</span></i></a><!-- </button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Campaign Name<span style="color: red;">*</span></label>
+                                     <div class="input-group mb-6">
+                                        <input class="form-control" type="text" name="campaign_name" id="campaign_name" placeholder="Campaign Name" value="">
+                                    </div>
+                                    <div id="campaign_name_err"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="card-body" id="contact-list" style="display: none;" >
+                                    <textarea type="text" name="custom-no" class="md-textarea form-control mobile" placeholder="Contact List" 
+                                  id="custom_list_number"   style="width: 90%; height:200px;"></textarea>
+                                </div>
+                                <div id="contact-list-warning" style="color:red; align-content: center; padding-left: 32px; display: none; ">
+                                   Note: Please Enter every number comma seperated.
+                                </div>
+                                <div id="groupcheckError1" style="color:  #63b90b; align-content: center; padding-left: 32px  ;" ></div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>SMS Header<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-12">
+                                        
+                                        <select class="form-control mobile" name="smsheader"
+                                            id="transsmsheader" placeholder="Template Choice" 
+                                             value="" >
+                                            <option value="">SMS Header</option>
+                                            {% for objects in header %}
+                                                {% if objects.header_type == 'transactional' or objects.header_type == 'Transactional' %}
+                                                    <option value="{{objects.header_content}}">{{objects.header_content}}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+
+                                        <select class="form-control mobile" name="smsheader1"
+                                            id="promosmsheader" placeholder="Template Choice" 
+                                             value="" style="display: none;">
+                                            <option value="">SMS Header</option>
+                                            {% for objects in header %}
+                                                {% if objects.header_type == 'promotional' %}
+                                                    <option value="{{objects.header_content}}">{{objects.header_content}}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div id="smsheaderError"></div>
+                                </div>
+                                <!-- <div style="padding-left: 12px;">
+                                    <a  data-toggle="modal" data-target="#headerModal" style="text-decoration: underline;">
+                                        Request a header
+                                    </a>
+                                    
+                                </div> -->
+                            </div>
+                            <div class="col-md-12"  id="template">
+                                <div class="form-group">
+                                    <label>Template<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-6">
+                                        <select class="form-control mobile" name="template_id"
+                                        id="template_id">
+                                         <option value="">Template</option>
+                                         <!-- {% for object in Template %}
+                                         <option value="{{object.template_content}}">{{object.template_content}}</option>
+                                         {% endfor %} -->
+                                        <!-- <option value="0">Template</option>
+                                        <option value="1">1. Hey Green Bill user, {#var#} has shared payment link for {#var#}. Click link {#var#} to pay now. </option>
+                                        <option value="2">2. {#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP to reset your password. {#var#}</option>
+                                        <option value="3">3. {#var#}#{#var#} Dear Green Bill user, use {#var#} as OTP for your registration. {#var#} </option>
+                                        <option value="4">4. # Dear Green Bill user, Use {#var#} as OTP to reset your password. {#var#}</option>
+                                        <option value="5">5. # Dear Green Bill user, use {#var#} as OTP for your registration. {#var#}</option>
+                                        <option value="6">6. Hey Green Bill user to view or download your receipt click on link {#var#}.</option>
+                                        <option value="7">7. Hey Green Bill user to view or download your cash memo click on link {#var#}.</option>
+                                        <option value="8">8.# Dear Green Bill user, Use {#var#} as OTP to reset your password. </option>
+                                        <option value="9">9. Dear Green Bill user, Use {#var#} as OTP to reset your password.</option>
+                                        <option value="10">10. # Dear Green Bill user, use {#var#} as OTP for your registration.</option>
+                                        <option value="11">11. Dear Green Bill user, use {#var#} as OTP for your registration.</option>
+                                        <option value="12">12. Dear Merchant, your membership has expired. We hope you will take the time to renew your membership & remain part of GreenBill. Click here {#var#} to renew. </option>
+                                        <option value="13">13. Dear Green Bill user, here is the login credentials for your team. Username: {#var#} Password: {#var#}</option>
+                                        <option value="14">14. Your GreenBill membership expires within a week. Renew now and get {#var#} off on your subscription. RENEW NOW!!! {#var#} </option>
+                                        <option value="15">15. Hey Green Bill Merchant, GreenBill system has been updated & some cool new feature has been added. Enjoy! - Team GreenBill</option>
+                                        <option value="16">16. Thank you for saving paper. Here is your digital bill https://bit.ly/3fwlvqt. To view all your bills, download Green Bill App.</option>
+                                        <option value="17">17. Thank you for choosing GreenBill as your Digital Billing Buddy. Please visit our website or download GreenBill Merchant App to login. </option>
+                                        <option value="18">18. Thank you for contacting Green Bill, tap the below link for your digital bill https://bit.ly/3fwlvqt</option>
+                                        <option value="19">19. Thank you for registering on Green Bill. Welcome to the Green Bill Community. Feel free to get in touch with us at www.greenbill.in</option>
+                                        <option value="20">20. Hey Green Bill user, to view or download your bill click on link {#var#} to view all your bills download Green Bill App</option>
+                                        <option value="21">21. Hey, Green Bill User, Please use OPT {#var#}{#var#}{#var#}{#var#}{#var#}{#var#} to log in into your account.</option>
+                                        <option value="22">22. Thank you for choosing GreenBill as your digital billing buddy. Your registration is complete please
+                                            visit website or download GB Merchant App to login</option> -->
+
+                                    </select>
+                                    </div>
+                                    <div id="templateError"></div>
+                                </div>
+                                <!-- <div style="padding-left: 12px;">
+                                    <a  data-toggle="modal" data-target="#templateModal" style="text-decoration: underline;">
+                                        Request a Template
+                                    </a>
+                                </div> -->
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Message<span style="color: red;">*</span></label>
+                                    <div class="input-group mb-6">
+                                        <textarea type="text" class="md-textarea form-control mobile" name="message" id="message"
+                                            placeholder="Message" value="" readonly=""></textarea>
+                                    </div>
+                                    <div id="noticetitleError"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="hide_cust_state">
+                                <div class="form-group">
+                                    <label>Customer State<small style="color: red;"> *</small></label>
+                                        <select class="js-example-basic-multiple" name="customer_state" id="customer_state" multiple="multiple" style="width: 300px;">
+                                        {% for cust_state in cust_data %}
+                                            {% if cust_state.c_area != "" %}
+                                            <option value="{{ cust_state.c_state }}">{{ cust_state.c_state }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </select>
+                                        <input type="hidden" name="customer_state_value" id="customer_state_value" value="">
+                                        <small id="customer_state_error"></small>  
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="hide_cust_city">
+                                <div class="form-group">
+                                    <label>Customer City<!-- <small style="color: red;"> *</small> --></label>
+                                    <select class="js-example-basic-multiple" name="customer_city" id="customer_city" multiple="multiple" style="width: 300px;" required="">
+                                    </select>
+                                    <input type="hidden" name="customer_city_value" id="customer_city_value" value="">
+                                    <small id="customer_city_error" required=""></small>  
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="hide_cust_area">
+                                <div class="form-group">
+                                    <label>Customer Area<!-- <small style="color: red;"> *</small> --></label>
+                                    <select class="js-example-basic-multiple" name="customer_area" id="customer_area" multiple="multiple" style="width: 300px;" required="">
+                                    </select>
+                                    <input type="hidden" name="customer_area_value" id="customer_area_value" value="">
+                                    <small id="customer_area_error"></small>  
+                                </div>
+                            </div>
+                            <div class="row" style="padding-left: 20px; padding-top: 12px;">
+                                <!-- <div class="col-md-3">
+                                    <div class="form-group">
+                                    <label>Total Word Count</label>
+                                    
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control mobile" name="word_count" id="word_count"
+                                       placeholder="00" value="" disabled/>
+                                    </div>
+                                    <div class="col-md-1"></div> -->
+                                <div class="col-md-4 mr-5">
+                                    <div class="form-group">
+                                    <label>Total number of Recipient</label>
+                                   
+                                    </div>
+                                </div>
+                            
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control mobile" name="receipent_count" id="receipent_count"
+                                      style="background-color:transparent; font-size:medium; box-shadow: none; font-weight: bold;" placeholder="00" value="" readonly /> 
+                                      
+                                </div>
+                            </div>
+                            <!-- <div class="row" style="padding-left: 20px; padding-top: 12px;">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                <label>Total Word Count</label>
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control mobile" name="word_count" id="word_count"
+                                   placeholder="00" value="" disabled/>
+                                </div>
+                                <div class="col-md-3"></div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                <label>Total number of Recipient</label>
+                               
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <input type="hidden" class="form-control mobile" name="receipent_count" id="receipent_count"
+                                  style="background-color:transparent; font-size:medium; box-shadow: none; font-weight: bold;" placeholder="00" value="" readonly /> 
+                                  
+                                </div>
+                            </div> -->
+                            
+                            
+                            <div class="col-md-12">
+                                <div class="text-center mt-3 mb-3">
+                                    <button type="submit" class="btn btn-primary" id="bulk-mail-sms-form-btn">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-1">
+                </div>
+        </form>
+            </div>
+       </div>
+       </div>
+        </div>
+        </div>
+ </div>
+
+ <div class="modal fade" id="headerModal" role="dialog" >
+    <div class="modal-dialog"  >
+      <!-- Modal content-->
+      <form method="POST"  class="form" id="add_header_form" style="border: 3px solid rgb(216, 214, 214); border-radius: 8px; ">
+        {% csrf_token %}
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Request Header</h2>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="name">Header Name<small style="color: red;"> *</small></label>
+              <input type="text" name="request_header" class="form-control" id="request_header" maxlength="6">
+            </div>
+            <!-- <div class="form-group">
+              <label for="description">Role Description</label>
+              <textarea class="form-control" name="role_description"></textarea>
+            </div> -->
+          </div>
+          <div class="modal-footer">
+            <input id="add_header_form_submit" type="submit" class="btn btn-primary requestHeader" value="Request">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="templateModal" role="dialog" >
+    <div class="modal-dialog"  >
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_template_form" style="border: 3px solid rgb(216, 214, 214); border-radius: 8px; ">
+        {% csrf_token %}
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Request Template</h2>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="name">Template <small style="color: red;"> *</small></label>
+              <textarea type="text" name="request_template" class="md-textarea form-control" maxlength="150" id="request_template"></textarea>
+            </div>
+            <!-- <div class="form-group">
+              <label for="description">Role Description</label>
+              <textarea class="form-control" name="role_description"></textarea>
+            </div> -->
+          </div>
+          <div class="modal-footer">
+            <input id="add_template_form_submit" type="submit" class="btn btn-primary requestTemplate" value="Request">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+    var rad = document.bulk_mail_sms_form.transactional;
+    var prev = null;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function() {
+            (prev) ? console.log(prev.value): null;
+            if (this !== prev) {
+                prev = this;
+            }
+            if(this.value == 'transactional')
+            {
+                document.getElementById('transsmsheader').style.display = 'block';
+                document.getElementById('promosmsheader').style.display = 'none';
+            }
+            else if(this.value == 'promotional')
+            {
+                document.getElementById('promosmsheader').style.display = 'block';
+                document.getElementById('transsmsheader').style.display = 'none';
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#transsmsheader").on('change', function()
+        {
+
+            var len = $("#transsmsheader").val();
+            // alert(len);
+
+            $("#template_id").empty();
+            // $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-template-by-header/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'smsheader': $('#transsmsheader').val()
+                },
+                success: function(result){
+                    $("#template_id").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#template_id').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        });
+
+        $("#promosmsheader").on('change', function()
+        {
+
+            var len = $("#promosmsheader").val();
+            // alert(len);
+
+            $("#template_id").empty();
+            // $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-template-by-header/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'smsheader': $('#promosmsheader').val()
+                },
+                success: function(result){
+                    $("#template_id").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#template_id').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        });
+    })
+</script>
+
+<script>
+
+function text(x){
+        if(x==0)
+        {
+        document.getElementById("hide_cust_state").style.display = "none";
+        document.getElementById("hide_cust_city").style.display = "none";
+        document.getElementById("hide_cust_area").style.display = "none";
+        $('#receipent_count').val('');
+    }
+    else if (x == 3)
+    {
+        sms_count = 0;
+        $('#receipent_count').val('');
+        sms_count = sms_count + merchant_added_customer_count;
+        $('#receipent_count').val('');
+        $('#receipent_count').val(sms_count);
+    }
+        else {
+            document.getElementById("hide_cust_state").style.display = "block";
+            document.getElementById("hide_cust_city").style.display = "block";
+            document.getElementById("hide_cust_area").style.display = "block";
+        }
+        return;
+    }
+$(document).ready(function () {
+
+
+        $("#customer_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+        
+    });
+    $(document).ready(function () {
+    $("#customer_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+    $(document).ready(function () {
+    $("#customer_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+     $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts)
+
+            $("#customer_city").empty();
+            $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-city-by-state-ids-in-merchant-bulk-sms/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    $("#customer_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/get-customer-count-by-state-city-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val(), 'customer_city_value': $('#customer_city_value').val(), 'customer_area_value': $('#customer_area_value').val(), 
+                },
+                success: function(result){
+                    $("#receipent_count").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#receipent_count').val(value);
+                    });
+                }
+            });
+
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts)
+
+            $("#customer_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-area-by-city-names-in-merchant-bulk-sms/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_city_value': $('#customer_city_value').val()
+                },
+                success: function(result){
+                    $("#customer_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/get-customer-count-by-state-city-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val(), 'customer_city_value': $('#customer_city_value').val(), 'customer_area_value': $('#customer_area_value').val(), 
+                },
+                success: function(result){
+                    $("#receipent_count").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#receipent_count').val(value);
+                    });
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            $.ajax({
+                type: "POST",
+                url: "/get-customer-count-by-state-city-area/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val(), 'customer_city_value': $('#customer_city_value').val(), 'customer_area_value': $('#customer_area_value').val(), 
+                },
+                success: function(result){
+                    $("#receipent_count").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#receipent_count').val(value);
+                    });
+                }
+            });
+
+        })
+    })
+
+
+   
+</script>
+
+
+<script>
+
+    $(function() {
+    $('.requestHeader').on('click', function(e) {
+        e.preventDefault(); 
+       
+        var request_header = document.getElementById("request_header").value;
+       
+        $.ajax({
+            type: "POST",
+            url: "/sms-header/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,request_header},
+            
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'Header request sent successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            // error: function() {
+            //     alert(request_header)
+            //     Swal.fire({
+            //     icon:"error",
+            //     title: "Oops...", 
+            //     text: "Something went wrong!", 
+            //     confirmButtonClass: "btn-success",
+            //     allowOutsideClick: false,
+            //     allowEscapeKey: false
+            //     })
+            //     .then(function() {
+            //     location.reload();
+            //     });       
+            // },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+
+
+    $('.requestTemplate').on('click', function(e) {
+        e.preventDefault(); 
+       
+        var request_template = document.getElementById("request_template").value;
+       
+        $.ajax({
+            type: "POST",
+            url: "/sms-template/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,request_template},
+            
+            success: function() {
+                console.log('success',request_template)
+                Swal.fire({
+                text:'Template Request Sent successfully ',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                },
+            error: function() {
+                alert(request_header)
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
+    $(document).ready(function() {
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'group') {
+            $('#group-list').show();  
+
+       }
+
+       else {
+            $('#group-list').hide();   
+       }
+   });
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'category') {
+            $('#category-list').show();          
+       }
+
+       else {
+            $('#category-list').hide();   
+       }
+   });
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'custom' && $(this).attr('id') != 'checksc' && $(this).attr('id') != 'transaction' && $(this).attr('id') != 'promotion') {
+            $('#custom-options').show();     
+            $('#custom-warning').show();     
+       }
+       
+       else {
+            $('#custom-options').hide();  
+            $('#custom-warning').hide();   
+
+       }
+   });
+
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'upload-file') {
+            $('#custom-options').show();
+            $('#upload-file-options').show();     
+            $('#choose-file-warning').show();      
+       }
+
+       else {
+            $('#upload-file-options').hide();  
+            $('#choose-file-warning').hide();    
+       }
+   });
+
+
+   $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'contact') {
+            $('#custom-options').show();
+            $('#contact-list').show();     
+            $('#contact-list-warning').show();     
+       }
+
+       else {
+            $('#contact-list').hide();  
+            $('#contact-list-warning').hide();   
+       }
+   });
+});
+
+ 
+$('#template_id').click(function(){
+  var source = $('#template_id').val();  
+ $('#message').val(source);
+  
+});
+
+$("#template_id").change(function(){
+        var words = $.trim($("#message").val());
+        $('#word_count').val(words.length)
+    });
+    $('#message').keyup(updateCount);
+    $('#message').keydown(updateCount);
+
+    function updateCount() {
+    var cs = $(this).val().length;
+    console.log('cs',cs)
+    $('#word_count').val(cs);
+    }
+
+    $(".smsBtn").on("click", function () {
+       
+        var merchant_added_customer_count = $(this).data('merchant_added_customer_count');
+        
+        
+        console.log(merchant_added_customer_count);
+        
+        // if ($('input[name="checkso"]').is(":checked")){
+        //     console.log('inside checko')
+        // }
+        // var sms_count = 0\\
+        $('#checksc').change(function(){
+            var sms_count = 0
+            if ($(this).is(':checked')){
+                console.log('checkso');
+                sms_count = sms_count + merchant_added_customer_count;
+                console.log('sms_count',sms_count);
+            }else{
+                sms_count = sms_count - owner_count;
+                console.log('sms_count4',sms_count)
+            }
+            $('#receipent_count').val('');
+            $('#receipent_count').val(sms_count);
+            console.log('receipent_count',sms_count)
+        })
+
+        // $('#checksm').change(function(){
+        //     if ($(this).is(':checked')){
+        //         console.log('checksm')
+        //         sms_count = sms_count + merchant_count;
+        //         console.log('sms_count2',sms_count);
+        //     }else{
+        //         sms_count = sms_count - merchant_count;
+        //         console.log('sms_count3',sms_count);
+        //     }
+            
+        //     $('#receipent_count').empty().val(sms_count);
+        // })
+
+        // $('#checksc').change(function(){
+        //     if ($(this).is(':checked')){
+        //         console.log('checksc');
+        //         sms_count = sms_count + customer_count;
+        //         console.log('sms_count2',sms_count);
+        //     }else{
+        //         sms_count = sms_count - customer_count;
+        //         console.log('sms_count3',sms_count);
+        //     }
+            
+        //     $('#receipent_count').val(sms_count);
+        // })
+
+        // $('#checksp').change(function(){
+        //     if ($(this).is(':checked')){
+        //         console.log('checksp');
+        //         sms_count = sms_count + partner_count;
+        //         console.log('sms_count2',sms_count);
+        //     }else{
+        //         sms_count = sms_count - partner_count;
+        //         console.log('sms_count3',sms_count);
+        //     }
+            
+        //     $('#receipent_count').val(sms_count);
+        // })
+        
+        // custom_list_number
+
+        
+        $('#custom_list_number').keyup(function(e){
+        var count = $(this).val().split(',').length;
+        $('#count').html(count);
+        console.log('console',count)
+
+            $('#receipent_count').val(count);
+        if(count > 4)
+            e.preventDefault();
+        });
+
+        $("#myModal").modal();
+       
+})
+   
+   
+//     owner_count
+// merchant_count
+// customer_count
+// partner_count
+
+
+</script>
+
+<script>
+    $(".viewBtn").on("click", function () {
+
+        var message = $(this).data('message');
+
+         $('#message_id').empty().append(message);
+
+        $("#ViewCashMemoModal").modal();
+    });
+
+
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-customer-bulk-mail/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr1').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Sms has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+</script>
+
+
+<script type="text/javascript">
+
+    $("#bulk-mail-sms-form").validate({
+        rules: {
+            checksc1: {
+                required: true,
+            },
+            myfile:{
+                required: true,
+            },
+            campaign_name: {
+                required: true,
+            },
+            smsheader:{
+                required: true,
+            },
+            template_id:{
+                required: true,
+            },
+            message:{
+                required: true,
+            },
+            customer_state:{
+                required: true,
+            },
+            customer_city: {
+                required: false,
+            },  
+            customer_area: {
+                required: false,
+            },
+        },
+        messages: {
+            // custom-no:{
+            //    required: "This field is Required.", 
+            // },
+            checksc1: {
+                required: "This field is Required.",
+            },
+            myfile: {
+                required: "This field is Required.",
+            },
+            smsheader:{
+                required: "This field is Required.",
+            },
+            template_id:{
+                required: "This field is Required.",
+            },
+            message:{
+                required: "This field is Required.",
+            },
+            customer_state:{
+                required: "This field is Required.",
+            },
+            customer_area: {
+                required: "This Field is Required",
+            },
+            customer_city: {
+                required: "This Field is Required",
+            },
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "template_id")
+                $("#templateError").html(error);
+            if (element.attr("name") == "smsheader")
+                $("#smsheaderError").html(error);
+            if (element.attr("name") == "campaign_name")
+                $("#campaign_name_err").html(error);
+            if (element.attr("name") == "message")
+                $("#noticetitleError").html(error);
+            if (element.attr("name") == "checksc1")
+                $("#checksc1Error").html(error);
+            if (element.attr("name") == "myfile")
+                $("#groupcheckError").html(error);
+            // if (element.attr("name") == "custom-no")
+            //     $("#groupcheckError1").html(error);
+            if (element.attr("name") == "customer_city")
+                $("#customer_city_error").html(error);
+            if (element.attr("name") == "customer_state")
+                $("#customer_state_error").html(error);
+            if (element.attr("name") == "customer_area")
+                $("#customer_area_error").html(error);
+            
+            
+        }
+
+    })
+
+
+$("input[name='sentnotice']").click(function () {
+    $('#smsheader').css('display', ($(this).val() === 'sms') ? 'block':'none');
+    $('#template').css('display', ($(this).val() === 'sms') ? 'block':'none');
+});
+
+    </script>
+
+<script>
+
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(document).mousemove(function(event){
+        if( ($("input[name*='individual']:checked").length) > 0 || ($("input[id*='custom']:checked").length) > 0 || ($("input[id*='checksc']:checked").length) > 0)
+        // || ($("input[name*='group_merchant']:checked").length) > 0 || ($("input[name*='group_customer']:checked").length) > 0 || ($("input[name*='group_partner']:checked").length) > 0 
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', false);
+            $('#groupcheckError').empty();
+
+            // $("#groupcheckError").html("Please select Group or Individual.");  
+        }
+        else
+        {
+            $("#bulk-mail-sms-form-btn").prop('disabled', true);
+            $('#groupcheckError').empty().append("<b>Note: Please select either customer or input custom numbers to send sms .<b>");
+        }
+
+      
+        // if(($("input[name*='checks']:checked").length) > 0)
+        //     {
+                
+        //         $("input[name='individual']:checkbox").prop('checked',false);
+        //     } 
+
+
+          // else(($("input[name*='individual']:checked").length) > 0)
+          //   {
+                
+          //       $("input[name='checks']:checkbox").prop('checked',false);
+          //   } 
+
+    });
+   
+
+ 
+
+  $(document).change(function(event){ 
+  if(($("input[name*='checks']:checked").length) > 0)
+    {
+        
+        $("input[name='individual']:checkbox").prop('checked',false);
+    }   
+ });
+
+
+
+$(document).mousemove(function(event){
+    if(($("input[name*='checks']:checked").length) > 0)
+    {
+        console.log("ll")
+        $("input[name='individual']:checkbox").prop('checked',false);
+    } 
+});
+
+    // $.validator.addMethod("checkbox_check", function (value, element) {
+    //     console.log('hhjhj')
+    //     if (true) {
+    //       return true;   // PASS validation 
+    //     } else {
+    //       return false;  // FAIL validation
+    //     };
+    // }, "Please enter valid IFSC Code.");
+
+
+
+    // $("#bulk-mail-sms-form").validate({
+
+        // rules: {
+        //     notice_title: {
+        //         required: true,
+        //     },
+    //         message: {
+    //             required: true,
+    //         },
+    //         smsheader:{
+    //             required: true,
+    //         },
+    //         template_id:{
+    //             required: true,
+    //         },
+    //         "individual": {
+    //            required: true, 
+    //            minlength: 1 
+    //         },
+    //         "sentnotice": { 
+    //             required: true, 
+    //             minlength: 1,
+    //         },
+            
+    //     },
+    //     messages: {
+    //         notice_title: {
+    //             required: "Title is Required",
+    //         },
+    //         message: {
+    //             required: "Message is Required",
+    //         },
+    //         smsheader: {
+    //             required: "SMS Header is Required",
+    //         },
+    //         template_id: {
+    //             required: "Template is Required",
+    //         },
+    //         // "checks": "Please select at least one checkbox."
+    //     },
+    //     errorPlacement: function (error, element) {
+    //         if (element.attr("name") == "sentnotice")
+    //             $("#checkboxError").html(error);
+    //         if (element.attr("name") == "message")
+    //             $("#messageError").html(error);
+    //         if (element.attr("name") == "notice_title")
+    //             $("#noticetitleError").html(error);
+    //         if (element.attr("name") == "smsheader")
+    //             $("#smsheaderError").html(error);
+    //         if (element.attr("name") == "template_id")
+    //             $("#templateError").html(error);
+    //         // if (element.attr("name") == "individual")
+    //         //     $("#groupcheckError").html(error);      
+    //     }
+    // });
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+<style>
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

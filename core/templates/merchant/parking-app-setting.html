@@ -1,0 +1,464 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Bill Layout {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .h3{
+        color: black;
+    }
+
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Parking App Setting</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Parking Lot</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/parking-app-setting/">Parking App Setting</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Bill Layout</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Design</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/parking-app-setting/">Bill Layout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {% if is_merchant == True %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <form class="form-control" action="/parking-app-setting/" method="POST" id="bill_form"
+                                        name="petrol-pump-app-setting-form">
+                                        {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group"><h3>Send Bill</h3></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-inline">
+                                                    {% if setting == "" %}
+                                                        <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio1" value="digital_bill" checked>
+                                                    {% else %}
+                                                        <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio1" value="digital_bill" {% if setting.digital_bill %} checked {% endif %} >
+                                                    {% endif %}
+                                                    <label class="form-check-label" for="inlineRadio1" style="margin-top: 8px;" >Digital Bill</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio2" value="sms" {% if setting.sms %} checked {% endif %}>
+                                                    <label class="form-check-label" for="inlineRadio2" style="margin-top: 8px;">SMS</label>
+                                                </div>
+                                                <div class="container" style="">
+                                                    <h5 style="color: #63b90b;">For SMS : If customer is not registered on Green bill SMS will be sent. If registered then digital bill will be sent. <br>For Digital Bill: Only if customer is registered then digital bill will be sent if not SMS will not be sent.</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group"><h3>Billing Gate</h3></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="entry_gate" name="exit_gate" id="exit_gate" {% if setting.exit_gate == False %} checked {% endif %}>
+                                                    <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Entry</label>   
+
+                                                </div>
+                                                <div class="form-check form-check-inline" style="margin-left: -2px;">
+                                                    
+                                                        <input class="form-check-input" type="radio" value="exit_gate" name="exit_gate" id="exit_gate" {% if setting.exit_gate == True %} checked {% endif %}>
+                                                        <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Exit</label>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group"><h3>Manage Space</h3></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="yes" name="manage_space" {% if setting.manage_space == True %} checked {% endif %}>
+                                                        <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Yes</label>
+
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="no" name="manage_space" {% if setting.manage_space == False %} checked {% endif %}>
+                                                        <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">No</label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group"><h3>Bill Header</h3></div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-8 text-center">
+                                                        <!-- <div class="form-check">
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" value="pay_bill_at_exit_gate" name="pay_bill_at_exit_gate" {% if setting.pay_bill_at_exit_gate == True %} checked {% endif %}>
+                                                                <span class="form-check-sign">Pay Bill at Exit Gate</span>
+                                                            </label>
+                                                        </div> -->
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="header_text1"
+                                                                    id="header_text1" placeholder="Bill Header 1" value="{{ setting.header_text1 }}" maxlength="30" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8 text-center">
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="header_text2"
+                                                                    id="header_text2" placeholder="Bill Header 2" value="{{ setting.header_text2 }}" maxlength="30"  />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8 text-center">
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="header_text3"
+                                                                    id="header_text3" placeholder="Bill Header 3" value="{{ setting.header_text3 }}" maxlength="30"  />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group"><h3 style="">Bill Footer</h3></div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-8 text-center">
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="footer_text1"
+                                                                    id="footer_text1" placeholder="Bill footer 1" value="{{ setting.footer_text1 }}" maxlength="30"  />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8 text-center">
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="footer_text2"
+                                                                    id="footer_text2" placeholder="Bill footer 2" value="{{ setting.footer_text2 }}" maxlength="30"  />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8 text-center">
+                                                        <div class="form-group">
+                                                            <div class="input-group mb-6">
+                                                                <input type="text" class="form-control" name="footer_text3"
+                                                                    id="footer_text3" placeholder="Bill footer 3" value="{{ setting.footer_text3 }}" maxlength="30"  />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <!--  <div class="col-md-3 text-center">
+                                                
+                                            </div>
+                                            <div class="col-md-3 text-center">
+                                                <div class="form-group"><h2>Bill Footer Content</h2></div>
+                                                
+                                            </div> -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-center"><h6 style="color: #63b90b;"> (Please add spaces at beginning to align the words in center)</h6> </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-3 border" style="padding-top: 2%" style="border-radius: 5px">
+                                    <h3 style="text-align:center"><b>{{merchant_bussiness_name}}</b></h3>
+                                    <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text1|nbsp }}</b></h5>
+                                    <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text2|nbsp }}</b></h5>
+                                    <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text3|nbsp }}</b></h5>
+                                    <img src="http://157.230.228.250/media/demo-bills/parking-demo-bill.png" class="img-fluid">
+                                    <h5 style="padding-top: 10px;overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text1|nbsp }}</b></h5>
+                                    <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text2|nbsp }}</b></h5>
+                                    <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text3|nbsp }}</b></h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchnat_action_permissions_list %}
+                            {% if actions.module_id|lower == "Design"|lower and actions.feature_id|lower == "Bill Layout"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <form class="form-control" action="/parking-app-setting/" method="POST" id="bill_form"
+                                                    name="petrol-pump-app-setting-form">
+                                                    {% csrf_token %}
+
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group"><h3>Send Bill</h3></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check form-check-inline">
+                                                                {% if setting == "" %}
+                                                                    <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio1" value="digital_bill" checked>
+                                                                {% else %}
+                                                                    <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio1" value="digital_bill" {% if setting.digital_bill %} checked {% endif %} >
+                                                                {% endif %}
+                                                                <label class="form-check-label" for="inlineRadio1" style="margin-top: 8px;" >Digital Bill</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" name="send_bill" id="inlineRadio2" value="sms" {% if setting.sms %} checked {% endif %}>
+                                                                <label class="form-check-label" for="inlineRadio2" style="margin-top: 8px;">SMS</label>
+                                                            </div>
+                                                            <div class="container" style="">
+                                                                <h5 style="color: #63b90b;">For SMS : If customer is not registered on Green bill SMS will be sent. If registered then digital bill will be sent. <br>For Digital Bill: Only if customer is registered then digital bill will be sent if not SMS will not be sent.</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group"><h3>Billing Gate</h3></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="entry_gate" name="exit_gate" id="exit_gate" {% if setting.exit_gate == False %} checked {% endif %}>
+                                                                <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Entry</label>   
+
+                                                            </div>
+                                                            <div class="form-check form-check-inline" style="margin-left: -2px;">
+                                                                
+                                                                    <input class="form-check-input" type="radio" value="exit_gate" name="exit_gate" id="exit_gate" {% if setting.exit_gate == True %} checked {% endif %}>
+                                                                    <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Exit</label>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group"><h3>Manage Space</h3></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="yes" name="manage_space" {% if setting.manage_space == True %} checked {% endif %}>
+                                                                    <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">Yes</label>
+
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="no" name="manage_space" {% if setting.manage_space == False %} checked {% endif %}>
+                                                                    <label class="form-check-label" for="exit_gate" style="margin-top: 8px;">No</label>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group"><h3>Bill Header</h3></div>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="row">
+                                                                <div class="col-md-8 text-center">
+                                                                    <!-- <div class="form-check">
+                                                                        <label class="form-check-label">
+                                                                            <input class="form-check-input" type="checkbox" value="pay_bill_at_exit_gate" name="pay_bill_at_exit_gate" {% if setting.pay_bill_at_exit_gate == True %} checked {% endif %}>
+                                                                            <span class="form-check-sign">Pay Bill at Exit Gate</span>
+                                                                        </label>
+                                                                    </div> -->
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="header_text1"
+                                                                                id="header_text1" placeholder="Bill Header 1" value="{{ setting.header_text1 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8 text-center">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="header_text2"
+                                                                                id="header_text2" placeholder="Bill Header 2" value="{{ setting.header_text2 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8 text-center">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="header_text3"
+                                                                                id="header_text3" placeholder="Bill Header 3" value="{{ setting.header_text3 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group"><h3 style="">Bill Footer</h3></div>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="row">
+                                                                <div class="col-md-8 text-center">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="footer_text1"
+                                                                                id="footer_text1" placeholder="Bill footer 1" value="{{ setting.footer_text1 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8 text-center">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="footer_text2"
+                                                                                id="footer_text2" placeholder="Bill footer 2" value="{{ setting.footer_text2 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8 text-center">
+                                                                    <div class="form-group">
+                                                                        <div class="input-group mb-6">
+                                                                            <input type="text" class="form-control" name="footer_text3"
+                                                                                id="footer_text3" placeholder="Bill footer 3" value="{{ setting.footer_text3 }}" maxlength="30" minlength="30" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                       <!--  <div class="col-md-3 text-center">
+                                                            
+                                                        </div>
+                                                        <div class="col-md-3 text-center">
+                                                            <div class="form-group"><h2>Bill Footer Content</h2></div>
+                                                            
+                                                        </div> -->
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-center"><h6 style="color: #63b90b;"> (Please add spaces at beginning to align the words in center)</h6> </div>
+                                                    </div>
+
+                                                    {% if actions.edit_permission == "1" %}
+                                                        <div class="col-md-12">
+                                                            <div class="text-center mt-3 mb-3">
+                                                                <button type="submit" class="btn btn-primary">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+
+                                                </form>
+                                            </div>
+                                            <div class="col-md-3 border" style="padding-top: 2%" style="border-radius: 5px">
+                                                <h3 style="text-align:center"><b>{{merchant_bussiness_name}}</b></h3>
+                                                <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text1|nbsp }}</b></h5>
+                                                <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text2|nbsp }}</b></h5>
+                                                <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.header_text3|nbsp }}</b></h5>
+                                                <img src="http://157.230.228.250/media/demo-bills/parking-demo-bill.png" class="img-fluid">
+                                                <h5 style="padding-top: 10px;overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text1|nbsp }}</b></h5>
+                                                <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text2|nbsp }}</b></h5>
+                                                <h5 style="overflow: hidden;white-space: nowrap;"><b>{{ setting.footer_text3|nbsp }}</b></h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+
+{% endblock javascripts %}

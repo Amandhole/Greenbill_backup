@@ -1,0 +1,152 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Login {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <style>
+    
+        @media only screen and (max-width: 600px) {
+            #login-img {
+                display: none !important;
+            }
+        }
+
+    </style>
+
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-5" style="padding: 3%;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>
+                                Partner Login
+                            </span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="" id="login_form">
+
+                        {% csrf_token %}
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="">
+                                <!-- <div class="col-md-6 col-lg-10"> -->
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-phone"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.mobile_no }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="icon-lock"></i>
+                                                </span>
+                                            </div>
+                                            {{ form.password }}
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <span toggle="#password-field" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <a href="{% url 'password-reset-partner' %}">Forgot Password ?</a>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                {{ form.remember_me }}
+                                                    <span class="form-check-sign">Remember Me</span>
+                                            </label>    
+                                        </div>
+                                    </div>
+
+                                    {% if msg %}
+                                        <span class="text-danger">{{ msg | safe }}</span>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+
+                            <h4 align="right"><b><a href="https://www.greenbill.in/">Visit our Website </a></b></h4>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-md-7" style="padding: 3%;">
+                <img class="img-fluid" src="http://157.230.228.250/media/web-panel/login.png" id="login-img">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+    <script type="text/javascript">
+        $(".toggle-password").click(function() {
+            $(this).toggleClass("fa-eye-slash fa-eye");
+            var input = document.getElementById("id_password")
+                if (input.type == "password") {
+                    input.type = "text";
+                } else {
+                    input.type = "password";
+                }
+            });
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script>
+        
+        jQuery.validator.addMethod("mobileno", function(value, element){
+        if (/^([0]|\+91)?[6789]\d{9}$/.test(value)) {
+            return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid mobile number.");
+        
+        $( "#login_form" ).validate({
+        rules: {
+            mobile_no: {
+                required: true,
+                maxlength: 10,
+                minlength: 10,
+                mobileno: true,
+            },
+            password: {
+                required: true,
+            },
+        },
+        messages: {
+            mobile_no: {
+                required: "Mobile number field is required.",
+                maxlength: "Mobile number must contain 10 numbers.",
+                minlength: "Mobile number must contain 10 numbers."
+            },
+            password: "Password field is required.",
+        },
+        })
+    </script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

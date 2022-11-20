@@ -1,0 +1,2560 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Recharge {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .ribbon {
+    position: absolute;
+    left: var(--right, 5px);
+    top: var(--top, -3px);
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .ribbon.down > .content {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 50% 100%, 0 calc(100% - 8px));
+    }
+
+    .ribbon > .content {
+        color: white;
+        text-align: center;
+        font-weight: 400;
+        background: var(--color, #2ca7d8) linear-gradient(
+        45deg
+        , rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.25) 100%);
+        padding: 5px 2px 4px;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 0 100%);
+        width: var(--width, 22px);
+        min-height: var(--height, 36px);
+        transition: clip-path 1s, padding 1s, background 1s;
+    }
+
+    #mh_in_state{
+        display: none;
+    }
+    #mh_out_state{
+        display: none;
+    }
+    #promo_mh_in_state{
+        display: none;
+    }
+    #promo_mh_out_state{
+        display: none;
+    }
+    #trans_mh_out_state{
+        display: none;
+    }
+    #trans_mh_in_state{
+        display: none;
+    }
+    #adon_mh_out_state{
+        display: none;
+    }
+    #adon_mh_in_state{
+        display: none;
+    }
+ 
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+
+                        <a style="font-size: 20px;"><b>Subscription</b></a>
+                        <ul class="breadcrumbs">
+                            <li class="nav-home">
+                                <a href="/merchant-index/">
+                                    <i class="flaticon-home"></i>
+                                </a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a>Merchant Subscriptions</a>
+                            </li>
+                            <li class="separator">
+                                <i class="flaticon-right-arrow"></i>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/recharge/">Subscription</a>
+                            </li>
+                        </ul>
+
+                        <!-- <ul class="nav nav-pills nav-secondary justify-content-center" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Subscription</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Addons</a>
+                            </li>
+                        </ul> -->
+                    </div>
+                    {% if is_superuser == True %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                      <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                      {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                      <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                      {% endif %}
+                                      <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                      <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="tab-content" id="v-pills-tabContent">
+                                        <div class="tab-pane fade show active" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
+                                            {% for object in subscriptions_list %}
+                                            {% if object.user_type != 'partner' %}
+                                                <div class="card">
+                                                    {% if object.is_offer == True %}
+                                                        <div class="ribbon down" style="--color: #fd9c2e;">
+                                                          <div class="content">
+                                                            <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="vertical-align:none;">
+                                                              <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
+                                                            </svg>
+                                                          </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Subscription Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Users Up To</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>
+                                                                    {% if object.number_of_users == '2' %}
+                                                                    0-2.Nos
+                                                                    {% endif %}
+
+                                                                    {% if object.number_of_users == '5' %} 
+                                                                    3-5.Nos
+                                                                    {% endif %}
+
+                                                                    {% if object.number_of_users == '10' %} 
+                                                                    6-10.Nos
+                                                                    {% endif %}
+
+                                                                    {% if object.number_of_users == '25' %} 
+                                                                    11-25.Nos
+                                                                    {% endif %}
+
+                                                                    {% if object.number_of_users == '50' %} 
+                                                                    26-50.Nos
+                                                                    {% endif %}
+
+                                                                    {% if object.number_of_users == '100' %} 
+                                                                    51-100.Nos
+                                                                    {% endif %}
+                                                                </b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Monthly Sub-Charges</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.cost_for_users|floatformat:3}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Min.SMS Recharge</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{object.recharge_amount|floatformat:3}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewdetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" type="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-business_category="{{ object.business_category}}" data-recharge_amount="{{ object.subscription_plan_cost }}"
+                                                                                data-gst_amount="{{object.gst_amount}}"
+                                                                                data-cost_for_users="{{object.cost_for_users}}" data-number_of_users="{{ object.number_of_users}}">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewdetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;">  <!-- <b>₹ {{object.subscription_plan_cost}}</b></span> -->
+                                                                                    <b>₹ {{object.recharge_amount|floatformat:3}}</b></span>
+                                                                                <br>
+                                                                                <span style="color: white;">
+                                                                                    <b>Plan For - 
+                                                                                    {% if object.valid_for_month == 1%}
+                                                                                        {{object.valid_for_month}} Month
+                                                                                    {% else %}
+                                                                                        {{object.valid_for_month}} Months
+                                                                                    {% endif %}
+                                                                                    </b>
+                                                                                </span>
+                                                                            </p><br>
+
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Recharge Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.recharge_amount|floatformat:3 }}</b>
+                                                                            </span>
+                                                                        </p>
+
+                                                                        {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost|floatformat:3 }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost|floatformat:3}}</b></span>
+                                                                            </p>
+                                                                        {% else %}
+                                                                            <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                    Per Bill Cost
+                                                                                <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                    Per Digital Bill Cost
+                                                                                </span>
+                                                                                <br>
+                                                                                <b>₹ {{ object.per_bill_cost|floatformat:3 }}</b>
+                                                                                <span
+                                                                                    style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                    <b>₹ {{object.per_digital_bill_cost|floatformat:3}}</b></span>
+                                                                            </p>
+                                                                        {% endif %}
+                                                                        <p align="center" style="color: red">
+                                                                            (Number Of Users: {{object.number_of_users}})
+                                                                            (Cost Per User: ₹ {{object.cost_for_users|floatformat:3}})
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-promotional-sms" role="tabpanel" aria-labelledby="v-pills-promotional-sms-tab">
+                                            {% for object in promotional_sms_plans_list %}
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Subscription Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Total SMS</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Per SMS Cost</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{ object.per_sms_cost|floatformat:3 }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost|floatformat:3}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewPromotionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" ype="button" class="btn btn-sm buypromotionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-total_sms_cost="{{ object.total_sms_cost }}" data-gst_amount="{{ object.gst_amount }}" data-actual_total_amount="{{ object.actual_total_amount }}">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewPromotionalPlandetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.total_sms_cost|floatformat:3}}</b></span>
+                                                                            </p><br>
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Total Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.total_sms_cost|floatformat:3 }}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Total SMS
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Per SMS Cost
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.total_sms }}</b>
+                                                                            <span
+                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                <b>₹ {{object.per_sms_cost|floatformat:3}}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-transactional-sms" role="tabpanel" aria-labelledby="v-pills-transactional-sms-tab">
+                                            {% for object in transactional_sms_plans_list %}
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-3">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Subscription Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Total SMS</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Per SMS Cost</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{ object.per_sms_cost|floatformat:3 }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost|floatformat:3}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewTransactionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                <button type="button" type="button" class="btn btn-sm buyTransactionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-actual_transactional_amount="{{ object.actual_total_amount }}" data-transactional_gst_amount="{{ object.gst_amount }}"
+                                                                            data-transactional_amount_with_gst="{{ object.total_sms_cost }}">Buy</button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewTransactionalPlandetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.total_sms_cost|floatformat:3}}</b></span>
+                                                                            </p><br>
+                                                                        </section>
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Subscription Name
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Total Amount
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.subscription_name }}</b>
+
+                                                                            <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.total_sms_cost|floatformat:3 }}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                            Total SMS
+                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Per SMS Cost
+                                                                            </span>
+                                                                            <br>
+                                                                            <b>{{ object.total_sms }}</b>
+                                                                            <span
+                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                <b>₹ {{object.per_sms_cost|floatformat:3}}</b>
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-add-on" role="tabpanel" aria-labelledby="v-pills-add-on-tab">
+                                            {% for object in addons_plans %}
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-sm-2"></div>
+                                                            <div class="col-sm-4">
+                                                                <section style="padding-left: 15px;">
+                                                                    <span><b>Add On's Name</b></span>
+                                                                    <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.add_on_name }}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <!-- <div class="col-sm-3">
+                                                                <section>
+                                                                    <span><b>Recharge Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#00569d"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                </section>
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <section>
+                                                                    <span><b>Amount</b></span>
+                                                                    <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                </section>
+                                                            </div> -->
+                                                            <div class="col-sm-3" style="padding-top: 5px">
+                                                                
+                                                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                    <button type="button" data-toggle="modal" data-target="#NoActiveGreenBillSubscriptionModal" style="background-color: #06529e; color:white" class="btn btn-sm addonBtn" data-plan-id="{{object.id}} ">Buy</button>
+                                                               
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="modal fade" id="viewAddOndetailsmodal_{{forloop.counter}}">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3 class="modal-title w-100 text-center">{{ object.add_on_name }}</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">
+                                                                            ×
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <!-- <section
+                                                                            style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                            <p style="text-align:center;"> <br>
+                                                                                <span
+                                                                                    style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                        ₹ {{object.recharge_amount}}</b></span>
+                                                                                <br>
+                                                                            </p><br>
+                                                                        </section> -->
+                                                                        <hr>
+                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                Add On's Name
+                                                                            <!-- <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                Recharge Amount
+                                                                            </span> -->
+                                                                            <br>
+                                                                            <b>{{ object.add_on_name }}</b>
+
+                                                                            <!-- <span
+                                                                                style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                <b> ₹ {{ object.recharge_amount }}</b>
+                                                                            </span> -->
+                                                                        </p>
+
+                                                                        
+                                                                        
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in action_permissions_list %}
+                            {% if actions.module_id|lower == "Subscription Plans"|lower and actions.feature_id|lower == "Activate Merchant Subscription"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                  <a class="nav-link active" id="v-pills-subscription-tab" data-toggle="pill" href="#v-pills-subscription" role="tab" aria-controls="v-pills-subscription" aria-selected="true">Green Bill Subscription Plan</a>
+                                                  {% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+                                                  <a class="nav-link" id="v-pills-promotional-sms-tab" data-toggle="pill" href="#v-pills-promotional-sms" role="tab" aria-controls="v-pills-promotional-sms" aria-selected="false">Promotional SMS Plan</a>
+                                                  {% endif %}
+                                                  <a class="nav-link" id="v-pills-transactional-sms-tab" data-toggle="pill" href="#v-pills-transactional-sms" role="tab" aria-controls="v-pills-transactional-sms" aria-selected="false">Transactional SMS Plan</a>
+                                                  <a class="nav-link" id="v-pills-add-on-tab" data-toggle="pill" href="#v-pills-add-on" role="tab" aria-controls="v-pills-add-on" aria-selected="true">Add On's Plan</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="tab-content" id="v-pills-tabContent">
+                                                    <div class="tab-pane fade show active" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
+                                                        {% for object in subscriptions_list %}
+                                                        {% if object.user_type != 'partner' %}
+                                                            <div class="card">
+                                                                {% if object.is_offer == True %}
+                                                                    <div class="ribbon down" style="--color: #fd9c2e;">
+                                                                      <div class="content">
+                                                                        <svg width="14px" height="14px" aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="vertical-align:none;">
+                                                                          <path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path>
+                                                                        </svg>
+                                                                      </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Users Up To</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>
+                                                                                {% if object.number_of_users == '2' %}
+                                                                                0-2.Nos
+                                                                                {% endif %}
+
+                                                                                {% if object.number_of_users == '5' %} 
+                                                                                3-5.Nos
+                                                                                {% endif %}
+
+                                                                                {% if object.number_of_users == '10' %} 
+                                                                                6-10.Nos
+                                                                                {% endif %}
+
+                                                                                {% if object.number_of_users == '25' %} 
+                                                                                11-25.Nos
+                                                                                {% endif %}
+
+                                                                                {% if object.number_of_users == '50' %} 
+                                                                                26-50.Nos
+                                                                                {% endif %}
+
+                                                                                {% if object.number_of_users == '100' %} 
+                                                                                51-100.Nos
+                                                                                {% endif %}
+                                                                            </b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Monthly Sub-Charges</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.cost_for_users}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Min.SMS Recharge</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{object.recharge_amount|floatformat:3}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewdetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                            <button type="button" ype="button" class="btn btn-sm buymodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-business_category="{{ object.business_category}}" data-recharge_amount="{{ object.subscription_plan_cost }}"
+                                                                                            data-gst_amount="{{object.gst_amount}}"
+                                                                                            data-cost_for_users="{{object.cost_for_users}}" data-number_of_users="{{ object.number_of_users}}">Buy</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewdetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;">  <!-- <b>₹ {{object.subscription_plan_cost}}</b></span> -->
+                                                                                                <b>₹ {{object.recharge_amount}}</b></span>
+                                                                                            <br>
+                                                                                            <span style="color: white;">
+                                                                                                <b>Plan For - 
+                                                                                                {% if object.valid_for_month == 1%}
+                                                                                                    {{object.valid_for_month}} Month
+                                                                                                {% else %}
+                                                                                                    {{object.valid_for_month}} Months
+                                                                                                {% endif %}
+                                                                                                </b>
+                                                                                            </span>
+                                                                                        </p><br>
+
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                            Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Recharge Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.recharge_amount|floatformat:3 }}</b>
+                                                                                        </span>
+                                                                                    </p>
+
+                                                                                    {% if object.category_id == 11 or object.category_id == 12 %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost|floatformat:3 }}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost|floatformat:3}}</b></span>
+                                                                                        </p>
+                                                                                    {% else %}
+                                                                                        <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                                Per Bill Cost
+                                                                                            <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                                Per Digital Bill Cost
+                                                                                            </span>
+                                                                                            <br>
+                                                                                            <b>₹ {{ object.per_bill_cost|floatformat:3}}</b>
+                                                                                            <span
+                                                                                                style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                                <b>₹ {{object.per_digital_bill_cost|floatformat:3}}</b></span>
+                                                                                        </p>
+                                                                                    {% endif %}
+                                                                                    <p align="center" style="color: red">
+                                                                                        (Number Of Users: {{object.number_of_users}})
+                                                                                        (Cost Per User: ₹ {{object.cost_for_users|floatformat:3}})
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-promotional-sms" role="tabpanel" aria-labelledby="v-pills-promotional-sms-tab">
+                                                        {% for object in promotional_sms_plans_list %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Total SMS</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Per SMS Cost</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{ object.per_sms_cost|floatformat:3 }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost|floatformat:3}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewPromotionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                            <button type="button" ype="button" class="btn btn-sm buypromotionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-total_sms_cost="{{ object.total_sms_cost }}" data-gst_amount="{{ object.gst_amount }}" data-actual_total_amount="{{ object.actual_total_amount }}">Buy</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewPromotionalPlandetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.total_sms_cost|floatformat:3}}</b></span>
+                                                                                        </p><br>
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Total Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.total_sms_cost|floatformat:3 }}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Total SMS
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Per SMS Cost
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.total_sms }}</b>
+                                                                                        <span
+                                                                                            style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                            <b>₹ {{object.per_sms_cost|floatformat:3}}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-transactional-sms" role="tabpanel" aria-labelledby="v-pills-transactional-sms-tab">
+                                                        {% for object in transactional_sms_plans_list %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-3">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Subscription Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.subscription_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Total SMS</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>{{ object.total_sms }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Per SMS Cost</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 14px;"><b>₹ {{ object.per_sms_cost|floatformat:3 }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.total_sms_cost|floatformat:3}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewTransactionalPlandetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                            <button type="button" type="button" class="btn btn-sm buyTransactionalSMSmodalBtn" style="background-color: #06529e; color:white" data-plan-id="{{ object.id}}" data-actual_transactional_amount="{{ object.actual_total_amount }}" data-transactional_gst_amount="{{ object.gst_amount }}"
+                                                                                        data-transactional_amount_with_gst="{{ object.total_sms_cost }}">Buy</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewTransactionalPlandetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.subscription_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.total_sms_cost|floatformat:3}}</b></span>
+                                                                                        </p><br>
+                                                                                    </section>
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Subscription Name
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Total Amount
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.subscription_name }}</b>
+
+                                                                                        <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.total_sms_cost|floatformat:3 }}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                        Total SMS
+                                                                                        <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Per SMS Cost
+                                                                                        </span>
+                                                                                        <br>
+                                                                                        <b>{{ object.total_sms }}</b>
+                                                                                        <span
+                                                                                            style="float:right; color: black;text-align:left;padding-right: 10px">
+                                                                                            <b>₹ {{object.per_sms_cost|floatformat:3}}</b>
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="tab-pane fade" id="v-pills-add-on" role="tabpanel" aria-labelledby="v-pills-add-on-tab">
+                                                        {% for object in addons_plans %}
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-2"></div>
+                                                                        <div class="col-sm-4">
+                                                                            <section style="padding-left: 15px;">
+                                                                                <span><b>Add On's Name</b></span>
+                                                                                <h1 style="color:#63b90b;font-size: 18px;"><b>{{ object.add_on_name }}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <!-- <div class="col-sm-3">
+                                                                            <section>
+                                                                                <span><b>Recharge Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#00569d"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                            </section>
+                                                                        </div>
+                                                                        <div class="col-sm-2">
+                                                                            <section>
+                                                                                <span><b>Amount</b></span>
+                                                                                <h1 style="font-size: 20px; Color:#ffad47"><b>₹ {{object.recharge_amount}}</b></h1>
+                                                                            </section>
+                                                                        </div> -->
+                                                                        <div class="col-sm-3" style="padding-top: 5px">
+                                                                            
+                                                                                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#viewAddOndetailsmodal_{{forloop.counter}}" style="padding: .65rem 0.6rem;">View Details</button>
+                                                                                <button type="button" data-toggle="modal" data-target="#NoActiveGreenBillSubscriptionModal" style="background-color: #06529e; color:white" class="btn btn-sm addonBtn" data-plan-id="{{object.id}} ">Buy</button>
+                                                                           
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="modal fade" id="viewAddOndetailsmodal_{{forloop.counter}}">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h3 class="modal-title w-100 text-center">{{ object.add_on_name }}</h3>
+                                                                                    <button type="button" class="close" data-dismiss="modal">
+                                                                                        ×
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <!-- <section
+                                                                                        style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                                                                                        <p style="text-align:center;"> <br>
+                                                                                            <span
+                                                                                                style="color:white;text-align:center;font-size:50px;"><b>
+                                                                                                    ₹ {{object.recharge_amount}}</b></span>
+                                                                                            <br>
+                                                                                        </p><br>
+                                                                                    </section> -->
+                                                                                    <hr>
+                                                                                    <p style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                                                                                            Add On's Name
+                                                                                        <!-- <span style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            Recharge Amount
+                                                                                        </span> -->
+                                                                                        <br>
+                                                                                        <b>{{ object.add_on_name }}</b>
+
+                                                                                        <!-- <span
+                                                                                            style="float:right;color: black; text-align:left;padding-right: 10px">
+                                                                                            <b> ₹ {{ object.recharge_amount }}</b>
+                                                                                        </span> -->
+                                                                                    </p>
+
+                                                                                    
+                                                                                    
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+
+<div class="modal fade" id="buymodal">
+    <form method="POST" action="/manual-subscription-purchased-success/" id="subscription-buy-form">
+        {% csrf_token %}
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row" >
+                            <div class="card-body">
+                                <div class="row" id="hide_two_users" disabled>
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                            <select name="validate_number_of_users1" id="validate_number_of_users1" class="form-control class1">
+                                                <option value="">Select</option>
+                                                {% for i in "12" %}
+                                                    <option value={{i}}> {{i}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" id="hide_five_users" disabled>
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                           <select name="validate_number_of_users2" id="validate_number_of_users2" class="form-control class2">
+                                                <option value="">Select</option>
+                                               {% for i in "12345" %}
+                                               {% if forloop.counter >= 3 %}
+                                                    <option value={{i}}> {{i}}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                           </select>
+                                    </div>
+                                </div>
+                                <div class="row" id="hide_ten_users">
+                                    <div class="col-md-12" style="text-align:center;" disabled>
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                           <select name="validate_number_of_users" id="validate_number_of_users3" class="form-control class3">
+                                                <option value="">Select</option>
+                                               {% for i in "1234567891" %}
+                                               {% if forloop.counter >= 6 %}
+                                                    <option value={{forloop.counter}}> {{forloop.counter}}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                           </select>
+                               
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" id="hide_twenty_five_users" disabled>
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                           <select name="validate_number_of_users" id="validate_number_of_users4" class="form-control class4">
+                                                <option value="">Select</option>
+                                               {% for i in "1234567891111111111111111" %}
+                                               {% if forloop.counter >= 11 %}
+                                                    <option value={{forloop.counter}}> {{forloop.counter}}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                           </select>
+                               
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" id="hide_fifty_users" disabled>
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                           <select name="validate_number_of_users" id="validate_number_of_users5" class="form-control class5">
+                                                <option value="">Select</option>
+                                               {% for i in "12345678911111111111111111111111111111111111111111" %}
+                                               {% if forloop.counter >= 26 %}
+                                                    <option value={{forloop.counter}}> {{forloop.counter}}</option>
+                                                {% endif %}
+                                                {% endfor %}
+                                           </select>
+                               
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" id="hide_hundred_users">
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Number Of Users <span style="color:red;">*</span></label>
+                                           <select name="validate_number_of_users" id="validate_number_of_users6" class="form-control class6">
+                                                <option value="">Select</option>
+                                               {% for i in "1234567891111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" %}
+                                                  {% if forloop.counter >= 51 %}
+                                                    <option value={{forloop.counter}}> {{forloop.counter}}</option>
+                                                  {% endif %}
+                                                {% endfor %}
+                                           </select>
+                               
+                                        </label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Plan <span style="color:red;">*</span></label>
+                                           <select name="valid_for_month" id="valid_for_month" class="form-control">
+                                                <option value="">Select</option>
+                                               <option value="6">6 Months</option>
+                                               <option value="12">12 Months</option>
+                                           </select>
+
+                                        </label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align:center;">
+                                        <label class="form-check-label">Select Business <span style="color:red;">*</span></label>
+                                           <select class="form-control" name="merchant_business1" id="merchant_business1">
+                                        <option value="">Select Merchant Business</option>
+                                        {% for object in merchant|dictsort:'m_business_name.lower' %}
+                                        {% if object.m_business_category.id == 11 %}
+                                        <option value="{{ object.id }}" 
+                                        >{{ object.m_business_name }}({{object.m_area}})</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <select class="form-control" name="merchant_business2" id="merchant_business2">
+                                        <option value="">Select Merchant Business</option>
+                                        {% for object in merchant|dictsort:'m_business_name.lower' %}
+                                        {% if object.m_business_category.id == 12 %}
+                                        <option value="{{ object.id }}" 
+                                        >{{ object.m_business_name }}({{object.m_area}})</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <select class="form-control" name="merchant_business3" id="merchant_business3">
+                                        <option value="">Select Merchant Business</option>
+                                        {% for object in merchant|dictsort:'m_business_name.lower' %}
+                                        {% if object.m_business_category.id != 12 and object.m_business_category.id != 11 %}
+                                        <option value="{{ object.id }}" 
+                                        >{{ object.m_business_name }}({{object.m_area}})</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row" >
+                                <div class="col-md-4">
+                                    <label>Select Mode <span style="color:red;">*</span></label>
+                                </div>
+                                <div class="col-md-8 input-group ">
+                                    <input type="radio"  class="form-control" name="mode" value="Cash" style="margin-top: 5px;" onclick="text(0)" required="" />
+                                    <b>Cash</b><br>
+                                    <input type="radio" id="bank"  class="form-control" name="mode" value="Bank" style="margin-top: 5px;" onclick="text(1)" required="" />
+                                    <b>Bank</b><br>
+                                    <input type="radio" id="cheque"  class="form-control" name="mode" value="Cheque" style="margin-top: 5px;" onclick="text(2)" required="" />
+                                    <b>Cheque</b><br>
+                                    <input type="radio" id="bank"  class="form-control" name="mode" value="cashwithoutbill" style="margin-top: 5px;" required="" onclick="text(3)" />
+                                    <b>Cash Without Bill</b><br>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" class="input_details" id="show_details" style=" display: none;">
+                            <div class="row" >
+                                <div class="col-md">
+                                    <label style="padding-top:7px;">Transaction Id</label>
+                                </div>
+                                <div class="col-md input-group ">
+                                    <input type="text" class="form-control" name="transaction_id" id="transaction_id" placeholder="Transaction Id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" class="input_details" id="show_transaction" style=" display: none;">
+                            <div class="row" >
+                                <div class="col-md">
+                                    <label style="padding-top:7px;">Cheque No</label>
+                                </div>
+                                <div class="col-md input-group ">
+                                  <input type="text" class="form-control" name="cheque_no" id="cheque_no" placeholder="Cheque No." minlength="6" maxlength="6">
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-md-8" style="text-align:left; padding-left: 10  0px;">
+                                <h3>Total Amount</h3>
+                                <label>Subscription Cost: ₹<span id="total_cost_per_user"></span></label>
+                                <label>Min Recharge: ₹<span id="plan_recharge_amount"></span></label>
+                                <div id="mh_in_state">
+                                    <label>SGST (9%): ₹<span id="gst1"></span></label>
+                                    <label>CGST (9%): ₹<span id="gst5"></span></label>
+                                </div>
+                                <div id="mh_out_state">
+                                    <label>IGST (18%): ₹<span id="gst3"></span></label>
+                                </div>
+                                <!-- {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %} -->
+                                
+                                <!-- <label>CGST (9%): <span id="gst2"></span></label> -->
+                                <!-- {% else %}
+                                
+                                {% endif %}
+                                <label>Total Cost: ₹<span id="final_total_cost"></span></label> -->
+                            </div>
+                        </div>
+                        <input type="hidden" name="merchant_state_for_gst" value="" id="merchant_state_for_gst" />
+                        <input type="hidden" name="per_users_cost" value="" id="cost_per_user" />
+                        <input type="hidden" name="recharge_amount1" value="" id="recharge_amount1" />
+                        <input type="hidden" name="selected_users" value="" id="users_data" />
+                        <input type="hidden" name="merchant_gst" value="" id="gst4" />
+                        <input type="hidden" id="subscription_plan_id" name="subscription_id" value="">
+                        <div id="business_check_error"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary ">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onClick="refreshPage()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form> 
+</div>
+
+
+<script type="text/javascript">    
+  $("#subscription-buy-form").validate({
+    rules:{
+        cheque_no:{
+            required:true,
+            digits:true,
+
+        },
+        merchant_business: {
+            required:true,
+
+        },
+        valid_for_month: {
+            required:true,
+        },
+        validate_number_of_users: {
+            required: true,
+        },
+        validate_number_of_users1: {
+            required: true,
+        },
+        validate_number_of_users2: {
+            required: true,
+        },
+        merchant_business1:{
+            required: true,
+        },
+        merchant_business2:{
+            required: true,
+        },
+        merchant_business3:{
+            required: true,
+        },
+    },
+  });
+
+</script>
+<script type="text/javascript">
+    $("#merchant_business1").on("click", function() {
+        business_id = $("#merchant_business1").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#merchant_business1").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("mh_in_state").style.display = "none";
+                        document.getElementById("mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+
+        
+    });
+
+    $("#merchant_business2").on("click", function() {
+        business_id = $("#merchant_business2").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#merchant_business2").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("mh_in_state").style.display = "none";
+                        document.getElementById("mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+
+        
+    });
+</script>
+<script type="text/javascript">
+
+    function text(x){
+        if(x==0)
+        {
+            document.getElementById("show_details").style.display = "none";
+            document.getElementById("show_transaction").style.display = "none";
+    }
+    else if(x==1)
+        {
+            document.getElementById("show_details").style.display = "block";
+            document.getElementById("show_transaction").style.display = "none";
+
+        }
+        else if(x == 3)
+        {
+            document.getElementById("show_details").style.display = "none";
+            document.getElementById("show_transaction").style.display = "none";
+        }
+
+        else
+         {
+            document.getElementById("show_details").style.display = "none";
+            document.getElementById("show_transaction").style.display = "block";
+
+
+        }
+        return;
+    }
+    $("#merchant_business3").on("click", function() {
+        business_id = $("#merchant_business3").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#merchant_business3").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("mh_in_state").style.display = "none";
+                        document.getElementById("mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("mh_in_state").style.display = "block";
+                        document.getElementById("mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+
+        
+    });
+    $(".buymodalBtn").on("click", function() {
+
+        var plan_id = $(this).attr("data-plan-id")
+
+        var business_category = $(this).attr("data-business_category")
+
+        var plan_number_of_users1 = $(this).attr("data-cost_for_users")
+
+        var recharge_amount1 = $(this).attr("data-recharge_amount");
+
+
+        var number_of_users = $(this).data("number_of_users");
+
+        var recharge_amount = $(this).data("recharge_amount");
+
+        var gst_amount = $(this).data("gst_amount");
+
+        var cost_for_users = $(this).data("cost_for_users");
+
+        if (business_category == 11){
+            document.getElementById("merchant_business3").style.display = "none";
+            document.getElementById("merchant_business2").style.display = "none";
+            document.getElementById("merchant_business1").style.display = "block";
+        }
+        else if(business_category == 12){
+            document.getElementById("merchant_business3").style.display = "none";
+            document.getElementById("merchant_business2").style.display = "block";
+            document.getElementById("merchant_business1").style.display = "none";
+        }
+        else{
+            document.getElementById("merchant_business3").style.display = "block";
+            document.getElementById("merchant_business2").style.display = "none";
+            document.getElementById("merchant_business1").style.display = "none";
+        }
+
+        if (number_of_users == '2'){
+            document.getElementById("hide_hundred_users").style.display = "none";
+            document.getElementById("hide_fifty_users").style.display = "none";
+            document.getElementById("hide_twenty_five_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "block"
+
+        }
+        else if(number_of_users == 5){
+            document.getElementById("hide_hundred_users").style.display = "none";
+            document.getElementById("hide_fifty_users").style.display = "none";
+            document.getElementById("hide_twenty_five_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "block";
+            document.getElementById("hide_two_users").style.display = "none"
+        }
+        else if(number_of_users == 10){
+            document.getElementById("hide_hundred_users").style.display = "none";
+            document.getElementById("hide_fifty_users").style.display = "none";
+            document.getElementById("hide_twenty_five_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "block";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none"
+        }
+        else if(number_of_users == 25){
+            document.getElementById("hide_hundred_users").style.display = "none";
+            document.getElementById("hide_fifty_users").style.display = "none";
+            document.getElementById("hide_twenty_five_users").style.display = "block";
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none";
+        }
+        else if(number_of_users == 50){
+            document.getElementById("hide_hundred_users").style.display = "none";
+            document.getElementById("hide_fifty_users").style.display = "block";
+            document.getElementById("hide_twenty_five_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none";
+        }
+        else {
+            document.getElementById("hide_hundred_users").style.display = "block";
+            document.getElementById("hide_fifty_users").style.display = "none";
+            document.getElementById("hide_twenty_five_users").style.display = "none";
+            document.getElementById("hide_ten_users").style.display = "none";
+            document.getElementById("hide_five_users").style.display = "none";
+            document.getElementById("hide_two_users").style.display = "none";
+        }
+
+        $("#cost_per_user").val(plan_number_of_users1);
+        $("#recharge_amount1").val(recharge_amount1);
+        $('#plan_recharge_amount').empty().append(recharge_amount.toFixed(3));
+        $('#add_recharge_amount').empty().append(recharge_amount);
+
+        $('#plan_gst_amount1').empty().append(gst_amount);
+        $('#plan_gst_amount2').empty().append(gst_amount);
+        $('#plan_gst_amount3').empty().append(gst_amount);
+        $('#plan_cost_for_users').empty().append(cost_for_users);
+
+       $('#subscription_plan_id').val(plan_id);
+        
+        $("#buymodal").modal();
+
+   });
+
+$("#validate_number_of_users1").on("change", function(){
+        var users = $('#validate_number_of_users1').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#validate_number_of_users2").on("change", function(){        
+        var users = $('#validate_number_of_users2').val();
+
+        var cost_per_user = $('#cost_per_user').val();
+        
+        var months_validate = $('#valid_for_month').val();
+        
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#validate_number_of_users3").on("change", function(){
+        // alert('aaa')
+        var users = $('#validate_number_of_users3').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        // var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        // gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        // gst_percentage = (18*parseFloat(gst_amount))/100
+
+        // var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        // gst_amont1 = parseFloat(gst_percentage)/2
+
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#validate_number_of_users4").on("change", function(){
+        var users = $('#validate_number_of_users4').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        // var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        // gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        // gst_percentage = (18*parseFloat(gst_amount))/100
+
+        // var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        // gst_amont1 = parseFloat(gst_percentage)/2
+
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#validate_number_of_users5").on("change", function(){
+        // alert('aaa')
+        var users = $('#validate_number_of_users5').val();
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        // var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        // gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        // gst_percentage = (18*parseFloat(gst_amount))/100
+
+        // var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        // gst_amont1 = parseFloat(gst_percentage)/2
+
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#validate_number_of_users6").on("change", function(){
+        
+        var users = $('#validate_number_of_users6').val();
+        
+        var cost_per_user = $('#cost_per_user').val();
+        var months_validate = $('#valid_for_month').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+
+        if (months_validate == ''){
+            months_validate = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        // var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        // gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        // gst_percentage = (18*parseFloat(gst_amount))/100
+
+        // var final_total_cost = parseFloat(gst_amount) + parseFloat(gst_percentage)
+
+        // gst_amont1 = parseFloat(gst_percentage)/2
+
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(months_validate)
+
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#users').empty().append(users);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(months_validate);
+        $("#users_data").val(users);
+        $("#months_data").val(months_validate);
+
+    });
+    $("#valid_for_month").on("change", function(){
+        
+        var month_validity = $('#valid_for_month').val();
+        
+        var cost_per_user = $('#cost_per_user').val();
+        var recharge_amount1 = $('#recharge_amount1').val();
+
+        if ($('#validate_number_of_users1').val() == ''){
+           
+        }
+        else{
+            var users = $('#validate_number_of_users1').val();
+        }
+
+        if($('#validate_number_of_users2').val() == ''){
+            
+        }
+        else{
+            var users = $('#validate_number_of_users2').val();
+        }
+
+        if($('#validate_number_of_users3').val() == ''){
+            
+        }else{
+            var users = $('#validate_number_of_users3').val();
+        }
+
+        if($('#validate_number_of_users4').val() == ''){
+            
+        }else{
+            var users = $('#validate_number_of_users4').val();
+        }
+
+        if($('#validate_number_of_users5').val() == ''){
+            
+        }
+        else{
+            var users = $('#validate_number_of_users5').val();
+        }
+
+        if($('#validate_number_of_users6').val() == ''){
+            
+        }
+        else {
+            var users = $('#validate_number_of_users6').val();
+        }
+
+        if (month_validity == ''){
+            month_validity = 0;
+        }
+        if (users == ''){
+            users = 0;
+        }
+        var total_cost = parseFloat(users) * parseFloat(cost_per_user) * parseFloat(month_validity)
+        
+        gst_amount = parseFloat(total_cost) + parseFloat(recharge_amount1)
+
+        gst_percentage = Number((18*parseFloat(gst_amount))/100)
+
+        gst_amont1 = Number(parseFloat(gst_percentage)/2)
+
+
+
+        var final_total_cost = Number(parseFloat(gst_amount) + parseFloat(gst_percentage))
+
+        
+        $('#gst1').empty().append(gst_amont1.toFixed(2));
+        $('#gst5').empty().append(gst_amont1.toFixed(2));
+        $('#gst2').empty().append(gst_percentage.toFixed(2));
+        $('#gst3').empty().append(gst_percentage.toFixed(2));
+        $('#gst4').val(gst_percentage.toFixed(2));
+        $('#total_cost_per_user').empty().append(total_cost.toFixed(3));
+        $('#total_cost_per_user').empty().append(total_cost);
+        $('#final_total_cost').empty().append(final_total_cost.toFixed(3));
+        $('#month_validity').empty().append(month_validity);
+        $("#final_total_include_gst").val(final_total_cost.toFixed(2));
+        $("#months_validate_include_gst").val(month_validity);
+        $("#users_data").val(users);
+        $("#months_data").val(month_validity);
+    });
+    
+</script>
+
+
+<div class="modal fade" id="buyPromotionalSMSmodal">
+    <form method="POST" action="/manual-promotional-sms-subscription-purchased-success/" id="promotional-sms-subscription-buy-form">
+        {% csrf_token %}
+        <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                <div class="modal-body">
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md">
+                                <input type="hidden" id="subscription_id1" name="subscription_id1" value="">
+                            <label style="padding-top:7px;">Select Merchant Business <span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <select class="form-control" name="merchant_business" id="promo_merchant_business" required>
+                            <!-- <option value="">Select Merchant Business </option>
+                            {% for object in promotional_merchant|dictsort:'m_business_name.lower' %}
+                            {% if object.m_business_category.id != 12 and object.m_business_category.id != 11 %}
+                            <option value="{{ object.id }}" 
+                            >{{ object.m_business_name }}({{object.m_area}})</option>
+                            {% endif %}
+                            {% endfor %} -->
+                          </select>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md-4">
+                            <label>Select Mode <span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-md-8 input-group ">
+                              <input type="radio"  class="form-control" name="mode" value="cash" style="margin-top: 5px;" />
+                              <b>Cash</b><br>
+                              <input type="radio" id="bank1"  class="form-control" name="mode" value="bank" style="margin-top: 5px;"/>
+                              <b>Bank</b><br>
+                              <input type="radio" id="cheque1"  class="form-control" name="mode" value="cheque" style="margin-top: 5px;"/>
+                              <b>Cheque</b>
+                              <input type="radio" id="bank"  class="form-control" name="mode" value="cashwithoutbill" style="margin-top: 5px;" required="" onclick="text(3)" /><b>Cash Without Bill</b><br>
+
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_details1" style=" display: none;">
+                            <div class="row" >
+                            <div class="col-md">
+                            <label style="padding-top:7px;">Transaction Id</label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <input type="text" class="form-control" name="transaction_id" id="transaction_id" placeholder="Transaction Id">
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_transaction1" style=" display: none;">
+                            <div class="row" >
+                            <div class="col-md">
+                            <label style="padding-top:7px;">Cheque No</label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <input type="number" class="form-control" name="cheque_no" id="cheque_no" placeholder="Cheque No." minlength="6" maxlength="6">
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="row" >
+                                <h3>Total Amount</h3>
+                                <label>Min Recharge: ₹<span id="promotionaL_total_cost"></span></label>
+                                <div id="promo_mh_in_state">
+                                    <label>SGST (9%): ₹<span id="half_gst1"></span></label>
+                                    <label>CGST (9%): ₹<span id="half_gst2"></span></label>
+                                </div>
+                                <div id="promo_mh_out_state">
+                                    <label>IGST (18%): ₹<span id="total_promotionaL_gst_cost1"></span></label>
+                                </div>
+                                <label>Total Cost: ₹<span id="total_promotionaL_sms_cost"></span></label>
+                        </div>
+                     </div>
+                       
+                        
+                <div id="business_check_error"></div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary ">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                
+            </div>
+        </div>
+    </form> 
+</div>
+
+<script type="text/javascript">
+    $("#promo_merchant_business").on("click", function() {
+        business_id = $("#promo_merchant_business").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#promo_merchant_business").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("promo_mh_in_state").style.display = "block";
+                        document.getElementById("promo_mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("promo_mh_in_state").style.display = "none";
+                        document.getElementById("promo_mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("promo_mh_in_state").style.display = "block";
+                        document.getElementById("promo_mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+
+        
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    // promotional sms plan
+
+       $(document).ready(function() {
+
+
+        $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'bank1') {
+            $('#show_details1').show();     
+             
+       }
+
+       else {
+            $('#show_details1').hide();  
+             
+       }
+   });
+         $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'cheque1') {
+            $('#show_transaction1').show();     
+             
+       }
+
+       else {
+            $('#show_transaction1').hide();  
+             
+       }
+   });
+        
+
+    $(".buypromotionalSMSmodalBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+
+        $.ajax({
+            type: "POST",
+            url: "/get-merchant-by-promotional-plan-id/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'plan_id': plan_id
+            },
+            success: function(result){
+                $("#promo_merchant_business").empty();
+                $('#promo_merchant_business').append("<option value='0'>Select Merchant Business</option>");
+                $.each(result.data, function (key, value) {
+                    $('#promo_merchant_business').append("<option value='" + value.id + "'>" + value.b_name + "</option>");
+                });
+            }
+        });
+
+        var total_promotionaL_sms_cost = $(this).data("total_sms_cost");
+        var total_promotionaL_gst_cost = $(this).data("gst_amount");
+        var half_gst1 = Number(parseFloat(total_promotionaL_gst_cost)/2)
+        var promotionaL_total_cost = $(this).data("actual_total_amount");
+
+        var total_promotionaL_sms_cost1 = Number(total_promotionaL_sms_cost)
+
+        var total_promotionaL_gst_cost1 = Number(total_promotionaL_gst_cost)
+
+        $('#total_promotionaL_sms_cost').empty().append(total_promotionaL_sms_cost1.toFixed(3));
+        $('#total_promotionaL_gst_cost1').empty().append(total_promotionaL_gst_cost1.toFixed(2));
+        $('#total_promotionaL_gst_cost2').empty().append(total_promotionaL_gst_cost);
+        $('#total_promotionaL_gst_cost3').empty().append(total_promotionaL_gst_cost);
+        $('#half_gst1').empty().append(half_gst1.toFixed(2));
+        $('#half_gst2').empty().append(half_gst1.toFixed(2));
+        $('#promotionaL_total_cost').empty().append(promotionaL_total_cost.toFixed(3));
+
+        $('#subscription_id1').val(plan_id);
+
+        // alert('plan_id',plan_id)
+        
+        $("#buyPromotionalSMSmodal").modal();
+    });
+});
+  $("#promotional-sms-subscription-buy-form").validate({
+    rules:{
+        cheque_no:{
+            required:true,
+            digits:true,
+           
+        },
+       
+
+    }
+  })
+   
+</script>
+
+
+<div class="modal fade" id="buyTransactionalSMSmodal">
+    <form method="POST" action="/manual-transactional-sms-subscription-purchased-success
+/" id="transactional-sms-subscription-buy-form">
+        {% csrf_token %}
+       <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Plan</h3>
+                </div>
+                <div class="modal-body">
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md">
+                                <input type="hidden" id="subscription_id2" name="subscription_id2" value="">
+                            <label style="padding-top:7px;">Select Merchant Business <span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <select class="form-control" name="merchant_business" id="trans_merchant_business" required>
+                            <option value="">Select Merchant Business</option>
+                            {% for object in transactional_merchant|dictsort:'m_business_name.lower' %}
+                            {% if object.m_business_category.id != 12 and object.m_business_category.id != 11 %}
+                            <option value="{{ object.id }}" 
+                            >{{ object.m_business_name }}({{object.m_area}})</option>
+                            {% endif %}
+                            {% endfor %}
+                          </select>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md-4">
+                            <label>Select Mode<span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-md-8 input-group ">
+                              <input type="radio"  class="form-control" name="mode" value="cash" style="margin-top: 5px;" />
+                              <b>Cash</b><br>
+                              <input type="radio" id="bank2"  class="form-control" name="mode" value="bank" style="margin-top: 5px;"/>
+                              <b>Bank</b><br>
+                              <input type="radio" id="cheque2"  class="form-control" name="mode" value="cheque" style="margin-top: 5px;"/>
+                              <b>Cheque</b>
+                              <input type="radio" id="bank"  class="form-control" name="mode" value="cashwithoutbill" style="margin-top: 5px;" required="" onclick="text(3)" /><b>Cash Without Bill</b><br>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_details2" style=" display: none;">
+                            <div class="row" >
+                            <div class="col-md">
+                            <label style="padding-top:7px;">Transaction Id</label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <input type="text" class="form-control" name="transaction_id" id="transaction_id" placeholder="Transaction Id">
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_transaction2" style=" display: none;">
+                            <div class="row" >
+                            <div class="col-md">
+                            <label style="padding-top:7px;">Cheque No</label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <input type="number" class="form-control" name="cheque_no" id="cheque_no" placeholder="Cheque No." minlength="6" maxlength="6">
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="row" >
+                            <h3>Total Amount</h3>
+                                <label>Min Recharge: ₹<span id="transactional_recharge_amout"></span></label>
+                                <div id="trans_mh_in_state">
+                                    <label>SGST (9%): ₹<span id="trans_gst1"></span></label>
+                                
+                                    <label>CGST (9%): ₹<span id="trans_gst2"></span></label>
+                                </div>
+                                <div id="trans_mh_out_state">
+                                    <label>IGST (18%): ₹<span id="transactional_recharge_amout_with_gst3"></span></label>
+                                </div>
+                                <label>Total Cost: ₹<span id="total_transactional_amount"></span></label>
+                          </div>
+                     </div>
+                       
+                        
+                <div id="business_check_error"></div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary ">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                
+            </div>
+        </div>
+    </form> 
+</div>
+
+<script type="text/javascript">
+    $("#trans_merchant_business").on("click", function() {
+        business_id = $("#trans_merchant_business").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#trans_merchant_business").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("trans_mh_in_state").style.display = "block";
+                        document.getElementById("trans_mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("trans_mh_in_state").style.display = "none";
+                        document.getElementById("trans_mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("trans_mh_in_state").style.display = "block";
+                        document.getElementById("trans_mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+    });
+
+        
+</script>
+<script type="text/javascript">
+
+    // transactional sms plan
+
+       $(document).ready(function() {
+
+
+        $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'bank2') {
+            $('#show_details2').show();     
+             
+       }
+
+       else {
+            $('#show_details2').hide();  
+             
+       }
+   });
+         $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'cheque2') {
+            $('#show_transaction2').show();     
+             
+       }
+
+       else {
+            $('#show_transaction2').hide();  
+             
+       }
+   });
+        
+
+    $(".buyTransactionalSMSmodalBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+
+        // alert(plan_id);
+
+        $.ajax({
+            type: "POST",
+            url: "/get-merchant-by-plan-id/",
+            data: {
+                csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                'plan_id': plan_id
+            },
+            success: function(result){
+                $("#trans_merchant_business").empty();
+                $('#trans_merchant_business').append("<option value='0'>Select Merchant Business</option>");
+                $.each(result.data, function (key, value) {
+                    $('#trans_merchant_business').append("<option value='" + value.id + "'>" + value.b_name + "</option>");
+                });
+            }
+        });
+
+        var simple_amount = $(this).data("actual_transactional_amount");
+        var simple_amount1 = Number(simple_amount)
+        var simple_amount_with_gst = $(this).data("transactional_gst_amount");
+
+        var simple_amount_with_gst1 = Number(simple_amount_with_gst)
+
+        var final_total_amount = $(this).data("transactional_amount_with_gst");
+
+        var final_total_amount1 = Number(final_total_amount)
+
+        var gst1 = Number(parseFloat(simple_amount_with_gst)/2)
+
+            // alert('plan_id',plan_id)
+
+        $('#subscription_id2').val(plan_id);
+        $('#transactional_recharge_amout').empty().append(simple_amount1.toFixed(3));
+        $('#transactional_recharge_amout_with_gst1').empty().append(simple_amount_with_gst1.toFixed(2));
+        $('#transactional_recharge_amout_with_gst2').empty().append(simple_amount_with_gst1.toFixed(2));
+        $('#transactional_recharge_amout_with_gst3').empty().append(simple_amount_with_gst1.toFixed(2));
+        $('#trans_gst1').empty().append(gst1.toFixed(2));
+        $('#trans_gst2').empty().append(gst1.toFixed(2));
+        $('#total_transactional_amount').empty().append(final_total_amount1.toFixed(3));
+
+        $("#buyTransactionalSMSmodal").modal();
+    });
+
+  });
+
+ $("#transactional-sms-subscription-buy-form").validate({
+    rules:{
+        cheque_no:{
+            required:true,
+            digits:true,
+           
+        },
+       
+
+    }
+  })
+   
+</script>
+
+<!-- NoActiveGreenBillSubscriptionModal -->
+
+<div class="modal fade" id="NoActiveGreenBillSubscriptionModal">
+    <form method="POST" action="/manual-add-on-subscription-purchased-success
+/" id="add-on-subscription-buy-form">
+        {% csrf_token %}
+          <div class="modal-dialog"> <!-- modal-sm -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100 text-center">Buy Planttt</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row" >
+                            <div class="col-md">
+                                <label>Select Adon Amount</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control" name="adon_amounts_value" id="adon_amounts" required>
+                                
+                                </select>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md">
+                                <input type="hidden" id="subscription_id3" name="subscription_id3" value="">
+                            <label style="padding-top:7px;">Select Merchant Business</label>
+                            </div>
+                            <div class="col-md-12">
+                              <select class="form-control" name="merchant_business" id="adon_merchant_business" required>
+                            <option value="">Select Merchant Business</option>
+                            {% for object in merchant|dictsort:'m_business_name.lower' %}
+                            <option value="{{ object.id }}" 
+                            >{{ object.m_business_name }}({{object.m_area}})</option>
+                            {% endfor %}
+                          </select>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group">
+                            <div class="row" >
+                            <div class="col-md-4">
+                            <label>Select Mode <span style="color:red;">*</span></label>
+                            </div>
+                            <div class="col-md-8 input-group ">
+                              <input type="radio"  class="form-control" name="mode" value="cash" style="margin-top: 5px;" />
+                              <b>Cash</b><br>
+                              <input type="radio" id="bank3"  class="form-control" name="mode" value="bank" style="margin-top: 5px;"/>
+                              <b>Bank</b><br>
+                              <input type="radio" id="cheque3"  class="form-control" name="mode" value="cheque" style="margin-top: 5px;"/>
+                              <b>Cheque</b>
+                              <input type="radio" id="bank"  class="form-control" name="mode" value="cashwithoutbill" style="margin-top: 5px;" required="" onclick="text(3)" /><b>Cash Without Bill</b><br>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_details3" style=" display: none;">
+                        <div class="row" >
+                            <div class="col-md">
+                                <label style="padding-top:7px;">Transaction Id</label>
+                            </div>
+                            <div class="col-md input-group ">
+                                <input type="text" class="form-control" name="transaction_id" id="transaction_id" placeholder="Transaction Id">
+                            </div>
+                          </div>
+                     </div>
+                     <div class="form-group" class="input_details" id="show_transaction3" style=" display: none;">
+                        <div class="row" >
+                            <div class="col-md">
+                                <label style="padding-top:7px;">Cheque No</label>
+                            </div>
+                            <div class="col-md input-group ">
+                              <input type="number" class="form-control" name="cheque_no" id="cheque_no" placeholder="Cheque No." minlength="6" maxlength="6">
+                            </div>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="row" >
+                            <div class="col-md">
+                                <h3>Total Amount</h3>
+                                <label>Selected Amount: ₹<span id="adon_plan_selected_amount"></span></label>
+                                <div id="adon_mh_in_state">
+                                    <label>SGST (9%) ₹<span id="adon_plan_gst1"></span></label>
+                                    <label>CGST (9%) ₹<span id="adon_plan_gst2"></span></label>
+                                </div>
+                                <div id="adon_mh_out_state">
+                                    <label>IGST (18%): ₹<span id="adon_plan_gst3"></span></label>
+                                </div>
+                                <label>Total Cost: ₹<span id="adon_plan_tital_amount"></span></label>
+                            </div>
+                        </div>
+                     </div>
+                       
+                        
+                <div id="business_check_error"></div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary ">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                
+            </div>
+        </div>
+    </form> 
+</div>
+<script type="text/javascript">
+    $("#adon_merchant_business").on("click", function() {
+        business_id = $("#adon_merchant_business").val();
+        if (business_id != ""){
+            $.ajax({
+                type: "POST",
+                url: "/get_merchant_gst_address/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'merchant_business': $("#adon_merchant_business").val()
+                },
+                success: function(result){
+                    $('#merchant_state_for_gst').val(result.data);
+                    merchant_state_validate = $("#merchant_state_for_gst").val();
+
+                    if (merchant_state_validate == 1){
+                        document.getElementById("adon_mh_in_state").style.display = "block";
+                        document.getElementById("adon_mh_out_state").style.display = "none";
+                    }
+                    else if (merchant_state_validate == 2){
+                        document.getElementById("adon_mh_in_state").style.display = "none";
+                        document.getElementById("adon_mh_out_state").style.display = "block";
+                    }
+                    else{
+                        document.getElementById("adon_mh_in_state").style.display = "block";
+                        document.getElementById("adon_mh_out_state").style.display = "none";
+                    }
+                
+                }
+            });   
+        }
+
+    });  
+</script>
+<script type="text/javascript">
+    $("#add-on-subscription-buy-form").validate({
+    rules:{
+
+        adon_amounts_value: {
+            required: true,
+        },
+
+        mode: {
+            required: true,
+        },
+        subscription_id3:{
+            required:true,
+            digits:true,
+           
+        },
+       
+
+    },
+  });
+</script>
+<script type="text/javascript">
+
+    // add on plan
+
+       $(document).ready(function() {
+
+
+        $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'bank3') {
+            $('#show_details3').show();     
+             
+       }
+
+       else {
+            $('#show_details3').hide();  
+             
+       }
+   });
+         $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'cheque3') {
+            $('#show_transaction3').show();     
+             
+       }
+
+       else {
+            $('#show_transaction3').hide();  
+             
+       }
+   });
+       
+
+    $(".addonBtn").on("click", function() {
+        var plan_id = $(this).attr("data-plan-id")
+
+        $.ajax({
+                type: "POST",
+                url: "/get-all-amounts-of-adon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'plan_id': plan_id
+                },
+                success: function(result){
+                    $("#adon_amounts").empty();
+                    $('#adon_amounts').append("<option value='0'>Select Amount</option>");
+                    $.each(result.data, function (key, value) {
+                        $('#adon_amounts').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        // alert('plan_id',plan_id)
+        $('#subscription_id3').val(plan_id);
+        
+        $("#NoActiveGreenBillSubscriptionModal").modal();
+    });
+
+  
+ });
+
+   
+
+
+     $("#adon_amounts").on("click", function(){
+
+        var adon_selected_amount = $('#adon_amounts').val();
+        var gst_amount = Number(0.18 * parseFloat(adon_selected_amount));
+        var gst_amount1 = Number(parseFloat(gst_amount)/2)
+        var total_selected_amount = Number(parseFloat(gst_amount) + parseFloat(adon_selected_amount));
+
+        $('#adon_plan_selected_amount').empty().append(adon_selected_amount.toFixed(3));
+        // $('#adon_plan_gst1').empty().append(gst_amount1);
+        $('#adon_plan_gst1').empty().append(gst_amount1.toFixed(2));
+        $('#adon_plan_gst2').empty().append(gst_amount1.toFixed(2));
+        $('#adon_plan_gst3').empty().append(gst_amount.toFixed(2));
+        $('#adon_plan_tital_amount').empty().append(total_selected_amount.toFixed(3));
+
+
+    })
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+
+{% block javascripts %}
+
+{% endblock javascripts %}

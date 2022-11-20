@@ -1,0 +1,56 @@
+from statistics import mode
+from django.db import models
+from users.models import GreenBillUser, MerchantProfile
+
+# Create your models here.
+class bill_designs(models.Model):
+    merchant_business_id = models.ForeignKey(MerchantProfile, null=True, on_delete = models.SET_NULL, blank=True)
+    logo = models.CharField(max_length=200, default='')
+    address = models.CharField(max_length=200, default='')
+    rating = models.BooleanField(default=False)
+    rating_text = models.CharField(max_length=200, default='')
+    rating_emoji = models.CharField(max_length=200, default='')
+    facebook = models.BooleanField(default=False)
+    facebook_url = models.CharField(max_length=1000, default='')
+    youtube = models.BooleanField(default=False)
+    youtube_url = models.CharField(max_length=1000, default='')
+    twitter = models.BooleanField(default=False)
+    twitter_url = models.CharField(max_length=1000, default='')
+    instagram = models.BooleanField(default=False)
+    instagram_url = models.CharField(max_length=1000, default='')
+    ads_below_bill = models.BooleanField(default=False)
+    phone = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=100, default='')
+    website = models.BooleanField(default=False)
+    website_url = models.CharField(max_length=1000, default='')
+    map = models.BooleanField(default=False)
+    map_link = models.CharField(max_length=1000, default='')
+    terms_conditions = models.BooleanField(default=False)
+    terms_url = models.CharField(max_length=1000, default='')
+    footer_logo = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
+    linkedin_url = models.CharField(max_length=1000, default='')
+    skype = models.BooleanField(default=False)
+    skype_url = models.CharField(max_length=1000, default='')
+    google = models.BooleanField(default=False)
+    google_url = models.CharField(max_length=1000, default='')
+    pinterest = models.BooleanField(default=False)
+    pinterest_url = models.CharField(max_length=1000, default='')
+    snapchat = models.BooleanField(default=False)
+    snapchat_url = models.CharField(max_length=1000, default='')
+    android = models.BooleanField(default=False)
+    android_url = models.CharField(max_length=1000, default='')
+    apple = models.BooleanField(default=False)
+    apple_url = models.CharField(max_length=1000, default='')
+    zomato = models.BooleanField(default=False)
+    zomato_url = models.CharField(max_length=1000, default='')
+    swiggy = models.BooleanField(default=False)
+    swiggy_url = models.CharField(max_length=1000, default='')
+    pay_link = models.BooleanField(default=False)
+
+
+
+class authorised_sign(models.Model):
+    sign = models.FileField(null=True, blank=True, upload_to='authorised_sign')
+    merchant_id = models.ForeignKey(GreenBillUser, null=True, on_delete= models.CASCADE)
+    selection = models.CharField(max_length=5,null=True)

@@ -1,0 +1,1855 @@
+		<!-- Sidebar --> <div class="sidebar sidebar-style-2">
+			<!-- data-background-color="white" -->
+			<div class="sidebar-wrapper scrollbar scrollbar-inner" id="sidebar-scrollbar-id">
+				<div class="sidebar-content">
+
+					{% if request.user.is_authenticated %}
+					
+						<ul class="nav nav-primary">
+							<li class="nav-item {{DashboardNavclass}}" >
+								<a href="/">
+									<i class="fas fa-home"></i>
+									<p>Dashboard</p>
+								</a>
+							</li>
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ PaymentsNavclass }}">
+									<a data-toggle="collapse" href="#payments">
+										<i class="fa fa-rupee-sign"></i>
+										<p>Payments</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+										<ul class="nav nav-collapse">
+											<li class="{{ReceivedPaymentsNavClass}}">
+												<a href="/owner-received-payments/">
+													<span class="sub-item">Received Payments</span>
+												</a>
+											</li>
+											<li class="{{PaymentLinkNavClass}}">
+												<a href="/owner-get-payment-link/">
+													<span class="sub-item">Payment Link</span>
+												</a>
+											</li>
+											<li class="{{PaymentSendNavClass}}">
+												<a href="/send-payment-manually/">
+													<span class="sub-item">Send Payment</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Payments"|lower and modules.permission == True %}
+										<li class="nav-item {{ PaymentsNavclass }}">
+											<a data-toggle="collapse" href="#payments">
+												<i class="fa fa-rupee-sign"></i>
+												<p>Payments</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Received Payments"|lower %}
+															{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																<li class="{{ReceivedPaymentsNavClass}}">
+																	<a href="/owner-received-payments/">
+																		<span class="sub-item">Received Payments</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Payment Link"|lower %}
+															{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																<li class="{{PaymentLinkNavClass}}">
+																	<a href="/owner-get-payment-link/">
+																		<span class="sub-item">Payment Link</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Send Payments"|lower %}
+															{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																<li class="{{PaymentSendNavClass}}">
+																	<a href="/send-payment-manually/">
+																		<span class="sub-item">Send Payment</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ BillInfoNavClass }}">
+									<a data-toggle="collapse" href="#bill_info">
+										<i class="fas fa-file-invoice "></i>
+										<p>Bill Info</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ BillInfoCollapseShow }}" id="bill_info">
+										<ul class="nav nav-collapse">
+											<li class="{{SentBillsNavClass}}">
+												<a href="/owner-sent-bills/">
+													<span class="sub-item">Sent Bills</span>
+												</a>
+											</li>
+											<li class="{{CategoryWiseBillsNavClass}}">
+												<a href="/owner-category-wise-bills/">
+													<span class="sub-item">Categorywise Bills</span>
+												</a>
+											</li>
+											<!-- <li class="{{ReceivedBillsNavClass}}">
+												<a href="/owner-received-bills/">
+													<span class="sub-item">Received Bills</span>
+												</a>
+											</li> -->
+										</ul>
+									</div>
+								</li>
+								{% else %}
+									{% for modules in module_permissions_list %}
+										{% if modules.module_name|lower == "Bill Info"|lower and modules.permission == True %}
+											<li class="nav-item {{ BillInfoNavClass }}">
+												<a data-toggle="collapse" href="#bill_info">
+													<i class="fas fa-file-invoice "></i>
+													<p>Bill Info</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ BillInfoCollapseShow }}" id="bill_info">
+													<ul class="nav nav-collapse">
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Sent Bills"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{SentBillsNavClass}}">
+																		<a href="/owner-sent-bills/">
+																			<span class="sub-item">Sent Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Categorywise Bills"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{CategoryWiseBillsNavClass}}">
+																		<a href="/owner-category-wise-bills/">
+																			<span class="sub-item">Categorywise Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														<!-- <li class="{{ReceivedBillsNavClass}}">
+															<a href="/owner-received-bills/">
+																<span class="sub-item">Received Bills</span>
+															</a>
+														</li> -->
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+							
+										
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{merchantNavActiveClass}}">
+									<a data-toggle="collapse" href="#merchantMenu">
+										<i class="fas fa-user"></i>
+										<p>Merchant Info</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ MerchantInfoCollapseShow }}" id="merchantMenu">
+										<ul class="nav nav-collapse">
+											<li class="{{ MerchantListNavclass }}">
+												<a href="/merchant-info/">
+													<span class="sub-item">Merchant List</span>
+												</a>
+											</li>
+											<!-- <li class="{{ MerchantBySalesNavClass }}">
+												<a href="/merchant-by-sales/">
+													<span class="sub-item">Merchant By Sales</span>
+												</a>
+											</li> -->
+											<li class="{{ MerchantLatestNavclass }}">
+												<a href="/merchant-latest/">
+													<span class="sub-item">New Registrations</span>
+												</a>
+											</li>
+											<li class="{{ MerchantDisabledNavclass }}">
+												<a href="/merchant-disabled/">
+													<span class="sub-item">Disabled Merchants</span>
+												</a>
+											</li>
+											<li class="{{ MerchantDisableNavclass }}">
+												<a href="/disable-merchant-reason/">
+													<span class="sub-item">Disable Reason</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% if user_role.role == "Sales" %}
+									<li class="nav-item {{merchantNavActiveClass}}">
+										<a data-toggle="collapse" href="#merchantMenu">
+											<i class="fas fa-user"></i>
+											<p>Merchant Info</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ MerchantInfoCollapseShow }}" id="merchantMenu">
+											<ul class="nav nav-collapse">
+												<li class="{{ MerchantListNavclass }}">
+													<a href="/merchant-info/">
+														<span class="sub-item">Merchant List</span>
+													</a>
+												</li>
+												<!-- {% if user_role == "Super Admin" %}
+													<li class="{{ MerchantBySalesNavClass }}">
+														<a href="/merchant-by-sales/">
+															<span class="sub-item">Merchants By Sales</span>
+														</a>
+													</li>
+												{% endif %} -->
+											</ul>
+										</div>
+									</li>
+								{% else %}
+									{% for modules in module_permissions_list %}
+										{% if modules.module_name|lower == "Merchant Info"|lower and modules.permission == True %}
+											<li class="nav-item {{merchantNavActiveClass}}">
+												<a data-toggle="collapse" href="#merchantMenu">
+													<i class="fas fa-user"></i>
+													<p>Merchant Info</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ MerchantInfoCollapseShow }}" id="merchantMenu">
+													<ul class="nav nav-collapse">
+
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Merchant List"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{ MerchantListNavclass }}">
+																		<a href="/merchant-info/">
+																			<span class="sub-item">Merchant List</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														<!-- {% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Merchant By Sales"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{ MerchantBySalesNavClass }}">
+																		<a href="/merchant-by-sales/">
+																			<span class="sub-item">Merchant By Sales</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %} -->
+
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "New Merchant Registrations"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{ MerchantLatestNavclass }}">
+																		<a href="/merchant-latest/">
+																			<span class="sub-item">New Registrations</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Disabled Merchants"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{ MerchantDisabledNavclass }}">
+																		<a href="/merchant-disabled/">
+																			<span class="sub-item">Disabled Merchants</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in action_permissions_list %}
+															{% if actions.feature_id|lower == "Disable Reason"|lower %}
+																{% if actions.view_permission == "1" %}
+																	<li class="{{ MerchantDisableNavclass }}">
+																		<a href="/disable-merchant-reason/">
+																			<span class="sub-item">Disable Reason</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														
+
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{MerchantRequestNavclass}}">
+									<a data-toggle="collapse" href="#merchantRequestMenu">
+										<i class="fas fa-address-card"></i>
+										<p>Merchant Request</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ MerchantRequestCollapseShow }}" id="merchantRequestMenu">
+										<ul class="nav nav-collapse">
+											<li class="{{ MerchantBillDesignRequestNavclass }}">
+												<a href="/get-all-merchant-memo-design/">
+													<span class="sub-item">Bill Design Request &nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{memo_design_unread_count}}</span>
+												</a>
+											</li>
+											<li class="{{ MerchantDigitalMarketingRequestNavClass }}">
+												<a href="/get-all-merchant-enquiry/">
+													<span class="sub-item">Digital Marketing </span><span style="color: #31ce36;">&nbsp;&nbsp;&nbsp;
+													{{dm_inquiry_unread_count}}</span>
+												</a>
+											</li>
+											<li class="{{ ManageCompaniesDMR }}">
+												<a href="/manage-companies-dmr/">
+													<span class="sub-item">Manage Companies </span>
+												</a>
+											</li>
+											<!-- <li class="{{ SmsHeaderRequestNavClass }}">
+												<a href="/sms-header-request/">
+													<span class="sub-item">SMS Header Requests </span>
+												</a>
+											</li>
+											<li class="{{ SmsTemplateRequestNavClass }}">
+												<a href="/sms-template-request/">
+													<span class="sub-item">SMS Template Requests </span>
+												</a>
+											</li> -->
+											<li class="{{ SubscriptionRequestNavClass }}">
+												<a href="/merchant-contact-subscriptions-request/">
+													<span class="sub-item">Subscriptions Requests </span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Merchant Request"|lower and modules.permission == True %}
+										<li class="nav-item {{MerchantRequestNavclass}}">
+											<a data-toggle="collapse" href="#merchantRequestMenu">
+												<i class="fas fa-address-card"></i>
+												<p>Merchant Request</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ MerchantRequestCollapseShow }}" id="merchantRequestMenu">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Bill Design Request"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ MerchantBillDesignRequestNavclass }}">
+																	<a href="/get-all-merchant-memo-design/">
+																		<span class="sub-item">Bill Design&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{memo_design_unread_count}}</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Digital Marketing Request"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ MerchantDigitalMarketingRequestNavClass }}">
+																	<a href="/get-all-merchant-enquiry/">
+																		<span class="sub-item">Digital Marketing</span><span style="color: #31ce36;">&nbsp;&nbsp;&nbsp;
+																		{{dm_inquiry_unread_count}}</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Manage Companies"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ ManageCompaniesDMR }}">
+																	<a href="/manage-companies-dmr/">
+																		<span class="sub-item">Manage Companies </span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Subscriptions Requests"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ SubscriptionRequestNavClass }}">
+																	<a href="/merchant-contact-subscriptions-request/">
+																		<span class="sub-item">Subscriptions Requests </span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ SubscriptionNavclass }}">
+									<a data-toggle="collapse" href="#subscription">
+										<i class="fa fa-tasks"></i>
+										<p>Subscription Plans</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ SubscriptionCollapseShow }}" id="subscription">
+										<ul class="nav nav-collapse">
+
+											<li class="{{ SimpleSubscriptionNavclass }}">
+												<a href="/get-subscription-plans/">
+													<span class="sub-item">Green Bill Subscription Plan</span>
+												</a>
+											</li>
+
+											<li class="{{ TransactionalSubscriptionNavclass }}">
+												<a href="/get-transactional-subscription-plan/">
+													<span class="sub-item">Transactional SMS Subscription Plan</span>
+												</a>
+											</li>
+											<li class="{{ PromotionalSubscriptionNavclass }}">
+												<a href="/get-promotional-subscription-plan/">
+													<span class="sub-item">Promotional SMS Subscription Plan</span>
+												</a>
+											</li>
+
+											<!-- <li class="{{ PromotionalSubscriptionNavclass }}">
+												<a href="/get-promotional-subscription-plan/">
+													<span class="sub-itetm">Promotional SMS Subscription Plan</span>
+												</a>
+											</li> -->
+
+											<li class="{{ OffersSubscriptionNavclass }}">
+												<a href="/get-offers-subscription-plans/">
+													<span class="sub-item">Create Offers</span>
+												</a>
+											</li>
+
+											<li class="{{ AddOnNavclass }}">
+												<a href="/get-add-on-plan/">
+													<span class="sub-item">Add On's</span>
+												</a>
+											</li>
+											<li class="{{ ManualSubscriptionNavclass }}">
+												<a href="/manual-subscription-recharge/">
+													<span class="sub-item">Activate Merchant Subscription</span>
+												</a>
+											</li>
+											<li class="{{ ManualPartnerSubscriptionNavclass }}">
+												<a href="/manual-partner-subscription-recharge/">
+													<span class="sub-item">Activate Partner Subscription</span>
+												</a>
+											</li>
+									
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Subscription Plans"|lower and modules.permission == True %}
+										<li class="nav-item {{ SubscriptionNavclass }}">
+											<a data-toggle="collapse" href="#subscription">
+												<i class="fa fa-tasks"></i>
+												<p>Subscription Plans</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ SubscriptionCollapseShow }}" id="subscription">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Green Bill Subscription Plan"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ SimpleSubscriptionNavclass }}">
+																	<a href="/get-subscription-plans/">
+																		<span class="sub-item">Green Bill Subscription Plan</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Transactonal SMS Subscription Plan"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ TransactionalSubscriptionNavclass }}">
+																	<a href="/get-transactional-subscription-plan/">
+																		<span class="sub-item">Transactonal SMS Subscription Plan</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Promotional SMS Subscription Plan"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PromotionalSubscriptionNavclass }}">
+																	<a href="/get-promotional-subscription-plan/">
+																		<span class="sub-item">Promotional SMS Subscription Plan</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Create Offers"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ OffersSubscriptionNavclass }}">
+																	<a href="/get-offers-subscription-plans/">
+																		<span class="sub-item">Create Offers</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Add On's"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AddOnNavclass }}">
+																	<a href="/get-add-on-plan/">
+																		<span class="sub-item">Add On's</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Activate Merchant Subscription"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ ManualSubscriptionNavclass }}">
+																	<a href="/manual-subscription-recharge/">
+																		<span class="sub-item">Activate Merchant Subscription</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Activate Partner Subscription"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ ManualPartnerSubscriptionNavclass }}">
+																	<a href="/manual-partner-subscription-recharge/">
+																		<span class="sub-item">Activate Partner Subscription</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{PromotionNavclass}}">
+									<a data-toggle="collapse" href="#PromotionMenu">
+										<i class="fas fa-images"></i>
+										<p>Promotions</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ PromotionCollapseShow }}" id="PromotionMenu">
+										<ul class="nav nav-collapse">
+											<li class="{{ CreateOffersNavclass }}">
+												<a href="/owner-offer/">
+													<span class="sub-item">My Offers</span>
+												</a>
+											</li>
+											<li class="{{ OfferstatusNavclass }}">
+												<a href="/offer-status/">
+													<span class="sub-item">Merchant Offers</span>
+												</a>
+											</li>
+											<li class="{{ CouponNavclass }}">
+												<a href="/owner-coupon/">
+													<span class="sub-item">My Coupons</span>
+												</a>
+											</li>
+											<li class="{{ CouponListNavclass }}">
+												<a href="/coupon-list/">
+													<span class="sub-item">Merchant Coupons</span>
+												</a>
+											</li>
+											<!-- <li class="{{ bulkmailandsmsNavclass }}">
+											<a href="/bulk-mail-sms/">
+												<span class="sub-item">Send E-Mail and SMS </span>
+											</a>
+											</li> -->
+											<li class="{{ BulkSMSNavclass }}">
+												<a href="/bulk-sms/">
+													<span class="sub-item">Bulk SMS</span>
+												</a>
+											</li>
+											<!-- <li class="{{ BulkEmailNavclass }}">
+												<a href="/bulk-mail/">
+													<span class="sub-item">Bulk Email</span>
+												</a>
+											</li> -->
+											<!-- <li class="submenu">
+												<a data-toggle="collapse" href="#subnav2" class="" aria-expanded="{{AdsBelowAriaExpanded}}">
+													<span class="sub-item">Ads Below Bill</span>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{AdsBelowSubCollpseShow}}" id="subnav2" style="">
+													<ul class="nav nav-collapse subnav">
+														<li class="submenu {{ AdsForMerchantNavclass }}">
+															<a href="/ads-for-merchants/">
+																<span class="sub-item">Merchant Ads</span>
+															</a>
+														</li>
+														<li class="submenu {{ AdsForGreenBillNavclass }}">
+															<a href="/ads-for-green-bill/">
+																<span class="sub-item">Green Bill Ads</span>
+															</a>
+														</li>
+													</ul>
+												</div>
+											</li> -->
+											<li class="{{ AdsForGreenBillNavclass }}">
+												<a href="/ads-for-green-bill/">
+													<span class="sub-item">My Ads Below Bill</span>
+												</a>
+											</li>
+											
+											<li class="{{ ApproveDisapproveAdsNavclass }}">
+												<a href="/get-all-ads-below-bill/">
+													<span class="sub-item">Merchant Ads Below Bill</span>
+												</a>
+											</li>
+
+											<li class="{{ AdsForMerchantNavclass }}">
+												<a href="/ads-for-merchants/">
+													<span class="sub-item">Third party Ads</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Promotions"|lower and modules.permission == True %}
+										<li class="nav-item {{PromotionNavclass}}">
+											<a data-toggle="collapse" href="#PromotionMenu">
+												<i class="fas fa-images"></i>
+												<p>Promotions</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ PromotionCollapseShow }}" id="PromotionMenu">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "My Offers"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ CreateOffersNavclass }}">
+																	<a href="/owner-offer/">
+																		<span class="sub-item">My Offers</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Merchant Offers"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ OfferstatusNavclass }}">
+																	<a href="/offer-status/">
+																		<span class="sub-item">Merchant Offers</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "My Coupons"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ CouponNavclass }}">
+																	<a href="/owner-coupon/">
+																		<span class="sub-item">My Coupons</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Merchant Coupons"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ CouponListNavclass }}">
+																	<a href="/coupon-list/">
+																		<span class="sub-item">Merchant Coupons</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Bulk SMS"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ BulkSMSNavclass }}">
+																	<a href="/bulk-sms/">
+																		<span class="sub-item">Bulk SMS</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													<!-- {% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Bulk Email"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ BulkEmailNavclass }}">
+																	<a href="/bulk-mail/">
+																		<span class="sub-item">Bulk Email</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %} -->
+
+													<!-- <li class="submenu">
+														<a data-toggle="collapse" href="#subnav2" class="" aria-expanded="{{AdsBelowAriaExpanded}}">
+															<span class="sub-item">Ads Below Bill</span>
+															<span class="caret"></span>
+														</a>
+														<div class="collapse {{AdsBelowSubCollpseShow}}" id="subnav2" style="">
+															<ul class="nav nav-collapse subnav">
+																<li class="submenu {{ AdsForMerchantNavclass }}">
+																	<a href="/ads-for-merchants/">
+																		<span class="sub-item">Merchant Ads</span>
+																	</a>
+																</li>
+																<li class="submenu {{ AdsForGreenBillNavclass }}">
+																	<a href="/ads-for-green-bill/">
+																		<span class="sub-item">Green Bill Ads</span>
+																	</a>
+																</li>
+															</ul>
+														</div>
+													</li> -->
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "My Ads Below Bill"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AdsForGreenBillNavclass }}">
+																	<a href="/ads-for-green-bill/">
+																		<span class="sub-item">My Ads</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Merchant Ads Below Bill"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ ApproveDisapproveAdsNavclass }}">
+																	<a href="/get-all-ads-below-bill/">
+																		<span class="sub-item">Merchant Ads Below Bill</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Merchant Third party Ads"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AdsForMerchantNavclass }}">
+																	<a href="/ads-for-merchants/">
+																		<span class="sub-item">Third party Ads</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{partnerNavActiveClass}}">
+									<a data-toggle="collapse" href="#partnerMenu">
+										<i class="fas fa-user-tie"></i>
+										<p>Partner Info</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ PartnerInfoCollapseShow }}" id="partnerMenu">
+										<ul class="nav nav-collapse">
+
+											<li class="{{ PartnerSoftwareNavClass }}">
+												<a href="/software-info/">
+													<span class="sub-item">Marketing Partners</span>
+												</a>
+											</li>
+											<li class="{{ PartnerListNavclass }}">
+												<a href="/software-partner-info/">
+													<span class="sub-item">Software Partners</span>
+												</a>
+											</li>
+											
+												<li class="{{ PartnerDisabledNavclass }}">
+												<a href="/partner-disabled/">
+													<span class="sub-item">Disabled Partners</span>
+												</a>
+											</li>
+											<li class="{{ PartnerDisableNavclass }}">
+												<a href="/disable-partner-reason/">
+													<span class="sub-item">Disable Reasons</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Partner Info"|lower and modules.permission == True %}
+										<li class="nav-item {{partnerNavActiveClass}}">
+											<a data-toggle="collapse" href="#partnerMenu">
+												<i class="fas fa-user-tie"></i>
+												<p>Partner Info</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ PartnerInfoCollapseShow }}" id="partnerMenu">
+												<ul class="nav nav-collapse">
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Software Partner"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerSoftwareNavClass }}">
+																	<a href="/software-info/">
+																		<span class="sub-item">Marketing Partners</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Marketing Partner"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerListNavclass }}">
+																	<a href="/software-partner-info/">
+																		<span class="sub-item"> Software Partners</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Partners List"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerListNavclass }}">
+																	<a href="/software-partner-info/">
+																		<span class="sub-item">Partners List</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													<!-- {% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Partners By Sales"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerBySalesNavClass }}">
+																	<a href="/partner-by-sales/">
+																		<span class="sub-item">Partners By Sales</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %} -->
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Disabled Partners"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerDisabledNavclass }}">
+																	<a href="/partner-disabled/">
+																		<span class="sub-item">Disabled Partners</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Partner Disabled Reasons"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerDisableNavclass }}">
+																	<a href="/disable-partner-reason/">
+																		<span class="sub-item">Disable Reasons</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													<!-- {% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "New Partner Registrations"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ PartnerLatestNavclass }}">
+																	<a href="/partner-latest/">
+																		<span class="sub-item">New Partner Registrations</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %} -->
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{CustomerInfoNavClass}}" >
+									<a href="/customer_list/">
+										<i class="fas fa-user-tag"></i>
+										<p>Customer Info</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Customer Info"|lower and modules.permission == True %}
+										{% for actions in action_permissions_list %}
+											{% if actions.feature_id|lower == "Customer Info"|lower %}
+												{% if actions.view_permission == "1" %}
+													<li class="nav-item {{CustomerInfoNavClass}}" >
+														<a href="/customer_list/">
+															<i class="fas fa-user-tag"></i>
+															<p>Customer Info</p>
+														</a>
+													</li>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ CashMemosNavClass }}">
+										<a data-toggle="collapse" href="#cashmemo_receipt">
+											<i class="fas fa-receipt"></i>
+											<p>Cash Memo & Receipt</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ CashMemosCollapseShow }}" id="cashmemo_receipt">
+											<ul class="nav nav-collapse">
+												<li class="{{CashNavClass}}">
+													<a href="/cash-memo/">
+														<span class="sub-item">Cash Memo</span>
+													</a>
+												</li>
+												<li class="{{ReceiptNavClass}}">
+													<a href="/create-receipts/">
+														<span class="sub-item">Receipt</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+								{% else %}
+									{% for modules in module_permissions_list %}
+										{% if modules.module_name|lower == "Cash Memo & Receipt"|lower and modules.permission == True %}
+											<li class="nav-item {{ CashMemosNavClass }}">
+												<a data-toggle="collapse" href="#cashmemo_receipt">
+													<i class="fas fa-receipt"></i>
+													<p>Cash Memo & Receipt</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ CashMemosCollapseShow }}" id="cashmemo_receipt">
+													<ul class="nav nav-collapse">
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Cash Memos"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{CashNavClass}}">
+																	<a href="/cash-memo/">
+																		<span class="sub-item">Cash Memo</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Receipts"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ReceiptNavClass}}">
+																	<a href="/create-receipts/">
+																		<span class="sub-item">Receipt</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+								{% if is_superuser == True %}
+								<li class="nav-item {{ DesignNavClass}}">
+									<a data-toggle="collapse" href="#DesignMemo">
+										<i class="fas fa-money-bill-wave"></i>
+										<p>Design</span>
+										</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{DesignNavClasscollapsShows}}" id="DesignMemo">
+										<ul class="nav nav-collapse">
+											<!-- <li class="{{ BillDesignClass }}">
+												<a href="/owner-bill-design/">
+													<span class="sub-item">Bill Design</span>
+												</a>
+											</li> -->
+											<!-- <li class="{{ CashMemoClass }}">
+												<a href="/cash-memo/">
+													<span class="sub-item">Cash Memos</span>
+												</a>
+											</li>
+											<li class="{{ ReceiptsClass }}">
+												<a href="/create-receipts/">
+													<span class="sub-item">Receipts</span>
+												</a>
+											</li> -->
+											<li class="{{StampNavClass}}">
+												<a href="/wstampview/">
+													<span class="sub-item">Stamps</span>
+												</a>
+											</li>
+											<!-- <li class="{{ MemoDesignNavClass }}">
+												<a href="/get-all-merchant-memo-design/">
+													<span class="sub-item">Bill Design Request&nbsp;&nbsp;&nbsp;<span
+															style="color: #31ce36;">
+															{{memo_design_unread_count}}</span>
+													</span>
+												</a>
+											</li> -->
+
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Design"|lower and modules.permission == True %}
+										<li class="nav-item {{ DesignNavClass}}">
+											<a data-toggle="collapse" href="#DesignMemo">
+												<i class="fas fa-money-bill-wave"></i>
+												<p>Design</span>
+												</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{DesignNavClasscollapsShows}}" id="DesignMemo">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Cash Memos"|lower %}
+															{% if actions.view_permission == "1" %}
+																<!-- <li class="{{ CashMemoClass }}">
+																	<a href="/cash-memo/">
+																		<span class="sub-item">Cash Memos</span>
+																	</a>
+																</li> -->
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Receipts"|lower %}
+															{% if actions.view_permission == "1" %}
+																<!-- <li class="{{ ReceiptsClass }}">
+																	<a href="/create-receipts/">
+																		<span class="sub-item">Receipts</span>
+																	</a>
+																</li> -->
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Stamps"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{StampNavClass}}">
+																	<a href="/wstampview/">
+																		<span class="sub-item">Stamps</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ SuggestBrandsNavclass }}">
+									<a href="/suggested-brands/">
+										<i class="fas fa-store"></i>
+										<p>Suggested Brands</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Suggested Brands"|lower and modules.permission == True %}
+										{% for actions in action_permissions_list %}
+											{% if actions.feature_id|lower == "Suggested Brand List"|lower %}
+												{% if actions.view_permission == "1" %}
+													<li class="nav-item {{ SuggestBrandsNavclass }}">
+														<a href="/suggested-brands/">
+															<i class="fas fa-store"></i>
+															<p>Suggested Brands</p>
+														</a>
+													</li>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ FeedbackNavclass }}">
+									<a href="/get-feedback/">
+										<i class="fas fa-comments"></i>
+										<p>Feedback</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Feedback"|lower and modules.permission == True %}
+										{% for actions in action_permissions_list %}
+											{% if actions.feature_id|lower == "Feedback"|lower %}
+												{% if actions.view_permission == "1" %}
+													<li class="nav-item {{ FeedbackNavclass }}">
+														<a href="/get-feedback/">
+															<i class="fas fa-comments"></i>
+															<p>Feedback</p>
+														</a>
+													</li>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ myteamNavActiveClass }}">
+									<a data-toggle="collapse" href="#MyTeamMenu">
+										<i class="fas fa-users"></i>
+										<p>My Team</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ myteamInfoCollapseShow }}" id="MyTeamMenu">
+										<ul class="nav nav-collapse">
+											<li class="{{ myteamByUserNavClass }}">
+												<a href="/create-admin-panel-user/">
+													<span class="sub-item">Users</span>
+												</a>
+											</li>
+											<li class="{{ myteamByDisableNavClass }}">
+												<a href="/admin-disable-paner-user/">
+													<span class="sub-item">Disabled Users</span>
+												</a>
+											</li>
+											<li class="{{ RoleNavclass }}">
+												<a href="/role/">
+													<span class="sub-item">Roles & Permissions</span>
+												</a>
+											</li>
+											<li class="{{ userlogsActiveClass }}">
+												<a href="/user-logs/">
+													<span class="sub-item">User Logs</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "My Team"|lower and modules.permission == True %}
+										<li class="nav-item {{ myteamNavActiveClass }}">
+											<a data-toggle="collapse" href="#MyTeamMenu">
+												<i class="fas fa-users"></i>
+												<p>My Team</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ myteamInfoCollapseShow }}" id="MyTeamMenu">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Users"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ myteamByUserNavClass }}">
+																	<a href="/create-admin-panel-user/">
+																		<span class="sub-item">Users</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Disabled Users"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ myteamByDisableNavClass }}">
+																	<a href="/admin-disable-paner-user/">
+																		<span class="sub-item">Disabled Users</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Roles & Permissions"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ RoleNavclass }}">
+																	<a href="/role/">
+																		<span class="sub-item">Roles & Permissions</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "User Logs"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ userlogsActiveClass }}">
+																	<a href="/user-logs/">
+																		<span class="sub-item">User Logs</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{RoleNavclass}}">
+									<a href="/role/">
+										<i class="fas fas fa-user-check"></i>
+										<p>Roles & Permission</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Role Permission"|lower and modules.permission == True %}
+										<li class="nav-item {{RoleNavclass}}">
+											<a href="/role/">
+												<i class="fas fa-user-graduate"></i>
+												<p>Roles & Permission</p>
+											</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}	 -->
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{StampNavClass}}">
+									<a href="/wstampview/">
+										<i class="fas fa-stamp"></i>
+										<p>Stamp &nbsp;</p>
+									</a>
+								</li>
+							{% else %}
+								<li class="nav-item {{StampNavClass}}">
+									<a href="/wstampview/">
+										<i class="fas fa-stamp"></i>
+										<p>Stamp &nbsp;</p>
+									</a>
+								</li>
+							{% endif %} -->
+
+
+							<!-- {% if is_superuser == True %}
+								<div class="collapse {{ ShowOffersNavclass }}" id="offers">
+									<ul class="nav nav-collapse">
+										<li class="{{ CreateOffersNavclass }}">
+											<a href="/owner-offer/">
+												<span class="sub-item">Create Offers</span>
+											</a>
+										</li>
+										<li class="{{ OfferstatusNavclass }}">
+											<a href="/statusview/">
+												<span class="sub-item">Offers Status</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							{% else %}
+								<div class="collapse {{ ShowOffersNavclass }}" id="offers">
+									<ul class="nav nav-collapse">
+										<li class="{{ CreateOffersNavclass }}">
+											<a href="/owner-offer/">
+												<span class="sub-item">Create Offers</span>
+											</a>
+										</li>
+										<li class="{{ OfferstatusNavclass }}">
+											<a href="/statusview/">
+												<span class="sub-item">Offers Status</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							{% endif %} -->
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{MerchantEnquiryClass}}">
+									<a href="/get-all-merchant-enquiry/">
+										<i class="fas fa-envelope"></i>
+										<p>Digital Marketing &nbsp;</p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{dm_inquiry_unread_count}}</span>
+									</a>
+								</li>
+							{% else %}
+								<li class="nav-item {{MerchantEnquiryClass}}">
+									<a href="/get-all-merchant-enquiry/">
+										<i class="fas fa-envelope"></i>
+										<p>Digital Marketing &nbsp;</p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{dm_inquiry_unread_count}}</span>
+									</a>
+								</li>
+							{% endif %} -->
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{DashboardUserNavclass}}">
+									<a href="/create-admin-panel-user/">
+										<i class="fas fa-users"></i>
+										<p>Dashboard User</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Role Permission"|lower and modules.permission == True %}
+										<li class="nav-item {{DashboardUserNavclass}}">
+											<a href="/create-admin-panel-user/">
+												<i class="fas fa-users"></i>
+												<p>Dashboard User</p>
+											</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+ -->
+							
+							
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{SoftwarePartnerUserNavclass}}">
+									<a href="/create-software-partner/">
+										<i class="fas fa-users"></i>
+										<p>Software Partner</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Role Permission"|lower and modules.permission == True %}
+										<li class="nav-item {{SoftwarePartnerUserNavclass}}">
+											<a href="/create-software-partner/">
+												<i class="fas fa-users"></i>
+												<p>Software Partner</p>
+											</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %} -->
+
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{ BusinessCategoryNavclass }} {{ BillCategoryNavclass }} {{ BillTagsNavclass }}">
+									<a data-toggle="collapse" href="#tables">
+										<i class="fas fa-tags"></i>
+										<p>Category and Tags</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ BusinessCategoryCollapseShow }}" id="tables">
+										<ul class="nav nav-collapse">
+											<li class="{{ BusinessCategoryNavclass }}">
+												<a href="{% url 'business category' %}">
+													<span class="sub-item">Business Category</span>
+												</a>
+											</li>
+											<li class="{{ BillCategoryNavclass }}">
+												<a href="{% url 'bill category' %}">
+													<span class="sub-item">Bill Category</span>
+												</a>
+											</li>
+											<li class="{{ BillTagsNavclass }}">
+												<a href="{% url 'bill tags' %}">
+													<span class="sub-item">Bill Tags</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>	
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Category and Tags"|lower and modules.permission == True %}
+									<li class="nav-item {{ BusinessCategoryNavclass }} {{ BillCategoryNavclass }} {{ BillTagsNavclass }}">
+										<a data-toggle="collapse" href="#tables">
+											<i class="fa fa-tasks"></i>
+											<p>Category and Tags</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse" id="tables">
+											<ul class="nav nav-collapse">
+												<li class="{{ BusinessCategoryNavclass }}">
+													<a href="{% url 'business category' %}">
+														<span class="sub-item">Business Category</span>
+													</a>
+												</li>
+												<li class="{{ BillCategoryNavclass }}">
+													<a href="{% url 'bill category' %}">
+														<span class="sub-item">Bill Category</span>
+													</a>
+												</li>
+												<li class="{{ BillTagsNavclass }}">
+													<a href="{% url 'bill tags' %}">
+														<span class="sub-item">Bill Tags</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>		
+									{% endif %}
+								{% endfor %}
+							{% endif %} -->
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ SettingsNavclass }}">
+									<a data-toggle="collapse" href="#submenu">
+										<i class="icon-settings"></i>
+										<p>Settings</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{ settingsCollapseShow }}" id="submenu">
+										<ul class="nav nav-collapse">
+											<li class="{{ GeneralSettingsNavclass }}">
+												<a href="/general-setting/">
+													<span class="sub-item">Business Settings</span>
+												</a>
+											</li>
+											<!-- <li class="{{ smsSettingActiveClass }}">
+												<a href="/sms-setting/">
+													<span class="sub-item">SMS Settings</span>
+												</a>
+											</li> -->
+											<li class="{{ EmailSettingsNavclass }}">
+												<a href="/email-setting/">
+													<span class="sub-item">Email Settings</span>
+												</a>
+											</li>
+											<li class="{{ NotificationSettingsNavclass }}">
+												<a href="/notification-settings/">
+													<span class="sub-item">Notifications Settings</span>
+												</a>
+											</li>
+											<li class="{{ paymentSettingActiveClass }}">
+												<a href="/payment-setting/">
+													<span class="sub-item">Payment Settings</span>
+												</a>
+											</li>
+											<li class="{{ GreenPointSettingsActiveClass }}">
+												<a href="/green-point-settings/">
+													<span class="sub-item">Green Point Settings</span>
+												</a>
+											</li>
+											<li class="{{ ReferralProgramActiveClass }}">
+												<a href="/referral-points/">
+													<span class="sub-item">Referral Program</span>
+												</a>
+											</li>
+											<li class="{{ PromotionsAmountActiveClass }}">
+												<a href="/add-promotions-amount/">
+													<span class="sub-item">Promotions Amount</span>
+												</a>
+											</li>
+											<li class="submenu">
+												<a data-toggle="collapse" href="#CategoryandTagsubnav" class="" aria-expanded="{{CategoryandTagsExpanded}}">
+													<span class="sub-item">Category and Tags</span>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{CategoryandTagShow}}" id="CategoryandTagsubnav" style="">
+													<ul class="nav nav-collapse subnav">
+														<li class="{{ BusinessCategoryNavclass }}">
+															<a href="{% url 'business category' %}">
+																<span class="sub-item">Business Category</span>
+															</a>
+														</li>
+														<li class="{{ BillCategoryNavclass }}">
+															<a href="{% url 'bill category' %}">
+																<span class="sub-item">Bill Category</span>
+															</a>
+														</li>
+														<li class="{{ BillTagsNavclass }}">
+															<a href="{% url 'bill tags' %}">
+																<span class="sub-item">Bill Tags</span>
+															</a>
+														</li>
+													</ul>
+												</div>
+											</li>
+											<li class="{{ backupRestoreActiveClass }}">
+												<a href="/create-database-backup/">
+													<span class="sub-item">Backup & Restore</span>
+												</a>
+											</li>
+											
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Settings"|lower and modules.permission == True %}
+										<li class="nav-item {{ SettingsNavclass }}">
+											<a data-toggle="collapse" href="#submenu">
+												<i class="icon-settings"></i>
+												<p>Settings</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{ settingsCollapseShow }}" id="submenu">
+												<ul class="nav nav-collapse">
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Business Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ GeneralSettingsNavclass }}">
+																	<a href="/general-setting/">
+																		<span class="sub-item">Business Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "SMS Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ smsSettingActiveClass }}">
+																	<a href="/sms-setting/">
+																		<span class="sub-item">SMS Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Email Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ EmailSettingsNavclass }}">
+																	<a href="/email-setting/">
+																		<span class="sub-item">Email Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Notifications Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ NotificationSettingsNavclass }}">
+																	<a href="/notification-settings/">
+																		<span class="sub-item">Notifications Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Payment Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ paymentSettingActiveClass }}">
+																	<a href="/payment-setting/">
+																		<span class="sub-item">Payment Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Green Point Settings"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ GreenPointSettingsActiveClass }}">
+																	<a href="/green-point-settings/">
+																		<span class="sub-item">Green Point Settings</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Referral Program"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ ReferralProgramActiveClass }}">
+																	<a href="/referral-points/">
+																		<span class="sub-item">Referral Program</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Category and Tags"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="submenu">
+																	<a data-toggle="collapse" href="#CategoryandTagsubnav" class="" aria-expanded="{{CategoryandTagsExpanded}}">
+																		<span class="sub-item">Category and Tags</span>
+																		<span class="caret"></span>
+																	</a>
+																	<div class="collapse {{CategoryandTagShow}}" id="CategoryandTagsubnav" style="">
+																		<ul class="nav nav-collapse subnav">
+																			<li class="{{ BusinessCategoryNavclass }}">
+																				<a href="{% url 'business category' %}">
+																					<span class="sub-item">Business Category</span>
+																				</a>
+																			</li>
+																			<li class="{{ BillCategoryNavclass }}">
+																				<a href="{% url 'bill category' %}">
+																					<span class="sub-item">Bill Category</span>
+																				</a>
+																			</li>
+																			<li class="{{ BillTagsNavclass }}">
+																				<a href="{% url 'bill tags' %}">
+																					<span class="sub-item">Bill Tags</span>
+																				</a>
+																			</li>
+																		</ul>
+																	</div>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Backup & Restore"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ backupRestoreActiveClass }}">
+																	<a href="/create-database-backup/">
+																		<span class="sub-item">Backup & Restore</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							
+
+							<!-- {% if is_superuser == True %}
+								<li class="nav-item {{ ShareWordNavclass }}">
+									<a href="/shared-words/">
+										<i class="fas fa-share-square"></i>
+										<p>Shared Words</p>
+									</a>
+								</li>
+							{% else %}
+								<li class="nav-item {{ ShareWordNavclass }}">
+									<a href="/shared-words/">
+										<i class="fas fa-share-square"></i>
+										<p>Shared Words</p>
+									</a>
+								</li>
+							{% endif %} -->
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ SupportFAQNavclass}}">
+									<a data-toggle="collapse" href="#supportsfaqs">
+										<i class="far fa-question-circle"></i>
+										<p>Support & FAQ's</p>
+										<span class="caret"></span>
+									</a>
+									<div class="collapse {{SupportFAQCollapseShow}}" id="supportsfaqs">
+										<ul class="nav nav-collapse">
+											<!-- <li class="{{ AddModuleNavClass }}">
+												<a href="/add-module/">
+													<span class="sub-item">Add Module</span>
+												</a>
+											</li> -->
+											<li class="{{ AddVideoNavClass }}">
+												<a href="/add-video/">
+													<span class="sub-item">Add Video</span>
+												</a>
+											</li>
+											<li class="{{ AddFAQsNavClass }}">
+												<a href="/add-faqs/">
+													<span class="sub-item">Add FAQ's</span>
+												</a>
+											</li>
+											<li class="{{ AddBlogNavClass }}">
+												<a href="/add-blog/">
+													<span class="sub-item">Add Blog</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "Support & FAQ's"|lower and modules.permission == True %}
+										<li class="nav-item {{ SupportFAQNavclass}}">
+											<a data-toggle="collapse" href="#supportsfaqs">
+												<i class="far fa-question-circle"></i>
+												<p>Support & FAQ's</p>
+												<span class="caret"></span>
+											</a>
+											<div class="collapse {{SupportFAQCollapseShow}}" id="supportsfaqs">
+												<ul class="nav nav-collapse">
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Add Video"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AddVideoNavClass }}">
+																	<a href="/add-video/">
+																		<span class="sub-item">Add Video</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Add FAQ's"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AddFAQsNavClass }}">
+																	<a href="/add-faqs/">
+																		<span class="sub-item">Add FAQ's</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+
+													{% for actions in action_permissions_list %}
+														{% if actions.feature_id|lower == "Add Blog"|lower %}
+															{% if actions.view_permission == "1" %}
+																<li class="{{ AddBlogNavClass }}">
+																	<a href="/add-blog/">
+																		<span class="sub-item">Add Blog</span>
+																	</a>
+																</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													
+												</ul>
+											</div>
+										</li>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if is_superuser == True %}
+								<li class="nav-item {{ SystemUpdateNavclass }}">
+									<a href="/system-update-add/">
+										<i class="fas fa-desktop"></i>
+										<p>System Updates</p>
+									</a>
+								</li>
+							{% else %}
+								{% for modules in module_permissions_list %}
+									{% if modules.module_name|lower == "System Update"|lower and modules.permission == True %}
+										{% for actions in action_permissions_list %}
+											{% if actions.feature_id|lower == "System Update"|lower %}
+												{% if actions.view_permission == "1" %}
+													<li class="nav-item {{ SystemUpdateNavclass }}">
+														<a href="/system-update-add/">
+															<i class="fas fa-desktop"></i>
+															<p>System Update</p>
+														</a>
+													</li>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+						</ul>									
+					{% endif %}	
+				</div>
+			</div>
+		</div>
+        <!-- End Sidebar -->
+        
+
+<style>
+	.dot {
+		height: 20px;
+		width: 20px;
+		background-color: #31ce36;
+		border-radius: 50%;
+		display: inline-block;
+		color: #fff;
+
+	}
+</style>

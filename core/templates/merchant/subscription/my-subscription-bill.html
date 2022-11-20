@@ -1,0 +1,563 @@
+{% load static %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/invoice/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/invoice/all.css' %}"> -->
+<link rel="stylesheet" type="text/css" href="{% static 'assets/css/invoice/style.css' %}">
+<!-- <script src="{% static 'assets/css/invoice/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/css/invoice/jquery.min.js' %}"></script> -->
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css">
+<link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="URL to your print.css" type="text/css" media="print" />
+<style type="text/css">
+    .body-main {
+     background: #ffffff;
+     border-bottom: 25px solid #065c99;
+     border-top: 25px solid #065c99;
+     margin-top: 30px;
+     margin-bottom: 30px;
+     padding: 15px 15px;
+     position: relative;
+     box-shadow: 0 1px 21px #808080;
+     font-size: 15px;
+     border-radius:25px 130px !important;
+     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+     border-right: 3px solid #065c99;
+     border-left: 3px solid #065c99;
+     
+ }
+html,body{
+    height:297mm;
+    width:210mm;
+}
+ @media only screen and (max-width: 1280) {
+  .body-main {
+    margin-right: 50px !important;
+  }
+}
+
+
+ @media screen and (min-width:1024px)
+ {
+    .col-md-12
+    {
+        width: 100% !important;
+    }
+
+ }
+
+ .main thead {
+     background: #1E1F23;
+     color: #fff
+ }
+
+ .img {
+     height: 120px
+ }
+
+ h1 {
+     text-align: center
+ }
+ .imgformat img
+ {
+  height: 50px;
+  width: 160px;
+  margin-top: 30px;
+  
+ }
+ .table
+ {
+   border: 1px solid black;
+   font-weight: bold;
+   
+ }
+ tbody
+ {
+  font-size:15;
+ }
+ .table-heading
+ {
+  font-size:18;
+ }
+ .body-span{
+      font-weight: bold;
+      font-size: 25px; 
+      font-family: Times,serif;
+   }
+   .body-row{
+      border-bottom: 3px solid black;
+   }
+   .body-div2{
+      line-height: 0.9;
+   }
+   .body-h4{
+    font-family: Futara;
+   }
+   .body-h5{
+    font-family: Times New Roman;
+   }
+   .body-content{
+    background-color: #e6e4e1;
+    padding: 10px; 
+    border: 1px solid #666562;
+   }
+   .body-td{
+    font-weight: normal;
+   }
+   .body-new-td{
+    font-weight:bold;
+   }
+
+@media (max-width: 480px) {
+  .printDiv {
+    display: none;
+  }
+}
+</style>
+
+<center>
+<div class="container" id="html-content-holder">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-1">&nbsp;</div>
+            <div class="col-md-9 body-main">
+                <div class="col-md-12">
+                  <span class="body-span" style="">
+                    <center>Merchant Bill</center></span><br/>
+
+                    <div class="row body-row" style="">
+                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 imgformat text-left">
+                        <img  class=" img" src="{{business_logo}}">
+                      </div>
+                      <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 text-right body-div2" style="">
+                        <h4 style="color: #06a123;"><strong>Hind Softwares Pvt. Ltd.</strong></h4>
+                              <p><strong>202, Maharshi Atharva Appt. Plot No 14, </strong></p>
+                              <p><strong>Shankar Nagar, Nagpur - 440010</strong></p>
+                              <p><strong>GSTIN No.(MH): 27AADCH9211L1ZE</strong></p>
+                              <p><strong>M: team@greenbill.in</strong></p>
+                              <p><strong>T: +91 9730299995</strong></p>
+                      </div>
+                    </div><br/>
+            
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">  
+                        <h4 class="body-h4" style="">INVOICE NO</h4>
+                            <h5 class="body-h5"><strong>{{bill_details.invoice_no}}</strong></h5>                 
+                    </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right">  
+                        <h4 class="body-h4">INVOICE DATE</h4>
+                            <h5 class="body-h5"><strong>{{bill_details.purchase_date}}</strong></h5>                
+                    </div>
+                    </div> <br />
+                    <div class="col-md-12">
+                    <div class="row body-content" style="">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">
+                          <label><strong>Client: </strong>{{merchant_bill_name|capfirst}}</label><br/>
+                          <label><strong>Address: </strong>{{merchant_address}}</label><br/>
+                          
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right">
+                          <label><strong>GSTIN: </strong>{{gstin_number}}</</label><br/>
+                          <label><strong>Mobile No: </strong>{{merchant_bill_mobile_no}}</label>
+                        </div>  
+                    </div>
+                    </div>
+                    <div class="col-md-12">&nbsp;</div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr class="table-heading">
+                                    <th>
+                                        <span><b>Particularstt</b></span>
+                                    </th>
+                                    <th class="text-right">
+                                        <span><b>Amount</b></span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {% if bill_details.is_subscription_plan == True %}
+                                <tr>
+                                    <td class="col-md-9">{{bill_details.subscription_name}}</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{bill_details.cost|floatformat:2}} </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-9">Cost For No Of Users({{number_of_users}}*{{subscription_cost_for_user}})*Plan Validity({{valid_for_month}})</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{users_cost|floatformat:2}} </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-9">Subscription Plan Cost</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{plan_Subtotal|floatformat:2}} </td>
+                                </tr>
+                                {% if mode != 'cashwithoutbill' %}
+                                    {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                    <tr>
+                                        <td class="col-md-9">
+                                          SGST (9%)<br/>CGST (9%)
+                                        </td>
+                                        <td class="col-md-3 text-right">
+                                          <i class="fas fa-rupee-sign" area-hidden="true"></i> {{bill_details.sgst|floatformat:2}}<br/>
+                                          <i class="fas fa-rupee-sign" area-hidden="true"></i> {{bill_details.sgst|floatformat:2}}
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td class="col-md-9">IGST (18%)</td>
+                                        <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{bill_details.gst_amount|floatformat:2}} </td>
+                                    </tr>
+                                    {% endif %}
+
+                                {% endif %}
+                                <tr>
+                                    <td class="text-right">
+                                        <p> <strong>Net Total:</strong> </p>
+                                        <p> <strong>Round Off: </strong> </p>
+                                        <p> <strong>Total: </strong> </p>
+                                    </td>
+                                    <td class="text-right">
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{final_total|floatformat:2}} </strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_round_off|floatformat:2}}</strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_without_float|floatformat:2}}</strong> </p>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% if bill_details.is_promotional_sms_plan == True %}
+                                <tr>
+                                    <td class="col-md-9">{{bill_details.subscription_name}}</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{subtotal}} </td>
+                                </tr>
+                                {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <tr>
+                                    <td class="col-md-9">
+                                      SGST (9%)<br/>CGST (9%)
+                                    </td>
+                                    <td class="col-md-3 text-right">
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}<br/>
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td class="col-md-9">IGST (18%)</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{igst|floatformat:2}} </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="text-right">
+                                        <p> <strong>Net Total:</strong> </p>
+                                        <p> <strong>Round Off: </strong> </p>
+                                        <p> <strong>Total: </strong> </p>
+                                    </td>
+                                    <td>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{final_total|floatformat:2}} </strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_round_off|floatformat:2}}</strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_without_float|floatformat:2}}</strong> </p>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% if bill_details.is_transactional_sms_plan == True %}
+                                <tr>
+                                    <td class="col-md-9">{{bill_details.subscription_name}}</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{subtotal|floatformat:2}}</ </td>
+                                </tr>
+                                {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <tr>
+                                    <td class="col-md-9">
+                                      SGST (9%)<br/>CGST (9%)
+                                    </td>
+                                    <td class="col-md-offset-3 text-right">
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}<br/>
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td class="col-md-9">IGST (18%)</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{igst|floatformat:2}} </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="text-right">
+                                        <p> <strong>Net Total:</strong> </p>
+                                        <p> <strong>Round Off: </strong> </p>
+                                        <p> <strong>Total: </strong> </p>
+                                    </td>
+                                    <td>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{final_total|floatformat:2}} </strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_round_off|floatformat:2}}</strong> </p>
+                                        <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_without_float|floatformat:2}}</strong> </p>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% if bill_details.is_add_on_plan == True %}
+                                <tr>
+                                    <td class="col-md-9">{{bill_details.subscription_name}}</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_without_float|floatformat:2}}</ </td>
+                                </tr>
+                                 {% if merchant_state == 'Maharashtra' or merchant_state == 'maharashtra' %}
+                                <tr>
+                                    <td class="col-md-9">
+                                      SGST (9%)<br/>CGST (9%)
+                                    </td>
+                                    <td class="col-md-3 text-right">
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}<br/>
+                                      <i class="fas fa-rupee-sign" area-hidden="true"></i> {{gst|floatformat:2}}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td class="col-md-9">IGST (18%)</td>
+                                    <td class="col-md-3 text-right"><i class="fas fa-rupee-sign" area-hidden="true"></i> {{igst|floatformat:2}} </td>
+                                </tr>
+                                {% endif %}
+                                <td>
+                                  <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{subtotal|floatformat:2}} </strong> </p>
+                                  <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{amount_round_off|floatformat:2}}</strong> </p>
+                                  <p> <strong><i class="fas fa-rupee-sign" area-hidden="true"></i> {{subtotal|floatformat:2}}</strong> </p>
+                                </td>
+                                {% endif %}
+                                <tr>
+                                    <td colspan="2" class="body-td" style="">
+                                      <div class="col-md-7" >
+                                        <span><b>PAN No: AADCH9211L</b></span><br/>
+                                        <span><b>Bank Name: State Bank Of India, North Ambazari</b></span><br/>
+                                        <span><b>Branch: Nagpur</b></span><br/>
+                                        <span><b>IFSC Code: SBIN0008238</b></span><br/>
+                                        <span><b>A/c No: 36548552384</b></span>
+                                      </div>
+                                      <div class="col-md-5 text-right">
+                                        <h4>
+                                          <img src="{{owner_logo.url}}"  height="90" width="140" alt="Logo"><br/>
+                                          <strong>HIND SOFTWARES PVT. LTD. NAGPUR</strong>
+                                        </h4>
+                                      </div>
+                                    </td>
+                                </tr>
+                                <tr>              
+                                  <td colspan="2" class="body-new-td" style="">
+                                    <label>1. Subject to Nagpur Jurisdiction Only.</label><br/>
+                                    <label>2. Kindly deduct the applicable amount of TDS (while making payment) on total amount of commission and issue TDS certificate there of.</label><br/>
+                                    <label>3. Note: Interest @24% per annum shall be applicable on Invoice amount if not paid within 45 days from the date of Invoice.</label><br/>
+                                   
+                                  </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <br/><br/>
+                   
+                </div>
+            </div>
+            <div class="col-md-1">&nbsp;</div>
+        </div>
+        
+    </div>
+</div>
+<div id="temp_div"> </div>
+<div class="row" id="download_btn">
+          <center id="hide_div"><a id="btn-Convert-Html2Image" href="#">Download Bill<!-- <button type="button" class="btn btn-success" style="box-shadow: inset  10px -10px 25px rgba(0,0,0,0.6);">Download</button> --></a></center>
+        </div>
+        <a href="#" id="printBTN" onclick="Convert_HTML_To_PDF()">Print</a>
+</center>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/printThis/1.15.0/printThis.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+
+<script type="text/javascript">
+  if (($(document).width()) < 1000)
+  {
+    document.getElementById("printBTN").style.display = "none";
+  }
+  else
+  {
+    document.getElementById("printBTN").style.display = "block";
+  }
+</script>
+
+<script>
+  function Convert_HTML_To_PDF() {
+  var elementHTML = document.getElementById('html-content-holder');
+
+  html2canvas(elementHTML, {
+    useCORS: true,
+    onrendered: function(canvas) {
+      var pdf = new jsPDF('p', 'pt', 'letter');
+
+      var pageHeight = 1200;
+      var pageWidth = 2600;
+      for (var i = 0; i <= elementHTML.clientHeight / pageHeight; i++) {
+        var srcImg = canvas;
+        var sX = 90;
+        var sY = pageHeight * i; // start 1 pageHeight down for every new page
+        var sWidth = pageWidth;
+        var sHeight = pageHeight;
+        var dX = 0;
+        var dY = 0;
+        var dWidth = pageWidth;
+        var dHeight = pageHeight;
+
+        window.onePageCanvas = document.createElement("canvas");
+        onePageCanvas.setAttribute('width', pageWidth);
+        onePageCanvas.setAttribute('height', pageHeight);
+        // onePageCanvas.setAttribute('fillStyle', 'margin-bottom: 300px');
+        var ctx = onePageCanvas.getContext('2d');
+        ctx.drawImage(srcImg, sX, 33, sWidth, sHeight, dX, dY, dWidth, dHeight);
+
+        var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+        var width = onePageCanvas.width;
+        var height = onePageCanvas.clientHeight;
+
+        // printJS({printable: ctx.toDataURL(), type: 'image', imageStyle: 'width:100%'});
+
+        // if (i > 0) // if we're on anything other than the first page, add another page
+        //   pdf.addPage(612, 864); // 8.5" x 12" in pts (inches*72)
+
+        // pdf.setPage(i + 1); // now we declare that we're working on that page
+        // pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width * .62), (height * .62)); // add content to the page
+
+        // document.getElementById('temp_div').append(canvasDataURL);
+
+
+    //     div.fix-break-print-page {
+    //         page-break-inside: avoid;
+    //     }
+
+    //     .print {
+    //         display: block;
+    //     }
+    // }
+
+    // .print:last-child {
+    //     page-break-after: auto;
+    // 
+
+        var win1 = window.open();
+        win1.document.write("<style> @page{ size: A4; margin: 1cm; }  body{ padding-bottom: -1000px; } .print:last-child { page-break-after: avoid;  page-break-inside: avoid; margin-bottom: 0px; } @media print { </style>")
+        win1.document.write("<body><br><img class='print' style='height : 260%; width: 280%; margin-bottom: -100px;' src ='"+ onePageCanvas.toDataURL() +"'/></body>");
+
+
+        setTimeout(function() {
+          win1.print();
+          //your code to be executed after 1 second
+        }, 1000);
+        
+
+        // win1.location.reload();
+      }
+      
+      
+      // document.getElementById('temp_div').append(ctx.getImageData());
+      // alert('hello');
+
+      // var win1 = window.open();
+      // win1.document.write("<br><img src = '"+ctx.toDataURL()+"'/>");
+      // win1.print();
+      // win1.location.reload();
+
+    // Save the PDF
+      // pdf.save('document.pdf');
+      //  pdf.print();
+    }
+  });
+}
+    // function printDiv() 
+    // {
+    //     // alert('hello');
+    //      event.preventDefault();
+    //      $('#html-content-holder').printThis({
+    //          printContainer: true,
+    //          importCSS: true,
+    //          importStyle: true,
+    //          loadCSS: "{% static 'assets/css/invoice/bootstrap.min.css' %}",
+    //          loadCSS: "{% static 'assets/css/invoice/style.css' %}",
+    //          loadCSS: "{% static 'assets/css/invoice/all.css' %}",
+    //        });
+
+        
+    //  }
+    // function showPopup() {
+    //   var myDiv = document.getElementById('html-content-holder');
+
+    //   var newWindow = window.print('', 'SecondWindow', 'toolbar=0,stat=0');
+
+    //   // var style = newWindow.document.createElement('link');
+    //   // style.type = "text/css";
+    //   // style.rel = "stylesheet";
+    //   // style.href = "{% static 'assets/css/invoice/bootstrap.min.css' %}";
+    //   // style.media = "all";
+
+    //   // var style1 = newWindow.document.createElement('link');
+    //   // style1.type = "text/css";
+    //   // style1.rel = "stylesheet";
+    //   // style1.href = "{% static 'assets/css/invoice/style.css' %}";
+    //   // style1.media = "all";
+
+    //   // var style2 = newWindow.document.createElement('link');
+    //   // style2.type = "text/css";
+    //   // style2.rel = "stylesheet";
+    //   // style2.href = "{% static 'assets/css/invoice/all.css' %}";
+    //   // style2.media = "all";
+    //   newWindow.document.write('<link rel="stylesheet" type="text/css" href="{% static "assets/css/invoice/bootstrap.min.css" %}">');
+    //   newWindow.document.write('<link rel="stylesheet" type="text/css" href="{% static "assets/css/invoice/style.css" %}">');
+    //   newWindow.document.write('<link rel="stylesheet" type="text/css" href="{% static "assets/css/invoice/all.css" %}">');
+
+    //   newWindow.document.write("<html><body " +
+    //   "class='responsive light2012-home-switcher home switcher' style='width:200; height=200;' " +
+    //   " önload='window.print()'>" +
+    //   myDiv.innerHTML +
+    //   "</body></html>");
+    //   // newWindow.document.getElementsByTagName("head")[0].appendChild(style);
+    //   newWindow.document.close();
+    // }
+
+</script>
+
+<script type="text/javascript">
+
+
+  /*$(document).ready(function () {
+    $(".btn-success").on('click', function () {
+      
+      document.getElementById("download_btn").style.display = "none";
+    });
+  });*/
+  $(document).ready(function () {
+    var element = $("#html-content-holder"); // global variable
+    var getCanvas; //global variable
+    html2canvas(element, {
+        onrendered: function (canvas) {
+            getCanvas = canvas;
+        }
+    });
+
+    $("#btn-Convert-Html2Image").on('click', function () {
+        document.getElementById("download_btn").style.display = "none";
+       
+        var imgageData = getCanvas.toDataURL("image/png");
+        //Now browser starts downloading it instead of just showing it
+        var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+        $("#btn-Convert-Html2Image").attr("download", "MerchantBill.png").attr("href", newData);
+        //document.getElementById("hide_div").style.display = "hidden";
+       
+
+    });
+}); 
+
+
+  function printImg() {
+
+     var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+    mywindow.print();
+    mywindow.close();
+
+ /* pwin = window.open(document.getElementById("btn-Convert-Html2Image").src,"_blank");
+  pwin.onload = function () {window.print();}*/
+}
+</script>

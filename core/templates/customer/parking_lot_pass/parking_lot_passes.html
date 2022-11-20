@@ -1,0 +1,280 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% load qr_code %}
+
+{% block title %} Parking Pass {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<style>
+
+.pass {
+  background: white;
+  border:#00569d 13px solid;
+  border-radius: 14px;
+  -moz-border-radius: 24px; 
+  -webkit-border-radius: 24px;
+  padding: 8px;
+  color: rgb(19, 18, 18);
+}
+
+.pass-merchant {
+    text-align: center;
+    display: flex; justify-content: center ; 
+    position: relative; 
+    letter-spacing: 2px;
+    border-radius: 15px;
+    background-color: white;
+    border: rgb(226, 233, 253) 3px dotted;
+    color: #00569d;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.pass-body {
+    display: flex;
+    padding: 5px;
+    letter-spacing: 2px;
+    border-radius: 15px;
+    background-color: #00569d;
+    color: azure;
+}
+
+.data{
+    background-color: white;
+    /*border-bottom: rgb(24, 25, 116) 4px solid;*/
+    -moz-border-radius: 14px; 
+    -webkit-border-radius: 5px; 
+    padding: 10px;
+    justify-content: center;
+}
+
+.row{
+    padding: 6px;
+}
+
+.card{
+    margin-bottom: 0px;
+}
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card">
+                       <div class="card-header">
+                        <div class="d-flex align-items-center">
+                          <h4 class="card-title">Parking Pass</h4>
+                          <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/customer-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/customer-passes/">Parking Pass</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for object in parking_lot_pass %}
+                                <div class="col-md-4" style="margin-bottom: 20px;">
+                                    <div class="pass">
+                                       <div class="pass-merchant">
+                                           <div class="pass-title" style="font-size: 20px;">
+                                               <b>PARKING PASS</b>
+                                            <div style="padding-top: 12px;">
+                                                {{object.business_name}}
+                                            </div>
+                                           </div>
+                                       </div>
+                                       <div class="gap" style="margin-top: 5px">
+                                            <div class="pass-body">
+                                                <div class="col-md-12" style="padding-left: 0px;padding-right: 9px;">
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row" >Pass ID</div>
+                                                        </div>
+                                                        <div class="col-md-7" style="color: black">
+                                                            <div class="row data align-items-center">
+                                                                {{object.id}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row">Vehicle No.</div>
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <div class="row data" style="color: black;
+                                                                overflow: hidden;
+                                                                white-space: nowrap;">
+                                                                {{object.vehical_no}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row">Valid Till</div>
+                                                        </div>
+                                                        <div class="col-md-7">
+                                                            <div class="row data" style="color: black">
+                                                                {{object.valid_to|date:'d-m-Y'}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row">Company</div>
+                                                        </div>
+                                                        <div class="col-md-7" style="color: black">
+                                                            <div class="row data" style="overflow: hidden;
+                                                                ">
+                                                                {% if object.company_name %}
+                                                                    {{object.company_name}}
+                                                                {% else %}
+                                                                    &nbsp;
+                                                                {% endif %}
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row">QR Code</div>
+                                                        </div>
+                                                        <div class="col-md-7 d-flex align-items-center justify-content-center">
+                                                            <div class="row data" style="padding: 0px !important;">
+                                                                
+                                                                {% qr_from_text object.qr_code size=9 error_correction="L" %}
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5 d-flex align-items-center justify-content-center">
+                                                            <div class="row" >Cost</div>
+                                                        </div>
+                                                        <div class="col-md-7" style="color: black">
+                                                            <div class="row data align-items-center">
+                                                                {{object.amount}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            
+                            <!-- {% for object in parking_lot_pass %}
+                            <div class="col-md-4" style="margin-top: 20px;; margin-bottom: 30px;">
+                                <form class="form-control" action="//" method="POST" id="bill_form"
+                                    name="bill_form" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="coupon">
+                                        <div class="container" style="padding-bottom: 10px;">
+                                            {% if object.bussiness_logo %}
+                                            <img src="{{object.bussiness_logo.url}}" alt="Avatar"
+                                                style="width:70%;" width="100" height="100">
+                                            {% else %}
+                                            <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                                style="width:70%;">
+                                            {% endif %}
+                                            <div class="container" style="padding-bottom: 0px;">
+                                            </div>
+
+                                            <h2><b>{{object.business_name}}</b></h2>
+
+                                        </div>
+                                        <div class="container" style="padding-bottom: 20px;">
+                                            <p>Vehicle No.: <span class="promo">{{object.vehical_no}}</span>
+                                            </p>
+                                            <p class="expire">Expires:
+                                                {{object.valid_to}}</p>
+                                            <h2><b>Amount {{object.amount}}</b></h2>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            {% endfor %} -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

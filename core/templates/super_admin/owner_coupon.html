@@ -1,0 +1,1816 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Coupon {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    #size {
+        width: 200px;
+        height: 30px;
+
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+</style>
+
+ <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                          <h4 class="card-title">My Coupons</h4>
+                          <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Promotions</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="/owner-coupon/">My Coupons</a>
+                                </li>
+                            </ul>
+                            <!-- <span class="card-title">&nbsp;&nbsp;Total Count &nbsp;{{total_count}}</span> -->
+                            {% if is_superuser == True %}
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-plus"></i>
+                                    Add Coupon
+                                </button>
+                            {% else %}
+                                {% for actions in action_permissions_list %}
+                                    {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "My Coupons"|lower %}
+                                        {% if actions.add_permission == "1" %}
+                                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#myModal">
+                                                <i class="fa fa-plus"></i>
+                                                Add Coupon
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="content">
+                        <div class="page-inner">
+                              <div class="row ">
+                                    <div class=" col-md-4">
+                                        <div class="row">
+                                         <div class="card card-stats card-round" style="margin-left: 80px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa-user"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Count</p>
+                                                   <h4 class="card-title">{{total_count}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div> 
+                                 <div class=" col-md-4">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 40px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fa fa-spinner"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Expired</p>
+                                                    <h4 class="card-title">{{total_expired}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-4">
+                                     <div class="row">
+                                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa-thumbs-up"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Active</p>
+                                                    <h4 class="card-title">{{total_active}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+
+                    <!-- <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-6 col-md-3">
+                          <div class="card card-stats card-round">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Total Count</p>
+                                    <h4 class="card-title">{{total_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div> -->
+
+<!-- <img src="{{logo.o_business_logo.url}}" alt="LOGO"> -->
+                        {% if is_superuser == True %}
+                            <div class="card-body center">
+                                <div class="row ">
+                                    <div class="col-md-12">
+                                      
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+               
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="row">Sr No</th>
+                                            <th>Merchant Name</th>
+                                            <th>Coupon Name</th>
+                                            <!-- <th>Coupon Code</th> -->
+                                            <!-- <th>Green Point</th> -->
+                                            <th>Valid To</th>
+                                            <th>Status</th>
+                                            <!-- <th>Coupon Details</th> -->
+                                            <th>Redeemed</th>
+                                            <th>Total Users</th>
+                                            <th>Total Cost</th>
+                                            <th style="text-align:center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for object in coupon_list %}
+                                        <tr>
+                                             <td>{{forloop.counter}}</td>
+                                            <td>{{object.add_merchant_name_by_owner}}</td>
+                                           
+                                            <td>{{object.coupon_name}}</td>
+                                            <!-- <td>{{object.coupon_code}}</td> -->
+                                            <!-- <td>{{object.green_point}}</td> -->
+                                            <td width="15%">{{object.valid_through|date:'d-m-Y'}}</td>
+                                            <td>{% if object.expiry_status == True %}Expired{% else %}Active{% endif %}</td>
+                                            {% if object.coupon_value == "" %}
+                                            <!-- <td>{{object.coupon_caption}}</td> -->
+                                            {% else %}
+                                            <!-- <td>{{object.coupon_value}}</td> -->
+                                            {% endif %}
+                                            <td>{{object.coupon_redeem}}</td>
+                                            <td>{{object.total_customers}}</td>
+                                            <td>₹ {{object.coupon_amount|floatformat:2}}</td>
+
+
+                                            <td>
+
+                                            <div class="form-button-action">
+                                                   
+                                            <button type="button" class="btn btn-link viewBtn"
+                                                        data-toggle="tooltip" data-target="#exampleModal" id="view-modal-div"
+                                                        data-original-title="View Coupon" data-url="{{coup.id}}"
+                                                        data-id="{{object.id}}" 
+                                                        data-cname="{{object.coupon_name}}" 
+                                                        data-green_point="{{object.green_point}}" data-coupon_caption="{{object.coupon_caption}}" data-coupon_value="{{object.coupon_value}}"
+                                                        data-ccode="{{object.coupon_code}}" 
+                                                        data-vthrough="{{object.valid_through}}"
+                                                        data-color="{{object.coupon_background_color}}"
+                                                        data-logo_url="{{object.coupon_logo.url}}"
+                                                        data-amount_in ="{{object.amount_in}}"
+                                                        data-merchant_business_name = "{{object.merchant_business_name}}"
+                                                        data-owner_name = "{{object.owner_name}}"
+                                                        >
+                                                        <i class="fas fa-eye"></i>
+                                            </button>
+                                            <!-- <button type="button" class="btn btn-link btn-primary btn-lg editBtn" data-toggle="tooltip" data-target="#myEditModal" title="Edit Coupon"
+                                                                
+                                                                data-original-title="Edit Coupon" 
+                                                                data-id="{{object.id}}"
+                                                                data-coupon_name="{{object.coupon_name}}"
+                                                                data-coupon_code="{{object.coupon_code}}"
+                                                                data-green_point="{{object.green_point}}" 
+                                                                data-coupon_caption="{{object.coupon_caption}}" data-coupon_value="{{object.coupon_value}}"
+                                                                data-valid_to="{{object.valid_through|date:'Y-m-d'}}"
+                                                                data-valid_from="{{object.valid_from|date:'Y-m-d'}}"
+                                                                data-valid_user_for = "{{object.coupon_valid_for_user}}"
+                                                                >
+                                                                <i class="fa fa-edit"></i>
+                                            </button> -->
+
+                                            <button type="button" data-toggle="tooltip" data-target="" 
+                                                    title="Delete Coupon"
+                                                    class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                    data-original-title="Delete Coupon" data-url="{{object.id}}"
+                                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                                </button>
+                                            </div>
+
+                                            </td>
+
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            {% for actions in action_permissions_list %}
+                                {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "My Coupons"|lower %}
+                                    {% if actions.view_permission == "1" %}
+                                        <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                        <div class="card-body center">
+                                            <div class="row ">
+                                                <div class="col-md-12">
+                                                  
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                           
+                                        <div class="table-responsive">
+                                            <table id="add-row" class="display table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="row">Sr No</th>
+                                                        <th>Merchant Name</th>
+                                                        <th>Coupon Name</th>
+                                                        <!-- <th>Coupon Code</th> -->
+                                                        <!-- <th>Green Point</th> -->
+                                                        <th>Valid To</th>
+                                                        <th>Status</th>
+                                                        <!-- <th>Coupon Details</th> -->
+                                                        <th>Redeemed</th>
+                                                        <th>Total Users</th>
+                                                        <th>Total Cost</th>
+                                                        <th style="text-align:center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>
+                                                    {% for object in coupon_list %}
+                                                    <tr>
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{object.add_merchant_name_by_owner}}</td>
+                                                        
+                                                        <td>{{object.coupon_name}}</td>
+                                                        <!-- <td>{{object.coupon_code}}</td> -->
+                                                        <!-- <td>{{object.green_point}}</td> -->
+                                                        <td width="15%">{{object.valid_through|date:'d-m-Y'}}</td>
+                                                        <td>{% if object.expiry_status == True %}Expired{% else %}Active{% endif %}</td>
+                                                        {% if object.coupon_value == "" %}
+                                                        <!-- <td>{{object.coupon_caption}}</td> -->
+                                                        {% else %}
+                                                        <!-- <td>{{object.coupon_value}}</td> -->
+                                                        {% endif %}
+                                                        <td>{{object.coupon_redeem}}</td>
+                                                        <td>{{object.total_customers}}</td>
+                                                        <td>{{object.coupon_amount}}</td>
+
+
+                                                        <td>
+
+                                                        <div class="form-button-action">
+                                                               
+                                                        <button type="button" class="btn btn-link viewBtn"
+                                                                    data-toggle="tooltip" data-target="#exampleModal" id="view-modal-div"
+                                                                    data-original-title="View Coupon" data-url="{{coup.id}}"
+                                                                    data-id="{{object.id}}" 
+                                                                    data-cname="{{object.coupon_name}}" 
+                                                                    data-green_point="{{object.green_point}}" data-coupon_caption="{{object.coupon_caption}}" data-coupon_value="{{object.coupon_value}}"
+                                                                    data-ccode="{{object.coupon_code}}" 
+                                                                    data-vthrough="{{object.valid_through}}"
+                                                                    data-color="{{object.coupon_background_color}}"
+                                                                    data-logo_url="{{object.coupon_logo.url}}"
+                                                                    data-amount_in ="{{object.amount_in}}"
+                                                                    data-merchant_business_name = "{{object.merchant_business_name}}"
+                                                                    data-owner_name = "{{object.owner_name}}"
+                                                                    >
+                                                                    <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <!-- <button type="button" class="btn btn-link btn-primary btn-lg editBtn" data-toggle="tooltip" data-target="#myEditModal" title="Edit Coupon"
+                                                                            
+                                                                            data-original-title="Edit Coupon" 
+                                                                            data-id="{{object.id}}"
+                                                                            data-coupon_name="{{object.coupon_name}}"
+                                                                            data-coupon_code="{{object.coupon_code}}"
+                                                                            data-green_point="{{object.green_point}}" 
+                                                                            data-coupon_caption="{{object.coupon_caption}}" data-coupon_value="{{object.coupon_value}}"
+                                                                            data-valid_to="{{object.valid_through|date:'Y-m-d'}}"
+                                                                            data-valid_from="{{object.valid_from|date:'Y-m-d'}}"
+                                                                            data-valid_user_for = "{{object.coupon_valid_for_user}}"
+                                                                            >
+                                                                            <i class="fa fa-edit"></i>
+                                                        </button> -->
+                                                        {% if actions.view_permission == "1" %}
+                                                        <button type="button" data-toggle="tooltip" data-target="" 
+                                                            title="Delete Coupon"
+                                                            class="btn btn-link btn-danger deleteBtn" id="deactivate-modal-div"
+                                                            data-original-title="Delete Coupon" data-url="{{object.id}}"
+                                                            data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                                        </button>
+                                                        {% endif %}
+                                                        </div>
+
+                                                        </td>
+
+
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                            <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="exampleModalLabel"><span id="c_cname"></span></h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-2">
+                        <div class="" >
+                          <!-- <div class="ribbon-wrapper">
+                            <div class="ribbon">COUPON</div>
+                          </div> -->
+                          <div style=" overflow: hidden;  box-shadow: 12px 12px 12px 12px  rgb(221, 218, 218);  border-radius: 18px; padding-bottom: 24px; width: 200px; height: 200px; background:url('/media/TROPHY4.jpg');
+                                background-repeat: no-repeat;
+                                background-size: 100% 100%;">
+                                <div clsss="title" style="text-align: left; font-size: 13px;  padding-left: 20px; padding-top: 20px;">
+                                <b id="coupon_body_text_id"></b> On
+                            </div>
+                            <div class="coupon__title " style="text-align: left; padding-left: 20px; padding-top: 3%;">
+                              <h4><b id="view_owner_business_name"></b></h4>
+                            </div>
+                            
+                            <!-- <div clsss="title">
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <button class="btn btn-link" id="Coupan_viewBtn">View</button>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="col-md-2" style="padding-top: 40px;" id="coupon_logo">
+                                <img src="" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;" id="coupan_logo_modal_id">
+                            </div>
+                            
+                          </div>
+
+                        </div> 
+                    </div>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4" style="padding-left: 360px; padding-top: 40px;">
+                <button type="" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+</div>
+
+<!-- ////////////////////////////////////////////////////// -->
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                         <div class="">
+                            <h1 style="text-align: right; color: #00569D!important; margin-bottom: 0%; padding-left: 370px; padding-top: 90px;"><i class="fa fa-times-circle "
+                                    aria-hidden="true"></i>
+                                <button type="button" class="close" data-dismiss="modal"></button>
+                            </h1>
+                        </div>
+                        <div class="product" style="overflow: hidden; border-radius: 12px; margin-top:0%" >
+                          
+                          <div style=" overflow: hidden;  box-shadow: 12px 12px rgb(221, 218, 218);  
+                          border-radius: 12px; padding-bottom: 24px; width: 200px; height: 200px; background:url('/media/TROPHY4.jpg');
+                                                background-repeat: no-repeat;
+                                                background-size: 100% 100%; ">
+                            
+                            <div class="coupon__title text-center">
+                              <h4><b style="text-transform: uppercase;" id="business_name"></b></h4>
+                            </div>
+                            <div clsss="title" style="text-align: center; font-size: 25px;  padding-left: 0px;">
+                                <b id="coupon_body_text_id"></b>
+                            </div>
+                            
+                            <div class="col-md-2" id="coupon_logo">
+                                <img src="{{logo.o_business_logo.url}}" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;" >                                                  
+                            </div>
+                          </div>
+                        </div> 
+                    </div>
+            </div>
+        </div>
+</div>
+</div>
+ -->
+
+
+<!-- Add Cash Memo Modal -->
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog modal-lg" style="margin-left: 15pc;">
+      <!-- Modal content-->
+        <div class="col-md-12" >
+            <div class="row" style="padding: 20px; width: 60pc;">
+                <div class="modal-content" style="width: 60pc;">
+                    <div class="modal-header">
+                        <h2 class="modal-title w-100 text-center">Add Coupon</h2>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-control" action="/owner-coupon/" method="POST" id="addCoupon_form" name="addCoupon_form" autocomplete="off" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="hidden" name="coupon_id">
+                                        <label>Coupon Name<small style="color: red;"> *</small></label>
+                                        <div class="input-group mb-6">
+
+                                            <input type="text" class="form-control mobile" name="coupon_name"
+                                                id="coupon_name" placeholder="Coupon Name" value="" maxlength="20" required />
+
+                                        </div>
+                                        <div id="couponnameError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Coupon Code<small style="color: red;"> *</small></label>
+                                        <div class="input-group mb-6">
+                                            <input type="text" class="form-control mobile" name="coupon_code"
+                                                id="coupon_code" pattern="[a-zA-Z0-9]" placeholder="Coupon Code" value="" maxlength="15" required />
+                                        </div>
+                                        <div id="couponcodeError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Green Points<small style="color: red;"> *</small></label>
+                                        <div class="input-group mb-6">
+                                            <input type="number" maxlength="10"
+                                                class="form-control mobile checkmob" name="green_point"
+                                                id="green_point" placeholder="Green Points" value="1">
+                                        </div>
+                                        <div id="greenpointError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Valid From<small style="color: red;"> *</small></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control mobile" name="valid_from" min=
+                                    "{% now 'Y-m-d' %}"
+                                                id="valid_from" placeholder="Valid From" value="" required  />
+                                        </div>
+                                        <div id="validfromError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Valid To <span style="color: red;"> *</span></label>
+                                        <div class="input-group mb-6">
+                                            <input type="date" class="form-control mobile" name="valid_through" min=
+                                    "{% now 'Y-m-d' %}"
+                                                id="valid_through" placeholder="Valid Through" onblur="ValidateEndDate()">
+                                        </div>
+                                        <div id="validtoError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <div class="form-group">
+                                        <input name="coupon_type" class="display" id="coupon_by_caption_id" value="coupon_caption"
+                                            type="radio" checked="" autocomplete="off">
+                                        <label>Coupon By Caption </label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input name="coupon_type" class="display" value="coupon_value"
+                                            type="radio" autocomplete="off" id="coupon_by_value_id" maxlength="20">
+                                        <label>Coupon By Value
+                                        </label>
+                                    </div>
+                                    <div id="coupontypeError"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control mobile check-coupon "
+                                                name="coupon_caption_name" id="coupon_caption_id"
+                                                placeholder="Coupon Caption" required maxlength="50" />
+                                        </div>
+                                        <div id="coupon_caption_Error"></div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div id="input-type" class="row">
+                                            <div class="col-sm-6">
+                                                <label class="radio-inline">
+                                                    <input name="amount_in" class="select-mode check-coupon "
+                                                        id="hide_percent" value="percentage" type="radio"
+                                                        autocomplete="off">
+                                                   Discount in Percentage </label>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="radio-inline">
+                                                    <input name="amount_in" class="select-mode" value="fix"
+                                                        id="hide_val" type="radio" autocomplete="off">
+                                                   Discount in Fix Amount </label>
+                                            </div>
+                                        </div>
+                                        <div id="amountinError"></div>
+                                    </div>
+                                </div>        
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div id="input-type" class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input id="percentage_id" name="coupon_value_percent"
+                                                        type="number" class="form-control percentage"
+                                                        placeholder="Percentage">
+                                                    <div id="coupon_value_percent_error"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input name="coupon_value_fixamount" id="value_id"
+                                                        type="number" class="form-control value"
+                                                        placeholder="Fix Amount">
+                                                    <div id="coupon_value_fixamount_error"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                  
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Coupon Valid For Users<small style="color: red;"> *</small></label>
+                                        <div class="input-group mb-6">
+                                            <input type="number" class="form-control mobile" name="coupon_valid_for_user"
+                                                id="coupon_valid_for_user" placeholder="Coupon Valid For Users" value="" required />
+                                        </div>
+                                        <div id="ValidUserError"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Merchant Name<small style="color: red;"> *</small></label>
+                                        <input type="text" class="form-control" name="add_merchant_name" id="add_merchant_name" required="">
+                                        <small id="add_merchant_name_error"></small>                    
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Coupon Logo<small style="color: red;"> *</small></label>
+                                        <input type="file" class="form-control" name="merchant_coupon_logo" id="merchant_coupon_logo">
+                                        <small id="merchant_coupon_logo_error"></small>  
+                                        <p class="text-center center" style="color:#63b90b;"><b>Image Should be less than 500kb</b> <br>
+                                        <b>Image Dimention 1080 X 320</b></p>                  
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Customer State</label><small style="color: red;"> *</small></label>
+                                            <select class="js-example-basic-multiple" name="customer_state" id="customer_state" multiple="multiple" style="width: 300px;">
+                                            {% for cust_state in cust_data %}
+                                                {% if cust_state.c_area != "" %}
+                                                <option value="{{ cust_state.c_state }}">{{ cust_state.c_state }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </select>
+                                            <input type="hidden" name="customer_state_value" id="customer_state_value" value="">
+                                            <small id="customer_state_error"></small>  
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Customer City</label><!-- <small style="color: red;"> *</small> --></label>
+                                        <select class="js-example-basic-multiple" name="customer_city" id="customer_city" multiple="multiple" style="width: 300px;">
+                                        </select>
+                                        <input type="hidden" name="customer_city_value" id="customer_city_value" value="">
+                                        <input type="hidden" name="get_filter_by_customer_state" id="get_filter_by_customer_state" value="">
+                                        <small id="customer_city_error"></small>  
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Customer Area</label><!-- <small style="color: red;"> *</small> --></label>
+                                        <select class="js-example-basic-multiple" name="customer_area" id="customer_area" multiple="multiple" style="width: 300px;">
+                                        </select>
+                                        <input type="hidden" name="customer_area_value" id="customer_area_value" value="">
+                                        <input type="hidden" name="get_filter_by_customer_city" id="get_filter_by_customer_city" value="">
+                                        <small id="customer_area_error"></small>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Total Users</label>
+                                        <input type="text" class="form-control" name="customer_count" id="customer_count" value="" readonly="">  
+                                        <input type="hidden" name="get_filter_by_customer_area" id="get_filter_by_customer_area" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Total Cost</label>
+                                        <input type="text" class="form-control" name="customer_total_cost" id="customer_total_cost" value="" readonly="">  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="margin-top:30px">
+                                 
+                                <div class="col-md-12">
+                                    <div class="text-center mt-3 mb-3">
+                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            
+            var opts1 = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts1.push(opt.value);
+                }
+            }
+
+
+            var opts2 = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts2.push(opt.value);
+                }
+            }
+
+            var opts3 = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts3.push(opt.value);
+                }
+            }
+
+            $("#customer_area").val(opts3)
+            $("#get_filter_by_customer_state").val(opts1)
+            $("#get_filter_by_customer_city").val(opts2)
+            $("#get_filter_by_customer_area").val(opts3)
+
+            // alert(opts1)
+            // alert(opts2)
+            // alert(opts3)
+            // $("#customer_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/abcd/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-users-in-coupon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            
+            var opts1 = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts1.push(opt.value);
+                }
+            }
+
+
+            var opts2 = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts2.push(opt.value);
+                }
+            }
+
+            var opts3 = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts3.push(opt.value);
+                }
+            }
+
+            $("#customer_area").val(opts3)
+            $("#get_filter_by_customer_state").val(opts1)
+            $("#get_filter_by_customer_city").val(opts2)
+            $("#get_filter_by_customer_area").val(opts3)
+
+
+            $.ajax({
+                type: "POST",
+                url: "/abcd/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-users-in-coupon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#get_filter_by_customer_state').val(),'get_filter_by_customer_city': $('#get_filter_by_customer_city').val(),'get_filter_by_customer_area': $('#get_filter_by_customer_area').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+  $('input[name=valid_through]').change(function() {
+          var to_date = $('#valid_through').val();
+          document.getElementById('valid_from').setAttribute("max", to_date);
+  })
+
+  $('input[name=valid_from]').change(function() {
+    var from_date = $('#valid_from').val();
+      document.getElementById('valid_through').setAttribute("min", from_date);
+  })
+})
+</script>
+<script>
+$(document).ready(function () {
+
+
+        $("#customer_state").select2({
+            placeholder:" Select State",
+            closeOnSelect: false,
+            width: '90%'
+        })
+        
+    });
+    $(document).ready(function () {
+    $("#customer_city").select2({
+            placeholder:" Select City",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+    $(document).ready(function () {
+    $("#customer_area").select2({
+            placeholder:" Select Area",
+            closeOnSelect: false,
+            width: '90%'
+        })
+    });
+     $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts);
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_area").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_area.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_area.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_area_value").val(opts);
+
+        })
+    })
+
+    $(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            var opts = [],opt;
+            var len = customer_state.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_state.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_state_value").val(opts)
+
+            $("#customer_city").empty();
+            $("#customer_area").empty();
+
+
+            $.ajax({
+                type: "POST",
+                url: "/get-city-by-state-ids-in-owner-coupon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_state_value': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    $("#customer_city").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+    $(document).ready(function () {
+
+        $("#customer_city").on('change', function()
+        {
+                
+            var opts = [],opt;
+            var len = customer_city.options.length;
+            for (var i = 0; i < len; i++) {
+                opt = customer_city.options[i];
+                if (opt.selected) {
+                    opts.push(opt.value);
+                }
+            }
+
+            $("#customer_city_value").val(opts)
+
+            $("#customer_area").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/get-area-by-city-names-in-owner-coupon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'customer_city_value': $('#customer_city_value').val()
+                },
+                success: function(result){
+                    $("#customer_area").empty();
+                    $.each(result.data, function (key, value) {
+                        $('#customer_area').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+
+
+   
+</script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+
+
+
+
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+
+</script>
+{% endfor %}
+{% endif %}
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(function () {
+        $('.select-mode').click(function () {
+            if ($(this).val() == 'percentage') {
+
+                $('.percentage').prop({ readonly: false, });
+                $('.value').prop({ readonly: true });
+                var empty2 = ""
+                $("#value_id").val(empty2);
+            }
+            else if ($(this).val() == 'fix') {
+
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: false });
+                var empty1 = ""
+                $("#percentage_id").val(empty1);
+            }
+            else if ($(this).val() == '') {
+                $('.percentage').prop({ readonly: true, });
+                $('.value').prop({ readonly: true });
+            }
+        });
+    });
+
+    $(document).ready(function(){
+  
+    $('.percentage').prop({ readonly: true, });
+    $('.value').prop({ readonly: true });
+    
+});
+
+    $(function () {
+        $('.display').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+                $('#percentage_id').hide()
+                $('#value_id').hide()
+                $('#hide_percent').hide()
+                $('#hide_val').hide()
+                $('#coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#coupon_caption_id').hide()
+                $('#percentage_id').show()
+                $('#value_id').show()
+                $('#hide_percent').show()
+                $('#hide_val').show()
+            }
+        });
+    });
+
+    $(function () {
+        $('.editdisplay').click(function () {
+            if ($(this).val() == 'coupon_caption') {
+
+                $('#edit_percentage_id').hide()
+                $('#edit_value_id').hide()
+                $('#edit_hide_percent').hide()
+                $('#edit_hide_val').hide()
+                $('#edit_coupon_caption_id').show()
+            }
+            else if ($(this).val() == 'coupon_value') {
+                $('#edit_coupon_caption_id').hide()
+                $('#edit_percentage_id').show()
+                $('#edit_value_id').show()
+                $('#edit_hide_percent').show()
+                $('#edit_hide_val').show()
+            }
+        });
+    });
+
+
+
+
+
+    //for view model 
+    $(".editBtn").on("click", function () {
+        var coupon_id = $(this).data("id");
+        var couponname = $(this).data("coupon_name");
+        var couponcode = $(this).data('coupon_code');
+        var coupon_validto = $(this).data('valid_to');
+        var coupon_greenoint = $(this).data('green_point');
+        var couponcaption = $(this).data('coupon_caption')
+        var couponvalue = $(this).data('coupon_value')
+        var coupon_valid_user = $(this).data('valid_user_for')
+        var coupon_valid_from = $(this).data('valid_from')
+
+        
+
+        $('.edit_coupon_caption_val').val("");
+        $('.edit_percent_val').val("");
+        $('.edit_fix_val').val("");
+        $('#caption_checked').prop('checked', false);
+        $('.percent_val_checked').prop('checked', false);
+        $('.fix_val_checked').prop('checked', false);
+
+        $('#coup_id').val( coupon_id);
+        $('#edit_coupon_name').val( couponname);
+        $('#edit_coupon_code').val( couponcode);
+        $('#edit_valid_to').val(coupon_validto);
+        $('#edit_green_point').val( coupon_greenoint);
+        if (couponcaption != "") {
+            $('#caption_checked').prop('checked', true);
+            $('.edit_coupon_caption_val').val(couponcaption);
+        };
+        if (couponvalue != "") {
+            var lastChar = couponvalue.toString().slice(-1);
+            if (lastChar == "%"){
+                $('#fix_val_checked').prop('checked', true);
+                $('.percent_val_checked').prop('checked', true);
+                $('.edit_percent_val').empty().val(couponvalue);
+                $('.percentage').prop({ readonly: false, });
+    
+            }
+            else {
+                $('#fix_val_checked').prop('checked', true);
+                $('.fix_val_checked').prop('checked', true);
+                $('.edit_fix_val').empty().val(couponvalue);
+                $('.value').prop({ readonly: false });
+            }
+            
+        };
+        $('#edit_valid_from').val( coupon_valid_from);
+        $('#edit_coupon_valid_user').val( coupon_valid_user);
+        
+        $("#myEditModal").modal();
+
+    });
+
+
+    //for table validation
+
+ var viewmodaldiv = $("#view-modal-div");
+    $(".viewBtn").on("click", function () {
+        var cname = $(this).data("cname");
+        var ccode = $(this).data('ccode');
+        var vthrough = $(this).data('vthrough');
+        var greenoint = $(this).data('green_point');
+        var couponcaption = $(this).data('coupon_caption')
+        var couponvalue = $(this).data('coupon_value')
+
+        var bg_color = $(this).data('color')
+        var logo_url = $(this).data('logo_url')
+        var amount_in = $(this).data('amount_in');
+
+        var merchant_business_name = $(this).data('merchant_business_name');
+
+        var business_name1 = $(this).data('owner_name');
+
+        // alert(business_name1)
+
+        $('#view_owner_business_name').empty().append( business_name1);
+
+        $('#coupan_logo_modal_id').attr('src', logo_url);
+
+        $("#coupon_body_text_id").empty();
+
+        if(couponvalue != ""){
+            if(amount_in == "percentage")
+            {
+                $("#coupon_body_text_id").append(couponvalue + " Off");
+            }
+            else{
+                $("#coupon_body_text_id").append("₹ " + couponvalue + " Off");
+            }
+        }else{
+            $("#coupon_body_text_id").append(couponcaption);
+        }
+
+
+        $("#business_name").empty();
+
+        if(merchant_business_name.length >= 18)
+        {
+            $("#business_name").append('<h4 class="fw-bold mb-1" style="padding-top:2%">' + merchant_business_name.substring(0, 18) + "..." + '</h4>');
+        }else{
+            $("#business_name").append('<h4 class="fw-bold mb-1" style="padding-top:2%">' + merchant_business_name + '</h4>');
+        }
+        
+
+        // if(couponvalue != ""){
+        //     $("#coupon_body_text_id").append("<b style='font-weight: 500 !important;'>₹ "+ couponvalue + " Off</b>");
+        // }else{
+        //     $("#coupon_body_text_id").append("<b style='font-weight: 500 !important;'>"+ couponcaption +"</b>");
+        // }
+
+        $('#c_cname').empty().append( cname);
+        $('#c_code').empty().append( ccode);
+        $('#c_vthrough').empty().append(vthrough);
+        $('#c_green_point').empty().append( greenoint +" Green Point" );
+        $("#background_color1").css("background-color", bg_color);
+        $("#background_color2").css("background-color", bg_color);
+        if (couponcaption == couponcaption) {
+            $('#c_coupon_caption').empty().append(couponcaption);
+        };
+        if (couponvalue == couponvalue) {
+            $('#c_coupon_caption').empty().append(couponvalue);
+        };
+
+        $("#exampleModal").modal();
+
+    });
+
+    $(function () {
+        $('.deleteBtn').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-coupon-by-id/" + id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Coupon has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Coupon has been deleted',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                            })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+
+    function alphaOnly(event) {
+        var key = event.keyCode;
+        return ((key >= 65 && key <= 90) || key == 8);
+    };
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+     
+    });
+
+        $.validator.addMethod("validDate", function (value, element) {
+        var currDate = new Date();
+        var dd = currDate.getDate();
+        var mm = currDate.getMonth()+1; 
+        var yyyy = currDate.getFullYear();
+        
+        var todayDate = yyyy+'-'+dd+'-'+mm;
+
+        
+        return Date.parse(todayDate) < Date.parse(value) || value == "";
+    }, "Please enter valid Date");
+
+
+    function ValidateEndDate() {
+       var startDate = document.getElementById("valid_from").value;
+       var endDate = document.getElementById("valid_through").value;
+       if (startDate != '' && endDate !='') {
+           if (Date.parse(startDate) > Date.parse(endDate)) {
+               // $("txttodate").val('');
+               Swal.fire({
+                
+                text: "Valid from date should not be greater than vali to date!",
+                icon: 'warning',
+                showCancelButton: false,
+                timer:2000,
+                
+            })
+           }
+       }
+       return false;
+   }
+        
+
+   jQuery.validator.addMethod("lettersonly", function(value, element) 
+{
+return this.optional(element) || /^[a-z ]+$/i.test(value);
+}, "Letters and spaces only please");
+
+jQuery.validator.addMethod("alphanumeric", function(value, element) {
+    return this.optional(element) || /^\w+$/i.test(value);
+}, "Letters, numbers, and . only please");
+
+$('#merchant_coupon_logo').change(function() {
+    $('#merchant_coupon_logo').removeData('imageWidth');
+    $('#merchant_coupon_logo').removeData('imageHeight');
+    var file = this.files[0];
+    var tmpImg = new Image();
+    tmpImg.src=window.URL.createObjectURL( file ); 
+    tmpImg.onload = function() {
+        width = tmpImg.naturalWidth,
+        height = tmpImg.naturalHeight;
+        $('#merchant_coupon_logo').data('imageWidth', width);
+        $('#merchant_coupon_logo').data('imageHeight', height);
+    }
+});
+$.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+  }, 'File size must be less than 500 Kb');
+
+  $.validator.addMethod('dimention', function(value, element, param) {
+    if(element.files.length == 0){
+        return true; 
+    }
+    var width = $(element).data('imageWidth');
+    var height = $(element).data('imageHeight');
+    if(width == param[0] && height == param[1]){
+        return true;
+    }else{
+        return false;
+    }
+    },'Please upload an image with 1080 x 320 pixels dimension');
+
+    $("#addCoupon_form").validate({
+        rules: {
+            coupon_name: {
+                required: true,
+                lettersonly: true,
+            },
+            add_merchant_name: {
+                required: true,
+                lettersonly: true,
+                maxlength: 20,
+            },
+            valid_from: {
+                required: true,
+            },
+            valid_through: {
+                required: true,
+            },
+            coupon_value: {
+                required: true
+
+            },
+            customer_state: {
+                required: true
+            },
+            coupon_value: {
+                required: true
+            },
+
+            green_point: {
+                
+                required: true,
+                min: 1
+            },
+            amount_in: {
+                required: function (element) {
+                  return $("#coupon_by_value_id").is(":checked");
+                }
+            },
+            coupon_caption_name: {
+                maxlength: 50,
+                lettersonly: true,
+                required: function (element) {
+                  return $("#coupon_by_caption_id").is(":checked");
+                }
+            },
+            merchant_coupon_logo: {
+                required: true,
+                dimention:[1080,320]
+            },
+            coupon_type: {
+                required: true,
+            },
+            coupon_valid_for_user: {
+                required: true,
+                min: 1
+            },
+            coupon_value_percent: {
+                min: 1,
+                range: [1, 100]
+            },
+            coupon_value_fixamount: {
+                min: 1,
+                maxlength: 5,
+            },
+        },
+
+        messages: {
+            add_merchant_name: {
+                required: "Merchant  Name is Required",
+                maxlength: "maxLength is 20 characters"
+            },
+            coupon_name: {
+                required: "Coupon Name is Required",
+            },
+            valid_from: {
+                required: "From Date is Required",
+            },
+            valid_through: {
+                required: "To Date is Required",
+            },
+            coupon_code: {
+                required: "Coupon Code is Required",
+            },
+            coupon_value: {
+                required: "Coupon Value is Required",
+            },
+            green_point: {
+                required: "Green point is Required",
+                min: "Value must be greater than 0",
+            },
+            amount_in: {
+                required: "Please Select Percentage or Fix Ammount"
+            },
+            merchant_coupon_logo: {
+                required: "Coupon logo is Required"
+            },
+            coupon_type: {
+                required: "Please select Coupon Caption or coupon Value",
+            },
+            coupon_caption_name: {
+                required: "Coupon Caption is Required",
+
+            },
+            coupon_valid_for_user: {
+                min: "Value must be greater than 0",
+            },
+            coupon_value_percent: {
+                min: "Value must be greater than 0",
+                range: "Please select proper percentage"
+            },
+            coupon_value_fixamount: {
+                min: "Value must be greater than 0",
+                maxlength: "Maximum limit Amount 50000",
+            },
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "valid_from")
+                $("#validfromError").html(error);
+            if (element.attr("name") == "coupon_type")
+                $("#coupontypeError").html(error);
+            if (element.attr("name") == "coupon_name")
+                $("#couponnameError").html(error);
+            if (element.attr("name") == "valid_through")
+                $("#validtoError").html(error);
+            if (element.attr("name") == "coupon_code")
+                $("#couponcodeError").html(error);
+            if (element.attr("name") == "coupon_value")
+                $("#couponvalueError").html(error);
+            if (element.attr("name") == "green_point")
+                $("#greenpointError").html(error);
+            if (element.attr("name") == "merchant_coupon_logo")
+                $("#merchant_coupon_logo_error").html(error);
+            if (element.attr("name") == "amount_in")
+                $("#amountinError").html(error);
+            if (element.attr("name") == "coupon_caption_name")
+                $("#coupon_caption_Error").html(error);
+            
+            if (element.attr("name") == "customer_state")
+                $("#customer_state_error").html(error);
+            if (element.attr("name") == "coupon_valid_for_user")
+                $("#ValidUserError").html(error);
+            if (element.attr("name") == "add_merchant_name")
+                $("#add_merchant_name_error").html(error);
+             if (element.attr("name") == "coupon_value_percent")
+                $("#coupon_value_percent_error").html(error);
+            if (element.attr("name") == "coupon_value_fixamount")
+                $("#coupon_value_fixamount_error").html(error);
+
+        }
+
+    });
+jQuery.validator.addMethod("greaterThanZero", function(value, element) {
+    return this.optional(element) || (parseFloat(value) > 0);
+}, "* Amount must be greater than zero");
+
+
+    
+
+
+    
+$(document).ready(function () {
+
+        $("#customer_state").on('change', function()
+        {
+            
+
+
+            $.ajax({
+                type: "POST",
+                url: "/abcd/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_count').val(result.data);
+                
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/total-cost-by-users-in-coupon/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'get_filter_by_customer_state': $('#customer_state_value').val()
+                },
+                success: function(result){
+                    console.log(result.data)
+                    $('#customer_total_cost').val(result.data);
+                
+                }
+            });
+
+        })
+    })
+
+
+</script>
+<style>
+    /*.error {
+            color: red;
+            position:top;
+        }*/
+
+    /*.c1 {
+            border: 2px red ridge;
+        }*/
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+<script type="text/javascript">
+    document.getElementById("Coupan_viewBtn").addEventListener("click", function(event){
+      event.preventDefault()
+    });
+</script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

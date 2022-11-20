@@ -1,0 +1,319 @@
+{% extends "layouts/partner-base.html" %} {% block title %} Subscription Plans {% endblock %}
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+
+    }
+    .scroll {
+    max-height: 550px;
+    overflow-y: auto;
+}
+.table th, .table td{
+    padding: 5px !important;
+}
+
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Green Bill Subscription Plan</h4>
+                             <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-comision/">Subscription Plans</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-comision/">Green Bill Subscription Plan</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="table-responsive">
+                                    <!-- <div class="row align-items-center justify-content-center">
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-user"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Merchants</p>
+                                                    <h4 class="card-title">{{merchants_count}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Total Commission</p>
+                                                    <h4 class="card-title">{{overall_commision|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-sm-4 col-md-3">
+                                          <div class="card card-stats card-round">
+                                            <div class="card-body">
+                                              <div class="row align-items-center">
+                                                <div class="col-icon">
+                                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                                    <i class="fas fa fas fa fa-credit-card"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="col col-stats ml-3 ml-sm-0">
+                                                  <div class="numbers">
+                                                    <p class="card-category">Monthly Commission</p>
+                                                    <h4 class="card-title">{{partner_month_comission|floatformat:2}}</h4>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div> -->
+                                    <table id="merchant-info-table" class="display table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th id="test_2" colspan="2"></th> -->
+                        
+                                            </tr>
+                                            <tr align="center">
+                                                <th>Sr. No.</th>
+                                                <th>Subscription Name</th>
+                                                <th>Cost per User</th>
+                                                <th>Recharge Amount</th>
+                                                <th>Subscription Plan Cost</th>
+                                                <th>User Type</th>
+                                            </tr>
+                                        </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for subscription_plan in sms_subscription_plans %}
+                                    {% if subscription_plan.user_type != "merchant" %}
+                                            <tr align="center"> 
+                                                <td width="9%">{{ forloop.counter }}</td>
+                                                <td>{{ subscription_plan.subscription_name }}</td>
+                                                <td>₹ {{ subscription_plan.cost_for_users|floatformat:2 }}</td>
+                                                <td width="15%">₹ {{ subscription_plan.recharge_amount|floatformat:2 }}</td>
+                                                <td>₹ {{ subscription_plan.subscription_plan_cost|floatformat:2 }}</td>
+                                                <td> {% if subscription_plan.user_type == "category" %}
+                                                            Category
+                                                        {% elif subscription_plan.user_type == "all" %}
+                                                            All
+                                                        {% endif %}</td>
+                                            </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Merchant Modal End-->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    // Add Row
+    // $("#add-row").DataTable({
+    //   pageLength: 10,
+    // });
+
+    $('#merchant-info-table').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+      initComplete: function () {
+            this.api().columns([2,]).every(function () {
+                var column = this;
+                console.log(column[0][0])
+                console.log("#test_" + column[0][0])
+
+                var select = $('<select multiple="multiple" id="column_id_' + column[0][0] + '"><option value=""></option></select>')
+                    // var id = "#test_" + column[0][0];
+
+                    .appendTo($("#test_" + column[0][0]).empty())
+                    // .appendTo( $(column.header()).empty() )
+                    .on('change', function () {
+
+                        // var val = $.fn.dataTable.util.escapeRegex(
+                        //     $(this).val()
+                        // );
+
+                        var val = $(':selected', select).map(function (index, element) {
+                            return $.fn.dataTable.util.escapeRegex($(this).val());
+                        }).toArray().join('|');
+
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+
+                column.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+            });
+
+
+          }
+    });
+
+    $("#column_id_2").select2({
+        placeholder: " Select Category",
+        closeOnSelect: true,
+        width: '100%',
+        // allowClear: true
+    })
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+  });
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,779 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} User logs {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    
+    .nav-pills a {
+     display: inline;
+     color: black;
+     text-align: center;
+     padding: 14px;
+     float: right;
+     margin-left: 100%;
+     text-decoration: none;
+     font-size: 15px;
+     border-radius: 5px;
+}
+
+.nav-pills a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-pills a.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+   
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">User Logs</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>My Team</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/user-logs/">User logs</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+
+                                {% if is_superuser == True %}
+                                    <ul class="nav justify-content-end nav-pills pull-right" id="pills-tab" role="tablist" >
+                                        <li class="nav-list">
+                                            <a class="nav-link active" id="owner-tab" data-toggle="pill" href="#owner" role="tab" aria-controls="owner" aria-selected="true">Owner</a>
+                                        </li>
+                                        <li class="nav-list">
+                                            <a class="nav-link" id="merchant-tab" data-toggle="pill" href="#merchant" role="tab" aria-controls="merchant" aria-selected="false">Merchant</a>
+                                        </li>
+                                        <li class="nav-list">
+                                            <a class="nav-link" id="customer-tab" data-toggle="pill" href="#customer" role="tab" aria-controls="customer" aria-selected="false">Customer</a>
+                                        </li>
+                                        <li class="nav-list">
+                                            <a class="nav-link" id="partner-tab" data-toggle="pill" href="#partner" role="tab" aria-controls="partner" aria-selected="false">Partner</a>
+                                        </li>
+                                    </ul>
+                                {% else %}
+                                    {% for actions in action_permissions_list %}
+                                        {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "User logs"|lower %}
+                                            {% if actions.view_permission == "1" %}
+                                                 <ul class="nav justify-content-end nav-pills pull-right" id="pills-tab" role="tablist" >
+                                                    <li class="nav-list">
+                                                        <a class="nav-link active" id="owner-tab" data-toggle="pill" href="#owner" role="tab" aria-controls="owner" aria-selected="true">Owner</a>
+                                                    </li>
+                                                    <li class="nav-list">
+                                                        <a class="nav-link" id="merchant-tab" data-toggle="pill" href="#merchant" role="tab" aria-controls="merchant" aria-selected="false">Merchant</a>
+                                                    </li>
+                                                    <li class="nav-list">
+                                                        <a class="nav-link" id="customer-tab" data-toggle="pill" href="#customer" role="tab" aria-controls="customer" aria-selected="false">Customer</a>
+                                                    </li>
+                                                    <li class="nav-list">
+                                                        <a class="nav-link" id="partner-tab" data-toggle="pill" href="#partner" role="tab" aria-controls="partner" aria-selected="false">Partner</a>
+                                                    </li>
+                                                </ul>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                        {% if is_superuser == True %}
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active " id="owner" role="tabpanel" aria-labelledby="owner-tab">
+                                        <table id="add-row" class="display table table-striped table-hover w-100">
+                                            <thead>
+                                                <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                <tr>
+                                                    <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                    <th style="">Sr. No.</th>
+                                                    <th style="">Mobile No.</th>
+                                                    <th style="">First Name</th>
+                                                    <th style="">Last Name</th>
+                                                    <!-- <th style="width: 15%;">Device</th> -->
+                                                   
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                            </tfoot>
+                                            <tbody>                                           
+                                                {% for data1 in userlogs %}
+                                                    {% if data1.role == 'owner_user' %}
+                                                        <tr>
+                                                            <td>
+                                                               {{ forloop.counter }}
+                                                            </td>
+                                                            <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                            <td id="remote_addr" name="remote_addr">
+                                                                {{ data1.first_name }}
+                                                            </td>
+                                                            <td style="" id="timestamp" name="timestamp">
+                                                                {{ data1.last_name }}
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade table-responsive" id="merchant" role="tabpanel" aria-labelledby="merchant-tab">
+                                        <table id="add-row-m" class="display table table-striped table-hover w-100">
+                                            <thead>
+                                                    <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                    <tr>
+                                                        <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                        <th style="width: 20%;">Sr. No.</th>
+                                                        <th style="width: 40%;">Mobile No.</th>
+                                                        <th style="">First Name</th>
+                                                        <th style="">Last Name</th>
+                                                        <!-- <th style="width: 15%;">Device</th> -->
+                                                       
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                </tfoot>
+                                                <tbody>                                           
+                                                    {% for data1 in merchant_data %}
+                                                        {% if data1.role == 'merchant_user' %}
+                                                            <tr>
+                                                                <td>
+                                                                   {{ forloop.counter }}
+                                                                </td>
+                                                                <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                                <td id="remote_addr" name="remote_addr">
+                                                                    {{ data1.first_name }}
+                                                                </td>
+                                                                <td id="timestamp" name="timestamp">
+                                                                    {{ data1.last_name }}
+                                                                </td>
+                                                                <!-- <td id="ua_string" name="ua_string">
+                                                                    {{ data1.ua_string }}
+                                                                </td> -->
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                    </table>
+                                </div>                                               
+                                <div class="tab-pane fade table-responsive" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+                                    <table id="add-row-c" class="display table table-striped table-hover w-100">
+                                        <thead>
+                                            <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                            <tr>
+                                                <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                <th style="">Sr. No.</th>
+                                                <th style="">Mobile No.</th>
+                                                <th style="">First Name</th>
+                                                <th style="">Last Name</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>                                           
+                                            {% for data1 in customer_data %}
+                                                {% if data1.role == 'customer_user' %}
+                                                    <tr>
+                                                        <td>
+                                                           {{ forloop.counter }}
+                                                        </td>
+                                                        <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                        <td id="remote_addr" name="remote_addr">
+                                                            {{ data1.first_name }}
+                                                        </td>
+                                                        <td id="timestamp" name="timestamp">
+                                                            {{ data1.last_name }}
+                                                        </td>
+                                                        <!-- <td id="ua_string" name="ua_string">
+                                                            {{ data1.ua_string }}
+                                                        </td> -->
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                           
+                                    <div class="tab-pane fade table-responsive" id="partner" role="tabpanel" aria-labelledby="partner-tab">
+                                        <table id="add-row-p" class="display table table-striped table-hover w-100">
+                                        <thead>
+                                            <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                            <tr>
+                                                <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                <th style="">Sr. No.</th>
+                                                <th style="">Mobile No.</th>
+                                                <th style="">First Name</th>
+                                                <th style="">Last Name</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <tbody>                                           
+                                            {% for data1 in partner_data %}
+                                                {% if data1.role == 'partner_user' %}
+                                                    <tr>
+                                                        <td>
+                                                           {{ forloop.counter }}
+                                                        </td>
+                                                        <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                        <td id="remote_addr" name="remote_addr">
+                                                            {{ data1.first_name }}
+                                                        </td>
+                                                        <td id="timestamp" name="timestamp">
+                                                            {{ data1.last_name }}
+                                                        </td>
+                                                        <!-- <td id="ua_string" name="ua_string">
+                                                            {{ data1.ua_string }}
+                                                        </td> -->
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                  </div>          
+                                </div> 
+                            </div>
+                        {% else %}
+                            {% for actions in action_permissions_list %}
+                                {% if actions.module_id|lower == "My Team"|lower and actions.feature_id|lower == "User logs"|lower %}
+                                    {% if actions.view_permission == "1" %}
+                                        <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                <div class="tab-content" id="pills-tabContent">
+                                                    <div class="tab-pane fade show active " id="owner" role="tabpanel" aria-labelledby="owner-tab">
+                                                        <table id="add-row" class="display table table-striped table-hover" style="width: 100%">
+                                                            <thead>
+                                                                <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                                <tr>
+                                                                    <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                                    <th style="width: 20%;">Sr. No.</th>
+                                                                    <th style="width: 40%;">Mobile No.</th>
+                                                                    <th style="">First Name</th>
+                                                                    <th style="">Last Name</th>
+                                                                    <!-- <th style="width: 15%;">Device</th> -->
+                                                                   
+                                                                </tr>
+                                                            </thead>
+                                                            <tfoot>
+                                                            </tfoot>
+                                                            <tbody>                                           
+                                                                {% for data1 in userlogs %}
+                                                                    {% if data1.role == 'owner_user' %}
+                                                                        <tr>
+                                                                            <td>
+                                                                               {{ forloop.counter }}
+                                                                            </td>
+                                                                            <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                                            <td id="remote_addr" name="remote_addr">
+                                                                                {{ data1.first_name }}
+                                                                            </td>
+                                                                            <td id="timestamp" name="timestamp">
+                                                                                {{ data1.last_name }}
+                                                                            </td>
+                                                                            <!-- <td id="ua_string" name="ua_string">
+                                                                                {{ data1.ua_string }}
+                                                                            </td> -->
+                                                                        </tr>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="tab-pane fade table-responsive" id="merchant" role="tabpanel" aria-labelledby="merchant-tab">
+                                                    <table id="add-row-m" class="display table table-striped table-hover" style="width: 100%">
+                                                        <thead>
+                                                            <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                            <tr>
+                                                                <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                                <th style="width: 20%;">Sr. No.</th>
+                                                                <th style="width: 40%;">Mobile No.</th>
+                                                                <th style="">First Name</th>
+                                                                <th style="">Last Name</th>
+                                                                <!-- <th style="width: 15%;">Device</th> -->
+                                                               
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>                                           
+                                                            {% for data1 in merchant_data %}
+                                                                {% if data1.role == 'merchant_user' %}
+                                                                    <tr>
+                                                                        <td>
+                                                                           {{ forloop.counter }}
+                                                                        </td>
+                                                                        <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                                        <td id="remote_addr" name="remote_addr">
+                                                                            {{ data1.first_name }}
+                                                                        </td>
+                                                                        <td id="timestamp" name="timestamp">
+                                                                            {{ data1.last_name }}
+                                                                        </td>
+                                                                        <!-- <td id="ua_string" name="ua_string">
+                                                                            {{ data1.ua_string }}
+                                                                        </td> -->
+                                                                    </tr>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </tbody>
+                                                </table>
+                                            </div>                                               
+                                            <div class="tab-pane fade table-responsive" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+                                                <table id="add-row-c" class="display table table-striped table-hover" style="width: 100%">
+                                                    <thead>
+                                                        <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                        <tr>
+                                                            <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                            <th style="width: 20%;">Sr. No.</th>
+                                                            <th style="width: 40%;">Mobile No.</th>
+                                                            <th style="">First Name</th>
+                                                            <th style="">Last Name</th>
+                                                            <!-- <th style="width: 15%;">Device</th> -->
+                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>                                           
+                                                        {% for data1 in customer_data %}
+                                                            {% if data1.role == 'customer_user' %}
+                                                                <tr>
+                                                                    <td>
+                                                                       {{ forloop.counter }}
+                                                                    </td>
+                                                                    <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                                    <td id="remote_addr" name="remote_addr">
+                                                                        {{ data1.first_name }}
+                                                                    </td>
+                                                                    <td id="timestamp" name="timestamp">
+                                                                        {{ data1.last_name }}
+                                                                    </td>
+                                                                    <!-- <td id="ua_string" name="ua_string">
+                                                                        {{ data1.ua_string }}
+                                                                    </td> -->
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                       
+                                                <div class="tab-pane fade table-responsive" id="partner" role="tabpanel" aria-labelledby="partner-tab">
+                                                    <table id="add-row-p" class="display table table-striped table-hover" style="width: 100%">
+                                                        <thead>
+                                                        <tr><th id="test_1" colspan="3"></th><th id="test_2" colspan="3"></th></tr>
+                                                        <tr>
+                                                            <!-- <th style="width: 9%;">Sr. No.</th>    -->
+                                                            <th style="width: 20%;">Sr. No.</th>
+                                                            <th style="width: 40%;">Mobile No.</th>
+                                                            <th style="">First Name</th>
+                                                            <th style="">Last Name</th>
+                                                            <!-- <th style="width: 15%;">Device</th> -->
+                                                           
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                    <tbody>                                           
+                                                        {% for data1 in partner_data %}
+                                                            {% if data1.role == 'partner_user' %}
+                                                                <tr>
+                                                                    <td>
+                                                                       {{ forloop.counter }}
+                                                                    </td>
+                                                                    <td><a href="{% url 'owner-logs' data1.mo_number %}">{{data1.mo_number}}</a></td>
+
+                                                                    <td id="remote_addr" name="remote_addr">
+                                                                        {{ data1.first_name }}
+                                                                    </td>
+                                                                    <td id="timestamp" name="timestamp">
+                                                                        {{ data1.last_name }}
+                                                                    </td>
+                                                                    <!-- <td id="ua_string" name="ua_string">
+                                                                        {{ data1.ua_string }}
+                                                                    </td> -->
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>    
+                                                </table>
+                                            </div>
+                                              </div>          
+                                            </div> 
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="card-body permission-denied" style="display:none">
+                                <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+                         
+ 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<script type="text/javascript">
+
+    function valueChanged()
+    {
+
+        if($('#business_check').is(":checked")){
+            $("#business_name").val('').trigger('change')
+            $("#custom_business").show();
+            $("#business_name").prop('disabled', true); 
+        }
+        else{
+            $("#custom_business").hide();
+            $("#business_name").prop('disabled', false);
+        }
+    }
+
+    function valueChanged1()
+    {
+
+        if($('#edit_business_check').is(":checked")){
+            $("#edit_business_name").val('').trigger('change')
+            $("#edit_custom_business").show();
+            $("#edit_business_name").prop('disabled', true); 
+        }
+        else{
+            $("#edit_custom_business").hide();
+            $("#edit_business_name").prop('disabled', false);
+        }
+    }
+</script>
+<script>
+
+$(document).ready(function() {
+
+    $("#custom_business").hide();
+
+    $('.js-example-basic-single').select2();
+
+    $("#bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").select2({
+        placeholder:" Select Business Category",
+        // closeOnSelect: false,
+    })
+
+    $("#edit_bill_tags").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_bill_tags.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        // business_category = $("#business_category_id option:selected").val()
+        $("#edit_bill_tags_value").val(opts2)
+    })
+
+    $("#bill_tags").on('change', function()
+    {
+        var opts1 = [],opt1;
+        var len = bill_tags.options.length;
+        for (var i = 0; i < len; i++) {
+            opt1 = bill_tags.options[i];
+            if (opt1.selected) {
+            opts1.push(opt1.value);
+            }
+        }
+        $("#bill_tags_value").val(opts1)
+    })
+
+}); 
+
+    
+
+   
+  
+
+   
+     if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+
+
+    
+
+    $(function() {
+        $('.DeleteBillBtn').on('click', function(e) {
+          e.preventDefault();
+            Swal.fire({
+              title: 'Are you sure?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                var id = $(this).attr("data-id");
+                $.ajax({
+                  type: "POST",
+                  url: "/delete-customer-bill/"+id+"/",
+                  data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+                  success: function(response) {
+                      if(response["status"] == "success"){
+                        Swal.fire({
+                                title:'Deleted!',
+                        text:'Bill has been deleted',
+                        icon:'success',
+                        timer:1500,
+                        showConfirmButton:false,
+                            })
+                        .then(function() {
+                        location.reload();
+                        });
+                      }
+                      else if(response["status"] == "error"){
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Fail to Delete!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                      else{
+                        Swal.fire({
+                        icon:"error",
+                        title: "Oops...", 
+                        text: "Something went wrong!", 
+                        confirmButtonClass: "btn-success",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                        })
+                        .then(function() {
+                            location.reload();
+                        });   
+                      }
+                  },
+                  error: function() {
+                    Swal.fire({
+                      icon:"error",
+                      title: "Oops...", 
+                      text: "Something went wrong!", 
+                      confirmButtonClass: "btn-success",
+                      allowOutsideClick: false,
+                      allowEscapeKey: false
+                    })
+                      .then(function() {
+                        location.reload();
+                      });       
+                  }
+              });
+              }
+            })
+        });
+      });
+</script>
+
+<script>
+
+
+    $(document).ready(function () {
+        var maxLength = 50;
+        $(".show-read-more").each(function () {
+            var myStr = $(this).text();
+            if ($.trim(myStr).length > maxLength) {
+                var newStr = myStr.substring(0, maxLength);
+                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                $(this).empty().html(newStr);
+                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                $(this).append('<span class="more-text">' + removedStr + '</span>');
+            }
+        });
+        $(".read-more").click(function () {
+            $(this).siblings(".more-text").contents().unwrap();
+            $(this).remove();
+        });
+    });
+
+
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#add-row-m').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#add-row-c').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#add-row-p').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

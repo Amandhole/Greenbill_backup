@@ -1,0 +1,259 @@
+
+
+
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2">
+			<div class="sidebar-wrapper scrollbar scrollbar-inner" id="sidebar-scrollbar-id">
+				<div class="sidebar-content">
+					{% if request.user.is_authenticated %}
+						<!-- <div class="user">
+							<div class="avatar-sm float-left mr-2">
+								{% if ProfileImages %}
+									{% for ProfileImage in ProfileImages %}
+									{% if ProfileImage.c_profile_image %}
+									<img src="{{ ProfileImage.c_profile_image.url }}" alt="..." class="avatar-img rounded-circle">
+									{% else %}
+									<img src="/static/assets/img/user-profile-pic.png" alt="..." class="avatar-img rounded-circle">
+									{% endif %}
+									{% endfor %}
+								{% else %}
+									<img class="avatar-img rounded-circle" width="120" height="120" src="/media/user-profile-pic.png"
+										alt="preview" />
+								{% endif %}
+							</div>
+							<div class="info">
+								<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+									<span>
+										<span class="user-level">{{ request.user.first_name }} {{ request.user.last_name }}</span>
+										{{ request.user.mobile_no }}
+										<span class="user-level">{{ request.user.email }} </span>
+										<span class="caret"></span>
+									</span>
+								</a>
+								<div class="clearfix"></div>
+
+								<div class="collapse in" id="collapseExample">
+									<ul class="nav">
+										<li>
+											<a href="{%url 'customer-profile' %}">
+												<span class="link-collapse">My Profile</span>
+											</a>
+										</li>
+										<li>
+											<a href="" >
+												<span class="link-collapse" id="logout-sidebar">Logout</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div> -->
+						<ul class="nav nav-primary">
+							<!-- <li class="nav-section">
+								<span class="sidebar-mini-icon">
+									<i class="fa fa-ellipsis-h"></i>
+								</span>
+								<h4 class="text-section">Other Components</h4>
+							</li> -->
+							<li class="nav-item {{DashboardNavclass}}" >
+								<a href="/customer-index/">
+									<i class="fas fa-home"></i>
+									<p>Dashboard</p>
+								</a>
+							</li>
+							<li class="nav-item {{MyBillsNavclass}}" >
+								<a href="/my-bills/category/">
+									<i class="fas fa-file-invoice"></i>
+									<p>All Bills</p>
+								</a>
+							</li>
+							<li class="nav-item {{RatingNavclass}}" >
+								<a href="/customer_reply/">
+									<i class="fas fa-list"></i>
+									<p>Rating</p>
+								</a>
+							</li>
+							<li class="nav-item {{ ParkingLotPassNavclass }}">
+								<a href="/customer-passes/">
+									<i class="fas fa-ticket-alt"></i>
+									<p>Parking Pass</p>
+								</a>
+							</li>
+							<li class="nav-item {{ CustomerCouponNavclass }}">
+								<a href="/customer-coupons-redeem/">
+									<i class="fas fa-gift"></i>
+									<p>Coupons</p>
+								</a>
+							</li>
+							<!-- <li class="nav-item {{ OwnerCustomerCouponNavclass }}">
+								<a href="/customer-owner-coupons-redeem/">
+									<i class="fas fa-gift"></i>
+									<p>Owner Coupons</p>
+								</a>
+							</li> -->
+							
+							<li class="nav-item {{ OffersNavclass }}">
+								<a href="/customer-view-offer/">
+									<i class="fas fa-shopping-bag"></i>
+									<p>Offers</p>
+								</a>
+							</li>
+
+							<li class="nav-item {{ CsutomerCashmemosNaveClass }}">
+								<a data-toggle="collapse" href="#customer_cashmemo_receipt">
+									<i class="fas fa-receipt"></i>
+									<p>Cash Memo & Receipt</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ CustomercashmemoCollapseShow }}" id="customer_cashmemo_receipt">
+									<ul class="nav nav-collapse">
+										<li class="{{CustomerCashMemoNavClass}}">
+											<a href="/view-customer-cash-memo/">
+												<span class="sub-item">Cash Memo</span>
+											</a>
+										</li>
+										<li class="{{CustomerReceiptsNavClass}}">
+											<a href="/view-customer-receipts/">
+												<span class="sub-item">Receipt</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> 
+
+							<li class="nav-item {{ CsutomerCashmemosNaveClass }}">
+								<a data-toggle="collapse" href="#downloadApp">
+									<i class="fas fa-download"></i>
+									<p>Download App</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ CustomercashmemoCollapseShow }}" id="downloadApp">
+									<ul class="nav nav-collapse">
+										<li class="{{CustomerCashMemoNavClass}}">
+											<a href="https://play.google.com/store/apps/details?id=com.greenBill.green_bill" target="_blank">
+												<span class="sub-item"><i style="margin-top: -6px; font-size: 18px;" class="fas fa-play"></i>Play Store</span>
+											</a>
+										</li>
+										<li class="{{CustomerReceiptsNavClass}}">
+											<a href="https://apps.apple.com/in/app/green-bill-hind-software/id1592444682" target="_blank">
+												<span class="sub-item"><i style="margin-top: -7px; font-size: 25px;" class="fab fa-apple"></i>  App Store</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> 
+
+							<!-- <li class="nav-item {{ PlayStoreNavclass }}">
+								<a href="https://play.google.com/store/apps/details?id=com.greenBill.green_bill" target="_blank">
+									 <i class="fab fa-google-play icon-color"></i>
+									<i class="fas fa-play"></i>
+									<p>Play Store</p>
+								</a>
+							</li>  --> 
+							<!-- <li class="nav-item">
+								<a>
+									<i class="fas fa-rupee-sign"></i>
+									<p>Payment History</p>
+								</a>
+							</li> -->
+							
+							
+							
+							<!-- <li class="nav-item {{ BillNavclass }}">
+								<a data-toggle="collapse" href="#bills">
+									<i class="fas fa-list"></i>
+									<p>Bills</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ BillCollapseShow }}" id="bills">
+									<ul class="nav nav-collapse">
+										<li class="{{ AddBillsNavclass }}">
+											<a href="{% url 'custome_bill' %}">
+												<span class="sub-item">Add Bills</span>
+											</a>
+										</li>
+										<li class="{{ MyBillsNavclass }}">
+											<a href="#">
+												<span class="sub-item">My Bills</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> -->
+							
+							<!-- <li class="nav-item {{BillByCategoryNavclass}}" >
+								<a href="/bills-by-category/">
+									<i class="fas fa-list"></i>
+									<p>Bill by Category</p>
+								</a>
+							</li>
+							<li class="nav-item {{BillByMerchantNavclass}}" >
+								<a href="/bills-by-merchant/">
+									<i class="fas fa-list"></i>
+									<p>Bill by Merchant</p>
+								</a>
+							</li> -->
+							
+							<!-- <li class="nav-item {{ ShoppingAnalysisNavclass }}">
+								<a data-toggle="collapse" href="#analysis">
+									<i class="fas fa-chart-pie"></i>
+									<p>Shopping Analysis</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ ShoppingAnalysisCollapseShow }}" id="analysis">
+									<ul class="nav nav-collapse">
+										<li class="{{ ShoppingAnalysisCategoryNavclass }}">
+											<a href="{% url 'shopping-analysis-category' %}">
+												<span class="sub-item">Category Wise</span>
+											</a>
+										</li>
+										<li class="{{ ShoppingAnalysisMerchantNavclass }}">
+											<a href="{% url 'shopping-analysis-merchant' %}">
+												<span class="sub-item">Merchant Wise</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> -->	
+							<!-- <li class="nav-item {{ CouponNavclass }}">
+								<a data-toggle="collapse" href="#coupon">
+									<i class="fas fa-gift"></i>
+									<p>Coupons</p>
+									<span class="caret"></span>
+								</a>
+								<div class="collapse {{ CouponCollapseShow }}" id="coupon">
+									<ul class="nav nav-collapse">
+										<li class="{{ CustomerCouponNavclass }}">
+											<a href="/customer-coupons-redeem/">
+												<span class="sub-item">Coupons</span>
+											</a>
+										</li>
+										<li class="{{ CustomerCouponHistoryNavclass }}">
+											<a href="/coupon-history/">
+												<span class="sub-item">Coupon History</span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</li> -->
+							
+							
+							<li class="nav-item {{ customerSupportFAQNavclass }}">
+								<a href="/customer-supports-faqs/">
+									<i class="far fa-question-circle"></i>
+									<p>Support & FAQ's</p>
+								</a>
+							</li>
+							<!-- <li class="nav-item {{ SystemUpdateNavclass }}">
+								<a href="/customer-system-updates/">
+									<i class="flaticon-alarm-1"></i>
+									<p>System Updates</p>
+								</a>
+							</li> -->
+						</ul>								
+					{% endif %}	
+				</div>
+			</div>
+		</div>
+        <!-- End Sidebar -->
+        

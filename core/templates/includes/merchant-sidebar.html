@@ -1,0 +1,2498 @@
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2" >
+			<div class="sidebar-wrapper scrollbar scrollbar-inner" id="sidebar-scrollbar-id">
+				<div class="sidebar-content">
+					{% if request.user.is_authenticated %}	
+						<ul class="nav nav-primary">
+							{% if is_merchant == True %}
+
+								{% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+									<li class="nav-item {{DashboardNavclass}}" >
+										<a href="/merchant-index/">
+											<i class="fas fa-home"></i>
+											<p>Dashboard</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{ PaymentsNavclass }}">
+										<a data-toggle="collapse" href="#payments">
+											<i class="fa fa-rupee-sign"></i>
+											<p>Payments</p>
+											<span class="caret"></span>
+										</a>
+
+										<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+											<ul class="nav nav-collapse">
+												
+												<li class="{{PaymentHistoryNavClass}}">
+													<a href="/merchant-payment-history/">
+														<span class="sub-item">Payment History</span>
+													</a>
+												</li>
+												
+												<li class="{{ReceivedPaymentsNavClass}}">
+													<a href="/merchant-received-payments/">
+														<span class="sub-item">Received Payments</span>
+													</a>
+												</li>
+												
+												<li class="{{PaymentLinkNavClass}}">
+													<a href="/merchant-get-payment-link/">
+														<span class="sub-item">Payment Link</span>
+													</a>
+												</li>
+												
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ BillInfoNavClass }}">
+										<a data-toggle="collapse" href="#bill_info">
+											<i class="fas fa-file-invoice"></i>
+											<p>Bill Info</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ BillInfoCollapseShow }}" id="bill_info">
+											<ul class="nav nav-collapse">
+												<li class="{{SentBillsNavClass}}">
+													<a href="/bill-info/">
+														<span class="sub-item">Sent Bills</span>
+													</a>
+												</li>
+												<li class="{{RejectedBillsNavClass}}">
+													<a href="/rejected-bills/">
+														<span class="sub-item">Rejected Bills</span>
+													</a>
+												</li>
+												<li class="{{ReceivedBillsNavClass}}">
+													<a href="/received-bills/">
+														<span class="sub-item">Received Bills</span>
+													</a>
+												</li>
+												<li class="{{RatingNavClass}}">
+													<a href="/feedback_reply/">
+														<span class="sub-item">Ratings</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{CustomerInfoNavClass}}" >
+										<a href="/customer-info/">
+											<i class="fas fa-user-tag"></i>
+											<p>Customer Info</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{FeedbackNavclass}}" >
+										<a href="/bill-feedback/">
+											<i class="fas fa-comments"></i>
+											<p>Set Rating Question</p>
+										</a>
+									</li>
+									
+									<li class="nav-item {{ PromotionsNavclass }}">
+										<a data-toggle="collapse" href="#promotions">
+											<i class="fas fa-images"></i>
+											<p>Promotions</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ ShowPromotionsNavclass }}" id="promotions">
+											<ul class="nav nav-collapse">
+
+												<li class="{{CouponNavclass}}">
+													<a href="/coupon/">
+														<span class="sub-item">Create Coupon</span>
+													</a>
+												</li>
+
+												<li class="{{CreateOffersNavclass}}">
+													<a href="/merchant-offers/">
+														<span class="sub-item">Create Offer</span>
+													</a>
+												</li>
+
+												<li class="{{OfferforWebNavclass}}">
+													<a href="/share-web-offer/">
+														<span class="sub-item">Offer for Web</span>
+													</a>
+												</li>
+
+												<!-- <li class="nav-item {{ WebOffersNavclass }}">
+													<a href="/share-web-offer/">
+														
+														<p>Web Offer</p>
+													</a>
+												</li> -->
+
+												<li class="{{BulkSMSNavclass}}">
+													<a href="/bulk-sms-customer/">
+														<span class="sub-item">Bulk SMS</span>
+													</a>
+												</li>
+
+												<!-- <li class="{{BulkEmailNavclass}}">
+													<a href="/bulk-email-customer/">
+														<span class="sub-item">Bulk Email</span>
+													</a>
+												</li> -->
+
+												<li class="{{ AdsBelowBillNavClass }}">
+													<a href="/ads-below-bills/">
+														<span class="sub-item">My Ads Below Bills</span>
+													</a>
+												</li>
+
+												<li class="{{MerchantEnquiryNavClass}}">
+													<a href="/merchant-enquiry/">
+														<span class="sub-item">Digital Marketing Request</span>
+													</a>
+												</li>
+
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ OffersNavclass }}">
+										<a href="/merchant-view-offer/">
+											<i class="fas fa-shopping-bag"></i>
+											<p>Offers</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{ CashmemosNaveClass }}">
+										<a data-toggle="collapse" href="#cashmemo_receipt">
+											<i class="fas fa-receipt"></i>
+											<p>Cash Memo & Receipt</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ cashmemoCollapseShow }}" id="cashmemo_receipt">
+											<ul class="nav nav-collapse">
+												<li class="{{CashMemoNavClass}}">
+													<a href="/view-merchant-cash-memo/">
+														<span class="sub-item">Cash Memo</span>
+													</a>
+												</li>
+												<li class="{{ReceiptsNavClass}}">
+													<a href="/view-merchant-receipts/">
+														<span class="sub-item">Receipt</span>
+													</a>
+												</li>
+												<li class="{{CashMemoSettingNavClass}}">
+													<a href="/cash-memo-receipt-setting/">
+														<span class="sub-item">Settings</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ DesignNavclass }}">
+										<a data-toggle="collapse" href="#design">
+											<i class="fas fa-money-bill-wave"></i>
+											<p>Design</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ DesignCollapseShow }}" id="design">
+											<ul class="nav nav-collapse">
+
+												<li class="{{BillDesignNavClass}}">
+													<a href="/bill-design/">
+														<span class="sub-item">Bill Design</span>
+													</a>
+												</li>
+
+												<li class="{{CashMemoNavClass}}">
+													<a href="/card-design/">
+														<span class="sub-item">Contact Card</span>
+													</a>
+												</li>
+												<!-- <li class="{{CashMemoNavClass}}">
+													<a href="/view-merchant-cash-memo/">
+														<span class="sub-item">Cash Memos</span>
+													</a>
+												</li>
+
+												<li class="{{ReceiptsNavClass}}">
+													<a href="/view-merchant-receipts/">
+														<span class="sub-item">Receipts</span>
+													</a>
+												</li> -->
+
+												<li class="{{StampNavclass}}">
+													<a href="/stampview/">
+														<span class="sub-item">Stamp</span>
+													</a>
+												</li>
+
+												<li class="{{CashMemoDesignNavClass}}">
+													<a href="/cashmemo-design/">
+														<span class="sub-item">Bill Design Request</span>
+													</a>
+												</li>
+												<!-- <li class="{{AuthSignNavClass}}">
+													<a href="/authorised-sign/">
+														<span class="sub-item">Authorised Sign</span>
+													</a>
+												</li> -->
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ MyTeamNavclass }}">
+										<a data-toggle="collapse" href="#MyTeam">
+											<i class="fas fa-users"></i>
+											<p>My Team</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+											<ul class="nav nav-collapse">
+												<li class="{{ UserNavclass }}">
+													<a href="/create-merchant-panel-user/">
+														<span class="sub-item">Users</span>
+													</a>
+												</li>
+												<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+													<a href="/change-user-password/">
+														<span class="sub-item">Change User Password</span>
+													</a>
+												</li> -->
+												<li class="{{ RolesPermissionSettingsNavclass }}">
+													<a href="/merchant-role/">
+														<span class="sub-item">Roles & Permissions</span>
+													</a>
+												</li>
+												<li class="{{ userlogsActiveClass }}">
+													<a href="/merchant-list-for-user-log/">
+														<span class="sub-item">User Logs</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									
+									<!-- <li class="nav-item {{ OffersNavclass }}">
+										<a href="/select-payment-options/">
+											<i class="fas fa-shopping-bag"></i>
+											<p>Payment Options Management</p>
+										</a>
+									</li>
+ -->
+
+		
+
+									<li class="nav-item {{ SettingNavclass }}">
+										<a data-toggle="collapse" href="#submenu">
+											<i class="icon-settings"></i>
+											<p>Settings</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ settingsCollapseShow }}" id="submenu">
+											<ul class="nav nav-collapse">
+												<li class="{{ merchantNavClass }}">
+													<a href="/merchant-business/">
+														<span class="sub-item">Manage Business</span>
+													</a>
+												</li>
+												<li class="{{ GeneralSettingsNavclass }}">
+													<a href="/merchant-general-setting/">
+														<span class="sub-item">Business Settings</span>
+													</a>
+												</li>
+												
+												<li class="{{ MerchantSmsSettingsNavclass }}">
+													<a href="/merchant-sms-setting/">
+														<span class="sub-item">SMS Settings </span>
+													</a>
+												</li>
+                                                <li>
+													<a href="/delete-bills-setting/">
+														<span class="sub-item">Delete Bills Settings</span>
+													</a>
+												</li>
+
+												<li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li>
+										
+												
+												<li class="{{ MySubscriptionNavclass }}">
+													<a href="/my-subscription/">
+														<span class="sub-item">My Subscriptions</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ merchantSupportFAQNavclass }}">
+										<a href="/merchant-supports-faqs/">
+											<i class="far fa-question-circle"></i>
+											<p>Support & FAQ's</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{ SystemUpdateNavclass }}">
+										<a href="/merchant-system-updates/">
+											<i class="flaticon-alarm-1"></i>
+											<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+										</a>
+									</li>
+
+								{% endif %}
+
+								<!-- Petrol Business Start -->
+								{% if m_business_category_name == "Petrol Pump" %}
+									<li class="nav-item {{DashboardNavclass}}" >
+										<a href="/merchant-index/">
+											<i class="fas fa-home"></i>
+											<p>Dashboard</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{ PaymentsNavclass }}">
+										<a data-toggle="collapse" href="#payments">
+											<i class="fa fa-rupee-sign"></i>
+											<p>Payments</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+											<ul class="nav nav-collapse">
+												<li class="{{PaymentHistoryNavClass}}">
+													<a href="/merchant-payment-history/">
+														<span class="sub-item">Payment History</span>
+													</a>
+												</li>
+												<li class="{{ReceivedPaymentsNavClass}}">
+													<a href="/merchant-received-payments/">
+														<span class="sub-item">Received Payments</span>
+													</a>
+												</li>
+												<!-- <li class="{{PaymentLinkNavClass}}">
+													<a href="/merchant-get-payment-link/">
+														<span class="sub-item">Payment Link</span>
+													</a>
+												</li> -->
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ BillInfoNavClass }}">
+										<a data-toggle="collapse" href="#bill_info">
+											<i class="fas fa-file-invoice"></i>
+											<p>Bill Info</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ BillInfoCollapseShow }}" id="bill_info">
+											<ul class="nav nav-collapse">
+												<li class="{{SentBillsNavClass}}">
+													<a href="/bill-info/">
+														<span class="sub-item">Sent Bills</span>
+													</a>
+												</li>
+												<li class="{{RejectedBillsNavClass}}">
+													<a href="/rejected-bills/">
+														<span class="sub-item">Rejected Bills</span>
+													</a>
+												</li>
+												<li class="{{ReceivedBillsNavClass}}">
+													<a href="/received-bills/">
+														<span class="sub-item">Received Bills</span>
+													</a>
+												</li>
+												<li class="{{ PetrolPumpFlagBillsNavClass }}">
+													<a href="/petrol-pump-flag-bills/">
+														<span class="sub-item">Flagged Bills</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<!-- <li class="{{ViewOffersNavclass}}">
+													<a href="/merchant-view-offer/">
+														<span class="sub-item">View Offer</span>
+													</a>
+												</li> -->
+									
+
+									<li class="nav-item {{PetrolPumpMyProductsNavclass}}" >
+										<a href="/merchant-petrol-pump-details/">
+											<i class="fas fa-gas-pump"></i>
+											<p>Manage Products</p>
+										</a>
+									</li>
+									<li class="nav-item {{AddonPetrolPumpNavclass}}" >
+										<a href="/addon-petrol-pump-details/">
+											<i class="fas fa-oil-can"></i>
+											<p>Manage Ad-Ons</p>
+										</a>
+									</li>
+									<!-- <li class="nav-item {{ StampNavclass }}">
+										<a href="/stampview/">
+											<i class="fas fa-stamp"></i>
+											<p>My Stamp</p>
+										</a>
+									</li> -->
+									<!-- <li class="nav-item {{ OffersNavclass }}">
+										<a data-toggle="collapse" href="#offers">
+											<i class="fas fa-shopping-bag"></i>
+											<p>Offers</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ OffersNavclass }}" id="offers">
+											<ul class="nav nav-collapse">
+												<li class="{{ShowOffersNavclass}}">
+													<a href="/merchant_offers/">
+														<span class="sub-item">Create Offer</span>
+													</a>
+												</li>
+
+												<li class="{{ViewOffersNavclass}}">
+													<a href="/merchant_offer_status/">
+														<span class="sub-item">View Offer</span>
+													</a>
+												</li>
+
+											</ul>
+										</div>
+									</li> -->
+
+
+									
+									<li class="nav-item {{ OffersNavclass }}">
+										<a href="/merchant-view-offer/">
+											<i class="fa fa-shopping-bag"></i>
+											<p>Offers</p>
+										</a>
+									</li>
+													
+
+									<li class="nav-item {{ DesignNavclass }}">
+										<a data-toggle="collapse" href="#Design">
+											<i class="fas fa-ticket-alt"></i>
+											<p>Design</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ DesignCollapseShow }}" id="Design">
+											<ul class="nav nav-collapse">
+												<li class="{{ BillDesignNavClass }}">
+													<a href="/bill-design/">
+														<span class="sub-item">Bill Design</span>
+													</a>
+												</li>
+												<li class="{{ PetrolPumpAppSettingNavclass }}">
+													<a href="/petrol-pump-app-setting/">
+														<span class="sub-item">Bill Layout</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ MyTeamNavclass }}">
+										<a data-toggle="collapse" href="#MyTeam">
+											<i class="fas fa-users"></i>
+											<p>My Team</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+											<ul class="nav nav-collapse">
+												<li class="{{ UserNavclass }}">
+													<a href="/create-merchant-panel-user/">
+														<span class="sub-item">Users</span>
+													</a>
+												</li>
+												<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+													<a href="/change-user-password/">
+														<span class="sub-item">Change User Password</span>
+													</a>
+												</li> -->
+												<li class="{{ RolesPermissionSettingsNavclass }}">
+													<a href="/merchant-role/">
+														<span class="sub-item">Roles & Permissions</span>
+													</a>
+												</li>
+												<li class="{{ userlogsActiveClass }}">
+													<a href="/merchant-list-for-user-log/">
+														<span class="sub-item">User Logs</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ SettingNavclass }}">
+										<a data-toggle="collapse" href="#petrol-submenu">
+											<i class="icon-settings"></i>
+											<p>Settings</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ settingsCollapseShow }}" id="petrol-submenu">
+											<ul class="nav nav-collapse">
+												<li class="{{ merchantNavClass }}">
+													<a href="/merchant-business/">
+														<span class="sub-item">Manage Business</span>
+													</a>
+												</li>
+												<li class="{{ GeneralSettingsNavclass }}">
+													<a href="/merchant-general-setting/">
+														<span class="sub-item">Business Settings</span>
+													</a>
+												</li>
+												<!-- <li class="{{ PetrolPumpAppSettingNavclass }}">
+													<a href="/petrol-pump-app-setting/">
+														<span class="sub-item">Bill Layout Settings</span>
+													</a>
+												</li>
+												<li class="{{ BillDesignNavClass }}">
+													<a href="/bill-design/">
+														<span class="sub-item">Bill Design</span>
+													</a>
+												</li> -->
+												<li class="{{ addNozzleNavClass }}">
+													<a href="/add-petrol-nozzle/">
+														<span class="sub-item">Manage Nozzle</span>
+													</a>
+												</li>
+												<li class="{{ FlagReasonsNavClass }}">
+													<a href="/flag-reason/">
+														<span class="sub-item">Flag Reason</span>
+													</a>
+												</li>
+												<!-- <li class="{{ MerchantSmsSettingsNavclass }}">
+													<a href="/merchant-sms-setting/">
+														<span class="sub-item">SMS Settings</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ UserSettingsNavclass }}">
+													<a href="/create-merchant-panel-user/">
+														<span class="sub-item">Users</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+													<a href="/change-user-password/">
+														<span class="sub-item">Change User Password</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ RolesPermissionSettingsNavclass }}">
+													<a href="/merchant-role/">
+														<span class="sub-item">Roles & Permissions</span>
+													</a>
+												</li>
+												<li class="{{ userlogsActiveClass }}">
+													<a href="/merchant-user-logs/">
+														<span class="sub-item">User Logs</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li> -->
+
+												<li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li>
+										
+
+
+												 <li>
+													<a href="/delete-bills-setting/">
+														<span class="sub-item">Delete Bills Settings</span>
+													</a>
+												</li>
+
+												<li class="{{ MySubscriptionNavclass }}">
+													<a href="/my-subscription/">
+														<span class="sub-item">My Subscriptions</span>
+													</a>
+												</li>
+												
+											</ul>
+										</div>
+									</li>
+									
+									<li class="nav-item {{SuggestPetrolPumpNavclass}}" >
+										<a href="/suggest-petrol-pump/">
+											<i class="fas fa-user-friends"></i>
+											<p>Suggest a Petrol Pump</p>
+										</a>
+									</li>
+									<li class="nav-item {{ merchantSupportFAQNavclass }}">
+										<a href="/merchant-supports-faqs/">
+											<i class="far fa-question-circle"></i>
+											<p>Support & FAQ's</p>
+										</a>
+									</li>
+									<li class="nav-item {{ SystemUpdateNavclass }}">
+										<a href="/merchant-system-updates/">
+											<i class="flaticon-alarm-1"></i>
+											<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+										</a>
+									</li>
+								{% endif %}
+								<!-- Petrol Business End -->
+
+								<!-- Parking Business Start -->
+								{% if m_business_category_name == "Parking Lot" %}
+									<li class="nav-item {{DashboardNavclass}}" >
+										<a href="/merchant-index/">
+											<i class="fas fa-home"></i>
+											<p>Dashboard</p>
+										</a>
+									</li>
+
+									<li class="nav-item {{ PaymentsNavclass }}">
+										<a data-toggle="collapse" href="#payments">
+											<i class="fa fa-rupee-sign"></i>
+											<p>Payments</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+											<ul class="nav nav-collapse">
+												<li class="{{PaymentHistoryNavClass}}">
+													<a href="/merchant-payment-history/">
+														<span class="sub-item">Payment History</span>
+													</a>
+												</li>
+												<li class="{{ReceivedPaymentsNavClass}}">
+													<a href="/merchant-received-payments/">
+														<span class="sub-item">Received Payments</span>
+													</a>
+												</li>
+												<!-- <li class="{{PaymentLinkNavClass}}">
+													<a href="/merchant-get-payment-link/">
+														<span class="sub-item">Payment Link</span>
+													</a>
+												</li> -->
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ BillInfoNavClass }}">
+										<a data-toggle="collapse" href="#bill_info">
+											<i class="fas fa-file-invoice"></i>
+											<p>Bill Info</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ BillInfoCollapseShow }}" id="bill_info">
+											<ul class="nav nav-collapse">
+												<li class="{{SentBillsNavClass}}">
+													<a href="/bill-info/">
+														<span class="sub-item">Sent Bills</span>
+													</a>
+												</li>
+												<li class="{{RejectedBillsNavClass}}">
+													<a href="/rejected-bills/">
+														<span class="sub-item">Rejected Bills</span>
+													</a>
+												</li>
+												<li class="{{ReceivedBillsNavClass}}">
+													<a href="/received-bills/">
+														<span class="sub-item">Received Bills</span>
+													</a>
+												</li>
+												<li class="{{ ParkingFlagBillsNavClass }}">
+													<a href="/parking-flag-bills/">
+														<span class="sub-item">Flagged Bills</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<!-- <li class="{{ViewOffersNavclass}}">
+													<a href="/merchant-view-offer/">
+														<span class="sub-item">View Offer</span>
+													</a>
+												</li> -->
+
+									<li class="nav-item {{ ParkingLotManagementNavclass }}">
+										<a data-toggle="collapse" href="#parkingLotManagement">
+											<i class="fa fa-tasks"></i>
+											<p>Parking Lot Management</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ ParkingLotManagementCollapseShow }}" id="parkingLotManagement">
+											<ul class="nav nav-collapse">
+												<li class="{{ addVehicleTypeNavClass }}">
+													<a href="/add-vehicle-type/">
+														<span class="sub-item">Manage Vehicle Type</span>
+													</a>
+												</li>
+												<li class="{{ addParkingSpaceNavClass }}">
+													<a href="/add-parking-space/">
+														<span class="sub-item">Manage Parking Space</span>
+													</a>
+												</li>
+												<li class="{{ addParkingSpaceChargesNavClass }}">
+													<a href="/add-parking-space-charges/">
+														<span class="sub-item">Manage Charges</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ ParkingPassesNavclass }}">
+										<a data-toggle="collapse" href="#parkingPasses">
+											<i class="fas fa-ticket-alt"></i>
+											<p>Parking Passes</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ PassesCollapseShow }}" id="parkingPasses">
+											<ul class="nav nav-collapse">
+												<li class="{{ MerchantPassNavclass }}">
+													<a href="/merchant-passes/">
+														<span class="sub-item">View Passes</span>
+													</a>
+												</li>
+												<li class="{{ ParkingPassChargesNavclass }}">
+													<a href="/get-all-parking-pass-charges/">
+														<span class="sub-item">Pass Charges</span>
+													</a>
+												</li>
+												<li class="{{ ManageCompaniesNavClass }}">
+													<a href="/manage-companies/">
+														<span class="sub-item">Manage Companies</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ ExitParkedVehiclesNavclass }}">
+										<a href="/exit-parked-vehicles/">
+											<i class="fas fa-check-double"></i>
+											<p>Exit Parked Vehicles</p>
+										</a>
+									</li>
+
+									
+									<li class="nav-item {{ OffersNavclass }}">
+										<a href="/merchant-view-offer/">
+											<i class="fa fa-shopping-bag"></i>
+											<p>Offers</p>
+										</a>
+									</li>
+
+									
+													
+
+									<li class="nav-item {{ DesignNavclass }}">
+										<a data-toggle="collapse" href="#Design">
+											<i class="fas fa-ticket-alt"></i>
+											<p>Design</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ DesignCollapseShow }}" id="Design">
+											<ul class="nav nav-collapse">
+												<li class="{{ BillDesignNavClass }}">
+													<a href="/bill-design/">
+														<span class="sub-item">Bill Design</span>
+													</a>
+												</li>
+												<li class="{{ ParkingAppSettingNavClass }}">
+													<a href="/parking-app-setting/">
+														<span class="sub-item">Bill Layout</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+
+									<li class="nav-item {{ MyTeamNavclass }}">
+										<a data-toggle="collapse" href="#MyTeam">
+											<i class="fas fa-users"></i>
+											<p>My Team</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+											<ul class="nav nav-collapse">
+												<li class="{{ UserNavclass }}">
+													<a href="/create-merchant-panel-user/">
+														<span class="sub-item">Users</span>
+													</a>
+												</li>
+												<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+													<a href="/change-user-password/">
+														<span class="sub-item">Change User Password</span>
+													</a>
+												</li> -->
+												<li class="{{ RolesPermissionSettingsNavclass }}">
+													<a href="/merchant-role/">
+														<span class="sub-item">Roles & Permissions</span>
+													</a>
+												</li>
+												<li class="{{ userlogsActiveClass }}">
+													<a href="/merchant-list-for-user-log/">
+														<span class="sub-item">User Logs</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li>
+									
+									<li class="nav-item {{ SettingNavclass }}">
+										<a data-toggle="collapse" href="#parking-settings">
+											<i class="icon-settings"></i>
+											<p>Settings</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ settingsCollapseShow }}" id="parking-settings">
+											<ul class="nav nav-collapse">
+												<li class="{{ merchantNavClass }}">
+													<a href="/merchant-business/">
+														<span class="sub-item">Manage Business</span>
+													</a>
+												</li>
+												<li class="{{ GeneralSettingsNavclass }}">
+													<a href="/merchant-general-setting/">
+														<span class="sub-item">Business Settings</span>
+													</a>
+												</li>
+												<!-- <li class="{{ ParkingAppSettingNavClass }}">
+													<a href="/parking-app-setting/">
+														<span class="sub-item">Bill Layout Settings</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ BillDesignNavClass }}">
+													<a href="/bill-design/">
+														<span class="sub-item">Bill Design</span>
+													</a>
+												</li>
+												<li class="{{ UserSettingsNavclass }}">
+													<a href="/create-merchant-panel-user/">
+														<span class="sub-item">Users</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+													<a href="/change-user-password/">
+														<span class="sub-item">Change User Password</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ RolesPermissionSettingsNavclass }}">
+													<a href="/merchant-role/">
+														<span class="sub-item">Roles & Permissions</span>
+													</a>
+												</li>
+												<li class="{{ userlogsActiveClass }}">
+													<a href="/merchant-user-logs/">
+														<span class="sub-item">User Logs</span>
+													</a>
+												</li> -->
+												<li class="{{ FlagReasonsNavClass }}">
+													<a href="/flag-reason/">
+														<span class="sub-item">Flag Reason</span>
+													</a>
+												</li>
+												<!-- <li class="{{ MerchantSmsSettingsNavclass }}">
+													<a href="/merchant-sms-setting/">
+														<span class="sub-item">SMS Settings</span>
+													</a>
+												</li> -->
+												<!-- <li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li> -->
+
+												<li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li>
+										
+												 <li>
+													<a href="/delete-bills-setting/">
+														<span class="sub-item">Delete Bills Settings</span>
+													</a>
+												</li>
+
+												<li class="{{ MySubscriptionNavclass }}">
+													<a href="/my-subscription/">
+														<span class="sub-item">My Subscriptions</span>
+													</a>
+												</li>
+												
+											</ul>
+										</div>
+									</li>
+									
+									<li class="nav-item {{SuggestParkingNavclass}}" >
+										<a href="/suggest-parking/">
+											<i class="fas fa-user-friends"></i>
+											<p>Suggest a Parking</p>
+										</a>
+									</li>
+									<li class="nav-item {{ merchantSupportFAQNavclass }}">
+										<a href="/merchant-supports-faqs/">
+											<i class="far fa-question-circle"></i>
+											<p>Support & FAQ's</p>
+										</a>
+									</li>
+									<li class="nav-item {{ SystemUpdateNavclass }}">
+										<a href="/merchant-system-updates/">
+											<i class="flaticon-alarm-1"></i>
+											<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+										</a>
+									</li>
+								{% endif %}
+
+							{% elif is_merchant_staff == True %}
+
+								{% if m_business_category_name != "Petrol Pump" and m_business_category_name != "Parking Lot" %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Dashboard"|lower and modules.permission == True %}
+											<li class="nav-item {{DashboardNavclass}}" >
+												<a href="/merchant-index/">
+													<i class="fas fa-home"></i>
+													<p>Dashboard</p>
+												</a>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Payments"|lower and modules.permission == True %}
+											<li class="nav-item {{ PaymentsNavclass }}">
+												<a data-toggle="collapse" href="#payments">
+													<i class="fa fa-rupee-sign"></i>
+													<p>Payments</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment History"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{PaymentHistoryNavClass}}">
+																		<a href="/merchant-payment-history/">
+																			<span class="sub-item">Payment History</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Received Payments"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedPaymentsNavClass}}">
+																		<a href="/merchant-received-payments/">
+																			<span class="sub-item">Received Payments</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment Link"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{PaymentLinkNavClass}}">
+																		<a href="/merchant-get-payment-link/">
+																			<span class="sub-item">Payment Link</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Bill Info"|lower and modules.permission == True %}
+											<li class="nav-item {{ BillInfoNavClass }}">
+												<a data-toggle="collapse" href="#bill-info">
+													<i class="fas fa-file-invoice"></i>
+													<p>Bill Info</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ BillInfoCollapseShow }}" id="bill-info">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Sent Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{SentBillsNavClass}}">
+																		<a href="/bill-info/">
+																			<span class="sub-item">Sent Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Rejected Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{RejectedBillsNavClass}}">
+																		<a href="/rejected-bills/">
+																			<span class="sub-item">Rejected Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Received Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedBillsNavClass}}">
+																		<a href="/received-bills/">
+																			<span class="sub-item">Received Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Ratings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{RatingNavClass}}">
+																		<a href="/feedback_reply/">
+																			<span class="sub-item">Ratings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Customer Info"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Customer Info"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{CustomerInfoNavClass}}" >
+															<a href="/customer-info/">
+																<i class="fas fa-user-tag"></i>
+																<p>Customer Info</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Set Ratings Question"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Set Ratings Question"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+									
+														<li class="nav-item {{FeedbackNavclass}}" >
+															<a href="/bill-feedback/">
+																<i class="fas fa-comments"></i>
+																<p>Set Rating Question</p>
+															</a>
+														</li>
+														{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Promotions"|lower and modules.permission == True %}
+											<li class="nav-item {{ PromotionsNavclass }}">
+												<a data-toggle="collapse" href="#promotions">
+													<i class="fas fa-images"></i>
+													<p>Promotions</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ ShowPromotionsNavclass }}" id="promotions">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Create Coupon"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{CouponNavclass}}">
+																		<a href="/coupon/">
+																			<span class="sub-item">Create Coupon</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Create Offer"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{CreateOffersNavclass}}">
+																		<a href="/merchant-offers/">
+																			<span class="sub-item">Create Offer</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Offer for Web"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{OfferforWebNavclass}}">
+																		<a href="/share-web-offer/">
+																			<span class="sub-item">Offer for Web</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														<!-- {% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Offer for Web"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="nav-item {{ WebOffersNavclass }}">
+																		<a href="/share-web-offer/">
+																			
+																			<p>Web Offer</p>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %} -->
+														
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bulk SMS"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{BulkSMSNavclass}}">
+																		<a href="/bulk-sms-customer/">
+																			<span class="sub-item">Bulk SMS</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														<!-- {% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bulk Email"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{BulkEmailNavclass}}">
+																		<a href="/bulk-email-customer/">
+																			<span class="sub-item">Bulk Email</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %} -->
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Ads Below Bill"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ AdsBelowBillNavClass }}">
+																		<a href="/ads-below-bills/">
+																			<span class="sub-item">Ads Below Bill</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Digital Marketing Request"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{MerchantEnquiryNavClass}}">
+																		<a href="/merchant-enquiry/">
+																			<span class="sub-item">Digital Marketing Request</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Offers"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Offers"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ OffersNavclass }}">
+															<a href="/merchant-view-offer/">
+																<i class="fa fa-shopping-bag"></i>
+																<p>Offers</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									
+											<!-- <li class="nav-item {{ CashmemosNaveClass }}">
+												<a data-toggle="collapse" href="#cashmemo_receipt">
+													<i class="fas fa-receipt"></i>
+													<p>Cash Memo & Receipt</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ cashmemoCollapseShow }}" id="cashmemo_receipt">
+													<ul class="nav nav-collapse">
+														<li class="{{CashMemoNavClass}}">
+																		<a href="/view-merchant-cash-memo/">
+																			<span class="sub-item">Cash Memo</span>
+																		</a>
+																	</li>
+														
+																	
+																
+													</ul>
+												</div>
+											</li> -->
+										
+
+									
+
+									
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Cash Memo & Receipt"|lower and modules.permission == True %}			
+											<li class="nav-item {{ CashmemosNaveClass }}">
+												<a data-toggle="collapse" href="#cashmemo_receipt">
+													<i class="fas fa-receipt"></i>
+													<p>Cash Memo & Receipt</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ cashmemoCollapseShow }}" id="cashmemo_receipt">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Cash Memos"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																<li class="{{CashMemoNavClass}}">
+																	<a href="/view-merchant-cash-memo/">
+																		<span class="sub-item">Cash Memo</span>
+																	</a>
+																</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Receipts"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceiptsNavClass}}">
+																		<a href="/view-merchant-receipts/">
+																			<span class="sub-item">Receipt</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{CashMemoSettingNavClass}}">
+																		<a href="/cash-memo-receipt-setting/">
+																			<span class="sub-item">Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Design"|lower and modules.permission == True %}
+											<li class="nav-item {{ DesignNavclass }}">
+												<a data-toggle="collapse" href="#design">
+													<i class="fas fa-money-bill-wave"></i>
+													<p>Design</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ DesignCollapseShow }}" id="design">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Design"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{BillDesignNavClass}}">
+																		<a href="/bill-design/">
+																			<span class="sub-item">Bill Design</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+															
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Design"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{CardDesignNavClass}}">
+																		<a href="/card-design/">
+																			<span class="sub-item">Contact Card</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														
+														
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Stamps"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{StampNavclass}}">
+																		<a href="/stampview/">
+																			<span class="sub-item">Stamps</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Design Request"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{CashMemoDesignNavClass}}">
+																		<a href="/cashmemo-design/">
+																			<span class="sub-item">Bill Design Request</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "My Team"|lower and modules.permission == True %}
+											<li class="nav-item {{ MyTeamNavclass }}">
+												<a data-toggle="collapse" href="#MyTeam">
+													<i class="fas fa-users"></i>
+													<p>My Team</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Users"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ UserNavclass }}">
+																		<a href="/create-merchant-panel-user/">
+																			<span class="sub-item">Users</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Change User Password"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+																		<a href="/change-user-password/">
+																			<span class="sub-item">Change User Password</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Roles & Permissions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ RolesPermissionSettingsNavclass }}">
+																		<a href="/merchant-role/">
+																			<span class="sub-item">Roles & Permissions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "User Logs"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ userlogsActiveClass }}">
+																		<a href="/merchant-list-for-user-log/">
+																			<span class="sub-item">User Logs</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Settings"|lower and modules.permission == True %}
+											<li class="nav-item {{ SettingNavclass }}">
+												<a data-toggle="collapse" href="#settings">
+													<i class="icon-settings"></i>
+													<p>Settings</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ settingsCollapseShow }}" id="settings">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Manage Business"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ merchantNavClass }}">
+																		<a href="/merchant-business/">
+																			<span class="sub-item">Manage Business</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Business Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ GeneralSettingsNavclass }}">
+																		<a href="/merchant-general-setting/">
+																			<span class="sub-item">Business Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "SMS Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ MerchantSmsSettingsNavclass }}">
+																		<a href="/merchant-sms-setting/">
+																			<span class="sub-item">SMS Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Delete Bills Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{ paymentSettingActiveClass }}">
+																		<a href="/merchant-payment-settings/">
+																			<span class="sub-item">Payment Settings</span>
+																		</a>
+																	</li> -->
+																	<li>
+																		<a href="/delete-bills-setting/">
+																			<span class="sub-item">Delete Bills Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "My Subscriptions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ MySubscriptionNavclass }}">
+																		<a href="/my-subscription/">
+																			<span class="sub-item">My Subscriptions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+							
+
+									<!-- <li class="nav-item {{ SettingNavclass }}">
+										<a data-toggle="collapse" href="#submenu">
+											<i class="icon-settings"></i>
+											<p>Settings</p>
+											<span class="caret"></span>
+										</a>
+										<div class="collapse {{ settingsCollapseShow }}" id="submenu">
+											<ul class="nav nav-collapse">
+												<li class="{{ merchantNavClass }}">
+													<a href="/merchant-business/">
+														<span class="sub-item">Manage Business</span>
+													</a>
+												</li>
+												<li class="{{ GeneralSettingsNavclass }}">
+													<a href="/merchant-general-setting/">
+														<span class="sub-item">Business Settings</span>
+													</a>
+												</li>
+												
+												<li class="{{ MerchantSmsSettingsNavclass }}">
+													<a href="/merchant-sms-setting/">
+														<span class="sub-item">SMS Settings</span>
+													</a>
+												</li>
+
+												<li class="{{ paymentSettingActiveClass }}">
+													<a href="/merchant-payment-settings/">
+														<span class="sub-item">Payment Settings</span>
+													</a>
+												</li>
+												
+												<li class="{{ MySubscriptionNavclass }}">
+													<a href="/my-subscription/">
+														<span class="sub-item">My Subscription</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</li> -->
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Support & FAQ's"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Support & FAQ's"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ merchantSupportFAQNavclass }}">
+															<a href="/merchant-supports-faqs/">
+																<i class="far fa-question-circle"></i>
+																<p>Support & FAQ's</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "System Updates"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "System Updates"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ SystemUpdateNavclass }}">
+															<a href="/merchant-system-updates/">
+																<i class="flaticon-alarm-1"></i>
+																<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+								{% endif %}
+
+								<!-- Petrol Business Start -->
+
+								{% if m_business_category_name == "Petrol Pump" %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Dashboard"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Dashboard"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{DashboardNavclass}}" >
+															<a href="/merchant-index/">
+																<i class="fas fa-home"></i>
+																<p>Dashboard</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Payments"|lower and modules.permission == True %}
+											<li class="nav-item {{ PaymentsNavclass }}">
+												<a data-toggle="collapse" href="#payments">
+													<i class="fa fa-rupee-sign"></i>
+													<p>Payments</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment History"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{PaymentHistoryNavClass}}">
+																		<a href="/merchant-payment-history/">
+																			<span class="sub-item">Payment History</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Received Payments"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedPaymentsNavClass}}">
+																		<a href="/merchant-received-payments/">
+																			<span class="sub-item">Received Payments</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment Link"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{PaymentLinkNavClass}}">
+																		<a href="/merchant-get-payment-link/">
+																			<span class="sub-item">Payment Link</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Bill Info"|lower and modules.permission == True %}
+											<li class="nav-item {{ BillInfoNavClass }}">
+												<a data-toggle="collapse" href="#bill-info">
+													<i class="fas fa-file-invoice"></i>
+													<p>Bill Info</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ BillInfoCollapseShow }}" id="bill-info">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Sent Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{SentBillsNavClass}}">
+																		<a href="/bill-info/">
+																			<span class="sub-item">Sent Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Rejected Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{RejectedBillsNavClass}}">
+																		<a href="/rejected-bills/">
+																			<span class="sub-item">Rejected Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Received Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedBillsNavClass}}">
+																		<a href="/received-bills/">
+																			<span class="sub-item">Received Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Flagged Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ PetrolPumpFlagBillsNavClass }}">
+																		<a href="/petrol-pump-flag-bills/">
+																			<span class="sub-item">Flagged Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Manage Products"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Manage Products"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{PetrolPumpMyProductsNavclass}}" >
+															<a href="/merchant-petrol-pump-details/">
+																<i class="fas fa-gas-pump"></i>
+																<p>Manage Products</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Ad On Products"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Ad On Products"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{AddonPetrolPumpNavclass}}" >
+															<a href="/addon-petrol-pump-details/">
+																<i class="fas fa-oil-can"></i>
+																<p>Manage Ad-Ons</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Offers"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Offers"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ OffersNavclass }}">
+															<a href="/merchant-view-offer/">
+																<i class="fa fa-shopping-bag"></i>
+																<p>Offers</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Design"|lower and modules.permission == True %}
+											<li class="nav-item {{ DesignNavclass }}">
+												<a data-toggle="collapse" href="#design">
+													<i class="fas fa-money-bill-wave"></i>
+													<p>Design</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ DesignCollapseShow }}" id="design">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Design"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{BillDesignNavClass}}">
+																		<a href="/bill-design/">
+																			<span class="sub-item">Bill Design</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Layout"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ PetrolPumpAppSettingNavclass }}">
+																		<a href="/petrol-pump-app-setting/">
+																			<span class="sub-item">Bill Layout</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "My Team"|lower and modules.permission == True %}
+											<li class="nav-item {{ MyTeamNavclass }}">
+												<a data-toggle="collapse" href="#MyTeam">
+													<i class="fas fa-users"></i>
+													<p>My Team</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Users"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ UserNavclass }}">
+																		<a href="/create-merchant-panel-user/">
+																			<span class="sub-item">Users</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Change User Password"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+																		<a href="/change-user-password/">
+																			<span class="sub-item">Change User Password</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Roles & Permissions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ RolesPermissionSettingsNavclass }}">
+																		<a href="/merchant-role/">
+																			<span class="sub-item">Roles & Permissions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "User Logs"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ userlogsActiveClass }}">
+																		<a href="/merchant-list-for-user-log/">
+																			<span class="sub-item">User Logs</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Settings"|lower and modules.permission == True %}
+											<li class="nav-item {{ SettingNavclass }}">
+												<a data-toggle="collapse" href="#petrol-submenu">
+													<i class="icon-settings"></i>
+													<p>Settings</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ settingsCollapseShow }}" id="petrol-submenu">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+
+															{% if actions.feature_id|lower == "Manage Business"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ merchantNavClass }}">
+																		<a href="/merchant-business/">
+																			<span class="sub-item">Manage Business</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Business Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ GeneralSettingsNavclass }}">
+																		<a href="/merchant-general-setting/">
+																			<span class="sub-item">Business Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Manage Nozzle"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ addNozzleNavClass }}">
+																		<a href="/add-petrol-nozzle/">
+																			<span class="sub-item">Manage Nozzle</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Delete Bills Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																<!-- 	<li class="{{ paymentSettingActiveClass }}">
+																		<a href="/merchant-payment-settings/">
+																			<span class="sub-item">Payment Settings</span>
+																		</a>
+																	</li> -->
+																	<li>
+																		<a href="/delete-bills-setting/">
+																			<span class="sub-item">Delete Bills Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "My Subscriptions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ MySubscriptionNavclass }}">
+																		<a href="/my-subscription/">
+																			<span class="sub-item">My Subscriptions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Flag Reason"|lower and actions.module_id|lower == "Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{FlagReasonsNavClass}}">
+																		<a href="/flag-reason/">
+																			<span class="sub-item">Flag Reason</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Suggest a Petrol Pump"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Suggest a Petrol Pump"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{SuggestPetrolPumpNavclass}}">
+															<a href="/suggest-petrol-pump/">
+																<i class="fas fa-user-friends"></i>
+																<p>Suggest a Petrol Pump</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Support & FAQ's"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Support & FAQ's"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ merchantSupportFAQNavclass }}">
+															<a href="/merchant-supports-faqs/">
+																<i class="far fa-question-circle"></i>
+																<p>Support & FAQ's</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "System Updates"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "System Updates"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ SystemUpdateNavclass }}">
+															<a href="/merchant-system-updates/">
+																<i class="flaticon-alarm-1"></i>
+																<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+															</a>
+														</li>
+														{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+								{% endif %}
+								<!-- Petrol Business End -->
+
+								<!-- Parking Business Start -->
+
+								{% if m_business_category_name == "Parking Lot" %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Dashboard"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Dashboard"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{DashboardNavclass}}" >
+															<a href="/merchant-index/">
+																<i class="fas fa-home"></i>
+																<p>Dashboard</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Payments"|lower and modules.permission == True %}
+											<li class="nav-item {{ PaymentsNavclass }}">
+												<a data-toggle="collapse" href="#payments">
+													<i class="fa fa-rupee-sign"></i>
+													<p>Payments</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ ShowPaymentsNavclass }}" id="payments">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment History"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{PaymentHistoryNavClass}}">
+																		<a href="/merchant-payment-history/">
+																			<span class="sub-item">Payment History</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Received Payments"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedPaymentsNavClass}}">
+																		<a href="/merchant-received-payments/">
+																			<span class="sub-item">Received Payments</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Payment Link"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{PaymentLinkNavClass}}">
+																		<a href="/merchant-get-payment-link/">
+																			<span class="sub-item">Payment Link</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Bill Info"|lower and modules.permission == True %}
+											<li class="nav-item {{ BillInfoNavClass }}">
+												<a data-toggle="collapse" href="#bill-info">
+													<i class="fas fa-file-invoice"></i>
+													<p>Bill Info</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ BillInfoCollapseShow }}" id="bill-info">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Sent Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{SentBillsNavClass}}">
+																		<a href="/bill-info/">
+																			<span class="sub-item">Sent Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Rejected Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{RejectedBillsNavClass}}">
+																		<a href="/rejected-bills/">
+																			<span class="sub-item">Rejected Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Received Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ReceivedBillsNavClass}}">
+																		<a href="/received-bills/">
+																			<span class="sub-item">Received Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+															{% if actions.feature_id|lower == "Flagged Bills"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ ParkingFlagBillsNavClass }}">
+																		<a href="/parking-flag-bills/">
+																			<span class="sub-item">Flagged Bills</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+									
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Parking Lot Management"|lower and modules.permission == True %}
+											<li class="nav-item {{ ParkingLotManagementNavclass }}">
+												<a data-toggle="collapse" href="#parkingLotManagement">
+													<i class="fa fa-tasks"></i>
+													<p>Parking Lot Management</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ ParkingLotManagementCollapseShow }}" id="parkingLotManagement">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Manage Vehicle Type"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ addVehicleTypeNavClass }}">
+																		<a href="/add-vehicle-type/">
+																			<span class="sub-item">Manage Vehicle Type</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Manage Parking Space"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ addParkingSpaceNavClass }}">
+																		<a href="/add-parking-space/">
+																			<span class="sub-item">Manage Parking Space</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Manage Charges"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ addParkingSpaceChargesNavClass }}">
+																		<a href="/add-parking-space-charges/">
+																			<span class="sub-item">Manage Charges</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Parking Passes"|lower and modules.permission == True %}
+											<li class="nav-item {{ ParkingPassesNavclass }}">
+												<a data-toggle="collapse" href="#parkingPasses">
+													<i class="fas fa-ticket-alt"></i>
+													<p>Parking Passes</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ PassesCollapseShow }}" id="parkingPasses">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "View Passes"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ MerchantPassNavclass }}">
+																		<a href="/merchant-passes/">
+																			<span class="sub-item">View Passes</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Pass Charges"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ ParkingPassChargesNavclass }}">
+																		<a href="/get-all-parking-pass-charges/">
+																			<span class="sub-item">Pass Charges</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Manage Companies"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ ManageCompaniesNavClass }}">
+																		<a href="/manage-companies/">
+																			<span class="sub-item">Manage Companies</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Exit Parked Vehicles"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Exit Parked Vehicles"|lower and actions.module_id|lower == "Exit Parked Vehicles"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ ExitParkedVehiclesNavclass }}">
+															<a href="/exit-parked-vehicles/">
+																<i class="fas fa-check-double"></i>
+																<p>Exit Parked Vehicles</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Offers"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Offers"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ OffersNavclass }}">
+															<a href="/merchant-view-offer/">
+																<i class="fa fa-shopping-bag"></i>
+																<p>Offers</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Design"|lower and modules.permission == True %}
+											<li class="nav-item {{ DesignNavclass }}">
+												<a data-toggle="collapse" href="#design">
+													<i class="fas fa-money-bill-wave"></i>
+													<p>Design</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ DesignCollapseShow }}" id="design">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Design"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{BillDesignNavClass}}">
+																		<a href="/bill-design/">
+																			<span class="sub-item">Bill Design</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Bill Layout"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ ParkingAppSettingNavClass }}">
+																		<a href="/parking-app-setting/">
+																			<span class="sub-item">Bill Layout</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "My Team"|lower and modules.permission == True %}
+											<li class="nav-item {{ MyTeamNavclass }}">
+												<a data-toggle="collapse" href="#MyTeam">
+													<i class="fas fa-users"></i>
+													<p>My Team</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ MyTeamCollapsShow }}" id="MyTeam">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Users"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ UserNavclass }}">
+																		<a href="/create-merchant-panel-user/">
+																			<span class="sub-item">Users</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Change User Password"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{ ChangeUserPasswordNavclass }}">
+																		<a href="/change-user-password/">
+																			<span class="sub-item">Change User Password</span>
+																		</a>
+																	</li> -->
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "Roles & Permissions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ RolesPermissionSettingsNavclass }}">
+																		<a href="/merchant-role/">
+																			<span class="sub-item">Roles & Permissions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+														{% for actions in merchant_action_permissions_list %}
+															{% if actions.feature_id|lower == "User Logs"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ userlogsActiveClass }}">
+																		<a href="/merchant-list-for-user-log/">
+																			<span class="sub-item">User Logs</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Settings"|lower and modules.permission == True %}
+											<li class="nav-item {{ SettingNavclass }}">
+												<a data-toggle="collapse" href="#parking-settings">
+													<i class="icon-settings"></i>
+													<p>Settings</p>
+													<span class="caret"></span>
+												</a>
+												<div class="collapse {{ settingsCollapseShow }}" id="parking-settings">
+													<ul class="nav nav-collapse">
+														{% for actions in merchant_action_permissions_list %}
+
+															{% if actions.feature_id|lower == "Manage Business"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ merchantNavClass }}">
+																		<a href="/merchant-business/">
+																			<span class="sub-item">Manage Business</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Business Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ GeneralSettingsNavclass }}">
+																		<a href="/merchant-general-setting/">
+																			<span class="sub-item">Business Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Delete Bills Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<!-- <li class="{{ paymentSettingActiveClass }}">
+																		<a href="/merchant-payment-settings/">
+																			<span class="sub-item">Payment Settings</span>
+																		</a>
+																	</li> -->
+																	<li>
+																		<a href="/delete-bills-setting/">
+																			<span class="sub-item">Delete Bills Settings</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "My Subscriptions"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ MySubscriptionNavclass }}">
+																		<a href="/my-subscription/">
+																			<span class="sub-item">My Subscriptions</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+															{% if actions.feature_id|lower == "Flag Reason"|lower and actions.module_id|lower == "Settings"|lower %}
+																{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+																	<li class="{{ FlagReasonsNavClass }}">
+																		<a href="/flag-reason/">
+																			<span class="sub-item">Flag Reason</span>
+																		</a>
+																	</li>
+																{% endif %}
+															{% endif %}
+
+														{% endfor %}
+													</ul>
+												</div>
+											</li>
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Suggest a Parking"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Suggest a Parking"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{SuggestParkingNavclass}}">
+															<a href="/suggest-parking/">
+																<i class="fas fa-user-friends"></i>
+																<p>Suggest a Parking</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "Support & FAQ's"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "Support & FAQ's"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ merchantSupportFAQNavclass }}">
+															<a href="/merchant-supports-faqs/">
+																<i class="far fa-question-circle"></i>
+																<p>Support & FAQ's</p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+									{% for modules in merchant_module_permissions_list %}
+										{% if modules.module_name|lower == "System Updates"|lower and modules.permission == True %}
+											{% for actions in merchant_action_permissions_list %}
+												{% if actions.feature_id|lower == "System Updates"|lower %}
+													{% if actions.view_permission == "1" or actions.add_permission == "1" or actions.edit_permission == "1" or actions.delete_permission == "1" %}
+														<li class="nav-item {{ SystemUpdateNavclass }}">
+															<a href="/merchant-system-updates/">
+																<i class="flaticon-alarm-1"></i>
+																<p>System Updates&nbsp;&nbsp;&nbsp;<span style="color: #31ce36;">{{unread_updates_mer}}</span></p>
+															</a>
+														</li>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									{% endfor %}
+
+								{% endif %}
+							{% endif %}
+						</ul>
+				
+					{% endif %}
+
+				</div>
+			</div>
+		</div>
+        <!-- End Sidebar -->

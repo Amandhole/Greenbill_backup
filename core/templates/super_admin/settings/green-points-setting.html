@@ -1,0 +1,111 @@
+{% extends "layouts/base.html" %} {% block title %} Green Points Settings {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Green Point Settings</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/green-point-settings/">Green Point Settings</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-control" action="/green-point-settings/" method="POST" id="sms_form"
+                            name="sms_form" autocomplete="off">
+                            {% csrf_token %}
+                            <input type="hidden" name="gpsetting">
+                            <div class="card-body">
+
+                                <div class="form-group form-show-validation row align-items-center justify-content-center">
+                                    <label for="name" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Green Points offered for Green Bill
+                                        <span class="required-label">*&nbsp;&nbsp;</span></label>
+                                    <div class="col-lg-3 col-md-4 col-sm-2">
+                                        <input type="text" class="form-control" name="bill_points" placeholder="Enter Number Of Points" value="{{ green_point_settings_data.bill_points }}" required />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group form-show-validation row align-items-center justify-content-center">
+                                    <label for="username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Green Points Earned on Referrals<span class="required-label">*  </span></label>
+                                    <div class="col-lg-3 col-md-4 col-sm-23">
+                                        <input type="text" class="form-control" id="referral_points"
+                                            name="referral_points" placeholder="Enter Number Of Points"
+                                            value="{{ green_point_settings_data.referral_points }}" required />
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3 mb-3">
+                                  <button type="submit" class="btn btn-primary">Update</button>
+                                </div>                                
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script>
+    $("#sms_form").validate({
+        rules: {
+            bill_points: {
+                required: true,
+            },
+            referral_points: {
+                required: true,
+            },
+        },
+        messages: {
+            bill_points: {
+                required: "Green Points field is required",
+            },
+            referral_points: {
+                required: "Referral Points field is required",
+            }, 
+        },
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}

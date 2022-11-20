@@ -1,0 +1,2190 @@
+{% extends "layouts/base.html" %} {% block title %} Merchant Third party Ads {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} 
+
+{% block content %}
+
+  <style type="text/css">
+    .material-switch > input[type="checkbox"] {
+        display: none;   
+    }
+
+    .material-switch > label {
+        cursor: pointer;
+        height: 0px;
+        position: relative; 
+        width: 40px;  
+    }
+
+    .material-switch > label::before {
+        background: rgb(0, 0, 0);
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        content: '';
+        height: 16px;
+        margin-top: -8px;
+        position:absolute;
+        opacity: 0.3;
+        transition: all 0.4s ease-in-out;
+        width: 40px;
+    }
+    .material-switch > label::after {
+        background: rgb(255, 255, 255);
+        border-radius: 16px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+        content: '';
+        height: 24px;
+        left: -4px;
+        margin-top: -8px;
+        position: absolute;
+        top: -4px;
+        transition: all 0.3s ease-in-out;
+        width: 24px;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::before {
+        background: inherit;
+        opacity: 0.5;
+    }
+    .material-switch > input[type="checkbox"]:checked + label::after {
+        background: inherit;
+        left: 20px;
+    }
+    .label-success{
+      background-color: #66aa18 !important
+    }
+
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+</style>
+<div class="modal fade" id="amountModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_amount_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Add Amount</h2>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="third_party_id" name="third_party_id" value="" />
+            <input type="number" class="form-control" id="third_party_amount" name="third_party_amount" placeholder="Amount *"/>
+          </div>
+          <div class="modal-footer">
+            <input id="add_amount_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+<div class="content">
+  <div class="page-inner">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title"> Third party Ads</h4>
+                <ul class="breadcrumbs">
+                    <li class="nav-home">
+                      <a href="/">
+                        <i class="flaticon-home"></i>
+                      </a>
+                    </li>
+                    <li class="separator">
+                      <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                        <a>Promotions</a>
+                    </li>
+                    <li class="separator">
+                        <i class="flaticon-right-arrow"></i>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/ads-for-merchants/">Third party Ads</a>
+                    </li>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+        <div class="page-inner">
+              <div class="row ">
+                    <div class=" col-md-4">
+                        <div class="row">
+                         <div class="card card-stats card-round" style="margin-left: 80px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa fas fa-user"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Total Count</p>
+                                    <h4 class="card-title">{{all_ads_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div> 
+                 <div class=" col-md-4">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 40px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fa fa-spinner"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Waiting For Approval</p>
+                                    <h4 class="card-title">{{waiting_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class=" col-md-4">
+                     <div class="row">
+                        <div class="card card-stats card-round" style="margin-left: 60px;">
+                            <div class="card-body">
+                              <div class="row align-items-center">
+                                <div class="col-icon">
+                                  <div class="icon-big text-center icon-primary bubble-shadow-small" style="background:blue">
+                                    <i class="fas fa-thumbs-up"></i>
+                                  </div>
+                                </div>
+                                <div class="col col-stats ml-3 ml-sm-0">
+                                  <div class="numbers">
+                                    <p class="card-category">Approved</p>
+                                    <h4 class="card-title">{{approved_count}}</h4>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+           {% if is_superuser == True %}
+              <div class="card-body">
+                <!-- Modal -->
+                <div class="table-responsive">
+                <!-- <div>
+
+                    <span class="card-title">&nbsp;&nbsp;Total Count &nbsp;{{all_ads_count}}</span>
+                  
+                  
+                    <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Waiting For Approval &nbsp;{{waiting_count}}</span>
+                  
+                  
+                    <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Approved &nbsp;{{approved_count}}</span>
+                </div><br> -->
+              
+                  <table id="add-row" class="display table table-hover">
+                    <thead>
+                      <tr style="text-align: center;">
+                        <th>Sr. No</th>
+                        <th>Business Name</th>
+                        <!-- <th>Business Name</th> -->
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        
+                        <th>Status</th>
+                        <th>Payment Status</th>
+                        <th>Views</th>
+                        <th>Clicks</th>
+                        <th>Amount</th>
+                        <th style="width: 10%">Action</th>
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      
+                    </tfoot>
+                    <tbody>
+                      {% for data in all_ads %}
+                      {% if data.ads_type == "third_party" %}
+                      <tr style="text-align: center;">
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ data.merchant_business_id.m_business_name }}
+                        <!-- <td>{% if data.default_ads == True %}
+                        All Business
+                      {% else %} 
+                        {{ data.business_name }}
+                      {% endif %}
+                    </td> -->
+                    <td width="15%">{{ data.start_date }}</td>
+                    <td width="15%">{{ data.end_date }}</td>
+
+                    <td>
+                       {% if data.approved_status != "1" and data.approved_status != "2" %}
+                            Waiting For Approval
+                        {% elif data.approved_status == "1" %}
+                            Approved
+                        {% elif data.approved_status == "2" %}
+                            <button type="button" style="text-decoration: none; color: black;" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.disapproved_reason }}">
+                                Disapproved
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data.payment_done %}
+                        <button type="button" style="text-decoration: none; color: black;" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.payment_amount|floatformat:2 }}">
+                            Paid</button>
+                        {% else %}
+                        -----
+                        {% endif %}
+                        </td>
+                    <td>{{data.count}}</td>
+                    <td>{{ data.clicks }}</td>
+                    <td>{{data.ads_below_bill_amount|floatformat:2}}</td>
+                    <td>
+                        
+                    <div class="form-button-action" style="margin: 0px;">
+                        
+                       {% if data.ads_type != "green_bill" %}
+                            <button type="button" data-toggle="tooltip"
+                              title="" class="btn btn-link btn-primary btn-lg viewAdsBtn" id="view-modal-div" data-original-title="View Ads" data-id="{{data.id}}" {% if data.ads_image %} data-ads_img="{{ data.ads_image.url }}" {% endif %} {% if data.ads_image_two %} data-ads_img1="{{ data.ads_image_two.url }}" {% endif %} {% if data.ads_image_three %} data-ads_img2="{{ data.ads_image_three.url }}"
+                              {% endif %} {% if data.ads_image_four %} data-ads_img3="{{ data.ads_image_four.url }}" {% endif %} data-ads_name="{{ data.ads_name }}" data-ads_redirect_url="{{ data.redirect_url }}">
+                              <i class="fa fa-eye"></i>
+                          </button>
+                        {% endif %}
+
+                        
+                        {% if data.approved_status != "1" and data.approved_status != "2" %}
+                          <button type="submit" class="btn btn-link btn-primary AdsApprove" data-id="{{data.id}}" data-original-title="Approve" data-toggle="tooltip"><i class="fa fa-thumbs-up"></i></button>
+                        {% endif %}
+
+                        {% if data.approved_status == "1" %}
+                          {% if data.status != "1" %}
+                            {% if data.payment_done %}
+
+                              <button type="submit" class="btn btn-link btn-primary PaymentReceived" data-id="{{data.id}}" data-original-title="Payment Received" data-toggle="tooltip"><i class="fa fa-credit-card"></i></button>
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+
+                        <!-- <button type="submit" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="tooltip" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button> -->
+                        {% if data.approved_status != "1" and data.approved_status != "2" %}
+                            <span data-original-title="Disapprove" data-toggle="tooltip">
+                                <button type="button" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="modal" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button>
+                            </span>
+                        {% endif %}
+                        {% if data.payment_done == False %}
+                          <span data-original-title="Payment" data-toggle="tooltip">
+                              <button type="button" class="btn btn-link btn-primary takePayment" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="modal" data-target="#addPaymentModel"><i class="fas fa-money-bill-wave"></i></button>
+                          </span>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                       {% endif %} 
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            {% else %}
+                {% for actions in action_permissions_list %}
+                    {% if actions.module_id|lower == "Promotions"|lower and actions.feature_id|lower == "Merchant Third party Ads"|lower %}
+                        {% if actions.view_permission == "1" %}
+                            <input type="hidden" value="1" name="access_permission" id="access_permission">
+                            <div class="card-body">
+                              <!-- Modal -->
+                              <div class="table-responsive">
+                              <!-- <div>
+
+                                  <span class="card-title">&nbsp;&nbsp;Total Count &nbsp;{{all_ads_count}}</span>
+                                
+                                
+                                  <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Waiting For Approval &nbsp;{{waiting_count}}</span>
+                                
+                                
+                                  <span class="card-title">&nbsp;&nbsp;|&nbsp;&nbsp;Approved &nbsp;{{approved_count}}</span>
+                              </div><br> -->
+                            
+                                <table id="add-row" class="display table table-hover">
+                                  <thead>
+                                    <tr style="text-align: center;">
+                                      <th>Sr. No</th>
+                                      <th>Business Name</th>
+                                      <!-- <th>Business Name</th> -->
+                                      <th>Start Date</th>
+                                      <th>End Date</th>
+                                      
+                                      <th>Status</th>
+                                      <th>Payment Status</th>
+                                      <th>Views</th>
+                                      <th>Clicks</th>
+                                      <th>Amount</th>
+                                      <th style="width: 10%">Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tfoot>
+                                    
+                                  </tfoot>
+                                  <tbody>
+                                    {% for data in all_ads %}
+                                    {% if data.ads_type == "third_party" %}
+                                    <tr style="text-align: center;">
+                                      <td>{{ forloop.counter }}</td>
+                                      <td>{{ data.merchant_business_id.m_business_name }}
+                                      <!-- <td>{% if data.default_ads == True %}
+                                      All Business
+                                    {% else %} 
+                                      {{ data.business_name }}
+                                    {% endif %}
+                                  </td> -->
+                                  <td width="15%">{{ data.start_date }}</td>
+                                  <td width="15%">{{ data.end_date }}</td>
+
+                                  <td>
+                                     {% if data.approved_status != "1" and data.approved_status != "2" %}
+                                          Waiting For Approval
+                                      {% elif data.approved_status == "1" %}
+                                          Approved
+                                      {% elif data.approved_status == "2" %}
+                                          <button type="button" style="text-decoration: none; color: black;" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.disapproved_reason }}">
+                                              Disapproved
+                                          </button>
+                                      {% endif %}
+                                  </td>
+                                  <td>
+                                      {% if data.payment_done %}
+                                      <button type="button" style="text-decoration: none; color: black;" class="btn btn-link decoration" data-toggle="tooltip" data-original-title="{{ data.payment_amount|floatformat:2 }}">
+                                          Paid</button>
+                                      {% else %}
+                                      -----
+                                      {% endif %}
+                                      </td>
+                                  <td>{{data.count}}</td>
+                                  <td>{{ data.clicks }}</td>
+                                  <td>{{data.ads_below_bill_amount}}</td>
+                                  <td>
+                                      
+                                  <div class="form-button-action" style="margin: 0px;">
+                                      
+                                     {% if data.ads_type != "green_bill" %}
+                                          <button type="button" data-toggle="tooltip"
+                                            title="" class="btn btn-link btn-primary btn-lg viewAdsBtn" id="view-modal-div" data-original-title="View Ads" data-id="{{data.id}}" {% if data.ads_image %} data-ads_img="{{ data.ads_image.url }}" {% endif %} {% if data.ads_image_two %} data-ads_img1="{{ data.ads_image_two.url }}" {% endif %} {% if data.ads_image_three %} data-ads_img2="{{ data.ads_image_three.url }}"
+                                            {% endif %} {% if data.ads_image_four %} data-ads_img3="{{ data.ads_image_four.url }}" {% endif %} data-ads_name="{{ data.ads_name }}" data-ads_redirect_url="{{ data.redirect_url }}">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                      {% endif %}
+
+                                      
+                                      {% if data.approved_status != "1" and data.approved_status != "2" %}
+                                      <button type="submit" class="btn btn-link btn-primary AdsApprove" data-id="{{data.id}}" data-original-title="Approve" data-toggle="tooltip"><i class="fa fa-thumbs-up"></i></button>
+                                      {% endif %}
+
+                                      {% if data.approved_status == "1" %}
+                                      {% if data.status != "1" %}
+                                      {% if data.payment_done %}
+
+                                      <button type="submit" class="btn btn-link btn-primary PaymentReceived" data-id="{{data.id}}" data-original-title="Payment Received" data-toggle="tooltip"><i class="fa fa-credit-card"></i></button>
+                                      {% endif %}
+                                      {% endif %}
+                                      {% endif %}
+
+                                      <!-- <button type="submit" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="tooltip" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button> -->
+                                      {% if data.approved_status != "1" and data.approved_status != "2" %}
+                                          <span data-original-title="Disapprove" data-toggle="tooltip">
+                                              <button type="button" class="btn btn-link btn-danger AdsDisapproveBtn" data-id="{{data.id}}" data-original-title="Disapprove" data-toggle="modal" data-target="#reasonModal"><i class="fa fa-thumbs-down"></i></button>
+                                          </span>
+                                        {% endif %}
+                                      
+                                    </div>
+                                  </td>
+                                </tr>
+                                     {% endif %} 
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                        {% endif %}
+                  {% endif %}
+              {% endfor %}
+              <div class="card-body permission-denied" style="display:none">
+                  <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addPaymentModel" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form action="/add-payment-for-third-party-ads/" method="POST" enctype="multipart/form-data" id="add_payment_form" name="form" autocomplete="off">
+      {% csrf_token %}  
+      <input type="hidden" name="offer_id">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center"><b>Add Payment Manually</b></h2>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Payment Mode<small style="color: red;"> *</small></label>
+                      <input type="radio" name="payment_mode" value="Cash" onclick="text(0)" checked autocomplete="off" required="">&nbsp;&nbsp;&nbsp;<b  class="radio_set" >Cash</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <!-- <input type="radio" name="payment_mode" value="Online" onclick="text(1)" autocomplete="off" required="">&nbsp;&nbsp;&nbsp;<b  class="radio_set" >Online</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <input type="radio" name="payment_mode" value="Cheque" onclick="text(2)" autocomplete="off" required="">&nbsp;&nbsp;&nbsp;<b  class="radio_set" >Cheque</b>      -->       
+                </div>
+            </div>
+            <!-- <div class="col-md-6" id="hide_check">
+                <div class="form-group">
+                    <label for="name">Cheque No.<small style="color: red;"> *</small></label>
+                    <input type="text" name="check_no" class="form-control" value="" placeholder="Cheque No" id="check_no" required="" maxlength="10" > 
+                    <small id="check_no_error"></small>
+                </div>
+            </div>
+            <div class="col-md-6" id="trans_id">
+                <div class="form-group">
+                    <label for="name">Transaction Id<small style="color: red;"> *</small></label>
+                    <input type="text" name="manual_transaction_id" class="form-control" value="" placeholder="Transaction Id" id="manual_transaction_id" required="" maxlength="20" > 
+                    <small id="manual_transaction_id_error"></small>
+                </div>
+            </div> -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Payment Amount<small style="color: red;"> *</small></label>
+                    <input type="number" name="payment_amount" class="form-control" value="" placeholder="Payment Amount" id="payment_amount" required="" maxlength="10"  > 
+                    <small id="payment_amount_error"></small>
+                </div>
+            </div>
+            <!-- 
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Receive From<small style="color: red;"> *</small></label>
+                    <input type="text" name="Received_from" class="form-control" value="" placeholder="Received From" id="Received_from" required="" maxlength="10" >
+                    <small id="Received_from_error"></small>      
+                </div>   
+            </div> -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Transaction For<small style="color: red;"> *</small></label>
+                        <input type="text" name="transaction_for" class="form-control" value="Third Party Add" placeholder="Transaction For" id="transaction_for" required=""maxlength="20" readonly="" >
+                        <small id="transaction_for_error"></small>
+                </div>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="third_party_add" id="third_party_add" value="">
+        <div class="modal-footer">
+          <input id="add_payment_form_submit" name="submit" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="setActiveAdsModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="" autocomplete="off" action="/set-merchant-active-ads/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Set Active Ads</h2>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="add-row" class="display table">
+                        <tr>
+                            <th>Ads Name</th>
+                            <th>Set Active</th>
+                        </tr>
+                        {% for data in merchant_ads %}
+                            <tr>
+                                <td>{{data.ads_name}}</td>
+                                <td>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            {% if data.active_ads == True %}
+                                                <input class="form-check-input" type="radio" name="active_ads" value="{{data.id}}" checked>
+                                            {% else %}
+                                                <input class="form-check-input" type="radio" name="active_ads" value="{{data.id}}">
+                                            {% endif %}
+                                            <span class="form-check-sign"></span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+        </div>
+       </form>
+    </div>
+</div>
+
+<!-- Create Ads Modal -->
+<div class="modal fade" id="createAdsModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form method="POST" class="form" id="create_ads_form" autocomplete="off" action="/ads-for-merchants/" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Create Ads</h2>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="m_business_id" id="m_business_id" value="{{ merchant_general_setting_id }}" />
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Ads Name<small style="color: red;"> *</small></label>
+                                <input type="text" name="ads_name" class="form-control" value="" 
+                                    id="ads_name" placeholder="Ads Name">
+                                <div id="ads_nameError"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="redirect_div">
+                            <div class="form-group">
+                                <label for="name">Redirect URL<small style="color: red;"> *</small></label>
+                                <input type="url" name="redirect_url" class="form-control" value="" 
+                                    id="redirect_url" placeholder="Redirect URL">
+                                <div id="redirect_urlError"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 style="text-align: center; margin-top: 10px;">&nbsp;&nbsp;Ads Filters</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <label class="form-radio-label">
+                                    <input class="form-radio-input" type="radio" name="ads_type" value="custom_category" checked="" id="ads_type_custom_category">
+                                    <span class="form-radio-sign"> Select Category</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="ads_type" value="custom_business" id="ads_type_custom_merchant">
+                                    <span class="form-radio-sign">Select Business</span>
+                                </label>
+                                <div id="ads_typeError">
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="row" id="custom_category_div">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Select Category</label>
+                                <select class="js-example-basic-multiple"  name="business_category" id="business_category" multiple="multiple" style="width: 100%;" >
+                                    {% for object in business_category_list %}
+                                        <option value="{{ object.id }}">{{ object.business_category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="business_categoryError"></div>
+                                <input type="hidden" name="business_category_value" id="business_category_value" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="custom_business_div">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Select Business</label>
+                                <select class="js-example-basic-multiple" name="business_name" id="business_name" multiple="multiple" style="width: 100%;" >
+                                    {% for object in business_list %}
+                                        <option value="{{ object.id }}">{{ object.m_business_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="business_nameError"></div>
+                                <input type="hidden" name="business_name_value" id="business_name_value" value="">
+                            </div>
+                        </div>
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="schedule" id="schedule" value="True">
+                                    <span class="form-check-sign">Schedule</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="">
+                            <div class="form-group">
+                                <label for="name">Days</label>
+                                <select class="mul-select"  name="days[]" id="days" multiple="true" style="width: 100%;">
+                                    <option value="Sunday">Sunday</option> 
+                                    <option value="Monday">Monday</option>
+                                    <option value="Tuesday">Tuesday</option>
+                                    <option value="Wednesday">Wednesday</option>
+                                    <option value="Thursday">Thursday</option>
+                                    <option value="Friday">Friday</option>
+                                    <option value="Saturday">Saturday</option>  
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Start Date</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control" min="{% now 'Y-m-d' %}">
+                                <div id="start_dateError"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">End Date</label>
+                                <input type="date" name="end_date" id="end_date" class="form-control" min="{% now 'Y-m-d' %}">
+                                <div id="end_dateError"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" id = "ads_image_div">
+                    <div class="form-group">
+                        <label class="text-center" style="display: block;">Ads Image</label>
+                        <div class="input-file input-file-image">
+                            <center>
+                                <img src="/media/ads_images/ads-dummy-img.png" class="img-upload-preview center" width="200" height="200">
+                            </center>
+                            <input type="file" class="form-control form-control-file center" id="uploadImg" name="ads_image" accept="image/*" value="">
+                            <div id="ads_imageError" style="text-align: center;"></div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                <label for="uploadImg" class="center btn btn-primary btn-round btn-md text-center">
+                                    <i class="fa fa-file-image" style="color: white;"></i><span style="color: white;">
+                                    Select Image</span></label>
+                                </div>
+                            </div>
+                            <p class="text-center center" style="color:#63b90b;"><b>Image Should be less than 500kb</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <input id="submitBtn" type="submit" class="btn btn-primary" value="Save">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Create Ads Modal End -->
+
+<!-- Edit Ads Modal -->
+<div class="modal fade" id="editAdsModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <form method="POST" action="/edit-merchant-ads-below-bill/" class="form" id="edit_ads_form" name="edit_ads_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title w-100 text-center">Edit Ads</h2>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" name="ads_id" id="ads_id" value="" />
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Ads Name<small style="color: red;"> *</small></label>
+                                <input type="text" name="edit_ads_name" class="form-control" value="" 
+                                    id="edit_ads_name" placeholder="Ads Name">
+                                <div id="edit_ads_nameError"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" id="edit_redirect_div">
+                                <label for="name">Redirect URL</label>
+                                <input type="url" name="edit_redirect_url" class="form-control" value="" 
+                                    id="edit_redirect_url" placeholder="Redirect URL">
+                                <div id="edit_redirect_urlError"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;Ads Filters</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check form-check-inline">
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="edit_ads_type" value="custom_category" id="edit_ads_type_custom_category">
+                                    <span class="form-radio-sign"> Select Category</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="edit_ads_type" value="custom_business" id="edit_ads_type_custom_business">
+                                    <span class="form-radio-sign"> Select Business</span>
+                                </label>
+                                <div id="edit_ads_typeError">
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                    <div class="row" id="edit_custom_category_div">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Select Category</label>
+                                <select class="js-example-basic-multiple"  name="edit_business_category" id="edit_business_category" multiple="multiple" style="width: 100%;" >
+                                    {% for object in business_category_list %}
+                                        <option value="{{ object.id }}">{{ object.business_category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="edit_business_category_nameError"></div>
+                                <input type="hidden" name="edit_business_category_value" id="edit_business_category_value" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="edit_custom_business_div">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Select Business</label>
+                                <select class="js-example-basic-multiple"  name="edit_business_name" id="edit_business_name" multiple="multiple" style="width: 100%;" >
+                                    {% for object in business_list %}
+                                        <option value="{{ object.id }}">{{ object.m_business_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div id="edit_business_nameError"></div>
+                                <input type="hidden" name="edit_business_name_value" id="edit_business_name_value" value="">
+                            </div>
+                        </div>
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="edit_schedule" id="edit_schedule" value="True">
+                                    <span class="form-check-sign">Schedule</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">Start Date</label>
+                                <input type="date" name="edit_start_date" id="edit_start_date" class="form-control" min="{% now 'Y-m-d' %}">
+                                <div id="edit_start_dateError"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="name">End Date</label>
+                                <input type="date" name="edit_end_date" id="edit_end_date" class="form-control" min="{% now 'Y-m-d' %}">
+                                <div id="edit_end_dateError"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" id="edit_ads_image_div">
+                    <div class="form-group">
+                        <label class="text-center" style="display: block;">Ads Image</label>
+                        <div class="input-file input-file-image">
+                            <center>
+                                <img src="" class="img-upload-preview center" width="200" height="200" id="EditAdsImageSource">
+                            </center>
+                            <input type="file" class="form-control form-control-file center" id="EdituploadImg" name="edit_ads_image" accept="image/*" value="">
+                            <div id="edit_ads_imageError" style="text-align: center;"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                <label for="EdituploadImg" class="center btn btn-primary btn-round btn-md text-center">
+                                    <i class="fa fa-file-image" style="color: white;"></i><span style="color: white;">
+                                    Select Image</span></label>
+                                </div>
+                            </div>
+                            <p class="text-center center" style="color:#63b90b;"><b>Image Should be less than 500kb</b></p>
+                        </div>
+                        <input type="hidden" name="image_status" id="image_status" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <input id="editFormSubmitBtn" type="submit" class="btn btn-primary" value="Save" data-id="">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Edit Ads Modal End-->
+
+<!-- View Ads Modal Start -->
+<div class="modal fade" id="DisplayAdsModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="view_ads_name"></h2>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img width="400" height="200" src="" id="view_ads_img">
+                <div id="hide_view_ads_img1">
+                    <br></br><br></br>
+                    <img width="400" height="200" src="" id="view_ads_img1">
+                </div>
+                <div id="hide_view_ads_img2">
+                    <br></br><br></br>
+                    <img width="400" height="200" src="" id="view_ads_img2">
+                </div>
+                <div id="hide_view_ads_img3">
+                    <br></br><br></br>
+                    <img width="400" height="200" src="" id="view_ads_img3">
+                    
+                </div>
+                <p id="view_redirect_url"></p>
+             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- View Ads Modal End -->
+
+
+
+<div class="modal fade" id="reasonModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form method="POST" class="form" id="add_reason_form" autocomplete="off">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title w-100 text-center">Add Reason</h2>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="disapprove_ads_id" name="disapprove_ads_id" value="" />
+            <input type="text" class="form-control" id="reason" name="reason" placeholder="Reason *"/>
+          </div>
+          <div class="modal-footer">
+            <input id="add_reason_form_submit" type="submit" class="btn btn-primary" value="Save">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+
+    $('.AdsAmount').on('click', function(e) {
+    var id = $(this).attr("data-id");
+
+    $('#third_party_id').val(id);
+});
+$('#add_amount_form').validate({
+    rules:{
+      reason:{
+        required: true
+      }
+    },
+    submitHandler: function () {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You really want to Add Amount!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Add Amount!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            type: "POST",
+            url: "/add-third-party-amount-by-id/",
+            data: $('#add_amount_form').serialize(),
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Added!',
+                    text:'Amount Added Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+      }
+    });
+    }
+  });  
+
+
+
+$('.AdsApprove').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Approve!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/approve-third-party-ads/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Received!',
+                    text:'Ads Approved Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+
+    $('.PaymentReceived').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Payment Received!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/approve-thir-party-ads-by-id/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Received!',
+                    text:'Payment Received !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+
+$('.takePayment').on('click', function(e) {
+  var id = $(this).attr("data-id");
+  $('#third_party_add').val(id);
+  // alert($('#third_party_add').val());
+});
+
+    $('.AdsDisapproveBtn').on('click', function(e) {
+    var id = $(this).attr("data-id");
+    $('#disapprove_ads_id').val(id);
+});
+
+    $('#add_reason_form').validate({
+    rules:{
+      reason:{
+        required: true
+      }
+    },
+    submitHandler: function () {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You really want to Disapprove this Ads!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Disapprove it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            type: "POST",
+            url: "/disapprove-third-party-ads-by-id/",
+            data: $('#add_reason_form').serialize(),
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Disapproved!',
+                    text:'Ads Disapproved Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+      }
+    });
+    }
+  });
+
+</script>
+
+
+<script>
+    $(document).ready(function(){
+    $(".mul-select").select2({
+        placeholder: "Select Days",
+        tags: true,
+        tokenSeparators: ['/',',',','," "]
+    });
+})
+</script>
+
+<script>
+
+$(document).ready(function() {
+  $('input[name=end_date]').change(function() {
+    var end_date = $('#end_date').val();
+    document.getElementById('start_date').setAttribute("max", end_date);
+  })
+
+  $('input[name=start_date]').change(function() {
+    var start_date = $('#start_date').val();
+    document.getElementById('end_date').setAttribute("min", start_date);
+  })
+
+  $('input[name=edit_end_date]').change(function() {
+    var edit_end_date = $('#edit_end_date').val();
+    document.getElementById('edit_start_date').setAttribute("max", edit_end_date);
+  })
+
+  $('input[name=edit_start_date]').change(function() {
+    var edit_start_date = $('#edit_start_date').val();
+    document.getElementById('edit_end_date').setAttribute("min", edit_start_date);
+  })
+})
+
+$(".viewAdsBtn").on("click", function () {
+    var ads_img = $(this).data("ads_img");
+    var ads_name = $(this).data('ads_name');
+    var redirect_url = $(this).data('ads_redirect_url');
+    var ads_img1 = $(this).data("ads_img1");
+    var ads_img2 = $(this).data("ads_img2");
+    var ads_img3 = $(this).data("ads_img3");
+
+
+
+    $('#view_ads_name').empty().append(ads_name);
+
+    $('#view_ads_img').attr('src', ads_img);
+
+    if (ads_img1){
+        $('#view_ads_img1').attr('src', ads_img1);
+    }
+    else{
+        document.getElementById("hide_view_ads_img1").style.display = "none";
+    }
+
+    if (ads_img2){
+        $('#view_ads_img2').attr('src', ads_img2);
+    }
+    else{
+        document.getElementById("hide_view_ads_img2").style.display = "none";
+    }
+
+    if (ads_img3){
+        $('#view_ads_img3').attr('src', ads_img3);
+    }
+    else{
+        document.getElementById("hide_view_ads_img3").style.display = "none";
+    }
+
+    if (redirect_url != "None"){
+
+        $('#view_redirect_url').empty().append("<a href='" + redirect_url + "' target='_blank'>" +  redirect_url + "</a>");
+    }
+
+    $("#DisplayAdsModal").modal();
+});
+
+$(document).ready(function() {
+    $("#custom_business_div").hide();
+    $('input:radio[name="ads_type"]').change(function(){
+        if($(this).val() === 'default_ads'){
+            $("#custom_business_div").hide();
+        }
+        else if($(this).val() === 'custom_category'){ 
+            $("#custom_category_div").show();
+            $("#custom_business_div").hide();
+            $("#business_name").val('').trigger('change');
+        }
+        else{
+            $("#custom_business_div").show();
+            $("#custom_category_div").hide();
+            $("#business_category").val('').trigger('change');
+        }
+    });
+});
+
+$(document).ready(function() {
+    $("#edit_custom_business_div").hide();
+    $('input:radio[name="edit_ads_type"]').change(function(){
+        if($(this).val() === 'default_ads'){
+            $("#edit_custom_business_div").hide();
+        }
+        else if($(this).val() === 'custom_category'){ 
+            $("#edit_custom_category_div").show();
+            $("#edit_custom_business_div").hide();
+            $("#edit_business_name").val('').trigger('change');
+        }
+        else{
+            $("#edit_custom_business_div").show();
+            $("#edit_custom_category_div").hide();
+            $("#edit_business_category").val('').trigger('change');
+        }
+    });
+});
+
+$.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+}, 'File size must be less than 500 Kb');
+  
+$("#create_ads_form").validate({
+    rules: {
+      ads_type: {
+        required: true,
+      },
+      ads_name: {
+          required: true,
+      },
+      redirect_url: {
+        required: true,
+      },
+      business_name: {
+        required: function(element){
+            return $("#ads_type_custom_merchant").is(':checked');
+        } 
+      },
+      business_category: {
+        required: function(element){
+            return $("#ads_type_custom_category").is(':checked');
+        } 
+      },
+      ads_image: {
+        required: true,
+        filesize: 500000,
+        extension: "png,jpg,jpeg",
+      },
+      start_date: {
+        required: true, 
+      },
+      end_date: {
+        required: true,
+      },
+    },
+    messages: {
+        ads_image: {
+        extension: "Select Proper Image."
+      }
+    },
+    errorPlacement: function (error, element) {
+        if (element.attr("name") == "ads_type")
+            $("#ads_typeError").html(error);
+
+        if (element.attr("name") == "ads_name")
+            $("#ads_nameError").html(error);
+
+        if (element.attr("name") == "redirect_url")
+            $("#redirect_urlError").html(error);
+
+        if (element.attr("name") == "business_name")
+            $("#business_nameError").html(error);
+
+        if (element.attr("name") == "business_category")
+            $("#business_categoryError").html(error);
+
+        if (element.attr("name") == "ads_image")
+            $("#ads_imageError").html(error);
+
+        if (element.attr("name") == "start_date")
+            $("#start_dateError").html(error);
+
+        if (element.attr("name") == "end_date")
+            $("#end_dateError").html(error);
+
+    }
+});
+
+$('.AdsDeleteBtn').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/delete-merchant-ads-by-id/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Deleted!',
+                    text:'Ads Deleted Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+</script>
+
+<script>
+$(".editBtn").click(function(e) {
+    var id = $(this).attr("data-id")
+    $.ajax({
+        url: "/get-merchant-ads-details/",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+        'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        'id': id,
+        },
+        success: function (response) {
+
+            data = response.data;
+
+            $('#ads_id').val(data.id);
+
+            $('#edit_ads_type_default').prop('checked', false);
+            $('#edit_ads_type_custom_category').prop('checked', false);
+            $('#edit_ads_type_custom_business').prop('checked', false);
+
+            if(data.ads_type == "default_ads"){
+                $('#edit_ads_type_default').prop('checked', true);
+            }
+            else if(data.ads_type == "custom_business"){
+                $('#edit_ads_type_custom_business').prop('checked', true);
+            }
+            else if(data.ads_type == "custom_category"){
+                $('#edit_ads_type_custom_category').prop('checked', true);
+            }
+            else{
+                $('#edit_ads_type_custom_category').prop('checked', false);
+                // $('#edit_ads_type_default').prop('checked', true);
+            }
+
+            if(data.ads_type == "default_ads"){
+                $("#edit_custom_business_div").hide();
+            }
+            if(data.ads_type == "custom_category"){
+                $("#edit_custom_business_div").hide();
+                $("#edit_custom_category_div").show();
+            }
+            else{
+                $("#edit_custom_business_div").show();
+                $("#edit_custom_category_div").hide();
+            }
+
+            $('#edit_ads_name').val(data.ads_name)
+
+            $('#edit_redirect_url').val(data.redirect_url)
+
+            
+            if(data.schedule == true){
+                $('#edit_schedule').prop('checked', true);
+                $('#edit_start_date').val(data.start_date);
+                $('#edit_end_date').val(data.end_date)
+            }else{
+                $('#edit_schedule').prop('checked', false);
+                $('#edit_start_date').val('');
+                $('#edit_end_date').val('');
+            }
+
+            if(data.ads_image != ""){
+                $('#EditAdsImageSource').attr('src',data.ads_image);
+                $('#image_status').val(1);
+            }else{
+                $('#EditAdsImageSource').attr('src','/static/assets/img/user-profile-pic.png');
+                $('#image_status').val(0);
+            }
+
+            $("#edit_business_name").val('').trigger('change')
+
+            if(data["business_list"].length > 0){
+                for(i = 0; i < data["business_list"].length; i++){
+                    val = data["business_list"][i]
+                    $("#edit_business_name option[value="+val+"]").prop("selected",true).trigger("change")
+                }
+            }
+
+            $("#edit_business_category").val('').trigger('change')
+
+            if(data["category_list"].length > 0){
+                for(i = 0; i < data["category_list"].length; i++){
+                    val = data["category_list"][i]
+                    $("#edit_business_category option[value="+val+"]").prop("selected",true).trigger("change")
+                }
+            }
+        }
+    });
+});
+
+$(document).ready(function() {
+    $('input:radio[name="edit_ads_type"]').change(function(){
+        if($(this).val() === 'green_bill'){
+            $("#edit_redirect_div").hide();
+            $("#edit_ads_image_div").hide();
+        }
+        else{
+            $("#edit_redirect_div").show();
+            $("#edit_ads_image_div").show();
+        }
+    });
+});
+
+$("#edit_ads_form").validate({
+    rules: {
+      edit_ads_type: {
+        required: true,
+      },
+      edit_ads_name: {
+          required: true,
+      },
+      edit_redirect_url: {
+        required: true,
+      },
+      edit_business_name: {
+        required: function(element){
+            return $("#edit_ads_type_custom_business").is(':checked');
+        } 
+      },
+      edit_business_category: {
+        required: function(element){
+            return $("#edit_ads_type_custom_category").is(':checked');
+        } 
+      },
+      edit_ads_image: {
+        required: function(element){
+            return $("#image_status").val() == 0;
+        },
+        filesize: 500000,
+        extension: "png,jpg,jpeg",
+      },
+      edit_start_date: {
+        required: function(element){
+            return $("#edit_schedule").is(':checked');
+        } 
+      },
+      edit_end_date: {
+        required: function(element){
+            return $("#edit_schedule").is(':checked');
+        } 
+      },
+    },
+    messages: {
+        edit_ads_image: {
+        extension: "Select Proper Image."
+      }
+    },
+    errorPlacement: function (error, element) {
+        if (element.attr("name") == "edit_ads_type")
+            $("#edit_ads_typeError").html(error);
+
+        if (element.attr("name") == "edit_ads_name")
+            $("#edit_ads_nameError").html(error);
+
+        if (element.attr("name") == "edit_redirect_url")
+            $("#edit_redirect_urlError").html(error);
+
+        if (element.attr("name") == "edit_business_name")
+            $("#edit_business_nameError").html(error);
+
+        if (element.attr("name") == "edit_business_category")
+            $("#edit_business_category_nameError").html(error);
+
+        if (element.attr("name") == "edit_ads_image")
+            $("#edit_ads_imageError").html(error);
+
+        if (element.attr("name") == "edit_start_date")
+            $("#edit_start_dateError").html(error);
+
+        if (element.attr("name") == "edit_end_date")
+            $("#edit_end_dateError").html(error);
+    }
+});
+
+</script>
+
+<script>
+
+$(document).ready(function() {
+    $("#business_name").select2({
+        placeholder:" Select Business",
+        closeOnSelect: true,
+    })
+    $("#business_name").on('change', function()
+    {
+        var opts = [],opt;
+        var len = business_name.options.length;
+        for (var i = 0; i < len; i++) {
+            opt = business_name.options[i];
+            if (opt.selected) {
+            opts.push(opt.value);
+            }
+        }
+        $("#business_name_value").val(opts)
+    })
+
+    $("#edit_business_name").select2({
+        placeholder:" Select Business",
+        closeOnSelect: true,
+    })
+    $("#edit_business_name").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_business_name.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_business_name.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        $("#edit_business_name_value").val(opts2)
+    })
+
+    $("#business_category").select2({
+        placeholder:" Select Category",
+        closeOnSelect: true,
+    })
+    $("#business_category").on('change', function()
+    {
+        var opts = [],opt;
+        var len = business_category.options.length;
+        for (var i = 0; i < len; i++) {
+            opt = business_category.options[i];
+            if (opt.selected) {
+            opts.push(opt.value);
+            }
+        }
+        $("#business_category_value").val(opts)
+    })
+
+    $("#edit_business_category").select2({
+        placeholder:" Select Category",
+        closeOnSelect: true,
+    })
+    $("#edit_business_category").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_business_category.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_business_category.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        $("#edit_business_category_value").val(opts2)
+    })
+})
+
+</script>
+
+
+
+
+<script>
+
+$(document).ready(function() {
+  $('input[name=end_date]').change(function() {
+    var end_date = $('#end_date').val();
+    document.getElementById('start_date').setAttribute("max", end_date);
+  })
+
+  $('input[name=start_date]').change(function() {
+    var start_date = $('#start_date').val();
+    document.getElementById('end_date').setAttribute("min", start_date);
+  })
+
+  $('input[name=edit_end_date]').change(function() {
+    var edit_end_date = $('#edit_end_date').val();
+    document.getElementById('edit_start_date').setAttribute("max", edit_end_date);
+  })
+
+  $('input[name=edit_start_date]').change(function() {
+    var edit_start_date = $('#edit_start_date').val();
+    document.getElementById('edit_end_date').setAttribute("min", edit_start_date);
+  })
+})
+
+$(".viewAdsBtn").on("click", function () {
+    var ads_img = $(this).data("ads_img");
+    var ads_name = $(this).data('ads_name');
+    var redirect_url = $(this).data('ads_redirect_url');
+    var ads_img1 = $(this).data("ads_img1");
+    var ads_img2 = $(this).data("ads_img2");
+    var ads_img3 = $(this).data("ads_img3");
+
+
+
+    $('#view_ads_name').empty().append(ads_name);
+
+    $('#view_ads_img').attr('src', ads_img);
+
+    if (ads_img1){
+        $('#view_ads_img1').attr('src', ads_img1);
+    }
+    else{
+        document.getElementById("hide_view_ads_img1").style.display = "none";
+    }
+
+    if (ads_img2){
+        $('#view_ads_img2').attr('src', ads_img2);
+    }
+    else{
+        document.getElementById("hide_view_ads_img2").style.display = "none";
+    }
+
+    if (ads_img3){
+        $('#view_ads_img3').attr('src', ads_img3);
+    }
+    else{
+        document.getElementById("hide_view_ads_img3").style.display = "none";
+    }
+
+    if (redirect_url != "None"){
+
+        $('#view_redirect_url').empty().append("<a href='" + redirect_url + "' target='_blank'>" +  redirect_url + "</a>");
+    }
+
+    $("#DisplayAdsModal").modal();
+});
+
+$(document).ready(function() {
+    $("#custom_business_div").hide();
+    $('input:radio[name="ads_type"]').change(function(){
+        if($(this).val() === 'default_ads'){
+            $("#custom_business_div").hide();
+        }
+        else if($(this).val() === 'custom_category'){ 
+            $("#custom_category_div").show();
+            $("#custom_business_div").hide();
+            $("#business_name").val('').trigger('change');
+        }
+        else{
+            $("#custom_business_div").show();
+            $("#custom_category_div").hide();
+            $("#business_category").val('').trigger('change');
+        }
+    });
+});
+
+$(document).ready(function() {
+    $("#edit_custom_business_div").hide();
+    $('input:radio[name="edit_ads_type"]').change(function(){
+        if($(this).val() === 'default_ads'){
+            $("#edit_custom_business_div").hide();
+        }
+        else if($(this).val() === 'custom_category'){ 
+            $("#edit_custom_category_div").show();
+            $("#edit_custom_business_div").hide();
+            $("#edit_business_name").val('').trigger('change');
+        }
+        else{
+            $("#edit_custom_business_div").show();
+            $("#edit_custom_category_div").hide();
+            $("#edit_business_category").val('').trigger('change');
+        }
+    });
+});
+
+$.validator.addMethod('filesize', function (value, element, param) {
+    return this.optional(element) || (element.files[0].size <= param)
+}, 'File size must be less than 500 Kb');
+  
+$("#create_ads_form").validate({
+    rules: {
+      ads_type: {
+        required: true,
+      },
+      ads_name: {
+          required: true,
+      },
+      redirect_url: {
+        required: true,
+      },
+      business_name: {
+        required: function(element){
+            return $("#ads_type_custom_merchant").is(':checked');
+        } 
+      },
+      business_category: {
+        required: function(element){
+            return $("#ads_type_custom_category").is(':checked');
+        } 
+      },
+      ads_image: {
+        required: true,
+        filesize: 500000,
+        extension: "png",
+      },
+      start_date: {
+        required: function(element){
+            return $("#schedule").is(':checked');
+        } 
+      },
+      end_date: {
+        required: function(element){
+            return $("#schedule").is(':checked');
+        } 
+      },
+    },
+    messages: {
+        ads_image: {
+        extension: "Only png file is acceptable."
+      }
+    },
+    errorPlacement: function (error, element) {
+        if (element.attr("name") == "ads_type")
+            $("#ads_typeError").html(error);
+
+        if (element.attr("name") == "ads_name")
+            $("#ads_nameError").html(error);
+
+        if (element.attr("name") == "redirect_url")
+            $("#redirect_urlError").html(error);
+
+        if (element.attr("name") == "business_name")
+            $("#business_nameError").html(error);
+
+        if (element.attr("name") == "business_category")
+            $("#business_categoryError").html(error);
+
+        if (element.attr("name") == "ads_image")
+            $("#ads_imageError").html(error);
+
+        if (element.attr("name") == "start_date")
+            $("#start_dateError").html(error);
+
+        if (element.attr("name") == "end_date")
+            $("#end_dateError").html(error);
+
+    }
+});
+
+$('.AdsDeleteBtn').on('click', function(e) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        var id = $(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            url: "/delete-merchant-ads-by-id/"+id,
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(response) {
+            Swal.fire(
+                {
+                    title:'Deleted!',
+                    text:'Ads Deleted Successfully !!!',
+                    icon:'success',
+                    timer:1500,
+                    showConfirmButton:false,
+                })
+            .then(function() {
+                location.reload();
+            });
+            },
+            error: function() {
+            Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+                .then(function() {
+                location.reload();
+                });       
+            }
+        });
+        }
+    })
+});
+</script>
+
+<script>
+$(".editBtn").click(function(e) {
+    var id = $(this).attr("data-id")
+    $.ajax({
+        url: "/get-merchant-ads-details/",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+        'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+        'id': id,
+        },
+        success: function (response) {
+
+            data = response.data;
+
+            $('#ads_id').val(data.id);
+
+            $('#edit_ads_type_default').prop('checked', false);
+            $('#edit_ads_type_custom_category').prop('checked', false);
+            $('#edit_ads_type_custom_business').prop('checked', false);
+
+            if(data.ads_type == "default_ads"){
+                $('#edit_ads_type_default').prop('checked', true);
+            }
+            else if(data.ads_type == "custom_business"){
+                $('#edit_ads_type_custom_business').prop('checked', true);
+            }
+            else if(data.ads_type == "custom_category"){
+                $('#edit_ads_type_custom_category').prop('checked', true);
+            }
+            else{
+                $('#edit_ads_type_custom_category').prop('checked', false);
+                // $('#edit_ads_type_default').prop('checked', true);
+            }
+
+            if(data.ads_type == "default_ads"){
+                $("#edit_custom_business_div").hide();
+            }
+            if(data.ads_type == "custom_category"){
+                $("#edit_custom_business_div").hide();
+                $("#edit_custom_category_div").show();
+            }
+            else{
+                $("#edit_custom_business_div").show();
+                $("#edit_custom_category_div").hide();
+            }
+
+            $('#edit_ads_name').val(data.ads_name)
+
+            $('#edit_redirect_url').val(data.redirect_url)
+
+            
+            if(data.schedule == true){
+                $('#edit_schedule').prop('checked', true);
+                $('#edit_start_date').val(data.start_date);
+                $('#edit_end_date').val(data.end_date)
+            }else{
+                $('#edit_schedule').prop('checked', false);
+                $('#edit_start_date').val('');
+                $('#edit_end_date').val('');
+            }
+
+            if(data.ads_image != ""){
+                $('#EditAdsImageSource').attr('src',data.ads_image);
+                $('#image_status').val(1);
+            }else{
+                $('#EditAdsImageSource').attr('src','/static/assets/img/user-profile-pic.png');
+                $('#image_status').val(0);
+            }
+
+            $("#edit_business_name").val('').trigger('change')
+
+            if(data["business_list"].length > 0){
+                for(i = 0; i < data["business_list"].length; i++){
+                    val = data["business_list"][i]
+                    $("#edit_business_name option[value="+val+"]").prop("selected",true).trigger("change")
+                }
+            }
+
+            $("#edit_business_category").val('').trigger('change')
+
+            if(data["category_list"].length > 0){
+                for(i = 0; i < data["category_list"].length; i++){
+                    val = data["category_list"][i]
+                    $("#edit_business_category option[value="+val+"]").prop("selected",true).trigger("change")
+                }
+            }
+        }
+    });
+});
+
+$(document).ready(function() {
+    $('input:radio[name="edit_ads_type"]').change(function(){
+        if($(this).val() === 'green_bill'){
+            $("#edit_redirect_div").hide();
+            $("#edit_ads_image_div").hide();
+        }
+        else{
+            $("#edit_redirect_div").show();
+            $("#edit_ads_image_div").show();
+        }
+    });
+});
+
+$("#edit_ads_form").validate({
+    rules: {
+      edit_ads_type: {
+        required: true,
+      },
+      edit_ads_name: {
+          required: true,
+      },
+      edit_redirect_url: {
+        required: true,
+      },
+      edit_business_name: {
+        required: function(element){
+            return $("#edit_ads_type_custom_business").is(':checked');
+        } 
+      },
+      edit_business_category: {
+        required: function(element){
+            return $("#edit_ads_type_custom_category").is(':checked');
+        } 
+      },
+      edit_ads_image: {
+        required: function(element){
+            return $("#image_status").val() == 0;
+        },
+        filesize: 500000,
+        extension: "png",
+      },
+      edit_start_date: {
+        required: function(element){
+            return $("#edit_schedule").is(':checked');
+        } 
+      },
+      edit_end_date: {
+        required: function(element){
+            return $("#edit_schedule").is(':checked');
+        } 
+      },
+    },
+    messages: {
+        edit_ads_image: {
+        extension: "Only png file is acceptable."
+      }
+    },
+    errorPlacement: function (error, element) {
+        if (element.attr("name") == "edit_ads_type")
+            $("#edit_ads_typeError").html(error);
+
+        if (element.attr("name") == "edit_ads_name")
+            $("#edit_ads_nameError").html(error);
+
+        if (element.attr("name") == "edit_redirect_url")
+            $("#edit_redirect_urlError").html(error);
+
+        if (element.attr("name") == "edit_business_name")
+            $("#edit_business_nameError").html(error);
+
+        if (element.attr("name") == "edit_business_category")
+            $("#edit_business_category_nameError").html(error);
+
+        if (element.attr("name") == "edit_ads_image")
+            $("#edit_ads_imageError").html(error);
+
+        if (element.attr("name") == "edit_start_date")
+            $("#edit_start_dateError").html(error);
+
+        if (element.attr("name") == "edit_end_date")
+            $("#edit_end_dateError").html(error);
+    }
+});
+
+</script>
+
+<script>
+
+$(document).ready(function() {
+    $("#business_name").select2({
+        placeholder:" Select Business",
+        closeOnSelect: true,
+    })
+    $("#business_name").on('change', function()
+    {
+        var opts = [],opt;
+        var len = business_name.options.length;
+        for (var i = 0; i < len; i++) {
+            opt = business_name.options[i];
+            if (opt.selected) {
+            opts.push(opt.value);
+            }
+        }
+        $("#business_name_value").val(opts)
+    })
+
+    $("#edit_business_name").select2({
+        placeholder:" Select Business",
+        closeOnSelect: true,
+    })
+    $("#edit_business_name").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_business_name.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_business_name.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        $("#edit_business_name_value").val(opts2)
+    })
+
+    $("#business_category").select2({
+        placeholder:" Select Category",
+        closeOnSelect: true,
+    })
+    $("#business_category").on('change', function()
+    {
+        var opts = [],opt;
+        var len = business_category.options.length;
+        for (var i = 0; i < len; i++) {
+            opt = business_category.options[i];
+            if (opt.selected) {
+            opts.push(opt.value);
+            }
+        }
+        $("#business_category_value").val(opts)
+    })
+
+    $("#edit_business_category").select2({
+        placeholder:" Select Category",
+        closeOnSelect: true,
+    })
+    $("#edit_business_category").on('change', function()
+    {
+        var opts2 = [], opt2;
+        var len = edit_business_category.options.length;
+        for (var i = 0; i < len; i++) {
+            opt2 = edit_business_category.options[i];
+            if (opt2.selected) {
+            opts2.push(opt2.value);
+            }
+        }
+        $("#edit_business_category_value").val(opts2)
+    })
+})
+
+</script>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#basic-datatables").DataTable({});
+
+    $("#multi-filter-select").DataTable({
+      pageLength: 10,
+      initComplete: function () {
+        this.api()
+          .columns()
+          .every(function () {
+            var column = this;
+            var select = $(
+              '<select class="form-control"><option value=""></option></select>'
+            )
+              .appendTo($(column.footer()).empty())
+              .on("change", function () {
+                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                column.search(val ? "^" + val + "$" : "", true, false).draw();
+              });
+
+            column
+              .data()
+              .unique()
+              .sort()
+              .each(function (d, j) {
+                select.append('<option value="' + d + '">' + d + "</option>");
+              });
+          });
+      },
+    });
+
+    // Add Row
+    // $("#add-row").DataTable({
+    //   pageLength: 10,
+    // });
+
+    $('#add-row').DataTable({
+      dom: 'lBfrtip',
+      "ordering": false,
+      "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      buttons: [
+        'excel', 'pdf', 'print'
+      ]
+    });
+
+    var action =
+      '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function () {
+      $("#add-row")
+        .dataTable()
+        .fnAddData([
+          $("#addName").val(),
+          $("#addPosition").val(),
+          $("#addOffice").val(),
+          action,
+        ]);
+      $("#addRowModal").modal("hide");
+    });
+  });
+
+  if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
+  }
+</script>
+
+{% endblock javascripts %}

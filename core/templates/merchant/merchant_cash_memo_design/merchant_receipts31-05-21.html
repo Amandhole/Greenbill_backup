@@ -1,0 +1,2290 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% load custom_tags %}
+{% load static %}
+{% block title %} Receipts {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    .invoice-box {
+        max-width: 800px;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #eee;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        font-size: 16px;
+        line-height: 24px;
+        font-family: 'Lato', sans-serif;
+        /* font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; */
+        color: #555;
+    }
+
+    .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+    }
+
+    .invoice-box table td {
+        padding: 5px;
+        vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    .invoice-box table tr.top table td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.top table td.title {
+        font-size: 45px;
+        line-height: 45px;
+        color: #333;
+    }
+
+    .invoice-box table tr.information table td {
+        padding-bottom: 40px;
+    }
+
+    .invoice-box table tr.heading td {
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.item td {
+        border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+        border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /** RTL **/
+    .rtl {
+        direction: rtl;
+        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    }
+
+    .rtl table {
+        text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+        text-align: left;
+    }
+</style>
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    div#container {
+        font: normal 12px Arial, Helvetica, Sans-serif;
+        background: white;
+        padding: 20px;
+    }
+
+    /* table tr td:first-child::after {
+   content: "";
+   display: inline-block;
+   vertical-align: top;
+   min-width: 100;
+   min-height: 190px;
+}
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+} */
+    .card-border {
+        content: "";
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        height: 5px;
+        background-image: -webkit-linear-gradient(0deg, #F78181 15%, #BEF781 15%);
+
+    }
+
+    .close {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        width: 52px;
+        height: 11px;
+        opacity: 3;
+
+        left: 0;
+        right: 0;
+    }
+
+    .close:hover {
+        opacity: 1;
+    }
+</style>
+
+
+{% if request.user.is_authenticated %}
+{% if is_merchant == True %}
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Receipts </h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Design</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/view-merchant-receipts/">Receipts</a>
+                                </li>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#myModal">
+                                <i class="fa fa-plus"></i>
+                                Add Receipt
+                              </button>
+                        </div>
+                    </div>
+                     <div class="card-body center ">
+                       <div class="row">
+                           
+            </div>
+
+            <!-- modal table -->
+            <div class="col">
+                <div class="table-responsive">
+                    <table id="add-row" class="display table table-hover">
+                        <thead style="text-align: center;">
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th style="text-align: center;">Receipt No.</th>
+                                <th style="text-align: center;">Date</th>
+                                <th style="text-align: center;">Mobile Number</th>
+                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Action</th>
+
+                                <!-- <th style="text-align: center;">Action</th> -->
+                            </tr>
+                        </thead>
+
+                        <tbody style="text-align: center;">
+                            {% for object in object %}
+                            <tr class="tr1">
+                                <!-- {{object.template_choice}} -->
+
+                                {% if object.template_choice == '1' %}
+
+                                <td>{{forloop.counter}}</td>
+                            
+                                
+                                <td>{{object.receipt_no}}
+                                   
+                                </td>
+                                <td> 
+                                    {{object.date|date:'d-m-Y'}}
+                                </td>
+                                <td>
+                                    {{object.mobile_number}}
+                                </td>
+                                <td>
+                                    &#x20B9; {{object.total}}
+                                </td>
+                                <td>
+                                    <!-- |date:'d-m-Y' -->
+                                    <button type="button" data-toggle="tooltip" data-target="#ViewReceiptModal1"
+                                        id="view-modal-div" data-receipt_no="{{object.receipt_no}}"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-receipt_no="{{ object.receipt_no }}"
+                                        data-date=" {{object.date|date:'d-m-Y'}}"
+                                        data-cash_received_from="{{object.cash_received_from}}"
+                                        data-rs="{{object.rs}}"
+                                        data-amount_for="{{object.amount_for}}"
+                                        data-total="{{object.total}}"
+                                        data-grand_total="{{object.grand_total}}"
+                                        title="" class="btn btn-link btn-primary btn-lg viewBtn1"
+                                        data-original-title="View receipt" style="padding-right: 18px;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </button>
+                                
+                                <button type="button" data-toggle="tooltip" data-target="" title="Send Receipt"
+                                    class="btn btn-link btn-primary btn-lg sendBtn1" id="send-modal-div"
+                                    data-original-title="Send Receipt" data-url="{{object.id}}"
+                                    data-id="{{object.id}}"
+                                    data-original-title="Send SMS" 
+                                     data-url="{{object.id}}" 
+                                     data-id="{{object.id}}"
+                                     data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                </button>
+
+                                <button type="button" data-toggle="tooltip" data-target="" title="Delete Receipt"
+                                    class="btn btn-link btn-danger deleteBtn1" id="deactivate-modal-div"
+                                    data-original-title="Delete Receipt" data-url="{{object.id}}"
+                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+                                    
+                                </button>
+                                </td>
+                                {% endif %}
+                            </tr>
+                                  {% if object.template_choice == '2'  %}
+                            <tr class="tr2">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{object.receipt_no}}
+                                   
+                                </td>
+                                <td> 
+                                    {{object.date|date:'d-m-Y'}}
+                                </td>
+                                <td>
+                                    {{object.mobile_number}}
+                                </td>
+                                <td>
+                                    &#x20B9; {{object.total}}
+                                </td>
+                                <td>
+
+                                    <button type="button" data-toggle="tooltip" data-target="#ViewReceiptModal2"
+                                        id="view-modal-div" data-receipt_no="{{object.receipt_no}}"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-receipt_no="{{ object.receipt_no }}"
+                                        data-date=" {{object.date|date:'d-m-Y'}}"
+                                        data-cash_received_from="{{object.cash_received_from}}"
+                                        data-rs="{{object.rs}}"
+                                        data-amount_for="{{object.amount_for}}"
+                                        data-total="{{object.total}}"
+                                        data-grand_total="{{object.grand_total}}"
+                                        title="" class="btn btn-link btn-primary btn-lg viewBtn2"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-original-title="View receipt" style="padding-right: 18px;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                  
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Send Receipt"
+                                     class="btn btn-link btn-primary btn-lg sendBtn2" id="send-modal-div"
+                                     data-original-title="Send Receipt" data-url="{{object.id}}"
+                                     data-id="{{object.id}}"
+                                     data-original-title="Send SMS" 
+                                     data-url="{{object.id}}" 
+                                     data-id="{{object.id}}"
+                                     data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </button>
+
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Delete Receipt"
+                                    class="btn btn-link btn-danger deleteBtn2" id="deactivate-modal-div"
+                                    data-original-title="Delete Receipt" data-url="{{object.id}}"
+                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                    </button>
+                                </td>
+                                  {% endif %}
+                            </tr>
+                                  {% if object.template_choice == '3' %}
+                            <tr class="tr3">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{object.receipt_no}}
+                                   
+                                </td>
+                                <td> 
+                                    {{object.date|date:'d-m-Y'}}
+                                </td>
+                                <td>
+                                    {{object.mobile_number}}
+                                </td>
+                                <td>
+                                    &#x20B9; {{object.total}}
+                                </td>
+                                <td>
+                                    <button type="button" data-toggle="tooltip" data-target="#ViewReceiptModal3"
+                                        title="" class="btn btn-link btn-primary btn-lg viewBtn3"
+                                        id="view-modal-div" data-receipt_no="{{object.receipt_no}}"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-receipt_no="{{ object.receipt_no }}"
+                                        data-date=" {{object.date|date:'d-m-Y'}}"
+                                        data-cash_received_from="{{object.cash_received_from}}"
+                                        data-rs="{{object.rs}}"
+                                        data-amount_for="{{object.amount_for}}"
+                                        data-total="{{object.total}}"
+                                        data-grand_total="{{object.grand_total}}"
+                                        data-original-title="View receipt" style="padding-right: 18px;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                    
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Send Receipt"
+                                     class="btn btn-link btn-primary btn-lg sendBtn3" id="send-modal-div"
+                                     data-original-title="Send Receipt" data-url="{{object.id}}"
+                                     data-id="{{object.id}}"
+                                     data-original-title="Send SMS" 
+                                     data-url="{{object.id}}" 
+                                     data-id="{{object.id}}"
+                                     data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                     <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </button>
+
+                                <button type="button" data-toggle="tooltip" data-target="" title="Delete Receipt"
+                                    class="btn btn-link btn-danger deleteBtn3" id="deactivate-modal-div"
+                                    data-original-title="Delete Receipt" data-url="{{object.id}}"
+                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                </button>
+                                </td>
+                                  {% endif %}
+                            </tr>
+                                  {% if object.template_choice == '4' %}
+                            <tr class="tr4">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{object.receipt_no}}
+                                   
+                                </td>
+                                <td> 
+                                    {{object.date|date:'d-m-Y'}}
+                                </td>
+                                <td>
+                                    {{object.mobile_number}}
+                                </td>
+                                <td>
+                                    &#x20B9; {{object.total}}
+                                </td>
+                                <td>
+                                    <button type="button" data-toggle="tooltip" data-target="#ViewReceiptModal4"
+                                        title="" class="btn btn-link btn-primary btn-lg viewBtn4"
+                                        id="view-modal-div" data-receipt_no="{{object.receipt_no}}"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-receipt_no="{{ object.receipt_no }}"
+                                        data-date=" {{object.date|date:'d-m-Y'}}"
+                                        data-cash_received_from="{{object.cash_received_from}}"
+                                        data-rs="{{object.rs}}"
+                                        data-amount_for="{{object.amount_for}}"
+                                        data-total="{{object.total}}"
+                                        data-grand_total="{{object.grand_total}}"
+                                        data-original-title="View receipt" style="padding-right: 18px;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                    
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Send Receipt"
+                                        class="btn btn-link btn-primary btn-lg sendBtn4" id="send-modal-div"
+                                        data-original-title="Send Receipt" data-url="{{object.id}}"
+                                        data-id="{{object.id}}"
+                                        data-original-title="Send SMS" 
+                                        data-url="{{object.id}}" 
+                                        data-id="{{object.id}}"
+                                        data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </button>
+
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Delete Receipt"
+                                        class="btn btn-link btn-danger deleteBtn4" id="deactivate-modal-div"
+                                        data-original-title="Delete Receipt" data-url="{{object.id}}"
+                                        data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                    </button>
+                                </td>
+                                  {% endif %}
+                            </tr>
+                                  {% if object.template_choice == '5' %}
+                            <tr class="tr5">
+                                <td>{{forloop.counter}}</td>
+                                <td>{{object.receipt_no}}
+                                   
+                                </td>
+                                <td> 
+                                    {{object.date|date:'d-m-Y'}}
+                                </td>
+                                <td>
+                                    {{object.mobile_number}}
+                                </td>
+                                <td>
+                                    &#x20B9; {{object.total}}
+                                </td>
+                                <td>
+
+                                    <button type="button" data-toggle="tooltip" data-target="#ViewReceiptModal5"
+                                        title="" class="btn btn-link btn-primary btn-lg viewBtn5"
+                                        id="view-modal-div" data-receipt_no="{{object.receipt_no}}"
+                                        data-url="{{object.id}}" data-id="{{object.id}}"
+                                        data-receipt_no="{{ object.receipt_no }}"
+                                        data-date=" {{object.date|date:'d-m-Y'}}"
+                                        data-cash_received_from="{{object.cash_received_from}}"
+                                        data-rs="{{object.rs}}"
+                                        data-amount_for="{{object.amount_for}}"
+                                        data-total="{{object.total}}"
+                                        data-grand_total="{{object.grand_total}}"
+                                        data-original-title="View receipt" style="padding-right: 18px;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                    
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Send Receipt"
+                                        class="btn btn-link btn-primary btn-lg sendBtn5" id="send-modal-div"
+                                        data-original-title="Send Receipt" data-url="{{object.id}}"
+                                        data-id="{{object.id}}"
+                                        data-original-title="Send SMS" 
+                                        data-url="{{object.id}}" 
+                                        data-id="{{object.id}}"
+                                        data-db_table="{{object.db_table}}" data-mobile_number="{{object.mobile_number}}">
+                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </button>
+
+                                    <button type="button" data-toggle="tooltip" data-target="" title="Delete Receipt"
+                                    class="btn btn-link btn-danger deleteBtn5" id="deactivate-modal-div"
+                                    data-original-title="Delete Receipt" data-url="{{object.id}}"
+                                    data-id="{{object.id}}"><i class="fas fa-trash"></i>
+
+                                    </button>
+                                </td>
+
+                                </td>
+                            </tr>
+                                      {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- View receipt Modal -->
+<div class="modal fade" id="ViewReceiptModal1" role="dialog">
+    <div class="modal-dialog modal-lg" style="margin-left: 15pc;">
+       
+        <!-- receipt 1 -->
+        <div class="header" style="margin-bottom: 0%; ">
+            <h1 style="text-align: right; width: 61pc; color: #ff0f0f; margin-bottom: 0%; "><i
+                    class="fa fa-times-circle" aria-hidden="true"></i>
+
+            </h1>
+        </div>
+
+        <!-- recepit 1     -->
+        <div class="container">
+            <div class="card"
+                style="padding: 12px; border-left:khaki 32px solid; border-top:khaki 32px solid; border-radius: 5px; width: 60pc;">
+                <div style="text-align: center;">
+                    <h2><span style="color: rgb(110, 103, 39);"><b>
+                                {{form.m_business_name}}
+                            </b></span></h2>
+                </div>
+                <!-- <div style="font-size:12px; text-align: center;">Slogan</div> -->
+                <div style="font-size: 11px; text-align: center;padding-bottom: 4px;">
+                    <div>
+                        {{form.m_address}},&nbsp;{{form.m_area}},&nbsp;{{form.m_city}}
+                    </div>
+
+                    <div>
+                        {{form.m_landline_number}}
+                    </div>
+
+                    <div>
+                        {{form.m_company_email}}
+                    </div>
+                </div>
+                <div class="col-sm" style="text-align: center; padding-top: 4px; padding-left: 20px;">
+                    <h1><span
+                            style="background-color: rgb(231, 227, 193); color: rgb(153, 145, 70); padding: 4px; border-radius: 5px ; "><b>Receipt</b></span>
+                    </h1>
+                </div>
+                <div class="col-md-12" style="float: left; padding-left: 2px; padding-top: 28px;">
+                    <div  style="float: left; padding-right: 22px; padding-top: 28px;">Receipt No.:  </div>
+                        <div id="id1" class="receipt_no"  style="float: left; padding-right: 22px; padding-top: 28px;">
+                             {{object.receipt_no}}</div>
+                   
+                        <div id="date1" name="date" style="float: right; padding-right: 28px; padding-top: 28px;">D {{object.date|date:'d-m-Y'}} </div>
+                    <div style="float: right; padding-right: 28px; padding-top: 28px;">Date:  </div>
+                    
+                </div>
+                <div>
+                    <div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                Cash Received From &nbsp;&nbsp; </div>
+
+                            <div class="col-md-8" id="cash_received_from1" name="cash_received_from"
+                                style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px;">&nbsp;&nbsp;
+                                {{object.cash_received_from}} </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                of Rs &nbsp;&nbsp; </div>
+
+                            <div class="col-md-8" id="rs1" name="rs"
+                                style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 8px;">&nbsp;&nbsp;
+                                {{object.rs}} </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                For &nbsp;&nbsp; </div>
+
+                            <div class="col-md-8" id="amount_for1" name="amount_for "
+                                style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 8px;">&nbsp;&nbsp;
+                                {{object.amount_for}} </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row" style="padding-top: 14px;">
+                            <div style="padding-left: 16px; padding-top: 3px;">Payment Received in</div>
+                            <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cash<br></div>
+                            <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cheque<br></div>
+                            <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Other<br></div>
+                        </div>
+
+                        <div class="row" style="  padding-top: 12px;">
+                            <div class="col-md-2">Total: </div>
+                            <div id="total1" name="total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                                {{object.total}}</div>
+                        </div>
+                        <div class="row" style="  padding-top: 12px;">
+                            <div class="col-md-2"> Advanced:</div>
+                            <div  id="total12" name="total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                                {{object.total}}</div>
+                        </div>
+                        <div class="row" style="  padding-top: 12px;">
+                            <div class="col-md-2">Grand Total: </div>
+                            <div id="grand_total1" name="grand_total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                                {{object.grand_total}}</div>
+                        </div>
+
+                        <div style="text-align: right; padding: 10px; padding-right: 35px;">
+                            <br>
+                            Signature</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- End View receipt Modal -->
+
+
+<!-- View receipt Modal -->
+<div class="modal fade" id="ViewReceiptModal2" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+        <div class="">
+
+            <h1 style="text-align: right; color: #ff0f0f; margin-bottom: 0%; "><i class="fa fa-times-circle"
+                    aria-hidden="true"></i>
+
+            </h1>
+        </div>
+        <div class="card modal-content"
+            style="max-width: 100em; padding: 15px; box-shadow: gray;  border-bottom: rgb(39, 66, 51) solid 4px ;">
+
+            <div class="row" style="padding-top: 0px; align-content: flex-end;">
+                <div class="col-6" style="background-color:rgb(135, 152, 231); height: 13px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-8" style="background-color: rgb(122, 166, 231); height: 13px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-10" style="background-color: rgb(61, 68, 126); height: 13px;"></div>
+            </div>
+            <div style="float:right; padding-top: 10px; padding-left: 10px; "><span style="color:rgb(90, 170, 207)">
+                    <h2><b> {{form.m_business_name}}</b></h2>
+                </span>
+                <div
+                    style="float: left; text-align: left; font-size: 12px; color: rgb(33, 72, 131); padding-right: 23px;">
+                    <div>
+                        {{form.m_address}},&nbsp;{{form.m_city}}
+                    </div>
+
+                    <div>
+                        {{form.m_landline_number}}
+                    </div>
+
+                    <div>
+                        {{form.m_company_email}}
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-12" style="float: left; padding-left: 2px; padding-top: 28px;">
+                <div  style="float: left; padding-left: 18px; padding-right: 22px; padding-top: 28px;">Receipt No.:  </div>
+                    <div id="receipt_no2" class="receipt_no"  style="float: left; padding-right: 22px; padding-top: 28px;">
+                          {{object.receipt_no}}</div>
+               
+                    <div id="date2" name="date" style="float: right; padding-right: 28px; padding-top: 28px;">D {{object.date|date:'d-m-Y'}} </div>
+                <div style="float: right; padding-right: 28px; padding-top: 28px;">Date:  </div>
+                
+            </div>
+            <div >
+               <div style="text-align: center;"> <h1>
+                    <span style=" background-color:rgb(150, 181, 221); color:rgb(90, 127, 196); padding: 4px; border-radius: 5px ; "><b>Receipt</b></span>
+                </h1></div>
+
+
+
+                <div class="row" style="padding-top: 10px;">
+                    <div class="col-md-3" style="padding-left: 30px; padding-top: 12px;">
+                        Cash Received From &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="cash_received_from2" name="cash_received_from"
+                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="padding-left: 30px; padding-top: 12px;">
+                        of Rs &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="rs2" name="rs" style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.rs}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="padding-left: 30px; padding-top: 12px;">
+                        For &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="amount_for2" style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.amount_for}} </div>
+                </div>
+            </div>
+            <div>
+                <div class="row" style="padding-top: 14px;">
+                    <div style="padding-left: 16px; padding-top: 3px; padding-left: 30px;">Payment Received in</div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cash<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cheque<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Other<br></div>
+                </div>
+
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2">Total: </div>
+                    <div class="col-md-2" id="total2" name="total" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.total}}</div>
+                </div>
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2"> Advanced:</div>
+                    <div class="col-md-2" id="total22" name="total" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.total}}</div>
+                </div>
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2">Grand Total: </div>
+                    <div class="col-md-2" id="grand_total2" name="grand_total2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.grand_total}}</div>
+                </div>
+                <div style="text-align: right; padding: 10px; padding-right: 35px;">
+                    <br>
+                    Signature</div>
+
+                <div class="row" style="padding-top: 0px; align-content: flex-end;padding-left: 520px;">
+                    <div class="col" style="background-color: rgb(61, 68, 126); height: 13px;"></div>
+                </div>
+                <div class="row" style="padding-top: 0px; align-content: flex-end;padding-left: 320px;">
+                    <div class="col" style="background-color: rgb(122, 166, 231); height: 13px;"></div>
+                </div>
+                <div class="row" style="padding-top: 0px; align-content: flex-end;padding-left: 120px;">
+                    <div class="col" style="background-color:rgb(135, 152, 231); height: 13px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- End View receipt Modal -->
+
+<!-- View receipt Modal -->
+<div class="modal fade" id="ViewReceiptModal3" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <div class="">
+            <h1 style="text-align: right; color: #ff0f0f; margin-bottom: 0%; "><i class="fa fa-times-circle"
+                    aria-hidden="true"></i>
+
+            </h1>
+        </div>
+        <div class="card modal-content"
+            style="max-width: 100em; padding: 15px; box-shadow: gray;  border-bottom: rgb(39, 66, 51) solid 4px ;">
+
+            <div class="row" style="padding-top: 0px;">
+                <div class="col-6" style="background-color:rgb(160, 201, 99); height: 13px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-8" style="background-color: rgb(93, 172, 128); height: 13px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-10" style="background-color: rgb(39, 66, 51); height: 13px;"></div>
+            </div>
+            <div style="float:right; padding-top: 10px; padding-left: 10px; "><span style="color:rgb(39, 173, 39)">
+                    <h2><b> {{form.m_business_name}}</b></h2>
+                </span>
+
+                <div
+                    style="float: left; text-align: left; font-size: 12px; color: rgb(67, 151, 105); padding-right: 23px;">
+                    <div>
+                        {{form.m_address}},&nbsp;{{form.m_city}}
+                    </div>
+
+                    <div>
+                        {{form.m_landline_number}}
+                    </div>
+
+                    <div>
+                        {{form.m_company_email}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="float: left; padding-left: 2px; padding-top: 28px;">
+                <div  style="float: left; padding-left: 18px; padding-right: 22px; padding-top: 28px;">Receipt No.:  </div>
+                    <div id="receipt_no3" class="receipt_no"  style="float: left; padding-right: 22px; padding-top: 28px;">
+                         A {{object.receipt_no}}</div>
+               
+                    <div id="date3" name="date" style="float: right; padding-right: 28px; padding-top: 28px;">D {{object.date}} </div>
+                <div style="float: right; padding-right: 28px; padding-top: 28px;">Date:  </div>
+                
+            </div>
+            <div >
+                <div style="text-align: center;">
+                <h1><span style="background-color:rgb(160, 201, 99); color:rgb(124, 124, 124); padding: 4px; border-radius: 5px ; "><b>Receipt</b></span>
+                </h1></div>
+
+                <div class="row" style="padding-top: 10px; padding-left: 14px;">
+                    <div class="col-md-3" style="padding-top: 12px;">
+                        Cash Received From &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="cash_received_from3" name="cash_received_from"
+                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style=" padding-top: 12px; padding-left: 30px;">
+                        of Rs &nbsp;&nbsp; </div>
+
+                    <div id="rs3" name="rs" class="col-md-8" style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.rs}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style=" padding-top: 12px; padding-left: 30px;">
+                        For &nbsp;&nbsp; </div>
+
+                    <div id="amount_for3" name="amount_for" class="col-md-8" style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.amount_for}} </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="row" style="padding-top: 14px;">
+                    <div style="padding-left: 16px; padding-top: 3px; padding-left: 30px;">Payment Received in</div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cash<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cheque<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Other<br></div>
+                </div>
+
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2">Total: </div>
+                    <div id="total3" name="total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.total}}</div>
+                </div>
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2"> Advanced:</div>
+                    <div id="total32" name="total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.total}}</div>
+                </div>
+                <div class="row" style="  padding-top: 12px; padding-left: 18px;">
+                    <div class="col-md-2">Grand Total: </div>
+                    <div id="grand_total3" name="grand_total" class="col-md-2" style="border-bottom: 0.5px solid rgb(235, 233, 233);"> &#x20B9;
+                        {{object.grand_total}}</div>
+                </div>
+                <div style="text-align: right; padding: 10px; padding-right: 35px;">
+                    <br>
+                    Signature</div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- End View receipt Modal -->
+<!-- View receipt Modal -->
+<div class="modal fade" id="ViewReceiptModal4" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <div class="">
+            <h1 style="text-align: right; color: #ff0f0f; margin-bottom: 0%; "><i class="fa fa-times-circle"
+                    aria-hidden="true"></i>
+
+            </h1>
+        </div>
+        <div class="card modal-content" style="max-width: 64em; padding-bottom: 8px; border-bottom: crimson solid 3px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col"
+                        style="background-color: crimson; height: 13px;padding-top :0px; border-top-left-radius: 5px; border-top-right-radius: 5px; ">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="background-color: rgb(196, 132, 144); height: 13px; padding-top: 1px;">
+                    </div>
+                </div>
+                <div style="padding-left: 4px;">
+                    <h2 style="color:crimson; padding-top: 8px;"><b> {{form.m_business_name}}</b></h2>
+                    <div style="font-size:11px ;color: rgb(80, 8, 22);">
+                        <div>
+                            {{form.m_address}},&nbsp;{{form.m_area}}, &nbsp; {{form.m_city}}
+                        </div>
+
+                        <div>
+                            {{form.m_landline_number}}
+                        </div>
+
+                        <div>
+                            {{form.m_company_email}}
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm" style="text-align: center;">
+                        <h1><span
+                                style="background-color: rgb(197, 181, 184); color: rgb(119, 58, 88); padding: 4px; border-radius: 5px ; "><b>Receipt</b></span>
+                        </h1>
+
+                    </div>
+                </div>
+                <div class="container">
+
+                    <div class="row">
+                        <div  class="col-sm-" style="padding-left: 12px;">
+                            Receipt No. : 
+                           
+                        </div>
+                        <div id="receipt_no4" class="col-sm-2"></div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-2" style="text-align: center; padding-left: 28px;">
+                            Date: {{object.date}}
+                        </div>
+                        <div id="date4" class="col-sm-2"></div>
+                    </div>
+                </div>
+                <table style="padding: 12px; width: 100%;">
+                    <tbody style="padding: 12px; ">
+                        <tr style="padding: 12px;">
+                            <td style="padding: 12px; width: 65%;">
+                                <div class="row" style="padding-top: 10px;">
+                                    <div class="col-md-4" style="padding-top: 12px;">
+                                        Cash Received From &nbsp;&nbsp; </div>
+
+                                    <div class="col-md-7" id="cash_received_from4" name="cash_received_from"
+                                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                                        &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                                </div>
+                            </td>
+                            <td style="padding: 12px; align-content: left;">
+                                <div class="row" style="padding-top: 10px;">
+                                <div class="col-sm-4" style="padding-top: 12px;">
+                                   Amount </div>
+                                   <div class="col-sm-4" id="total4" name="total"
+                                        style="border: 1px solid rgb(124, 123, 123); padding-right: 12px; padding-top: 6px; border-radius: 6px;">
+                                        &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                                <!-- <input id="total4" name="total4" type="text" name="fruit" value="{{object.total}}"> -->
+                            </td>
+                        </tr>
+                        <tr style="padding: 12px;">
+                            <td style="padding: 12px;">
+                                <div class="row">
+                                    <div class="col-md-4"
+                                        style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                                        the sum of Rs &nbsp;&nbsp; </div>
+
+                                    <div class="col-md-7" id="rs4" name="rs"
+                                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                                        &nbsp;&nbsp; {{object.rs}} </div>
+                                </div>
+                                <!-- the sum of Rupees <u>{{object.rs}}</u> -->
+                            </td>
+                            <td style="padding: 12px;">
+                                <input type="checkbox" name="fruit" value="Cheque"> Cash
+                            </td>
+                        </tr>
+
+                        <tr style="padding: 12px;">
+                            <td style="padding: 12px;">
+                                <div class="row">
+                                    <div class="col-md-4"
+                                        style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                                        For &nbsp;&nbsp; </div>
+
+                                    <div class="col-md-7" id="amount_for4" name="amount_for"
+                                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                                        &nbsp;&nbsp; {{object.amount_for}} </div>
+                                </div>
+                            </td>
+                            <td style="padding: 12px;">
+                                <input type="checkbox" name="fruit" value="Cheque"> Cheque
+                            </td>
+                        </tr>
+
+                        <tr style="padding: 12px;">
+                            <td style="padding: 12px;">
+                                Signature __________________________________________________________________________
+                            </td>
+                            <td style="padding: 12px;">
+                                <input type="checkbox" name="fruit" value="Cheque"> Other
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- End View receipt Modal -->
+<!-- View receipt Modal -->
+<div class="modal fade" id="ViewReceiptModal5" role="dialog">
+    <div class="modal-dialog modal-lg">
+        
+        <div class="">
+            <h1 style="text-align: right; color: #ff0f0f; margin-bottom: 0%; "><i class="fa fa-times-circle"
+                    aria-hidden="true"></i>
+
+            </h1>
+        </div>
+        <div class="card modal-content ">
+
+            <div class="container">
+
+
+                <div class="row">
+                    <div class="col">
+                        <div>
+                            <div>
+                                <h2 style="color: brown; padding-top: 28px;"><b> {{form.m_business_name}}</b></h2>
+                            </div>
+
+                            <div style="font-size: 11px; color: rgb(78, 43, 43);">
+                                <div>
+                                    {{form.m_address}},&nbsp;{{form.m_area}} &nbsp; {{form.m_city}}
+                                </div>
+
+                                <div>
+                                    {{form.m_landline_number}}
+                                </div>
+
+                                <div>
+                                    {{form.m_company_email}}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="text-align: right; padding-top: 38px; padding-right: 0px; ">
+                        <h1 style="color: brown; "><span
+                                style="background-color: darkgray; padding: 4px; border-top-left-radius: 5px; border-bottom-left-radius: 5px;"><b>RECEIPT</b></span>
+                        </h1>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="container" style="padding: 20px;">
+                <div class="row" style="text-align: left; padding-left: 14px; ">
+                   <div class="col-sm-"> Receipt No.:</div>
+                   <div id="receipt_no5" class="col"></div>
+                    &nbsp; {{object.receipt_no}}
+                    
+                </div>
+                <div class="row" style="text-align: left; padding-left: 14px; ">
+                    <div class="col-sm-">Date: &nbsp; {{object.date}}</div>
+                    <div id="date5" class="col"></div>
+                </div>
+                <div class="row" style="padding-top: 10px;">
+                    <div class="col-md-3" style="padding-top: 12px;">
+                        Cash Received From &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="cash_received_from5" name="cash_received_from"
+                        style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-right: 12px; padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                        of Rs &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="rs5" name="rs"
+                     style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.rs}} </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3" style="text-align: left; padding-left: 20px; padding-top: 12px;">
+                        For &nbsp;&nbsp; </div>
+
+                    <div class="col-md-8" id="amount_for5" name="amount_for"
+                     style="border-bottom: 0.5px solid rgb(235, 233, 233); padding-top: 12px;">
+                        &nbsp;&nbsp; {{object.amount_for}} </div>
+                </div>
+            </div>
+            <div>
+                <div class="row" style="padding-top: 14px;">
+                    <div style="padding-left: 16px; padding-top: 3px; padding-left: 30px;">Payment Received in</div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cash<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Cheque<br></div>
+                    <div class="col"><input type="checkbox" name="fruit" value="Cheque"> Other<br></div>
+                </div>
+
+
+                <div class="row" style="padding-top: 25px; padding-right: 25px; padding-left: 18px; padding-bottom: 12px;">
+                    <!-- <div class="row" style="padding-left: 14px;"> -->
+                    <div class="col-sm-1" style="padding-top: 25px; padding-bottom: 18px; padding-left: 14px;">
+                        Total:
+                    
+                    </div>
+                    <div class="col-sm-3" id="total5" name="total"
+                    style="border: 1px solid rgb(124, 123, 123); margin:0px; padding-left: 22px; padding-right: 12px; padding-top: 22px; border-radius: 6px;">
+                    &nbsp;&nbsp; {{object.cash_received_from}} </div>
+                    <div class="col" style="text-align: right; padding-top: 25px; padding-right: 12px;"> Signature</div>
+                </div>
+                
+                <!-- </div> -->
+            </div>
+
+        </div>
+     
+    </div>
+</div>
+
+{% endif %}
+{% endif %}
+<!-- End View receipt Modal -->
+
+
+
+<!-- Add receipt Modal -->
+<div class="modal fade" id="myModal" role="dialog" >
+    <div class="modal-dialog modal-lg" style="margin-left: 16pc;">
+      <!-- Modal content-->
+      <div class="col-md-12" >
+        <div class="row" style="padding: 20px;">
+            <form method="POST" class="form" id="add_receipt_form" style="width: 60pc;">
+                {% csrf_token %}
+                <div class="modal-content" style="width: 60pc;">
+                  <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Add Receipt</h2>
+                  </div>
+                  <div class="modal-body">
+                    <form class=" form-control" id="add_receipt_form" 
+                    name="form" autocomplete="off" >
+                    {% csrf_token %}
+                    <div class="modal-body">
+                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Mobile Number<small style="color: red;">
+                                        *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="tel" class="form-control mobile" name="mobile_number"
+                                        id="mobile_number" placeholder="Mobile Number" value=""
+                                        required  maxlength="10"/>
+                                  
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Cash Received From<small style="color: red;">
+                                    *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="text" class="form-control mobile" name="cash_received_from"
+                                        id="cash_received_from" placeholder="Cash Received From" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Rs<small style="color: red;">
+                                    *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="text" class="form-control mobile" name="rs"
+                                        id="rs" placeholder="Rupees" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Amount For<small style="color: red;">
+                                    *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="text" class="form-control mobile" name="amount_for"
+                                        id="amount_for" placeholder="Amount For" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Total<small style="color: red;">
+                                    *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="text" class="form-control mobile" name="total"
+                                        id="total" placeholder="Total" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Grand Total<small style="color: red;">
+                                    *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="text" class="form-control mobile" name="grand_total"
+                                        id="grand_total" placeholder="Grand Total" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Date<small style="color: red;"> *</small></label>
+                                <div class="input-group mb-6">
+                                    <input type="date" class="form-control mobile" name="date"
+                                        id="date" placeholder="Date" value="" required  max="{% now 'Y-m-d' %}"/>
+                                </div>
+                               
+                            </div>
+                        </div>
+       
+                            <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt Template<small style="color: red;"> *</small></label>
+                                <div class="input-group mb-12" >
+                                <div class="input-group mb-12" >
+                                  
+                                    <select class="form-control mobile" name="template_choice"
+                                        id="template_choice" placeholder="Template Choice" value=""  
+                                        onchange="admSelectCheck(this);" >
+                                      <option value="0">Select Receipt Template</option>
+                                      <option value="1">Receipt Template 1 </option>
+                                      <option value="2">Receipt Template 2</option>
+                                      <option value="3">Receipt Template 3</option>
+                                      <option value="4">Receipt Template 4</option>
+                                      <option value="5">Receipt Template 5</option>
+                                      
+                                    </select>
+
+                                </div>
+                               
+                            </div>
+                        </div>
+                         
+                 </div>
+                 <div class="row">
+                 <div class="col-md-4"></div>
+                 <div class="col-md-8" style="padding-top: 20px;">
+                    <div id="template1" style="display:none;">
+                        
+                        <img src="http://157.230.228.250/media/receipt/receipt-1.png" alt="Template1" style=" width: 50%; height: 50%; border: 2px solid rgb(223, 220, 220);">
+                    </div>
+                    <div id="template2" style="display:none;">
+                        <img src="http://157.230.228.250/media/receipt/receipt-2.png" alt="Template2" style=" width: 50%; height: 50%;border: 2px solid rgb(223, 220, 220);">
+                    </div>
+                    <div id="template3" style="display:none;">
+                        <img src="http://157.230.228.250/media/receipt/receipt-3.png" alt="Template3" style=" width: 50%; height: 50%;border: 2px solid rgb(223, 220, 220);">
+                    </div>
+                    <div id="template4" style="display:none;">
+                        <img src="http://157.230.228.250/media/receipt/receipt-4.png" alt="Template4" style=" width: 50%; height: 50%;border: 2px solid rgb(223, 220, 220);">
+                    </div>
+                    <div id="template5" style="display:none;">
+                        <img src="http://157.230.228.250/media/receipt/receipt-5.png" alt="Template5" style=" width: 50%; height: 50%;border: 2px solid rgb(223, 220, 220);">
+                    </div>
+                 </div>
+                 </div>
+                 </form>
+                  </div>
+                  <div class="modal-footer" style="margin-top:30px">
+                    <div class="col-md-12">
+                        <div class="text-center mt-3 mb-3">
+                      <button type="submit" class="btn btn-primary">Create</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                     </div>
+                   
+                  </div>
+                </div>
+            </form>
+           
+     </div>
+ </div>
+ </div>
+ </div>
+  
+
+<!-- Add receipt Modal End -->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+
+    }
+
+
+    
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+            if (/^[6-9][0-9]{9}$/.test(value)) {
+                return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid Mobile Number");
+
+
+    $( "#add_receipt_form" ).validate({
+  rules: {
+    receipt_no: {
+      required: true,
+    },
+    cash_received_from:{
+        lettersonly: true,
+    },
+    mobile_number:{
+        required: true,
+        maxlength:10,
+        minlength:10,
+        mobile_number: true,
+  },
+},
+
+  messages: {
+      receipt_no:{
+    receipt_name: "receipt number field is required."
+    },
+    mobile_number:{
+        required:'please enter mobile number',
+        minlength: 'mobile number should be 10 digits',
+        maxlength: 'mobile number should be 10 digits',
+
+    },
+
+  },
+  submitHandler: function() {
+    $.ajax({
+              type: "POST",
+              url: "/view-merchant-receipts/",
+              data: $('form').serialize(),
+              success: function(response) {
+                $('#myModal').modal('hide');
+                swal.fire({
+                  icon:"success",
+                  title: "Success!",
+                  text: "Receipt Added.",
+                  type: "success",
+                  timer:1500,
+                  showConfirmButton:false,
+                })
+                .then(function() {
+                  location.reload();
+                });
+              },
+              error: function() {
+                $('#myModal').modal('hide');
+                swal.fire({ 
+                  icon:"error",
+                  title: "Oops...", 
+                  text: "Something went wrong!", 
+                  timer:1500,
+                  showConfirmButton:false,
+              })
+              .then(function() {
+                location.reload();
+              });    
+            }
+    });
+  }
+});
+
+
+    var viewmodaldiv = $('#view-modal-div');
+    $(".viewBtn1").on("click", function () {
+
+        var receipt_no = $(this).data("receipt_no");
+        var date = $(this).data('date');
+        var cash_received_from = $(this).data('cash_received_from');
+        var rs = $(this).data('rs');
+        var amount_for = $(this).data('amount_for');
+        var total = $(this).data('total');
+        var grand_total = $(this).data('grand_total');
+        var id = $(this).data('id');
+
+        $('#id1').empty().append("RE0"+id);
+        $('#receipt_no1').empty().append(receipt_no);
+        $('#date1').empty().append( date);
+        $('#cash_received_from1').empty().append(cash_received_from);
+        $('#rs1').empty().append("&#x20B9; &nbsp;"+ rs);
+        $('#amount_for1').empty().append( amount_for);
+        $('#total1').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#total12').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#grand_total1').empty().append("&#x20B9; &nbsp;"+ grand_total);
+        $("#ViewReceiptModal1").modal();
+
+    });
+
+    $(".viewBtn2").on("click", function () {
+
+        var receipt_no = $(this).data("receipt_no");
+        var date = $(this).data('date');
+        var cash_received_from = $(this).data('cash_received_from');
+        var rs = $(this).data('rs');
+        var amount_for = $(this).data('amount_for');
+        var total = $(this).data('total');
+        var grand_total = $(this).data('grand_total');
+
+
+
+        $('#receipt_no2').empty().append(receipt_no);
+        $('#date2').empty().append( date);
+        $('#cash_received_from2').empty().append(cash_received_from);
+        $('#rs2').empty().append("&#x20B9; &nbsp;"+ rs);
+        $('#amount_for2').empty().append( amount_for);
+        $('#total2').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#total22').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#grand_total2').empty().append("&#x20B9; &nbsp;"+ grand_total);
+        $("#ViewReceiptModal2").modal();
+
+
+    });
+    $(".viewBtn3").on("click", function () {
+
+        var receipt_no = $(this).data("receipt_no");
+        var date = $(this).data('date');
+        var cash_received_from = $(this).data('cash_received_from');
+        var rs = $(this).data('rs');
+        var amount_for = $(this).data('amount_for');
+        var total = $(this).data('total');
+        var grand_total = $(this).data('grand_total');
+
+
+
+        $('#receipt_no3').empty().append(receipt_no);
+        $('#date3').empty().append( date);
+        $('#cash_received_from3').empty().append(cash_received_from);
+        $('#rs3').empty().append("&#x20B9; &nbsp;"+ rs);
+        $('#amount_for3').empty().append( amount_for);
+        $('#total3').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#total32').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#grand_total3').empty().append("&#x20B9; &nbsp;"+ grand_total);
+        $("#ViewReceiptModal3").modal();
+
+    });
+    $(".viewBtn4").on("click", function () {
+
+        var receipt_no = $(this).data("receipt_no");
+        var date = $(this).data('date');
+        var cash_received_from = $(this).data('cash_received_from');
+        var rs = $(this).data('rs');
+        var amount_for = $(this).data('amount_for');
+        var total = $(this).data('total');
+        var grand_total = $(this).data('grand_total');
+
+
+
+        $('#receipt_no4').empty().append(receipt_no);
+        $('#date4').empty().append( date);
+        $('#cash_received_from4').empty().append(cash_received_from);
+        $('#rs4').empty().append("&#x20B9; &nbsp;"+ rs);
+        $('#amount_for4').empty().append( amount_for);
+        $('#total4').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#total42').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#grand_total4').empty().append("&#x20B9; &nbsp;"+ grand_total);
+        $("#ViewReceiptModal4").modal();
+
+    });
+    $(".viewBtn5").on("click", function () {
+
+        var receipt_no = $(this).data("receipt_no");
+        var date = $(this).data('date');
+        var cash_received_from = $(this).data('cash_received_from');
+        var rs = $(this).data('rs');
+        var amount_for = $(this).data('amount_for');
+        var total = $(this).data('total');
+        var grand_total = $(this).data('grand_total');
+
+
+
+        $('#receipt_no5').empty().append(receipt_no);
+        $('#date5').empty().append( date);
+        $('#cash_received_from5').empty().append(cash_received_from);
+        $('#rs5').empty().append("&#x20B9; &nbsp;"+ rs);
+        $('#amount_for5').empty().append( amount_for);
+        $('#total5').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#total52').empty().append("&#x20B9; &nbsp;"+ total);
+        $('#grand_total5').empty().append("&#x20B9; &nbsp;"+ grand_total);
+        $("#ViewReceiptModal5").modal();
+
+    });
+
+
+    $(function() {
+    $('.sendBtn1').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        $.ajax({
+            type: "POST",
+            url: "/receipt-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+   
+
+$(function() {
+    $('.sendBtn2').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        $.ajax({
+            type: "POST",
+            url: "/receipt-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+   
+
+$(function() {
+    $('.sendBtn3').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        $.ajax({
+            type: "POST",
+            url: "/receipt-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+   
+
+$(function() {
+    $('.sendBtn4').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        $.ajax({
+            type: "POST",
+            url: "/receipt-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+   
+
+$(function() {
+    $('.sendBtn5').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_number = $(this).attr("data-mobile_number");
+        
+        $.ajax({
+            type: "POST",
+            url: "/receipt-send-web-sms/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_number},
+            beforeSend: function () {
+                swal.fire({
+                    imageUrl: '../../../media/loading.gif',
+                    showConfirmButton: false,
+                    confirmButtonClass: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                    
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+   
+   
+
+    $(function () {
+        $('.deleteBtn1').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-receipt/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr1').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'receipt has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(function () {
+        $('.deleteBtn2').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-receipt/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr2').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'receipt has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(function () {
+        $('.deleteBtn3').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-receipt/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr3').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'receipt has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(function () {
+        $('.deleteBtn4').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-receipt/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr4').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'receipt has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    $(function () {
+        $('.deleteBtn5').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var id = $(this).attr("data-id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/delete-receipt/"+id,
+                        data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
+                        success: function (response) {
+                            $('.tr5').hide();
+                            window.location.reload();
+                            Swal.fire(
+
+                                {
+                                    title: 'Deleted!',
+                                    text: 'Cash memo has been deleted',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false,
+                                })
+
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                    icon: "error",
+                                    title: "Oops...",
+                                    text: "Something went wrong!",
+                                    confirmButtonClass: "btn-success",
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                })
+                                .then(function () {
+                                    location.reload();
+                                });
+                        }
+                    });
+                }
+            })
+        });
+    });
+
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+            if (/^[6-9][0-9]{9}$/.test(value)) {
+                return true;   // PASS validation when REGEX matches
+            } else {
+                return false;  // FAIL validation
+            };
+        }, "Please enter valid Mobile Number");
+
+
+</script>
+<script>
+    var doc = new jsPDF();
+    var specialElementHandlers = {
+        '#editor': function (element, renderer) {
+            return true;
+        }
+    };
+
+    $('#cmd').click(function () {
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 170,
+            'elementHandlers': specialElementHandlers
+        });
+        doc.save('sample-file.pdf');
+    });
+</script>
+<script>
+    jQuery.validator.addMethod("mobile_number", function (value, element) {
+        if (/^[6-9][0-9]{9}$/.test(value)) {
+            return true; // PASS validation when REGEX matches
+        } else {
+            return false; // FAIL validation
+        };
+    }, "Please enter valid Mobile Number");
+</script>
+
+<script>
+    function displayDivDemo(id, elementValue) {
+        document.getElementById(id).style.display = elementValue.value == 1 ? 'block' : 'none';
+    }
+
+    function displayDivDemo(id, elementValue) {
+        document.getElementById(id).style.display = elementValue.value == 1 ? 'block' : 'none';
+    }
+
+    $(function () {
+        $("input[name='choice']").click(function () {
+            if ($("#1").is(":checked")) {
+                $("#dvPinNo").show();
+
+
+            } else {
+                $("#dvPinNo").hide();
+
+            };
+            if ($("#2").is(":checked")) {
+                $("#dvPinNo1").show();
+
+            } else {
+                $("#dvPinNo1").hide();
+
+            }
+            if ($("#3").is(":checked")) {
+                $("#dvPinNo2").show();
+
+            } else {
+                $("#dvPinNo2").hide();
+
+            }
+            if ($("#4").is(":checked")) {
+                $("#dvPinNo3").show();
+
+            } else {
+                $("#dvPinNo3").hide();
+
+            }
+            if ($("#5").is(":checked")) {
+                $("#dvPinNo4").show();
+
+            } else {
+                $("#dvPinNo4").hide();
+
+            }
+        });
+    });
+</script>
+<script>
+    function admSelectCheck(nameSelect)
+{
+    var val = nameSelect.options[nameSelect.selectedIndex].value;
+    document.getElementById("template1").style.display = val == '1' ? "block" : 'none';
+    var val = nameSelect.options[nameSelect.selectedIndex].value;
+    document.getElementById("template2").style.display = val == '2' ? "block" : 'none';
+    var val = nameSelect.options[nameSelect.selectedIndex].value;
+    document.getElementById("template3").style.display = val == '3' ? "block" : 'none';
+    var val = nameSelect.options[nameSelect.selectedIndex].value;
+    document.getElementById("template4").style.display = val == '4' ? "block" : 'none';
+    var val = nameSelect.options[nameSelect.selectedIndex].value;
+    document.getElementById("template5").style.display = val == '5' ? "block" : 'none';
+    
+}
+</script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

@@ -1,0 +1,714 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Login {% endblock title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <style>
+    
+        @media only screen and (max-width: 600px) {
+            #login-img {
+                display: none !important;
+            }
+        }
+
+    </style>
+
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-6" >
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>
+                                Customer Registration
+                            </span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="" autocomplete="off" id="register_form">
+
+                        {% csrf_token %}
+                        {{form.errors}}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-user"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.mobile_no }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-envelope"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.email }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.email.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-list"></i>
+                                                        </span>
+                                                    </div>
+                                                    <select name="c_state" class="form-control" id="id_c_state">
+                                                      <option disabled selected value>Select State *</option>
+                                                      {% for object in States %}
+                                                      <option value="{{object.state}}">{{object.state}}</option>
+                                                      {% endfor %}
+                                                      
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_state.errors }}</span>   
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-list"></i>
+                                                        </span>
+                                                    </div>
+                                                    <select name="c_city" placeholder="City *" class="form-control" required="" id="id_c_city" aria-required="true">
+                                                        <option disabled selected value>Select City *</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_state.errors }}</span>   
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                    <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-location-pin"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.c_area }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_area.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-list"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.c_pin_code }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_pin_code.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-user-follow"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.c_used_referral_code }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_used_referral_code.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-calendar"> <strong>DOB</strong></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.c_dob }}
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.c_dob.errors }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-lock"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.password1 }}
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <span toggle="#password-field" class="fa fa-fw field-icon toggle-password fa-eye-slash" id="password-toggle"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.password1.errors }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="icon-lock"></i>
+                                                        </span>
+                                                    </div>
+                                                    {{ form.password2 }}
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <span toggle="#password-field" class="fa fa-fw field-icon toggle-password fa-eye-slash" id="confirm-password-toggle"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{ form.password2.errors }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            &nbsp; &nbsp;
+                            <span>Already have an account?</span> <a href="{% url 'customer login' %}" >Login</a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 3%;">
+                <img class="img-fluid" src="http://157.230.228.250/media/web-panel/merchant-registration-design-website.png" id="login-img">
+            </div>
+        </div>
+    </div>
+
+<!-- OTP Modal -->
+<div class="modal fade" id="myOtpModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <form method="POST" class="form" id="otp_validation" autocomplete="off">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Please check your registered Mobile Number</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="mobile_no" id="mobile_no" value="">
+                    <input type="hidden" name="email" id="email" value="">
+                    <div class="form-group">
+                        <label for="name">OTP <small style="color: red;"> *</small></label>
+                        <input type="text" name="otp" class="form-control" id="otp">
+                        <span class="text-danger" id="otp_error"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input id="otp_submit" type="submit" class="btn btn-primary" value="Validate">
+                    <button type="button" class="btn btn-dark" id="btn_resend">Resend</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- OTP Modal End -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+
+        $("#id_c_state").on('change', function()
+        {
+
+            var state = $("#id_c_state").val()
+
+            $.ajax({
+                type: "POST",
+                url: "/get-user-city-by-state/",
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    'state': state
+                },
+                success: function(result){
+                    $("#id_c_city").empty();
+                    var empty = ""
+                    $('#id_c_city').append("<option value='" + empty + "' disabled selected value>" + "Select City *" + "</option>");
+                    $.each(result.data, function (key, value) {
+                        $('#id_c_city').append("<option value='" + value + "'>" + value + "</option>");
+                    });
+                }
+            });
+
+        })
+    })
+</script>
+<script type="text/javascript">
+    // $( document ).ready(function() {
+    //     $("#id_c_state").prop("readonly", true);
+    //     $("#id_c_city").prop("readonly", true);
+    // });
+
+    // $(document).ready(function() {
+    // $("#id_c_pin_code").keyup(function() {
+    //     var pincode= $('#id_c_pin_code').val();
+    //     if(pincode.length == 6){
+            
+    //         $.ajax({
+    //             url: "https://api.postalpincode.in/pincode/"+pincode,
+    //             cache: false,
+    //             dataType: "json",
+    //             type: "GET",
+    //             success: function(data) {
+    //                 $("#id_c_state").prop("readonly", false);
+    //                 $("#id_c_city").prop("readonly", false);
+    //                 state = data['0']['PostOffice'][0]['State']
+    //                 city = data['0']['PostOffice'][0]['Region']
+    //                 district = data['0']['PostOffice'][0]['District']
+    //                 $('#id_c_state').val(state)
+    //                 $('#id_c_city').val(city)
+    //                 // $('#id_m_district').val(district)
+    //             }
+    //         })
+    //     }
+    //     else{
+    //         $('#id_c_state').val("")
+    //         $('#id_c_city').val("")
+    //         $("#id_c_state").prop("readonly", true);
+    //         $("#id_c_city").prop("readonly", true);
+    //         // $('#id_m_district').val("")
+    //     }
+    // })
+// })
+</script>
+<script>
+    jQuery.validator.addMethod("uppercase_val", function(value, element){
+		if (/[A-Z]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 upper case letter."); 
+
+	jQuery.validator.addMethod("number_val", function(value, element){
+		if (/[0-9]{1}/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+	}, "Password must contain at least 1 number."); 
+
+	jQuery.validator.addMethod("specialchar_val", function(value, element){
+		if (/(?=.*[ -\/:-@\[-\`{-~]{1,})/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Password must contain at least 1 special character."); 
+    
+    jQuery.validator.addMethod("mobileno", function(value, element){
+		if (/^([0]|\+91)?[6789]\d{9}$/.test(value)) {
+        return true;   // PASS validation when REGEX matches
+		} else {
+			return false;  // FAIL validation
+		};
+    }, "Please enter valid mobile number.");
+
+    jQuery.validator.addMethod("lettersonly", function(value, element) {
+  return this.optional(element) || /^[a-z]+$/i.test(value);
+}, "Only characters required"); 
+
+    $.validator.addMethod("emailValidate", function(value, element) {
+      var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return this.optional(element) || emailReg.test(value);
+    }, "Please enter valid email id");
+
+    $( "#register_form" ).validate({
+    rules: {
+        mobile_no: {
+            required: true,
+            mobileno: true,
+            maxlength: 10,
+            minlength: 10,
+        },
+        email: {
+            email: true,
+            required: true,
+            emailValidate: true,
+        },
+        c_dob: {
+            required: true
+        },
+        c_state: {
+            required: true,
+        },
+        c_city: {
+            required: true,
+        },
+        c_area: {
+            required: true
+        },
+        c_pin_code: {
+            required: true,
+            digits: true,
+            minlength: 6,
+            maxlength: 6,
+        },
+        password1: {
+            required: true,
+            // uppercase_val: true,
+            // number_val: true,
+            // specialchar_val: true,
+            minlength: 8,
+		},
+        password2: {
+            required: true,
+            equalTo : "#id_password1"
+        }
+    },
+    messages: {
+        mobile_no: {
+            required: "Mobile Number field is required.",
+            mobileno: "Please enter valid mobile number.",
+            maxlength: "Mobile number must contain 10 numbers.",
+            minlength: "Mobile number must contain 10 numbers."
+        },
+        email: {
+            required: "Email field is required.",
+            email: "Please enter valid email id"
+        },
+        c_dob: "DOB field is required.",
+        c_state: "State field is required.",
+        c_city: "City field is required.",
+        c_area: "Area field is required.",
+        c_pin_code: {
+            required: "Pin Code field is required.",
+            minlength: "Invalid Pin Code",
+            maxlength: "Invalid Pin Code",
+        },
+        password1: {
+            required: "Password field is required.",
+            minlength: "This password is too short. It must contain at least {0} characters."
+        },
+        password2: {
+            required: "Confirm Password field is required",
+            equalTo: "Password and Confirm Password must be the same.",
+        }
+    },
+    submitHandler: function() {
+        $("#otp_validation")[0].reset();
+        $("#otp_error").empty();
+        $.ajax({
+            type: "POST",
+            url: "/customer-validate-mobile-no/",
+            data: $('#register_form').serialize() + "&validating_for=customer",
+            success: function(response) {
+
+                if(response.status == "success")
+                {
+                    $.ajax({
+                    type: "POST",
+                    url: "/customer-validate-referral-code/",
+                    data: $('#register_form').serialize() + "&validating_for=merchant",
+                    beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+                    },
+                    success: function(response) {
+                        if(response.status == "success"){
+                                $.ajax({
+                                type: "POST",
+                                url: "/generate-otp/",
+                                data: $('#register_form').serialize(),
+                                beforeSend: function () {
+                                    swal.fire({
+                                        imageUrl: '../../../media/loading.gif',
+                                        showConfirmButton: false,
+                                        confirmButtonClass: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                    });
+                                    $(".swal2-modal").css('background-color', 'transparent');
+                                },
+                                success: function(response) {
+                                    swal.close();
+                                    if(response.status == "success")
+                                    {
+                                        $("#mobile_no").val(response.mobile_no);
+                                        $("#email").val(response.email);
+                                        $("#myOtpModal").modal("show"); 
+                                    }
+                                    else if (response.status == "error"){
+                                        swal.fire({
+                                            icon: "error",
+                                            title: "Error!",
+                                            text: response.msg,
+                                            type: "error",
+                                            confirmButtonClass: "btn-error/",
+                                            timer:1500,
+                                            showConfirmButton:false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false
+                                        }).then(function () {
+                                            location.reload();
+                                        });
+                                    }
+                                }
+                                });
+                        }else if(response.status == "fail")
+                        {
+                            swal.fire({
+                                icon:"warning",
+                                title: "Warning!",
+                                text: response.msg,
+                                type: "Warning",
+                                confirmButtonClass: "btn-success",
+                                timer:1500,
+                                showConfirmButton:false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            })
+                        }
+
+                    }
+                    })
+                }
+                else if(response.status == "fail")
+                {
+                    swal.fire({
+                        icon:"warning",
+                        title: "Warning!",
+                        text: response.msg,
+                        type: "Warning",
+                        confirmButtonClass: "btn-success",
+                        timer:1500,
+                        showConfirmButton:false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                }
+            }        
+        });
+    }      
+    });
+
+    $("#btn_resend").click(function(){
+        $.ajax({
+                type: "POST",
+                url: "/generate-otp/",
+                data: $('#otp_validation').serialize(),
+                beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+                },
+                success: function (response) {
+                    if (response.status == "success") {
+                        swal.fire({
+                                icon: "success",
+                                title: "Success!",
+                                text: "Otp Sent Successfully !!!",
+                                type: "success",
+                                confirmButtonClass: "btn-success",
+                                timer:1500,
+                                showConfirmButton:false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                $("#mobile_no").val(response.mobile_no);
+                                $("#email").val(response.email);
+                                $("#myOtpModal").modal("show");
+                            });
+                        
+                    } else if (response.status == "error"){
+                            swal.fire({
+                                icon: "error",
+                                title: "Error!",
+                                text: response.msg,
+                                type: "error",
+                                confirmButtonClass: "btn-error/",
+                                timer:1500,
+                                showConfirmButton:false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                location.reload();
+                            });
+                    }
+                },
+                error: function () {
+
+                    swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                        confirmButtonClass: "btn-success",
+                        timer:1500,
+                        showConfirmButton:false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    })
+                        .then(function () {
+                            location.reload();
+                        });
+                }
+            });
+    });
+
+
+
+$("#otp_validation").validate({
+rules: {
+    otp: {
+        required: true,
+    },
+},
+messages: {
+    otp: {
+        required: "OTP is required.",
+    },
+},
+submitHandler: function () {
+    $.ajax({
+    type: "POST",
+    url: "/validate-register-otp/",
+    data: $('#otp_validation').serialize(),
+    success: function (response) {
+        if(response.status == "success"){
+            $.ajax({
+                    type: "POST",
+                    url: "/customer-register/",
+                    data: $('#register_form').serialize(),
+                    beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+                    },
+                    success: function(response) 
+                    {
+                        if(response.status == "success")
+                        {
+                            swal.fire({
+                            icon:"success",
+                            title: "Success!",
+                            text: "User addded.",
+                            type: "success",
+                            confirmButtonClass: "btn-success",
+                            timer:1500,
+                            showConfirmButton:false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                            })
+                            .then(function() {
+                                location.href="http://157.230.228.250/customer-login/";
+                            });
+                        }
+                    }
+            });
+        }
+        else if(response.status == "error"){
+            var errorDiv = '#' + 'otp' + '_error';
+            $(errorDiv).empty().append("Wrong Otp");
+        }  
+    },
+    error: function () {
+        $('#myModal').modal('hide');
+        swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            confirmButtonClass: "btn-success",
+            timer:1500,
+            showConfirmButton:false,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        })
+            .then(function () {
+                location.reload();
+            });
+    },
+});
+}
+})
+
+
+
+</script>
+
+<script type="text/javascript">
+    $("#password-toggle").click(function() {
+        $(this).toggleClass("fa-eye-slash fa-eye");
+        var input = document.getElementById("id_password1")
+        if (input.type == "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    });
+
+    $("#confirm-password-toggle").click(function() {
+        $(this).toggleClass("fa-eye-slash fa-eye");
+        var input = document.getElementById("id_password2")
+        if (input.type == "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

@@ -1,0 +1,297 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Shopping Analysis {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Shopping Analysis</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/customer-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Shopping Analysis</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/shopping-analysis-category/">Shopping Analysis Category Wise</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Shopping Analysis Category Wise</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-category-wise" role="tabpanel" aria-labelledby="pills-category-wise-tab">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <form class="form-control" action="/shopping-analysis-category/" method="POST" id="shopping-analysis-form"
+                                                    name="shopping-analysis-form" autocomplete="off" style="border:0px;">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label>From Date<span style="color: red;"> *</span></label>
+                                                                <div class="input-group mb-6">
+                                                                    <input type="date" class="form-control" name="from_date"
+                                                                        id="from_date" required value="{{from_date}}"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label>To Date<span style="color: red;"> *</span></label>
+                                                                <div class="input-group mb-6">
+                                                                    <input type="date" class="form-control" name="to_date"
+                                                                        id="to_date" required value="{{to_date}}"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label>&nbsp;</label>
+                                                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;Search</button></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="pie-chart" style="width: 463px; height: 300px; display: block;" width="463" height="300" class="chartjs-render-monitor"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card-body">
+                                                    <div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+                                                        <canvas id="chartContainer" width="463" height="300" class="chartjs-render-monitor" style="display: block; width: 463px; height: 300px;"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="col-md-5" style="border-radius: 5px;">
+                                                <div id="container" >
+                                                    <canvas id="pie-chart"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-6" style="border-radius: 5px;">
+                                                <div id="container">
+                                                    <canvas id="chartContainer"></canvas>
+                                                </div>
+                                            </div> -->
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script>
+
+    $.validator.addMethod("validDate", function(value, element) {
+        var currDate = new Date();
+        return Date.parse(currDate) >= Date.parse(value) ||value == "";
+    }, "Please enter valid Date");
+
+    $("#shopping-analysis-form").validate({
+        rules: {
+            from_date: {
+                required: true,
+                validDate: true
+            },
+            to_date: {
+                required: true,
+                validDate: true
+            },
+        },
+        messages: {
+            from_date: {
+                required: "From Date is Required",
+            },
+            to_date: {
+                required: "To Date is Required",
+            },
+        }
+    });
+</script>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<script>
+    var config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          label: 'Total Bill Amount',
+          data: {{ data|safe }},
+          backgroundColor: [
+            '#ff4d4d', '#63b90b', '#00569d', '#c6f09b', '#D3D3D3', '#966156', '#90A616', '#F1C018', '#C40C2D', '#A409A4', '#5A3730', '#1BDFDF', '#8E8D89', '#BDB7B8', '#04A41F'
+          ],
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            position : 'bottom',
+            labels : {
+                fontColor: 'rgb(154, 154, 154)',
+                fontSize: 11,
+                usePointStyle : true,
+                padding: 20
+            }
+        },
+        pieceLabel: {
+            render: function (args) {
+            return '₹' + args.value;
+            },
+            fontColor: 'black',
+            fontSize: 14,
+            position: 'outside',
+        },
+        // tooltips: false,
+        layout: {
+            padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+            }
+        }
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+
+      var ctx1 = document.getElementById('chartContainer').getContext('2d');
+      window.myChart = new Chart(ctx1, config1);
+
+    };
+
+var config1 = {
+    type: 'bar',
+    data: {
+        labels: {{ labels|safe }},
+        datasets: [{
+            label: 'Total Bill Amount in ₹',
+            data: {{ data|safe }},
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                // 'rgba(54, 162, 235, 0.2)',
+                // 'rgba(255, 206, 86, 0.2)',
+                // 'rgba(75, 192, 192, 0.2)',
+                // 'rgba(153, 102, 255, 0.2)',
+                // 'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                // 'rgba(54, 162, 235, 1)',
+                // 'rgba(255, 206, 86, 1)',
+                // 'rgba(75, 192, 192, 1)',
+                // 'rgba(153, 102, 255, 1)',
+                // 'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+    }
+}
+
+
+</script>
+
+{% endblock javascripts %}

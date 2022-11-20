@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Shared Words {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+      color: red;
+      display: flex;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    
+  
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Shared Words</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/shared-words/">Shared Words</a>
+                                </li>
+                            </ul>
+                            <div class="ml-auto">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                          <table id="add-row" class="display table table-hover">
+                              <thead>
+                                  <tr>
+                                      <th>Sr. No.</th>
+                                      <th>Mobile Number</th>
+                                      <th>Words</th>
+                                      <th>Shared Date</th>
+                                  </tr>
+                              </thead>
+                              <tfoot>
+                              </tfoot>
+                              <tbody>
+                                  {% for words in SharedWords %}
+                                  <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ words.mobile_no }}</td>
+                                    <td>{{ words.words }}</td>
+                                    <td>{{ words.created_at|date:'d-m-Y' }}</td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo2.js"></script>
+	<script>
+		$(document).ready(function() {
+      $('#add-row').DataTable( {
+          dom: 'lBfrtip',
+          "ordering": false,
+          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          buttons: [
+             'excel', 'pdf', 'print'
+          ]
+      });
+		});
+	</script>
+
+{% endblock javascripts %}

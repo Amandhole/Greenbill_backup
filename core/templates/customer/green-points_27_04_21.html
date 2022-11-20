@@ -1,0 +1,102 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Green Points {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Green Points</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/customer-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/green-points/">Green Points</a>
+                </li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <!-- <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Green Points</h4>
+                        </div>
+                    </div> -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card-body">
+                                            <center><h2><b>My Green Points</b></h2></center>
+                                            <center><h4>Learn how your green points are contributing to save your mother nature.</h4></center>
+                                            <br>
+                                            <center><h1 style="color: #63b90b;"><b>Green Points: {{GreenPoints}}</b></h1></center>
+
+                                            <br><br>
+                                            <p>Please Note:</p>
+                                            <ul>
+                                                <li>Green Points can't be transferred to another account.</li>
+                                                <li>You can use this for Merchant Coupons.</li>
+                                                <li>It can be used to purchase gift cards.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>  
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

@@ -1,0 +1,457 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Send Notifications {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .scroll {
+    max-height: 385px;
+    overflow-y: auto;
+}
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Send Notifications</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a>Notifications</a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="/owner-notice-board/">Send Notifications</a>
+                </li>
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center;">
+                        <div class="d-flex align-items-center" >
+                            <h4 class="card-title">Send Notifications</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Notifications</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/owner-merchant-notice-board/">Send Notifications</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="font-size: 20px; padding-bottom: 12px;">
+                            CUSTOMER NOTICE
+                            
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-6">
+                                <form class="form-control" action="/owner-partner-notice-board/" method="POST" enctype="multipart/form-data"
+                                    id="owner-notice-board-form" name="owner-notice-board-form" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Title<span style="color: red;">*</span></label>
+                                                <div class="input-group mb-6">
+                                                    <input type="text" class="form-control mobile" name="notice_title" id="notice_title"
+                                                        placeholder="Notice Title" value="" />
+                                                </div>
+                                                <div id="noticetitleError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Message<span style="color: red;">*</span></label>
+                                                <div class="input-group mb-6">
+                                                    <textarea class="form-control mobile" name="message" id="message"
+                                                        placeholder="Message" value=""></textarea>
+                                                </div>
+                                                <div id="messageError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Attachment</label>
+                                                <div class="input-group mb-6">
+                                                    <input type="file" class="form-control mobile" name="notice_file" id="notice_file"
+                                                        placeholder="Upload Notice Photo/File" value="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <input type="checkbox" name="sentnotice" value="sms">
+                                                        <b>SMS</b>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="checkbox" name="sentnotice" value="sent_mail">
+                                                        <b>Email</b>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="checkbox" name="sentnotice" value="notification" class="form-check-input">
+                                                        <b>Notification</b>
+                                                    </div>
+                                                </div>
+                                                <div id="checkboxError"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="text-center mt-3 mb-3">
+                                                <button type="submit" class="btn btn-primary" id="owner-notice-board-form-btn">Send</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <!-- <div class="col-md-6 ">
+                                            <div class="card " >
+                                                <div class="card-header">
+                                                    <strong>Group:</strong><br>
+                                                </div>
+                                               
+                                                <div class="card-body scroll" >
+                                                    {% for object in merchant_role_list %}
+                                                    <input type="checkbox" name="checks"
+                                                        value="{{object.id}}">
+                                                    <b>&nbsp;{{object}}</b><br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-md-6">
+                                            <div class="card ">
+                                                <div class="card-header">
+                                                    <strong>Individual:</strong><br>
+                                                </div>
+                                                <div class="card-body scroll">
+                                                    {% for object in all_customer_user %}
+                                                    <input type="checkbox" name="individual" value="{{object.id}}" >
+                                                    <b> {{object.first_name}}
+                                                        {{object.last_name}}</b><br>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="groupcheckError" style="color:  #63b90b; align-content: center;"></div>
+                                </div>
+                                </form>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                            <div class="table-responsive">
+                                <table id="add-row" class="display table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr. No.</th>
+                                            <th>Notice Title</th>
+                                            <th>Notice Message</th>
+                                             <th>Notice Sent To</th>
+                                            <th>Sent SMS </th>
+                                            <th>Sent Email </th>
+                                            <th>Sent Notification</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                    <tbody>
+                                        {% for object in notice_data %}
+                                        <tr>
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{object.notice_title}}</td>
+                                            <td>{{object.message}}</td>
+                                             <td>{{object.receiver_name}} </td>
+                                            <td>{% if object.o_sent_sms %}
+                                                    True
+                                                {% endif %}
+                                            </td>
+                                            <td>{% if object.o_sent_mail %}
+                                                True
+                                            {% endif %}</td>
+                                            <td>{% if object.o_notification %}
+                                                True
+                                            {% endif %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+
+
+<script>
+
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    $(document).mousemove(function(event){
+        if(($("input[name*='checks']:checked").length) > 0 || ($("input[name*='individual']:checked").length) > 0)
+        {
+            $("#owner-notice-board-form-btn").prop('disabled', false);
+            $('#groupcheckError').empty();
+
+            // $("#groupcheckError").html("Please select Group or Individual.");  
+        }
+        else
+        {
+            $("#owner-notice-board-form-btn").prop('disabled', true);
+            $('#groupcheckError').empty().append("<b>Note: Please select from either the group or individual to send the notice to respective user.<b>");
+        }
+
+        // if(($("input[name*='checks']:checked").length) > 0)
+        //     {
+                
+        //         $("input[name='individual']:checkbox").prop('checked',false);
+        //     } 
+
+
+          // else(($("input[name*='individual']:checked").length) > 0)
+          //   {
+                
+          //       $("input[name='checks']:checkbox").prop('checked',false);
+          //   } 
+
+    });
+
+
+ 
+
+  $(document).change(function(event){ 
+  if(($("input[name*='checks']:checked").length) > 0)
+    {
+        
+        $("input[name='individual']:checkbox").prop('checked',false);
+    }   
+ });
+
+
+
+$(document).mousemove(function(event){
+    if(($("input[name*='checks']:checked").length) > 0)
+    {
+        console.log("ll")
+        $("input[name='individual']:checkbox").prop('checked',false);
+    } 
+});
+
+    // $.validator.addMethod("checkbox_check", function (value, element) {
+    //     console.log('hhjhj')
+    //     if (true) {
+    //       return true;   // PASS validation 
+    //     } else {
+    //       return false;  // FAIL validation
+    //     };
+    // }, "Please enter valid IFSC Code.");
+
+
+
+    $("#owner-notice-board-form").validate({
+
+        rules: {
+            notice_title: {
+                required: true,
+            },
+            message: {
+                required: true,
+            },
+            "individual": {
+               required: true, 
+               minlength: 1 
+            },
+            "sentnotice": { 
+                required: true, 
+                minlength: 1,
+            },
+            
+        },
+        messages: {
+            notice_title: {
+                required: "Title is Required",
+            },
+            message: {
+                required: "Message is Required",
+            },
+            // "checks": "Please select at least one checkbox."
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("name") == "sentnotice")
+                $("#checkboxError").html(error);
+            if (element.attr("name") == "message")
+                $("#messageError").html(error);
+            if (element.attr("name") == "notice_title")
+                $("#noticetitleError").html(error);
+            // if (element.attr("name") == "individual")
+            //     $("#groupcheckError").html(error);      
+        }
+    });
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        //     "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "ordering": false,
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+<style>
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

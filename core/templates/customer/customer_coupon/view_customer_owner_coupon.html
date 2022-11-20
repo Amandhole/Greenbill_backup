@@ -1,0 +1,660 @@
+{% extends "layouts/customer-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} Coupons {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+
+    }
+
+
+    label {
+        display: block;
+        font: 1rem 'Fira Sans', sans-serif;
+    }
+
+    input {
+        margin: .4rem 0;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .coupon {
+        border: 5px #bbb;
+        width: auto;
+        border-radius: 15px;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+
+    .container {
+        padding: 2px 16px;
+        background-color: #f1f1f1;
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    .promo {
+        background: #ccc;
+        padding: 3px;
+    }
+
+    .expire {
+        color: red;
+    }
+
+        <style>
+  .product {
+  margin: 50px auto;
+  width: 350px;
+  height: 200px;
+  background: white;
+  /* border: 1px solid #333; */
+  position: relative;
+  z-index: 90;
+  
+
+  color: rgb(19, 18, 18);
+   
+}
+.coupon__title, .coupon__value {
+      text-align: center;
+      display: flex; justify-content: center ; padding-top: 10px;  position: relative; letter-spacing: 2px;
+
+    }
+
+.ribbon-wrapper {
+  width: 85px;
+  height: 88px;
+  overflow: hidden;
+  position: absolute;
+  top: -3px;
+  left: 11px;
+}
+  .ribbon {
+    font: bold 15px sans-serif;
+    color: #333;
+    text-align: center;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform:    rotate(-45deg);
+    -ms-transform:     rotate(-45deg);
+    -o-transform:      rotate(-45deg);
+    position: relative;
+    padding: 7px 0;
+    top: 15px;
+    left: -30px;
+    width: 120px;
+    background-color: #0aff6d ;
+   
+  }
+
+
+  col{
+  position: absolute;
+    left: 55%;
+    padding-bottom: 10px;
+    padding-bottom: 0px;
+    padding-left: 23px;
+    bottom: -10%;
+    bottom: 45%;
+    width: 70%;
+    
+    border-radius: 30px; margin-right:90% ;
+
+    transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    font-size: 1em;
+    text-align: center;
+    font-family: Helvetica;
+    color: #301a1f;
+    padding-right: 0px;
+    
+}
+
+.coupon__body {
+    margin-right: 45px;
+
+    /* padding: 12px; */
+    border-right: 2px dotted rgb(197, 148, 171);
+    /* border-left: steelblue 10px solid; */
+    margin-bottom: 20px;
+    border-right: 30px;
+    /* border-bottom: 4px solid #fa5b7d; */
+    
+ }  
+
+ /* Smartphones (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+/* Styles */
+
+.cont {width :200px; background-color:#666666 !important;}
+.cont .left {width :100px !important;}
+.cont .right {width :100px !important;}
+
+}
+
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Coupons</h4>
+            
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                   <div class="card-header">
+                    <div class="d-flex align-items-center">
+                      <h4 class="card-title">Coupons</h4>
+                      <ul class="breadcrumbs">
+                        <li class="nav-home">
+                            <a href="/customer-index/">
+                                <i class="flaticon-home"></i>
+                            </a>
+                        </li>
+                        <li class="separator">
+                            <i class="flaticon-right-arrow"></i>
+                        </li>
+                        <li class="nav-item">
+                            <a>Coupons</a>
+                        </li>
+                        </ul>
+                        <div class="ml-auto">
+                          <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#view-history-modal">
+                            <i class="fa fa-eye"></i>
+                            View Redeem History
+                          </button>
+                        </div>
+                    </div>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    
+                                    {% for objects in all_coupons %}
+                                        <div class="col-md-4" style="padding-bottom: 20px !important;">
+                                            <div class="product">
+                                              <div class="ribbon-wrapper">
+                                                <div class="ribbon">COUPON</div>
+                                              </div>
+                                              <div style="border: #007dff 18px solid; overflow: hidden;  box-shadow: 12px 12px rgb(221, 218, 218);  border-radius: 12px; padding-bottom: 24px; width: 300px; height: 200px;  ">
+                                                <div class="coupon__title text-center" >
+                                                 {% if objects.coupon_logo %}
+                                                        <img src="{{objects.coupon_logo.url}}" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="coupon__title text-center" >
+                                                  <h4><b style="text-transform: uppercase;">{{objects.merchant_business_name|truncatechars:18}}</b></h4>
+                                                </div>
+                                                <div clsss="title" style="text-align: center; font-size: 25px;  padding-left: 0px;">
+                                                    {% if objects.coupon_value %}
+                                                            {% if objects.amount_in == "percentage" %}
+                                                                <b>{{objects.coupon_value}} Off</b>
+                                                            {% else %}
+                                                                <b>₹ {{objects.coupon_value}} Off</b>
+                                                            {% endif %}
+                                                    {% else %}
+                                                        <b>{{objects.coupon_caption}}</b>
+                                                    {% endif %}
+                                                </div>
+                                                <div clsss="title">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-center">
+                                                            {% if objects.redeem_status %}
+                                                                <h6 class="fw-bold mb-1" style="color: red; margin-top:10px">Already Redeemed</h6>
+                                                            {% else %}
+                                                                <button class="btn btn-link viewBtn" data-target="#ViewCoupanModal" data-original-title="View Coupon" data-id="{{objects.id}}" data-coupon_logo="{{objects.coupon_logo}}" data-coupon_value="{{objects.coupon_value}}" data-coupon_caption="{{objects.coupon_caption}}" data-expires_on="{{objects.valid_through|date:'d-m-Y'}}" data-redeem_for="{{objects.green_point}}" data-promo_code="{{objects.coupon_code}}" data-coupon_name="{{objects.coupon_name}}" data-merchant_id = "{{objects.merchant_id.id}}" data-merchant_business_name="{{objects.merchant_business_name}}" data-merchant_business_id="{{objects.merchant_business_id}}" data-amount_in="{{objects.amount_in}}">View</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                            </div> 
+                                        </div>
+                                        <!-- <div class="col-md-3">
+                                            <div class="card card-dark bg-secondary-gradient" style="background: linear-gradient(-45deg,#ffffff,#ffffff)!important;"> 
+                                               
+                                                <div class="card-body skew-shadow" style="border: 1px solid #00569D; border-radius:5px; color: black">
+                                                    {% if objects.coupon_logo %}
+                                                        <img src="{{objects.coupon_logo.url}}" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">
+                                                    {% else %}
+                                                        <img src="/static/assets/img/dashboard-logo.png" height="35" width="35" alt="Logo" style="border-radius:50%">
+                                                    {% endif %}
+                                                    
+                                                    <h2 class="py-2 mb-0 text-center">
+                                                        {% if objects.coupon_value %}
+                                                            {% if objects.amount_in == "percentage" %}
+                                                                <b style="font-weight: 500 !important;">{{objects.coupon_value}} Off on {{objects.merchant_business_name}} </b>
+                                                            {% else %}
+                                                                <b style="font-weight: 500 !important;">₹ {{objects.coupon_value}} Off on {{objects.merchant_business_name}} </b>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <b style="font-weight: 500 !important;">{{objects.coupon_caption}} on {{objects.merchant_business_name}}</b>
+                                                        {% endif %}
+                                                    </h2>
+                                                    <div class="row">
+                                                        <div class="col-8 pr-0">
+                                                           
+                                                        </div>
+                                                        <div class="col-4 pl-0 text-right">
+                                                           
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-center">
+                                                            {% if objects.redeem_status %}
+                                                                <h6 class="fw-bold mb-1" style="color: red; margin-top:10px">Already Redeemed</h6>
+                                                            {% else %}
+                                                                <button class="btn btn-primary btn-sm viewBtn" data-target="#ViewCoupanModal" data-original-title="View Coupon" data-id="{{objects.id}}" data-coupon_logo="{{objects.coupon_logo}}" data-coupon_value="{{objects.coupon_value}}" data-coupon_caption="{{objects.coupon_caption}}" data-expires_on="{{objects.valid_through|date:'d-m-Y'}}" data-redeem_for="{{objects.green_point}}" data-promo_code="{{objects.coupon_code}}" data-coupon_name="{{objects.coupon_name}}" data-merchant_id = "{{objects.merchant_id.id}}" data-merchant_business_name="{{objects.merchant_business_name}}" data-merchant_business_id="{{objects.merchant_business_id}}" data-amount_in="{{objects.amount_in}}">View</button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+
+                                    <!-- <div class="col-md-3" style="margin-top: 20px; margin-bottom: 30px; ">
+                                        <div class="coupon" style="background-image: url('http://157.230.228.250/media/coupon_background.png'); height: 300px">
+                                            <div class="row">
+                                                <div class="col-md-12" style="margin-top: 5%; margin-left: 2%">
+                                                    <img src="/static/assets/img/dashboard-logo.png">
+                                                </div>
+                                                <div class="col-md-12 text-center" style="padding: 20px; color: white">
+                                                    {% if objects.coupon_value %}
+                                                    <h2><b>₹ {{objects.coupon_value}} Off</b></h2>
+                                                    {% else %}
+                                                    <h2><b>{{objects.coupon_caption}}</b></h2>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="col-md-4" style="margin-top: 20px;; margin-bottom: 30px;">
+                                        <form class="form-control" action="/customer-coupons-redeem/" method="POST"
+                                            id="bill_form" name="bill_form" autocomplete="off"
+                                            enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="green_points" value="{{objects.green_point}}">
+                                            <input type="hidden" name="promo_code" value="{{objects.coupon_code}}">
+                                            <input type="hidden" name="coupon_id" value="{{objects.id}}">
+                                            <input type="hidden" name="coupon_name" value="{{objects.coupon_name}}">
+                                            <div class="coupon">
+                                                <div class="container" style="padding-bottom: 10px;background-color: {{objects.coupon_background_color}}">
+
+
+                                                    {% if objects.coupon_logo %}
+                                                    <img src="{{objects.coupon_logo.url}}" alt="Avatar"
+                                                        style="width:70%;" height="100px" width="100px">
+                                                    {% else %}
+                                                    <img src="/static/assets/img/dashboard-logo.png" alt="Avatar"
+                                                        style="width:70%;">
+                                                    {% endif %}
+                                                    
+                                                </div>
+                                                <div class="container" style="padding-bottom: 20px;background-color: {{objects.coupon_background_color}}">
+                                                    <h5 class="promo"><b>Promo Code: {{objects.coupon_code}}</b>
+                                                    </h5>
+                                                    {% if objects.coupon_value %}
+                                                    <h2><b>₹ {{objects.coupon_value}} Off</b></h2>
+                                                    {% else %}
+                                                    <h2><b>{{objects.coupon_caption}}</b></h2>
+                                                    {% endif %}
+                                                    <p class="expirecoupon">Expires:
+                                                        {{ objects.valid_through }}</p>
+                                                     <h3><b>Reedem for {{objects.green_point}} Green Points</b></h3>
+
+                                                        
+                                                    <button type="submit" class="btn btn-primary btn-sm">REDEEM  </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div> -->
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="ViewCoupanModal" role="dialog">
+    <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- <div class="modal-header">
+                    <h2 class="modal-title w-100 text-center">Edit Bill</h2>
+                </div>
+                -->
+                <div class="modal-body">
+                    <div class="row ">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-2"></div>
+                                        <div class="col-md-4">
+                                            <div class="product" >
+                                              <div class="ribbon-wrapper">
+                                                <div class="ribbon">COUPON</div>
+                                              </div>
+                                              <div style="border: #007dff 18px solid; overflow: hidden;  box-shadow: 12px 12px rgb(221, 218, 218);  border-radius: 12px; padding-bottom: 24px; width: 300px; height: 200px; ">
+                                                <div class="coupon__title text-center" id="coupon_logo">                                                  
+                                                </div>
+                                                <div class="coupon__title text-center">
+                                                  <h4><b style="text-transform: uppercase;" id="business_name"></b></h4>
+                                                </div>
+                                                <div clsss="title" style="text-align: center; font-size: 25px;  padding-left: 0px;">
+                                                    <b id="coupan_text_id"></b>
+                                                </div>
+                                              </div>
+                                            </div> 
+                                        </div>
+                                        <!-- <div class="col-md-12">
+                                            <div class="card card-dark bg-secondary-gradient" style="background: linear-gradient(-45deg,#ffffff,#ffffff)!important;margin:20px">
+                                               
+                                                <div class="card-body skew-shadow" style="border: 1px solid #00569D; border-radius:5px; color: black">
+                                                    <div class="row">
+                                                        <div class="col-md-4" id="coupon_logo">
+                                                        </div>
+                                                    </div>
+                                                    <h2 class="py-2 mb-0 text-center">
+                                                        <b id="coupan_text_id" style="font-weight: 500 !important;"></b>
+                                                    </h2>
+                                                    <div class="row">
+                                                        <div class="col-8 pr-0">
+                                                           
+                                                        </div>
+                                                        <div class="col-4 pl-0 text-right">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        
+                                    </div>
+                                    
+                                    <div style="text-align: center;">
+                                        <div class="row" style="padding-top: 10%">
+                                            <div class="col-md-4 text-right" id="merchant_logo"></div>
+                                            <div class="col-md-8 text-left" id="business_name_para" style="padding-left:0px"></div>
+                                        </div>
+                                        <div class="row py-1 text-center" style="padding-top: 2%">
+                                            <div class="col-md-12 text-center">
+                                                <h5 class="fw-bold mb-1" id="expires_on_id"></h5>
+                                            </div>
+                                        </div>
+                                        <div class="row text-center" style="padding-top: 2%">
+                                            <div class="col-md-12 text-center">
+                                                <h5 class="fw-bold mb-1" id="redeem_for_id"></h5>
+                                            </div>
+                                        </div>
+                                        <div class="row text-center" style="padding-top: 2%">
+                                            <div class="col-md-12 text-center">
+                                                <h5 class="fw-bold mb-1" id="redeem_for_id">Copy Code Below</h5>
+                                            </div>
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <div class="input-group mb-3" >
+                                                        <input type="text" class="form-control" placeholder="" aria-label="Promo Code" aria-describedby="basic-addon2" id="promo_code_id" style="margin-top: 0px;" value="">
+                                                        <div class="input-group-append">
+                                                           <button onclick="myFunction()" class="btn btn-primary btn-sm">Copy</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                        </div>
+                            <div class="modal-footer">
+                                <form class="form-control" action="/customer-owner-coupons-redeem/" method="POST" id="bill_form" name="bill_form" autocomplete="off" enctype="multipart/form-data" style="border: none;">
+                                {% csrf_token %}
+                                    <input type="hidden" name="green_points" id="form_green_points" value="">
+                                    <input type="hidden" name="promo_code" id="form_promo_code" value="">
+                                    <input type="hidden" name="coupon_id" id="form_coupon_id" value="">
+                                    <input type="hidden" name="coupon_name" id="form_coupon_name" value="">
+                                    <input type="hidden" name="merchant_id" id="form_merchant_id" value="">
+                                    <input type="hidden" name="merchant_business_id" id="form_merchant_business_id" value="">
+                                    <div class="col d-flex align-items-center justify-content-center" id="redeem_button_div_id">
+                                        <input type="submit" class="btn btn-primary" value="Purchase Now" data-id="">
+                                    </div>
+                                 </form>
+                                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="view-history-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title w-100 text-center">Coupon Redeem History</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-hover">
+                            <thead>
+                                <tr align="center">
+                                    <th>Sr. No.</th>
+                                    <th>Business Name</th>
+                                   <!--  <th>Coupon Name</th> -->
+                                    <th>Coupon Code</th>
+                                    <th>Green Point</th>
+                                    <th>Redeem Date</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                            <tbody>
+                                {% for object in coupon_history %}
+                                <tr align="center">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ object.merchant_business_name }} </td>
+                                    <!-- <td>{{ object.coupon_name }}</td> -->
+                                    <td>{{ object.coupon_code }}</td>
+                                    <td>{{ object.green_point }}</td>
+                                    <td>{{object.coupon_redeem_date|date:'d-m-Y'}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>   
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+$(".viewBtn").on("click", function () {
+
+    var id = $(this).data('id');
+    var coupon_value = $(this).data('coupon_value');
+    var coupon_caption = $(this).data('coupon_caption');
+    var coupon_logo = $(this).data('coupon_logo');
+    var expires_on = $(this).data('expires_on');
+    var redeem_for = $(this).data('redeem_for');
+    var promo_code = $(this).data('promo_code');
+    var coupon_name = $(this).data('coupon_name');
+    var merchant_id = $(this).data('merchant_id');
+    var merchant_business_name = $(this).data('merchant_business_name');
+    var merchant_business_id = $(this).data('merchant_business_id');
+    var amount_in = $(this).data('amount_in');
+
+    $("#coupan_text_id").empty();
+    $("#coupon_logo").empty();
+    $("#merchant_logo").empty();
+
+    if(coupon_logo != ""){
+        $("#coupon_logo").append('<img src="'+ "http://157.230.228.250/media/" + coupon_logo + '" height="35" width="35" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">')   
+    }
+
+    if(coupon_logo != ""){
+        $("#merchant_logo").append('<img src="'+ "http://157.230.228.250/media/" + coupon_logo + '" height="50" width="50" alt="Logo" style="border-radius:50%; border: 1px solid #00569D;">')
+    }
+
+    $("#business_name").empty();
+
+    if(merchant_business_name.length >= 18)
+    {
+        $("#business_name").append('<h4 class="fw-bold mb-1" style="padding-top:2%">' + merchant_business_name.substring(0, 18) + "..." + '</h4>');
+    }else{
+        $("#business_name").append('<h4 class="fw-bold mb-1" style="padding-top:2%">' + merchant_business_name + '</h4>');
+    }
+    
+    
+
+    $("#business_name_para").empty();
+    
+    $("#business_name_para").append('<h4 class="fw-bold mb-1" style="padding-top:2%">' + merchant_business_name + '</h4>');
+
+
+    if(coupon_value != ""){
+        if(amount_in == "percentage")
+        {
+            $("#coupan_text_id").append(coupon_value + " Off");
+        }
+        else{
+            $("#coupan_text_id").append("₹ "+ coupon_value + " Off");
+        }
+    }else{
+        $("#coupan_text_id").append(coupon_caption);
+    }
+
+    $("#expires_on_id").empty();
+
+    if(expires_on != ""){
+        $("#expires_on_id").append("Expires On: " + expires_on);
+    }
+
+    $("#redeem_for_id").empty();
+    
+    $("#redeem_for_id").append("Redeem for " + redeem_for + " Green Points");
+
+    $('#promo_code_id').val(promo_code);
+
+    $("#form_green_points").empty();
+    
+    $('#form_green_points').val(redeem_for);
+
+    $("#form_coupon_id").empty();
+    
+    $('#form_coupon_id').val(id);
+
+    $("#form_promo_code").empty();
+    
+    $('#form_promo_code').val(promo_code);
+
+    $("#form_coupon_name").empty();
+    
+    $('#form_coupon_name').val(coupon_name);
+
+    $("#form_merchant_id").empty();
+
+    $('#form_merchant_id').val(merchant_id);
+
+    $("#form_merchant_business_id").empty();
+
+    $('#form_merchant_business_id').val(merchant_business_id);
+    
+    $("#ViewCoupanModal").modal();
+
+});
+
+function myFunction() {
+  var copyText = document.getElementById("promo_code_id");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+}
+</script>
+
+</script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

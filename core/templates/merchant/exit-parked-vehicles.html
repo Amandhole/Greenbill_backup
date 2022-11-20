@@ -1,0 +1,341 @@
+{% extends "layouts/merchant-base.html" %}
+
+{% block title %} Exit Parked Vehicles {% endblock %}
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style type="text/css">
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: left !important;
+    }
+</style>
+
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"> 
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Exit Parked Vehicle</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <!-- <li class="separator">
+                                      <i class="flaticon-right-arrow"></i>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a>Parking Lot</a>
+                                  </li> -->
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                
+                                <li class="nav-item">
+                                    <a href="/exit-parked-vehicles/">Exit Parked Vehicle</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% if is_merchant == True %}
+                        <div class="card-body center">
+                            <div class="row ">
+                                <div class="col-md-12">  
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="table-responsive">
+                                                <form method = "POST" action="/exit-parked-vehicles/">
+                                                    {% csrf_token %}
+                                                    <table id="add-row" class="display table table-hover">
+                                                        <thead>
+                                                            <tr align="center">
+                                                                <th>
+                                                                    <input type="checkbox" id="select_all" autocomplete="off">&nbsp;Exit All
+                                                                </th>
+                                                                <th>Sr. No</th>
+                                                                <th>Invoice No</th>
+                                                                <th>Vehicle Type</th>
+                                                                <th>Vehicle Number</th>
+                                                                <th>Amount</th>
+                                                                <th>Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            {% for bill in parking_bills %}
+                                                            <tr align="center">
+                                                                <td><input class="checkbox" type="checkbox" name="bill_id[]" value="{{bill.id}}"></td>
+                                                                <td>{{ forloop.counter }}</td>
+                                                                <td>{{ bill.invoice_no }}</td>
+                                                                <td>{{ bill.vehicle_type }}</td>
+                                                                <td>{{ bill.vehicle_number }}</td>
+                                                                <td>₹{{ bill.amount|floatformat:2 }}</td>
+                                                                <td>{{ bill.date }}</td>
+                                                            </tr>
+                                                            {% endfor %}   
+                                                        </tbody>
+                                                    </table>
+                                                    <tr>
+                                                        <center><button type="submit" class="btn btn-primary" id="load" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Please Wait.." autocomplete="off">Exit Vehicle</button></center>
+                                                    </tr>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {% for actions in merchnat_action_permissions_list %}
+                            {% if actions.module_id|lower == "Exit Parked Vehicles"|lower and actions.feature_id|lower == "Exit Parked Vehicles"|lower %}
+                                {% if actions.view_permission == "1" %}
+                                    <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                    <div class="card-body center">
+                                        <div class="row ">
+                                            <div class="col-md-12">  
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                            <form method = "POST" action="/exit-parked-vehicles/">
+                                                                {% csrf_token %}
+                                                                <table id="add-row" class="display table table-hover">
+                                                                    <thead>
+                                                                        <tr align="center">
+                                                                            <th>
+                                                                                <input type="checkbox" id="select_all" autocomplete="off">&nbsp;Exit All
+                                                                            </th>
+                                                                            <th>Sr. No</th>
+                                                                            <th>Invoice No</th>
+                                                                            <th>Vehicle Type</th>
+                                                                            <th>Vehicle Number</th>
+                                                                            <th>Amount</th>
+                                                                            <th>Date</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tfoot>
+                                                                    </tfoot>
+                                                                    <tbody>
+                                                                        {% for bill in parking_bills %}
+                                                                        <tr align="center">
+                                                                            <td><input class="checkbox" type="checkbox" name="bill_id[]" value="{{bill.id}}"></td>
+                                                                            <td>{{ forloop.counter }}</td>
+                                                                            <td>{{ bill.invoice_no }}</td>
+                                                                            <td>{{ bill.vehicle_type }}</td>
+                                                                            <td>{{ bill.vehicle_number }}</td>
+                                                                            <td>₹{{ bill.amount|floatformat:2 }}</td>
+                                                                            <td>{{ bill.date }}</td>
+                                                                        </tr>
+                                                                        {% endfor %}   
+                                                                    </tbody>
+                                                                </table>
+                                                                <tr>
+                                                                    <center>
+                                                                        {% if actions.edit_permission == "1" %}
+                                                                            <button type="submit" class="btn btn-primary" id="load" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Please Wait.." autocomplete="off">Exit Vehicle</button></center>
+                                                                        {% endif %}
+                                                                </tr>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-body permission-denied" style="display:none">
+                          <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                        </div>
+                  {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    
+<div class="modal fade" id="myDisplayModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center">Customer Information </h2>
+            </div>
+            <div class="modal-body" id="paraclear">
+                <p id="c_fname" name="c_fname"></p>
+                <p id="c_lname" name="c_lname"></p>
+                <p id="c_email" name="c_email"> </p>
+                <p id="c_mobile" name="c_mobile"></p>
+                <p id="c_area" name="c_area"></p>
+                <p id="c_pin_code" name="c_pin_code"> </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script>
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+$(function() {
+    $('.SendBillBtn').on('click', function(e) {
+        e.preventDefault(); 
+        var id = $(this).attr("data-id");
+        var db_table = $(this).attr("data-db_table");
+        var mobile_no = $(this).attr("data-mobile_no");
+        $.ajax({
+            type: "POST",
+            url: "/customer-info-send-bill-sms-web/"+id+"/",
+            data: {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, db_table, mobile_no},
+            beforeSend: function () {
+                        swal.fire({
+                            imageUrl: '../../../media/loading.gif',
+                            showConfirmButton: false,
+                            confirmButtonClass: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+                        $(".swal2-modal").css('background-color', 'transparent');
+            },
+            success: function(response) {
+                if(response["status"] == "success"){
+                Swal.fire({
+                text:'SMS send successfully',
+                icon:'success',
+                timer:1500,
+                showConfirmButton:false,
+                    })
+                .then(function() {
+                location.reload();
+                });
+                }
+                else if(response["status"] == "error"){
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Fail to send SMS.", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+                else{
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                timer:1500,
+                showConfirmButton:false,
+                })
+                .then(function() {
+                    location.reload();
+                });   
+                }
+            },
+            error: function() {
+                Swal.fire({
+                icon:"error",
+                title: "Oops...", 
+                text: "Something went wrong!", 
+                confirmButtonClass: "btn-success",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+                })
+                .then(function() {
+                location.reload();
+                });       
+            },
+            complete: function (data) {
+                // Hide image container
+                $("#loader").hide();
+            }
+        });
+    });
+});
+
+
+$(document).ready(function () {
+    $('#add-row').DataTable({
+        dom: 'tBfrtip',
+        "bPaginate": false,
+        buttons: [],
+        "ordering": false
+    });
+});
+
+//select all checkboxes
+
+$("#select_all").change(function () {  //"select all" change 
+
+    $(".checkbox").prop('checked', $(this).prop("checked")); //change all ".checkbox" checked status
+
+});
+
+//".checkbox" change 
+
+$('.checkbox').change(function () {
+
+    //uncheck "select all", if one of the listed checkbox item is unchecked
+
+    if (false == $(this).prop("checked")) { //if this item is unchecked
+
+        $("#select_all").prop('checked', false); //change "select all" checked status to false
+
+    }
+
+    //check "select all" if all checkbox items are checked
+
+    if ($('.checkbox:checked').length == $('.checkbox').length) {
+
+        $("#select_all").prop('checked', true);
+
+    }
+
+});
+
+</script>
+
+<style>
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

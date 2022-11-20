@@ -1,0 +1,614 @@
+{% extends "layouts/partner-base.html" %}
+
+{% load custom_tags %}
+
+{% block title %} My Subscription {% endblock %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+    /* Jquery validation */
+    label {
+        border: 0;
+        margin-bottom: 3px;
+        display: block;
+        width: 100%;
+    }
+
+    /* Datatable => to float button right  */
+    div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    /* Datatable => rounded corner button  */
+    button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">My Subscriptions</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/partner-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a>Settings</a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/partner-my-subscription/">My Subscriptions</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    {% if subscription_object != '' %}
+                       
+                        <table id="add-row" class="display table  table-hover" style="background-color: #06529e;color: white;">
+                            <thead>
+                                <tr align="center">
+                                    <th>Subscription Plan Name</th>
+                                    <th>Type</th>
+                                    <th>Balance</th>
+                                    <th >Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% if subscription_name != "" %}
+                                       <tr align="center">
+                                            <td>{{subscription_name}}</td>
+                                            <td>Greenbill Subscription</td>
+                                            <td style="width:15% !important">₹ {{total_amount_avilable|floatformat:3}}</td>
+                                            <td>
+                                                <button type="button" title="View Detail" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Detail">
+                                                    <a href="" style="display:block;text-align:center;color: white;" data-toggle="modal" data-target="#MyPlansModal" data-toggle = "tooltip" data-placement = "top"
+                                                    title = "View detail">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if promotional_sms_subscription_name != "" %}
+                                        <tr align="center">
+                                            <td>{{promotional_sms_subscription_name}}</td>
+                                            <td>Promotional SMS Subscription</td>
+                                            <td style="width:15% !important">{{ promotional_sms_total_sms_avilable }}</td>
+                                            <td>
+                                                <button type="button" title="View Detail" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Detail">
+                                                    <a href="" style="display:block;text-align:center;color: white;" data-toggle="modal" data-target="#PromotionalSMSModal" data-toggle = "tooltip" data-placement = "top"
+                                                    title = "View detail"><i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                </button>
+                                            
+                                            </td>
+                                        </tr>
+
+                                    {% endif %}
+                                    {% if transactional_sms_subscription_name != "" %}
+                                        <tr align="center">
+                                            <td>{{transactional_sms_subscription_name}}</td>
+                                            <td>Transactional SMS Subscription</td>
+                                            <td style="width:15% !important">{{ transactional_sms_total_sms_avilable }}</td>
+                                            <td>
+                                                <button type="button" title="View Detail" data-toggle="tooltip" class="btn btn-link btn-primary" data-original-title="View Detail">
+                                                    <a href="" style="display:block;text-align: center;color: white;" data-toggle="modal" data-target="#TransactionalSMSModal" data-toggle = "tooltip" data-placement = "top"
+                                                    title = "View detail"><i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+
+                            </tbody>
+                        </table>
+                        <div class="row" style="margin-top: 5%;margin-bottom: 5%;">
+                            <button type="button" class="btn" style="width:17%;background-color: #06529e;color: white;text-align: center;border-radius: 5px;margin-left: 28%;display: flex;
+                            align-items: center;"><i class="fa fa-rupee-sign fa-3x text-200 float-left" style="color:white;padding-right:0px;margin-left:0%;text-align:center;"></i><a href="/partner-recharge/" style="color: white;padding:20px;">Recharge</a></button>
+
+                            <button type="button" class="btn" style="width:22%;background-color: #06529e;color: white;text-align: center;border-radius: 5px;margin-left: 5%;display: flex;
+                            align-items: center;"><i class="fas fa-history fa-3x text-200 float-left" style="color:white;padding-right:0px;margin-left:0%;text-align:center;"></i><a href="/partner-recharge-history/" style="color: white;padding:20px;">Recharge History</a></button>
+                        </div>
+                    {% else %}
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3 style="color: red">You don’t have any Active Subscription</h3>
+                                    <h4><a href="/partner-recharge/" style="color: #00569d;">Click here</a> to View Subscription & Purchase Now</h4> 
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                       
+
+                        <!-- {% if subscription_name != "" %}
+                            <div class="col-md-6">
+                                <div class="card" style="background-color: #06529e;color: white;border-radius: 40px 5px;height: 217px;">
+                                    <div class="card-header align-items-center d-flex justify-content-center">
+                                        <div class="card-head-row">
+                                            <div class="card-title" style="color: white;"><h2>Subscription Balance</h2></div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="">
+                                            <section style="padding-left: 50px;font-size:14px">
+                                                <span> <b>Greenbill Subscription </b> 
+                                                    <br><br><b>Amount Balance:</b> ₹ {{total_amount_avilable|floatformat:2}}
+                                                    <br><br>  
+                                                </span>
+                                            </section>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if promotional_sms_subscription_name != "" %}
+
+                            <div class="col-md-6">
+                                <div class="card" style="background-color: #06529e;color: white;border-radius: 40px 5px;">
+                                    <div class="card-header align-items-center d-flex justify-content-center">
+                                        <div class="card-head-row">
+                                            <div class="card-title" style="color: white;"><h2>SMS Plan Balance</h2></div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="">
+                                            <section style="padding-left: 50px;font-size:14px">
+                                                <span> <b>Promotional SMS Subscription </b> 
+                                                    <br><br><b>SMS Balance:</b> {{ promotional_sms_total_sms_avilable }}
+                                                    <br><br>
+                                                </span>
+                                            </section>
+                                            <a href="" style="display:block;text-align:center;color: white;" data-toggle="modal" data-target="#PromotionalSMSPlanModal">Check Usage</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                        {% if transactional_sms_subscription_name != "" %}
+
+                             <div class="col-md-6">
+                                    <div class="card" style="background-color: #06529e;color: white;border-radius: 40px 5px;">
+                                        <div class="card-header align-items-center d-flex justify-content-center">
+                                            <div class="card-head-row">
+                                                <div class="card-title" style="color: white;"><h2>SMS Plan Balance</h2></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="">                                                  
+                                                <section style="padding-left: 50px;font-size:14px">
+                                                    <span> <b>Transactional SMS Subscription </b> 
+                                                        <br><br><b>SMS Balance:</b> {{ transactional_sms_total_sms_avilable }}
+                                                        <br><br>
+                                                    </span>
+                                                </section>
+                                                <a href="" style="display:block;text-align: center;color: white;" data-toggle="modal" data-target="#TransactionalSMSPlanModal">Check Usage</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        {% endif %}
+                        <div class="col-md-6">
+                            <div class="card" style="background-color: #06529e;color: white;border-radius: 40px 5px;">
+                                <div class="card-header align-items-center d-flex justify-content-center">
+                                    <div class="card-head-row">
+                                        <div class="card-title" style="color:white;"><h2>My Plans</h2></div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="">                                                   
+                                        <section style="padding-left: 50px;font-size:14px">
+                                            <span> <b>Plan Name: {{ subscription_name }}</b> 
+                                                <br><br><b>Amount:</b> ₹ {{ recharge_amount|floatformat:2 }}
+                                                <br><br>
+                                                <b>Expires on:</b> {{ expiry_date }}<br><br>
+                                            </span>
+                                        </section>
+                                        <a href="" style="display: block; text-align: right;color:white;" data-toggle="modal" data-target="#MyPlansModal">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 text-center justify-content-center align-self-center">
+                                <div class="card" style="background-color: #06529e;color: white;border-radius: 40px 5px;height: 253px;">
+                                    <div class="card-body">
+                                        <div class="row" style="padding-top: 50px;">
+                                            <section style="padding-left: 50px;font-size:14px">
+                                                <i class="fa fa-rupee-sign fa-3x text-200 float-left"
+                                                style="color:white;padding-right:0px;margin-left:0%;text-align:center;"></i> 
+                                                <span style="padding-left: 58px;">
+                                                    <a href="/partner-recharge/">
+                                                    <button type="button" class="btn">Recharge</button>
+                                                    <h5></h5>
+                                                </a>
+                                                </span> 
+                                            </section>
+                                        </div>
+                                        <div class="row" style="padding-top: 30px;">
+                                            <section style="padding-left: 50px;font-size:14px">
+                                                <i class="fas fa-history fa-3x text-200 float-left"
+                                                style="color:white;padding-right:0px;margin-left:0%;text-align:center;"></i> 
+                                                <span style="padding-left:42px;">
+                                                    <a href="/partner-recharge-history/">
+                                                    <button type="button" class="btn">
+                                                        Recharge History</button>
+                                                    <h5></h5>
+                                                </a>
+                                                </span>
+                                                
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    
+                        </div> -->
+                    
+
+
+
+
+
+
+<!-- <div class="modal fade" id="SubscriptionBalanceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">GreenBill Plan Usage Report</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Bills By SMS
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                      <b>  0 </b>
+                    </span>
+                    <br>
+                    Bills By Notification
+
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        <b>  0 </b>
+                    </span>
+                </p>
+                <hr>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="PromotionalSMSPlanModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">{% if promotional_sms_subscription_name != "" %} Promotional SMS Plan - Usage Report{% endif %}</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                {% if promotional_sms_subscription_name != "" %}
+                {% for i in promotional_smsplan %}
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    {{i.created_at}}
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                     <b>  - {% if i.receiver != None and i.receiver != 'customer' %}
+                        {{i.receiver|split|length}} Used SMS {% endif %}
+                        {% if i.receiver == 'customer' %} {% if i.sms_count %}{{ i.sms_count }}{% else %} {% endif %} Used SMS                  
+                        {% endif %} </b>
+                    </span>
+                </p>
+                <hr>
+                {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="TransactionalSMSPlanModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">{% if transactional_sms_subscription_name != "" %} Transactional SMS Plan - Usage Report {% endif %}</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+
+                {% if transactional_sms_subscription_name != "" %} 
+                {% for i in transactional_smsplan %}
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    {{i.created_at}}
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        <b>   
+                        {% if i.receiver != None and i.receiver != 'customer' %}
+                        {{i.receiver|split|length}} Used SMS {% endif %}
+                        {% if i.receiver == 'customer' %} {% if i.sms_count %}{{ i.sms_count }}{% else %} {% endif %} Used SMS                  
+                        {% endif %}  </b>
+                    </span>
+                </p>
+                <hr>
+                {% endfor %}
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+</div>
+ -->
+
+
+
+<div class="modal fade" id="MyPlansModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">{{ subscription_name }}</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <section
+                    style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                    <p style="text-align:center;"> <br>
+                        <span
+                            style="color:white;text-align:center;font-size:50px;"><b>
+                                ₹ {{total_amount_avilable|floatformat:3}}</b></span>
+                    </p><br>
+
+                </section>
+                <hr>
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Subscription Name
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Recharge Amount
+                    </span>
+                    <br>
+                    <b>{{ subscription_name }}</b>
+
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        <b> ₹ {{ recharge_amount }} </b>
+                    </span>
+                </p>
+
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Per Bill Cost
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Per Digital Bill Cost
+                    </span>
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 60px">
+                        Per Url Bill Cost
+                    </span>
+                    <br>
+                    <b>₹ {{ per_bill_cost }} </b>
+
+                    <span
+                        style="float:right; color: black;text-align:left;padding-right: 10px">
+                        <b>₹ {{per_digital_bill_cost}}</b></span>
+                    <span
+                        style="float:right; color: black;text-align:left;padding-right: 160px">
+                        <b>₹ {{per_url_cost}}</b></span>
+                </p>
+
+                <!-- <p align="center" style="color: red">
+                    (Number Of Users: {{object.number_of_users}})
+                    (Cost Per User: ₹ {{object.cost_for_users}})
+                </p> -->
+                
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn"
+                    style="background-color: #06529e; color:white">
+                    Buy
+                </button> -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="TransactionalSMSModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">{{ transactional_sms_subscription_name }}</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <section
+                    style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                    <p style="text-align:center;"> <br>
+                        <span
+                            style="color:white;text-align:center;font-size:50px;"><b>
+                                ₹ {{transactional_sms_purchase_cost}}</b></span>
+                    </p><br>
+
+                </section>
+                <hr>
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Subscription Name
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Total Amount
+                    </span>
+                    <br>
+                    <b>{{ transactional_sms_subscription_name }}</b>
+
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        <b> ₹ {{ transactional_sms_purchase_cost }} </b>
+                    </span>
+                </p>
+
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Total SMS
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Per SMS Cost
+                    </span>
+                    <br>
+                    <b>{{ transactional_sms_total_sms }} </b>
+
+                    <span
+                        style="float:right; color: black;text-align:left;padding-right: 10px">
+                        <b>₹ {{transactional_sms_per_sms_cost}}</b></span>
+                </p>
+
+                <!-- <p align="center" style="color: red">
+                    (Number Of Users: {{object.number_of_users}})
+                    (Cost Per User: ₹ {{object.cost_for_users}})
+                </p> -->
+                
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn"
+                    style="background-color: #06529e; color:white">
+                    Buy
+                </button> -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="PromotionalSMSModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center">{{ promotional_sms_subscription_name }}</h3>
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <section
+                    style="background-color :#06529e;border-radius:20px;border:2px solid #1572e9">
+                    <p style="text-align:center;"> <br>
+                        <span
+                            style="color:white;text-align:center;font-size:50px;"><b>
+                                ₹ {{promotional_sms_purchase_cost}}</b></span>
+                    </p><br>
+
+                </section>
+                <hr>
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Subscription Name
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Total Amount
+                    </span>
+                    <br>
+                    <b>{{ promotional_sms_subscription_name }}</b>
+
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        <b> ₹ {{ promotional_sms_purchase_cost }} </b>
+                    </span>
+                </p>
+
+                <p
+                    style="text-align: left;color: black; font-size: 15px;  padding-left: 5px;">
+                    Total SMS
+                    <span
+                        style="float:right;color: black; text-align:left;padding-right: 10px">
+                        Per SMS Cost
+                    </span>
+                    <br>
+                    <b>{{ promotional_sms_total_sms }} </b>
+
+                    <span
+                        style="float:right; color: black;text-align:left;padding-right: 10px">
+                        <b>₹ {{promotional_sms_per_sms_cost}}</b></span>
+                </p>
+
+                <!-- <p align="center" style="color: red">
+                    (Number Of Users: {{object.number_of_users}})
+                    (Cost Per User: ₹ {{object.cost_for_users}})
+                </p> -->
+                
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn"
+                    style="background-color: #06529e; color:white">
+                    Buy
+                </button> -->
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+{% endblock content %}
+
+{% block javascripts %}
+
+{% endblock javascripts %}

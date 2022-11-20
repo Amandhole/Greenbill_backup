@@ -1,0 +1,471 @@
+{% extends "layouts/merchant-base.html" %} {% block title %} Offers {% endblock %}
+
+<!-- Specific Page CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<div class="content">
+    <div class="page-inner">
+        <!-- <div class="page-header">
+            <h4 class="page-title">Offers</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a href="/merchant-index/">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Offers</a>
+                </li>
+                 <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">Offers</a>
+                </li> 
+            </ul>
+        </div> -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style="justify-content: center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Offers</h4>
+                            <ul class="breadcrumbs">
+                                <li class="nav-home">
+                                    <a href="/merchant-index/">
+                                        <i class="flaticon-home"></i>
+                                    </a>
+                                </li>
+                                <li class="separator">
+                                    <i class="flaticon-right-arrow"></i>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/merchant_offers/">Offers</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                        
+                   <div class="card-body permission-denied" style="display:none">
+                      <div class="permission-denied" style="padding: 5%; color: #63b90b !important">Module will be Live Shortly. Will keep you posted.</div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- {% if is_merchant == True %}
+                            <div class="card-body">
+                                <form class="form-control" action="/merchant_offers/" method="POST" id="basic-form"
+                                    name="basic-form" autocomplete="off" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="card-body">
+                                        <div class="form-group row">
+                                            <label for="offer_link" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Link
+                                                <span class="required-label">*</span></label>
+                                            <div class="col-lg-6 col-md-11 col-sm-10 ml-4">
+                                                <input type="text" class="form-control" id="offer_link" name="offer_link"
+                                                    placeholder="Redirect Link" value="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="offer_image"
+                                                class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Image:<span
+                                                    class="required-label">*</span></label>
+                                            <input type="file" name="stamp_image1" class="ml-5">
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-2 col-md-2 col-sm-4 ml-5"></div>
+                                            <div class="col-lg-4 col-md-4 col-sm-4 ml-5">
+                                                <div class="input-file input-file-image mr-2">
+
+
+
+                                                    <div class="form-check text-center">
+                                                        <input class="form-check-input" type="radio" value="rectangle"
+                                                            name="type_name" id="">
+                                                        <label class="form-check-label">
+                                                            Rectangle Image
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-3 ml-5">
+                                                <div class="input-file input-file-image mr-2">
+
+
+                                                    <div class="form-check text-center">
+                                                        <input class="form-check-input" type="radio" value="square"
+                                                            name="type_name" id="">
+                                                        <label class="form-check-label">
+                                                            Square Image
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="card-action">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="text-center mt-3 mb-3">
+                                                    <input class="btn btn-primary" type="submit" value="Submit">
+                                                   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="add-row" class="display table table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="row">Sr No</th>
+                                                                <th width="100%">Link</th>
+                                                                <th>Image</td>
+
+                                                                <th style="text-align:center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            {% for data in data%}
+                                                            <tr>
+                                                                <td>{{forloop.counter}}</td>
+
+                                                                <td style="word-break: break-all">{{data.offer_link}}</td>
+                                                                <td >{% if data.image_type == "rectangle" %}
+                                                                    <img src="{{data.stamp_image.url}}" width="200"
+                                                                        height="100">
+                                                                    {% else %}
+                                                                    <img src="{{data.stamp_image.url}}" width="100"
+                                                                        height="100">{% endif %}
+                                                                </td>
+
+                                                                <td>
+
+                                                                    <div class="text-center mt-3 mb-3">
+                                                                        
+                                                                        <button type="button"
+                                                                            class="btn btn-primary btn-sm viewBtn"
+                                                                            data-toggle="modal" data-target="#exampleModal">
+                                                                            Generate Copy Link
+                                                                        </button>
+                                                                    </div>
+
+                                                                </td>
+
+
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {% for actions in merchnat_action_permissions_list %}
+                                  {% if actions.module_id|lower == "Offers"|lower and actions.feature_id|lower == "Offers"|lower %}
+                                    {% if actions.view_permission == "1" %}
+                                        <input type="hidden" value="1" name="access_permission" id="access_permission">
+                                        <div class="card-body">
+                                            <form class="form-control" action="/merchant_offers/" method="POST" id="basic-form"
+                                                name="basic-form" autocomplete="off" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="card-body">
+                                                    <div class="form-group row">
+                                                        <label for="offer_link" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Link
+                                                            <span class="required-label">*</span></label>
+                                                        <div class="col-lg-6 col-md-11 col-sm-10 ml-4">
+                                                            <input type="text" class="form-control" id="offer_link" name="offer_link"
+                                                                placeholder="Redirect Link" value="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="offer_image"
+                                                            class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Image:<span
+                                                                class="required-label">*</span></label>
+                                                        <input type="file" name="stamp_image1" class="ml-5">
+                                                    </div>
+
+                                                    <div class="form-group row">
+                                                        <div class="col-lg-2 col-md-2 col-sm-4 ml-5"></div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 ml-5">
+                                                            <div class="input-file input-file-image mr-2">
+
+
+
+                                                                <div class="form-check text-center">
+                                                                    <input class="form-check-input" type="radio" value="rectangle"
+                                                                        name="type_name" id="">
+                                                                    <label class="form-check-label">
+                                                                        Rectangle Image
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 ml-5">
+                                                            <div class="input-file input-file-image mr-2">
+
+
+                                                                <div class="form-check text-center">
+                                                                    <input class="form-check-input" type="radio" value="square"
+                                                                        name="type_name" id="">
+                                                                    <label class="form-check-label">
+                                                                        Square Image
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="card-action">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="text-center mt-3 mb-3">
+                                                                {% if actions.add_permission == "1" %}
+                                                                    <input class="btn btn-primary" type="submit" value="Submit">
+                                                                {% endif %}
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <div class="table-responsive">
+                                                                <table id="add-row" class="display table table-striped table-hover">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="row">Sr No</th>
+                                                                            <th width="100%">Link</th>
+                                                                            <th>Image</td>
+
+                                                                            <th style="text-align:center">Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tfoot>
+                                                                    </tfoot>
+                                                                    <tbody>
+                                                                        {% for data in data%}
+                                                                        <tr>
+                                                                            <td>{{forloop.counter}}</td>
+
+                                                                            <td style="word-break: break-all">{{data.offer_link}}</td>
+                                                                            <td >{% if data.image_type == "rectangle" %}
+                                                                                <img src="{{data.stamp_image.url}}" width="200"
+                                                                                    height="100">
+                                                                                {% else %}
+                                                                                <img src="{{data.stamp_image.url}}" width="100"
+                                                                                    height="100">{% endif %}
+                                                                            </td>
+
+                                                                            <td>
+
+                                                                                <div class="text-center mt-3 mb-3">
+                                                                                    
+                                                                                    <button type="button"
+                                                                                        class="btn btn-primary btn-sm viewBtn"
+                                                                                        data-toggle="modal" data-target="#exampleModal">
+                                                                                        Generate Copy Link
+                                                                                    </button>
+                                                                                </div>
+
+                                                                            </td>
+
+
+                                                                        </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    {% endif %}
+                                  {% endif %}
+                                {% endfor %}
+                                <div class="card-body permission-denied" style="display:none">
+                                  <div class="permission-denied" style="padding: 5%">Permission Denied</div> 
+                                </div>
+                              {% endif %} -->
+
+<!-- SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    Swal.fire({
+        "title": "Created",
+        "text": "{{message}}",
+        "icon": "success",
+
+    })
+</script>
+{% endfor %}
+{% endif %}
+
+
+<script>
+    $("#basic-form").validate({
+        rules: {
+            offer_link: {
+                required: true,
+
+            },
+            stamp_image1: {
+                required: true,
+            },
+
+        },
+        messages: {
+            offer_link: {
+                required: "link is required"
+            },
+            stamp_image1: {
+                required: "image is required",
+            },
+        }
+    });
+
+
+
+    $(document).ready(function () {
+        $('#basic-datatables').DataTable({
+        });
+
+        $('#multi-filter-select').DataTable({
+            "pageLength": 5,
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        // $('#add-row').DataTable({
+        // "pageLength": 5,
+        // });
+
+        $('#add-row').DataTable({
+            dom: 'lBfrtip',
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+
+        // buttons: [
+        // 'copy', 'csv', 'excel', 'pdf', 'print'
+        // ]
+
+        var action = '<td> <div class="form-button-action"> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $('#addRowButton').click(function () {
+            $('#add-row').dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action
+            ]);
+            $('#addRowModal').modal('hide');
+
+        });
+    });
+
+</script>
+<style>
+    /*.error {
+color: red;
+position:top;
+}*/
+
+    /*.c1 {
+border: 2px red ridge;
+}*/
+
+    /* / Datatable=>to float button right / div.dt-buttons {
+        position: relative;
+        float: right;
+        border-radius: 20px;
+    }
+
+    / Datatable=>rounded corner button / button.dt-button {
+        border-radius: 20px;
+    }
+
+    .permission-denied {
+        color: red;
+        display: flex;
+        justify-content: center;
+        font-size: 25px;
+        font-weight: 500;
+    } */
+</style>
+
+
+
+</script>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE -->
+{% block javascripts %}
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="/static/assets/js/setting-demo2.js"></script>
+
+{% endblock javascripts %}
